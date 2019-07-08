@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.Commands;
 
 import hunt.collection.Map;
 

@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.BasicRedisPipeline;
 
 import hunt.redis.Module;
 import hunt.redis.Response;

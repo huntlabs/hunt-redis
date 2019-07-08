@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ShardedRedisPipeline;
 
 import hunt.collection.ArraryList;
 import hunt.collection.Linkedlist;

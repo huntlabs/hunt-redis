@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.ShardInfo;
 
 public abstract class ShardInfo<T> {
   private int weight;

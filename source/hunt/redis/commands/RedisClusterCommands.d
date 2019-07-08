@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.RedisClusterCommands;
 
 import hunt.redis.StreamEntryID;
 import hunt.redis.GeoCoordinate;

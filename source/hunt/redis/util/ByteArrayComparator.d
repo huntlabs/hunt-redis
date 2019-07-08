@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.ByteArrayComparator;
 
 public final class ByteArrayComparator {
   private ByteArrayComparator() {

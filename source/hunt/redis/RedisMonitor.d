@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisMonitor;
 
 public abstract class RedisMonitor {
   protected Client client;

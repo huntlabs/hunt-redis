@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.RedisClusterCRC16;
 
 import hunt.redis.exceptions.RedisClusterOperationException;
 

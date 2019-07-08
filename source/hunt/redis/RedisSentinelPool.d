@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisSentinelPool;
 
 import hunt.util.ArrayHelper;
 import hunt.collection.HashSet;

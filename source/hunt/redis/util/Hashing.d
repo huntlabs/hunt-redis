@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.Hashing;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

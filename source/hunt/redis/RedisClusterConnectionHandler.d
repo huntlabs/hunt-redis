@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisClusterConnectionHandler;
 
 import java.io.Closeable;
 import hunt.collection.Map;

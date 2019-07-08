@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.BinaryScriptingCommandsPipeline;
 
 import hunt.redis.Response;
 

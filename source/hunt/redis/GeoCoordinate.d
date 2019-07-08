@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.GeoCoordinate;
 
 public class GeoCoordinate {
   private double longitude;

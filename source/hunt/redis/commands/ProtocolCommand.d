@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.ProtocolCommand;
 
 public interface ProtocolCommand {
 

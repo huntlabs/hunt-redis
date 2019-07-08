@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.BinaryRedisCommands;
 
 import hunt.collection.Collection;
 import hunt.collection.List;

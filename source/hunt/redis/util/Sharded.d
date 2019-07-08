@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.Sharded;
 
 import hunt.collection.Collection;
 import hunt.collection.Collections;

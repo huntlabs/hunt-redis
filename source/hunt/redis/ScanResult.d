@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ScanResult;
 
 import hunt.collection.List;
 

@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisNoScriptException;
 
 public class RedisNoScriptException extends RedisDataException  {
   private static final long serialVersionUID = 4674378093072060731L;

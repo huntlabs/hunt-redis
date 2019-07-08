@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.MultiKeyCommands;
 
 import hunt.redis.BitOP;
 import hunt.redis.StreamEntryID;

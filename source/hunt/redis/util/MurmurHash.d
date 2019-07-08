@@ -9,7 +9,7 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-module hunt.redis.util;
+module hunt.redis.util.MurmurHash;
 
 import hunt.collection.ByteBuffer;
 import java.nio.ByteOrder;

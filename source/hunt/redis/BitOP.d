@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BitOP;
 
 public enum BitOP {
   AND, OR, XOR, NOT;

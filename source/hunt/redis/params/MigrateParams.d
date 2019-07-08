@@ -1,4 +1,4 @@
-module hunt.redis.params;
+module hunt.redis.params.MigrateParams;
 
 public class MigrateParams extends Params {
 

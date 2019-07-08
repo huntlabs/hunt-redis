@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisExhaustedPoolException;
 
 /**
  * This exception will be thrown when the Redis client isn't able to retrieve a connection from the

@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.RedisOutputStream;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

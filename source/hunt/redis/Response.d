@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Response;
 
 import hunt.redis.exceptions.RedisDataException;
 

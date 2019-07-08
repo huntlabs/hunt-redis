@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.AdvancedRedisCommands;
 
 import hunt.collection.List;
 

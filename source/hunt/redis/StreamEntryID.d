@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.StreamEntryID;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ZParams;
 
 import hunt.redis.Protocol.Keyword.AGGREGATE;
 import hunt.redis.Protocol.Keyword.WEIGHTS;

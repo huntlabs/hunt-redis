@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.GeoRadiusResponse;
 
 import hunt.redis.util.SafeEncoder;
 

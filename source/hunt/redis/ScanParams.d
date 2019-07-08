@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ScanParams;
 
 import hunt.redis.Protocol.Keyword.COUNT;
 import hunt.redis.Protocol.Keyword.MATCH;

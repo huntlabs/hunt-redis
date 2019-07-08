@@ -7,7 +7,7 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-module hunt.redis.util;
+module hunt.redis.util.RedisInputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;

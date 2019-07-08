@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.pool2.PooledObject;

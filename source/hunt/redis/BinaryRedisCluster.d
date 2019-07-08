@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BinaryRedisCluster;
 
 import hunt.redis.commands.BinaryRedisClusterCommands;
 import hunt.redis.commands.RedisClusterBinaryScriptingCommands;

@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisClusterCommand;
 
 import hunt.redis.exceptions.RedisAskDataException;
 import hunt.redis.exceptions.RedisClusterMaxAttemptsException;

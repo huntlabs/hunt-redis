@@ -1,4 +1,4 @@
-module hunt.redis.params;
+module hunt.redis.params.ClientKillParams;
 
 public class ClientKillParams extends Params {
 

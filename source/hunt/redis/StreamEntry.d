@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.StreamEntry;
 
 import java.io.IOException;
 import hunt.collection.Map;

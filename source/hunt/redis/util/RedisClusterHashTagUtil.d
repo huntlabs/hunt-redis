@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.RedisClusterHashTagUtil;
 
 /**
  * Holds various methods/utilities to manipualte and parse redis hash-tags. See <a

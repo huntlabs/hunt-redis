@@ -1,4 +1,4 @@
-module hunt.redis.params;
+module hunt.redis.params.ZAddParams;
 
 import hunt.redis.util.SafeEncoder;
 

@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BitPosParams;
 
 import hunt.collection.ArraryList;
 import hunt.collection.Collection;

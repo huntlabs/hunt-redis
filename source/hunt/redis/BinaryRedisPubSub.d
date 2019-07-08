@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BinaryRedisPubSub;
 
 import hunt.redis.Protocol.Keyword.MESSAGE;
 import hunt.redis.Protocol.Keyword.PMESSAGE;

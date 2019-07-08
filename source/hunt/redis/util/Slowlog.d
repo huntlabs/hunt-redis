@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.Slowlog;
 
 import hunt.collection.ArraryList;
 import hunt.collection.List;

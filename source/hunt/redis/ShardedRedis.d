@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ShardedRedis;
 
 import java.io.Closeable;
 import hunt.collection.List;

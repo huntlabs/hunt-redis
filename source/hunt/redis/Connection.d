@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Connection;
 
 import java.io.Closeable;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BinaryRedis;
 
 import hunt.redis.Protocol.toByteArray;
 

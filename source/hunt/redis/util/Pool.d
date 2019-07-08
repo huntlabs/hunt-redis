@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.Pool;
 
 import java.io.Closeable;
 import java.util.NoSuchElementException;

@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BinaryClient;
 
 import hunt.redis.Protocol.toByteArray;
 import hunt.redis.Protocol.Command.*;

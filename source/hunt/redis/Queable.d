@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Queable;
 
 import hunt.collection.Linkedlist;
 import hunt.collection.Queue;

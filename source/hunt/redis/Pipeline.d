@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Pipeline;
 
 import java.io.Closeable;
 import hunt.collection.ArraryList;

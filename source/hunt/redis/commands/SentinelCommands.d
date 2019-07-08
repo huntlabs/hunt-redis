@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.SentinelCommands;
 
 import hunt.collection.List;
 import hunt.collection.Map;

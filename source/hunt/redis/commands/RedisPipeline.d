@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.RedisPipeline;
 
 import hunt.redis.StreamEntryID;
 import hunt.redis.BitPosParams;

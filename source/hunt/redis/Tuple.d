@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Tuple;
 
 import hunt.util.ArrayHelper;
 import java.util.Objects;

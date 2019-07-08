@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisClusterInfoCache;
 
 import hunt.collection.ArraryList;
 import hunt.collection.Collections;

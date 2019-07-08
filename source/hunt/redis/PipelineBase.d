@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.PipelineBase;
 
 import hunt.collection.List;
 import hunt.collection.Map;

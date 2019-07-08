@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.HostAndPort;
 
 import java.net.InetAddress;
 

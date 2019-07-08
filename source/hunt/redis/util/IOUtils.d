@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.IOUtils;
 
 import java.io.IOException;
 import java.net.Socket;

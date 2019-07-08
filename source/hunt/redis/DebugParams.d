@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.DebugParams;
 
 public class DebugParams {
   private String[] command;

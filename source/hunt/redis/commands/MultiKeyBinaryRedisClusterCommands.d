@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.MultiKeyBinaryRedisClusterCommands;
 
 import hunt.redis.BinaryRedisPubSub;
 import hunt.redis.BitOP;

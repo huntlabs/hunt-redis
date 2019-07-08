@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.ShardedRedisPool;
 
 import hunt.collection.List;
 

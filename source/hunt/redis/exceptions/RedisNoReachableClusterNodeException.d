@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 
 public class RedisNoReachableClusterNodeException extends RedisConnectionException {
     private static final long serialVersionUID = 3878122572474110407L;

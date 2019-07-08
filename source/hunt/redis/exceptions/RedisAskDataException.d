@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisAskDataException;
 
 import hunt.redis.HostAndPort;
 

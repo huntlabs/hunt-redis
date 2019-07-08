@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BuilderFactory;
 
 import hunt.collection.ArraryList;
 import hunt.collection.HashMap;

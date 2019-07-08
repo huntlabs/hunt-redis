@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisPoolAbstract;
 
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;

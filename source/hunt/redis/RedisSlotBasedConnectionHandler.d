@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisSlotBasedConnectionHandler;
 
 import hunt.collection.List;
 import hunt.collection.Set;

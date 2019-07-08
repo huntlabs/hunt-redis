@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisClusterOperationException;
 
 public class RedisClusterOperationException extends RedisException {
   private static final long serialVersionUID = 8124535086306604887L;

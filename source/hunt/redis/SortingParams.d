@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.SortingParams;
 
 import hunt.redis.Protocol.Keyword.ALPHA;
 import hunt.redis.Protocol.Keyword.ASC;

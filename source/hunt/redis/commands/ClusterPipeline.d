@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.ClusterPipeline;
 
 import hunt.redis.Response;
 

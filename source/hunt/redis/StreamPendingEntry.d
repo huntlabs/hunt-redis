@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.StreamPendingEntry;
 
 import java.io.IOException;
 

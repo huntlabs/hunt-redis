@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.GeoUnit;
 
 import hunt.redis.util.SafeEncoder;
 

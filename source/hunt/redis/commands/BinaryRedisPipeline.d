@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.BinaryRedisPipeline;
 
 import hunt.redis.BitPosParams;
 import hunt.redis.GeoCoordinate;

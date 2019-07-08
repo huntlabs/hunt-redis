@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.MultiKeyPipelineBase;
 
 import hunt.redis.commands.*;
 import hunt.redis.params.MigrateParams;

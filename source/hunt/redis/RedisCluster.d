@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.RedisCluster;
 
 import hunt.redis.commands.ProtocolCommand;
 import hunt.redis.params.GeoRadiusParam;

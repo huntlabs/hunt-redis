@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.KeyMergeUtil;
 
 public final class KeyMergeUtil {
   private KeyMergeUtil(){

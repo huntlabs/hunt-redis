@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.Module;
 
 public class Module {
   private String name;

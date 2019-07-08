@@ -1,4 +1,4 @@
-module hunt.redis;
+module hunt.redis.BinaryShardedRedis;
 
 import hunt.collection.Collection;
 import hunt.collection.List;

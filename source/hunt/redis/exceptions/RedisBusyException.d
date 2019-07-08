@@ -1,4 +1,4 @@
-module hunt.redis.exceptions;
+module hunt.redis.exceptions.RedisBusyException;
 
 public class RedisBusyException extends RedisDataException {
 

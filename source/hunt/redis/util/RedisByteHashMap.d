@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.RedisByteHashMap;
 
 import hunt.util.ArrayHelper;
 import hunt.collection.Collection;

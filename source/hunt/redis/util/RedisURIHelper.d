@@ -1,4 +1,4 @@
-module hunt.redis.util;
+module hunt.redis.util.RedisURIHelper;
 
 public final class RedisURIHelper {
 

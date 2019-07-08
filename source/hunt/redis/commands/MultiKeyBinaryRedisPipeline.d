@@ -1,4 +1,4 @@
-module hunt.redis.commands;
+module hunt.redis.commands.MultiKeyBinaryRedisPipeline;
 
 import hunt.redis.BitOP;
 import hunt.redis.Response;
