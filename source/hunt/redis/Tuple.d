@@ -1,7 +1,9 @@
 module hunt.redis.Tuple;
 
 import hunt.util.ArrayHelper;
-import java.util.Objects;
+// import java.util.Objects;
+
+import hunt.Double;
 
 import hunt.redis.util.ByteArrayComparator;
 import hunt.redis.util.SafeEncoder;
@@ -10,11 +12,11 @@ class Tuple : Comparable!(Tuple) {
   private byte[] element;
   private Double score;
 
-  Tuple(string element, Double score) {
+  this(string element, Double score) {
     this(SafeEncoder.encode(element), score);
   }
 
-  Tuple(byte[] element, Double score) {
+  this(byte[] element, Double score) {
     super();
     this.element = element;
     this.score = score;
@@ -31,7 +33,7 @@ class Tuple : Comparable!(Tuple) {
       }
     }
     long temp = Double.doubleToLongBits(score);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + cast(int) (temp ^ (temp >>> 32));
     return result;
   }
 
@@ -39,11 +41,12 @@ class Tuple : Comparable!(Tuple) {
   bool opEquals(Object obj) {
     if (obj is null) return false;
     if (obj is this) return true;
-    if (!(obj instanceof Tuple)) return false;
 
-    Tuple other = (Tuple) obj;
-    if (!Arrays.equals(element, other.element)) return false;
-    return Objects.equals(score, other.score);
+    Tuple other = cast(Tuple) obj;
+    if(other is null)
+      return false;
+    if (element != other.element) return false;
+    return score == other.score;
   }
 
   override

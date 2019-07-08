@@ -13,23 +13,23 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.Hashing;
 
-class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
+class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
 
   protected ShardedRedisPool dataSource = null;
 
-  ShardedRedis(List!(RedisShardInfo) shards) {
+  this(List!(RedisShardInfo) shards) {
     super(shards);
   }
 
-  ShardedRedis(List!(RedisShardInfo) shards, Hashing algo) {
+  this(List!(RedisShardInfo) shards, Hashing algo) {
     super(shards, algo);
   }
 
-  ShardedRedis(List!(RedisShardInfo) shards, Pattern keyTagPattern) {
+  this(List!(RedisShardInfo) shards, Pattern keyTagPattern) {
     super(shards, keyTagPattern);
   }
 
-  ShardedRedis(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
+  this(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
     super(shards, algo, keyTagPattern);
   }
 
@@ -272,7 +272,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  List!(string) hmget(string key, string fields...) {
+  List!(string) hmget(string key, string[] fields...) {
     Redis j = getShard(key);
     return j.hmget(key, fields);
   }
@@ -308,7 +308,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long hdel(string key, string fields...) {
+  Long hdel(string key, string[] fields...) {
     Redis j = getShard(key);
     return j.hdel(key, fields);
   }
@@ -338,19 +338,19 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long rpush(string key, string strings...) {
+  Long rpush(string key, string[] strings...) {
     Redis j = getShard(key);
     return j.rpush(key, strings);
   }
 
   override
-  Long lpush(string key, string strings...) {
+  Long lpush(string key, string[] strings...) {
     Redis j = getShard(key);
     return j.lpush(key, strings);
   }
 
   override
-  Long lpushx(string key, string string...) {
+  Long lpushx(string key, string[] string...) {
     Redis j = getShard(key);
     return j.lpushx(key, string);
   }
@@ -368,7 +368,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long rpushx(string key, string string...) {
+  Long rpushx(string key, string[] string...) {
     Redis j = getShard(key);
     return j.rpushx(key, string);
   }
@@ -428,7 +428,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long sadd(string key, string members...) {
+  Long sadd(string key, string[] members...) {
     Redis j = getShard(key);
     return j.sadd(key, members);
   }
@@ -440,7 +440,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long srem(string key, string members...) {
+  Long srem(string key, string[] members...) {
     Redis j = getShard(key);
     return j.srem(key, members);
   }
@@ -512,7 +512,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long zrem(string key, string members...) {
+  Long zrem(string key, string[] members...) {
     Redis j = getShard(key);
     return j.zrem(key, members);
   }
@@ -845,7 +845,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  Long pfadd(string key, string elements...) {
+  Long pfadd(string key, string[] elements...) {
     Redis j = getShard(key);
     return j.pfadd(key, elements);
   }
@@ -887,13 +887,13 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  List!(string) geohash(string key, string members...) {
+  List!(string) geohash(string key, string[] members...) {
     Redis j = getShard(key);
     return j.geohash(key, members);
   }
 
   override
-  List!(GeoCoordinate) geopos(string key, string members...) {
+  List!(GeoCoordinate) geopos(string key, string[] members...) {
     Redis j = getShard(key);
     return j.geopos(key, members);
   }
@@ -955,7 +955,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  List!(Long) bitfield(string key, string arguments...) {
+  List!(Long) bitfield(string key, string[] arguments...) {
     Redis j = getShard(key);
     return j.bitfield(key, arguments);
   }
@@ -991,7 +991,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
   }
 
   override
-  long xack(string key, string group, StreamEntryID ids...) {
+  long xack(string key, string group, StreamEntryID[] ids...) {
     Redis j = getShard(key);
     return j.xack(key, group, ids);
   }
@@ -1022,7 +1022,7 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
 
 
   override
-  long xdel(string key, StreamEntryID ids...) {
+  long xdel(string key, StreamEntryID[] ids...) {
     Redis j = getShard(key);
     return j.xdel(key, ids);
   }
@@ -1048,13 +1048,13 @@ class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
 
   override
   List!(StreamEntry) xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime,
-      int retries, bool force, StreamEntryID ids...) {
+      int retries, bool force, StreamEntryID[] ids...) {
     Redis j = getShard(key);
     return j.xclaim(key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
   }
 
   override
-  Object sendCommand(ProtocolCommand cmd, string args...) {
+  Object sendCommand(ProtocolCommand cmd, string[] args...) {
     // default since no sample key provided in RedisCommands interface
     string sampleKey = args.length > 0 ? args[0] : cmd.toString();
     Redis j = getShard(sampleKey);

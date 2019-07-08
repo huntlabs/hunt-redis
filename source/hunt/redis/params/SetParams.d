@@ -11,7 +11,7 @@ class SetParams : Params {
   private enum string PX = "px";
   private enum string EX = "ex";
 
-  SetParams() {
+  this() {
   }
 
   static SetParams setParams() {

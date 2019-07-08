@@ -11,16 +11,16 @@ import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.exceptions.RedisExhaustedPoolException;
 
-abstract class Pool!(T) implements Closeable {
+abstract class Pool(T) : Closeable {
   protected GenericObjectPool!(T) internalPool;
 
   /**
    * Using this constructor means you have to set and initialize the internalPool yourself.
    */
-  Pool() {
+  this() {
   }
 
-  Pool(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
+  this(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
     initPool(poolConfig, factory);
   }
 

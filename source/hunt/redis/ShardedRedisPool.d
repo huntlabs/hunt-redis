@@ -11,21 +11,21 @@ import hunt.redis.util.Hashing;
 import hunt.redis.util.Pool;
 
 class ShardedRedisPool : Pool!(ShardedRedis) {
-  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {
+  this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {
     this(poolConfig, shards, Hashing.MURMUR_HASH);
   }
 
-  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Hashing algo) {
     this(poolConfig, shards, algo, null);
   }
 
-  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Pattern keyTagPattern) {
     this(poolConfig, shards, Hashing.MURMUR_HASH, keyTagPattern);
   }
 
-  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Hashing algo, Pattern keyTagPattern) {
     super(poolConfig, new ShardedRedisFactory(shards, algo, keyTagPattern));
   }
@@ -51,29 +51,31 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
       returnResourceObject(resource);
     }
   }
+}
+
 
   /**
    * PoolableObjectFactory custom impl.
    */
-  private static class ShardedRedisFactory : PooledObjectFactory!(ShardedRedis) {
+  private class ShardedRedisFactory : PooledObjectFactory!(ShardedRedis) {
     private List!(RedisShardInfo) shards;
     private Hashing algo;
     private Pattern keyTagPattern;
 
-    ShardedRedisFactory(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
+    this(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
       this.shards = shards;
       this.algo = algo;
       this.keyTagPattern = keyTagPattern;
     }
 
     override
-    PooledObject!(ShardedRedis) makeObject() throws Exception {
+    PooledObject!(ShardedRedis) makeObject() {
       ShardedRedis jedis = new ShardedRedis(shards, algo, keyTagPattern);
       return new DefaultPooledObject!(ShardedRedis)(jedis);
     }
 
     override
-    void destroyObject(PooledObject!(ShardedRedis) pooledShardedRedis) throws Exception {
+    void destroyObject(PooledObject!(ShardedRedis) pooledShardedRedis) {
       ShardedRedis shardedRedis = pooledShardedRedis.getObject();
       foreach(Redis jedis ; shardedRedis.getAllShards()) {
         if (jedis.isConnected()) {
@@ -107,13 +109,12 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
     }
 
     override
-    void activateObject(PooledObject!(ShardedRedis) p) throws Exception {
+    void activateObject(PooledObject!(ShardedRedis) p) {
 
     }
 
     override
-    void passivateObject(PooledObject!(ShardedRedis) p) throws Exception {
+    void passivateObject(PooledObject!(ShardedRedis) p) {
 
     }
   }
-}

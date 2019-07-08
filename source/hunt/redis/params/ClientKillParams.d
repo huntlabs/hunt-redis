@@ -1,5 +1,7 @@
 module hunt.redis.params.ClientKillParams;
 
+import hunt.redis.params.Params;
+
 class ClientKillParams : Params {
 
   private enum string ID = "ID";
@@ -8,14 +10,14 @@ class ClientKillParams : Params {
   private enum string SKIPME = "SKIPME";
 
   static enum Type {
-    NORMAL, MASTER, SLAVE, PUBSUB;
+    NORMAL, MASTER, SLAVE, PUBSUB
   }
 
   static enum SkipMe {
-    YES, NO;
+    YES, NO
   }
 
-  ClientKillParams() {
+  this() {
   }
 
   static ClientKillParams clientKillParams() {

@@ -4,15 +4,15 @@ import hunt.collection.List;
 
 import hunt.redis.util.SafeEncoder;
 
-class ScanResult!(T) {
+class ScanResult(T) {
   private byte[] cursor;
   private List!(T) results;
 
-  ScanResult(string cursor, List!(T) results) {
+  this(string cursor, List!(T) results) {
     this(SafeEncoder.encode(cursor), results);
   }
 
-  ScanResult(byte[] cursor, List!(T) results) {
+  this(byte[] cursor, List!(T) results) {
     this.cursor = cursor;
     this.results = results;
   }

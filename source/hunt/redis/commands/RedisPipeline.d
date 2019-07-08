@@ -55,7 +55,7 @@ public interface RedisPipeline {
 
   Response!(string) getSet(string key, string value);
 
-  Response!(Long) hdel(string key, string field...);
+  Response!(Long) hdel(string key, string[] field...);
 
   Response!(Boolean) hexists(string key, string field);
 
@@ -69,7 +69,7 @@ public interface RedisPipeline {
 
   Response!(Long) hlen(string key);
 
-  Response!(List!(string)) hmget(string key, string fields...);
+  Response!(List!(string)) hmget(string key, string[] fields...);
 
   Response!(string) hmset(string key, Map!(string, string) hash);
 
@@ -93,9 +93,9 @@ public interface RedisPipeline {
 
   Response!(string) lpop(string key);
 
-  Response!(Long) lpush(string key, string string...);
+  Response!(Long) lpush(string key, string[] string...);
 
-  Response!(Long) lpushx(string key, string string...);
+  Response!(Long) lpushx(string key, string[] string...);
 
   Response!(List!(string)) lrange(string key, long start, long stop);
 
@@ -111,11 +111,11 @@ public interface RedisPipeline {
 
   Response!(string) rpop(string key);
 
-  Response!(Long) rpush(string key, string string...);
+  Response!(Long) rpush(string key, string[] string...);
 
-  Response!(Long) rpushx(string key, string string...);
+  Response!(Long) rpushx(string key, string[] string...);
 
-  Response!(Long) sadd(string key, string member...);
+  Response!(Long) sadd(string key, string[] member...);
 
   Response!(Long) scard(string key);
 
@@ -143,7 +143,7 @@ public interface RedisPipeline {
 
   Response!(string) srandmember(string key);
 
-  Response!(Long) srem(string key, string member...);
+  Response!(Long) srem(string key, string[] member...);
 
   Response!(Long) strlen(string key);
 
@@ -212,7 +212,7 @@ public interface RedisPipeline {
 
   Response!(Long) zrank(string key, string member);
 
-  Response!(Long) zrem(string key, string members...);
+  Response!(Long) zrem(string key, string[] members...);
 
   Response!(Long) zremrangeByRank(string key, long start, long stop);
 
@@ -246,11 +246,11 @@ public interface RedisPipeline {
 
   Response!(Long) bitcount(string key, long start, long end);
 
-  Response!(Long) pfadd(string key, string elements...);
+  Response!(Long) pfadd(string key, string[] elements...);
 
   Response!(Long) pfcount(string key);
   
-  Response!(List!(Long)) bitfield(string key, string arguments...);
+  Response!(List!(Long)) bitfield(string key, string[] arguments...);
   
   Response!(Long) hstrlen(string key, string field);
 
@@ -272,9 +272,9 @@ public interface RedisPipeline {
 
   Response!(Double) geodist(string key, string member1, string member2, GeoUnit unit);
 
-  Response!(List!(string)) geohash(string key, string members...);
+  Response!(List!(string)) geohash(string key, string[] members...);
 
-  Response!(List!(GeoCoordinate)) geopos(string key, string members...);
+  Response!(List!(GeoCoordinate)) geopos(string key, string[] members...);
 
   Response!(List!(GeoRadiusResponse)) georadius(string key, double longitude, double latitude,
       double radius, GeoUnit unit);
@@ -310,7 +310,7 @@ public interface RedisPipeline {
 
   Response!(List!(StreamEntry)) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count);
    
-  Response!(Long) xack(string key, string group,  StreamEntryID ids...);
+  Response!(Long) xack(string key, string group,  StreamEntryID[] ids...);
   
   Response!(string) xgroupCreate( string key, string groupname, StreamEntryID id, bool makeStream);
   
@@ -322,12 +322,12 @@ public interface RedisPipeline {
 
   Response!(List!(StreamPendingEntry)) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername);
   
-  Response!(Long) xdel( string key, StreamEntryID ids...);
+  Response!(Long) xdel( string key, StreamEntryID[] ids...);
   
   Response!(Long) xtrim( string key, long maxLen, bool approximateLength);
  
   Response!(List!(StreamEntry)) xclaim( string key, string group, string consumername, long minIdleTime, 
-      long newIdleTime, int retries, bool force, StreamEntryID ids...);
+      long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
 
   Response!(Long) bitpos(string key, bool value);
 
@@ -354,5 +354,5 @@ public interface RedisPipeline {
 
   Response!(Double) hincrByFloat(string key, string field, double increment);
 
-  Response!(Object) sendCommand(ProtocolCommand cmd, string args...);
+  Response!(Object) sendCommand(ProtocolCommand cmd, string[] args...);
 }

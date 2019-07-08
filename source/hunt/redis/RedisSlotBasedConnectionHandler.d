@@ -9,27 +9,33 @@ import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 
 class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
 
-  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
+  this(Set!(HostAndPort) nodes,
       GenericObjectPoolConfig poolConfig, int timeout) {
     this(nodes, poolConfig, timeout, timeout);
   }
 
-  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
+  this(Set!(HostAndPort) nodes,
       GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, null);
   }
 
-  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password) {
+  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, 
+      int connectionTimeout, int soTimeout, string password) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password);
   }
 
-  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password, string clientName) {
+  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, 
+      int connectionTimeout, int soTimeout, string password, string clientName) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName);
   }
 
-  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password, string clientName,
-                                         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
-    super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, sslSocketFactory, sslParameters, hostnameVerifier, portMap);
+  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, 
+        int soTimeout, string password, string clientName, 
+        bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
+        HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
+          
+    super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, 
+        sslSocketFactory, sslParameters, hostnameVerifier, portMap);
   }
 
   override

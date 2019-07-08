@@ -9,9 +9,9 @@ public interface ClusterCommands {
 
   string clusterMeet(string ip, int port);
 
-  string clusterAddSlots(int slots...);
+  string clusterAddSlots(int[] slots...);
 
-  string clusterDelSlots(int slots...);
+  string clusterDelSlots(int[] slots...);
 
   string clusterInfo();
 

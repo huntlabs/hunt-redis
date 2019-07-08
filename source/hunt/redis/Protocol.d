@@ -17,7 +17,15 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
-class Protocol {
+import hunt.text.StringUtils;
+
+import std.conv;
+import std.format;
+
+
+/**
+*/
+final class Protocol {
 
   private enum string ASK_PREFIX = "ASK ";
   private enum string MOVED_PREFIX = "MOVED ";
@@ -77,10 +85,10 @@ class Protocol {
   enum byte[] BYTES_FALSE = toByteArray(0);
   enum byte[] BYTES_TILDE = SafeEncoder.encode("~");
 
-  enum byte[] POSITIVE_INFINITY_BYTES = "+inf".getBytes();
-  enum byte[] NEGATIVE_INFINITY_BYTES = "-inf".getBytes();
+  enum byte[] POSITIVE_INFINITY_BYTES = StringUtils.getBytes("+inf");
+  enum byte[] NEGATIVE_INFINITY_BYTES = StringUtils.getBytes("-inf");
 
-  private Protocol() {
+  private this() {
     // this prevent the class from instantiation
   }
 
@@ -110,8 +118,8 @@ class Protocol {
     }
   }
 
-  private static void processError(RedisInputStream is) {
-    string message = is.readLine();
+  private static void processError(RedisInputStream inputStream) {
+    string message = inputStream.readLine();
     // TODO: I'm not sure if this is the best way to do this.
     // Maybe Read only first 5 bytes instead?
     if (message.startsWith(MOVED_PREFIX)) {
@@ -132,13 +140,13 @@ class Protocol {
     throw new RedisDataException(message);
   }
 
-  static string readErrorLineIfPossible(RedisInputStream is) {
-    byte b = is.readByte();
+  static string readErrorLineIfPossible(RedisInputStream inputStream) {
+    byte b = inputStream.readByte();
     // if buffer contains other type of response, just ignore.
     if (b != MINUS_BYTE) {
       return null;
     }
-    return is.readLine();
+    return inputStream.readLine();
   }
 
   private static string[] parseTargetHostAndSlot(string clusterRedirectResponse) {
@@ -151,31 +159,31 @@ class Protocol {
     return response;
   }
 
-  private static Object process(RedisInputStream is) {
-    byte b = is.readByte();
+  private static Object process(RedisInputStream inputStream) {
+    byte b = inputStream.readByte();
     switch(b) {
     case PLUS_BYTE:
-      return processStatusCodeReply(is);
+      return processStatusCodeReply(inputStream);
     case DOLLAR_BYTE:
-      return processBulkReply(is);
+      return processBulkReply(inputStream);
     case ASTERISK_BYTE:
-      return processMultiBulkReply(is);
+      return processMultiBulkReply(inputStream);
     case COLON_BYTE:
-      return processInteger(is);
+      return processInteger(inputStream);
     case MINUS_BYTE:
-      processError(is);
+      processError(inputStream);
       return null;
     default:
-      throw new RedisConnectionException("Unknown reply: " ~ (char) b);
+      throw new RedisConnectionException(format("Unknown reply: %c", cast(char) b));
     }
   }
 
-  private static byte[] processStatusCodeReply(RedisInputStream is) {
-    return is.readLineBytes();
+  private static byte[] processStatusCodeReply(RedisInputStream inputStream) {
+    return inputStream.readLineBytes();
   }
 
-  private static byte[] processBulkReply(RedisInputStream is) {
-    int len = is.readIntCrLf();
+  private static byte[] processBulkReply(RedisInputStream inputStream) {
+    int len = inputStream.readIntCrLf();
     if (len == -1) {
       return null;
     }
@@ -183,32 +191,32 @@ class Protocol {
     byte[] read = new byte[len];
     int offset = 0;
     while (offset < len) {
-      int size = is.read(read, offset, (len - offset));
+      int size = inputStream.read(read, offset, (len - offset));
       if (size == -1) throw new RedisConnectionException(
           "It seems like server has closed the connection.");
       offset += size;
     }
 
     // read 2 more bytes for the command delimiter
-    is.readByte();
-    is.readByte();
+    inputStream.readByte();
+    inputStream.readByte();
 
     return read;
   }
 
-  private static Long processInteger(RedisInputStream is) {
-    return is.readLongCrLf();
+  private static Long processInteger(RedisInputStream inputStream) {
+    return inputStream.readLongCrLf();
   }
 
-  private static List!(Object) processMultiBulkReply(RedisInputStream is) {
-    int num = is.readIntCrLf();
+  private static List!(Object) processMultiBulkReply(RedisInputStream inputStream) {
+    int num = inputStream.readIntCrLf();
     if (num == -1) {
       return null;
     }
     List!(Object) ret = new ArrayList!(Object)(num);
     for (int i = 0; i < num; i++) {
       try {
-        ret.add(process(is));
+        ret.add(process(inputStream));
       } catch (RedisDataException e) {
         ret.add(e);
       }
@@ -216,33 +224,33 @@ class Protocol {
     return ret;
   }
 
-  static Object read(RedisInputStream is) {
-    return process(is);
+  static Object read(RedisInputStream inputStream) {
+    return process(inputStream);
   }
 
-  enum byte[] toByteArray(bool value) {
+  static byte[] toByteArray(bool value) {
     return value ? BYTES_TRUE : BYTES_FALSE;
   }
 
-  enum byte[] toByteArray(int value) {
-    return SafeEncoder.encode(string.valueOf(value));
+  static byte[] toByteArray(int value) {
+    return SafeEncoder.encode(to!string(value));
   }
 
-  enum byte[] toByteArray(long value) {
-    return SafeEncoder.encode(string.valueOf(value));
+  static byte[] toByteArray(long value) {
+    return SafeEncoder.encode(to!string(value));
   }
 
-  enum byte[] toByteArray(double value) {
-    if (value == Double.POSITIVE_INFINITY) {
+  static byte[] toByteArray(double value) {
+    if (value == double.infinity) {
       return POSITIVE_INFINITY_BYTES;
-    } else if (value == Double.NEGATIVE_INFINITY) {
+    } else if (value == -double.infinity) {
       return NEGATIVE_INFINITY_BYTES;
     } else {
-      return SafeEncoder.encode(string.valueOf(value));
+      return SafeEncoder.encode(to!string(value));
     }
   }
 
-  static enum Command implements ProtocolCommand {
+  static enum Command {
     PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,
     RENAMEX, DBSIZE, EXPIRE, EXPIREAT, TTL, SELECT, MOVE, FLUSHALL, GETSET, MGET, SETNX, SETEX,
     MSET, MSETNX, DECRBY, DECR, INCRBY, INCR, APPEND, SUBSTR, HSET, HGET, HSETNX, HMSET, HMGET,
@@ -259,18 +267,7 @@ class Protocol {
     PSETEX, CLIENT, TIME, MIGRATE, HINCRBYFLOAT, SCAN, HSCAN, SSCAN, ZSCAN, WAIT, CLUSTER, ASKING,
     PFADD, PFCOUNT, PFMERGE, READONLY, GEOADD, GEODIST, GEOHASH, GEOPOS, GEORADIUS, GEORADIUS_RO,
     GEORADIUSBYMEMBER, GEORADIUSBYMEMBER_RO, MODULE, BITFIELD, HSTRLEN, TOUCH, SWAPDB, MEMORY,
-    XADD, XLEN, XDEL, XTRIM, XRANGE, XREVRANGE, XREAD, XACK, XGROUP, XREADGROUP, XPENDING, XCLAIM;
-
-    private byte[] raw;
-
-    Command() {
-      raw = SafeEncoder.encode(this.name());
-    }
-
-    override
-    byte[] getRaw() {
-      return raw;
-    }
+    XADD, XLEN, XDEL, XTRIM, XRANGE, XREVRANGE, XREAD, XACK, XGROUP, XREADGROUP, XPENDING, XCLAIM
   }
 
   static enum Keyword {
@@ -279,12 +276,6 @@ class Protocol {
     RESETSTAT, REWRITE, RESET, FLUSH, EXISTS, LOAD, KILL, LEN, REFCOUNT, ENCODING, IDLETIME,
     GETNAME, SETNAME, LIST, MATCH, COUNT, PING, PONG, UNLOAD, REPLACE, KEYS, PAUSE, DOCTOR, 
     BLOCK, NOACK, STREAMS, KEY, CREATE, MKSTREAM, SETID, DESTROY, DELCONSUMER, MAXLEN, GROUP, 
-    IDLE, TIME, RETRYCOUNT, FORCE;
-
-    byte[] raw;
-
-    Keyword() {
-      raw = SafeEncoder.encode(this.name().toLowerCase(Locale.ENGLISH));
-    }
+    IDLE, TIME, RETRYCOUNT, FORCE
   }
 }

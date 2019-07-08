@@ -24,13 +24,13 @@ class RedisFactory : PooledObjectFactory!(Redis) {
   private SSLParameters sslParameters;
   private HostnameVerifier hostnameVerifier;
 
-  RedisFactory(string host, int port, int connectionTimeout,
+  this(string host, int port, int connectionTimeout,
       int soTimeout, string password, int database, string clientName) {
     this(host, port, connectionTimeout, soTimeout, password, database, clientName,
         false, null, null, null);
   }
 
-  RedisFactory(string host, int port, int connectionTimeout,
+  this(string host, int port, int connectionTimeout,
       int soTimeout, string password, int database, string clientName,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
@@ -46,12 +46,12 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  RedisFactory(URI uri, int connectionTimeout, int soTimeout,
+  this(URI uri, int connectionTimeout, int soTimeout,
       string clientName) {
     this(uri, connectionTimeout, soTimeout, clientName, null, null, null);
   }
 
-  RedisFactory(URI uri, int connectionTimeout, int soTimeout,
+  this(URI uri, int connectionTimeout, int soTimeout,
       string clientName, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     if (!RedisURIHelper.isValid(uri)) {
@@ -76,7 +76,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
   }
 
   override
-  void activateObject(PooledObject!(Redis) pooledRedis) throws Exception {
+  void activateObject(PooledObject!(Redis) pooledRedis) {
     BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.getDB() != database) {
       jedis.select(database);
@@ -85,7 +85,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
   }
 
   override
-  void destroyObject(PooledObject!(Redis) pooledRedis) throws Exception {
+  void destroyObject(PooledObject!(Redis) pooledRedis) {
     BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.isConnected()) {
       try {
@@ -102,7 +102,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
   }
 
   override
-  PooledObject!(Redis) makeObject() throws Exception {
+  PooledObject!(Redis) makeObject() {
     HostAndPort hostAndPort = this.hostAndPort.get();
     Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout,
         soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -128,7 +128,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
   }
 
   override
-  void passivateObject(PooledObject!(Redis) pooledRedis) throws Exception {
+  void passivateObject(PooledObject!(Redis) pooledRedis) {
     // TODO maybe should select db 0? Not sure right now.
   }
 

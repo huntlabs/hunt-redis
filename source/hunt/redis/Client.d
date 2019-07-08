@@ -60,17 +60,17 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void exists(string keys...) {
+  void exists(string[] keys...) {
     exists(SafeEncoder.encodeMany(keys));
   }
 
   override
-  void del(string keys...) {
+  void del(string[] keys...) {
     del(SafeEncoder.encodeMany(keys));
   }
 
   override
-  void unlink(string keys...) {
+  void unlink(string[] keys...) {
     unlink(SafeEncoder.encodeMany(keys));
   }
 
@@ -110,7 +110,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void touch(string keys...) {
+  void touch(string[] keys...) {
     touch(SafeEncoder.encodeMany(keys));
   }
 
@@ -125,7 +125,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void mget(string keys...) {
+  void mget(string[] keys...) {
     mget(SafeEncoder.encodeMany(keys));
   }
 
@@ -140,12 +140,12 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void mset(string keysvalues...) {
+  void mset(string[] keysvalues...) {
     mset(SafeEncoder.encodeMany(keysvalues));
   }
 
   override
-  void msetnx(string keysvalues...) {
+  void msetnx(string[] keysvalues...) {
     msetnx(SafeEncoder.encodeMany(keysvalues));
   }
 
@@ -213,7 +213,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void hmget(string key, string fields...) {
+  void hmget(string key, string[] fields...) {
     hmget(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
 
@@ -228,7 +228,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void hdel(string key, string fields...) {
+  void hdel(string key, string[] fields...) {
     hdel(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
 
@@ -253,12 +253,12 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void rpush(string key, string string...) {
+  void rpush(string key, string[] string...) {
     rpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
   override
-  void lpush(string key, string string...) {
+  void lpush(string key, string[] string...) {
     lpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
@@ -308,7 +308,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void sadd(string key, string members...) {
+  void sadd(string key, string[] members...) {
     sadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
@@ -318,7 +318,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void srem(string key, string members...) {
+  void srem(string key, string[] members...) {
     srem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
@@ -348,32 +348,32 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void sinter(string keys...) {
+  void sinter(string[] keys...) {
     sinter(SafeEncoder.encodeMany(keys));
   }
 
   override
-  void sinterstore(string dstkey, string keys...) {
+  void sinterstore(string dstkey, string[] keys...) {
     sinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
   override
-  void sunion(string keys...) {
+  void sunion(string[] keys...) {
     sunion(SafeEncoder.encodeMany(keys));
   }
 
   override
-  void sunionstore(string dstkey, string keys...) {
+  void sunionstore(string dstkey, string[] keys...) {
     sunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
   override
-  void sdiff(string keys...) {
+  void sdiff(string[] keys...) {
     sdiff(SafeEncoder.encodeMany(keys));
   }
 
   override
-  void sdiffstore(string dstkey, string keys...) {
+  void sdiffstore(string dstkey, string[] keys...) {
     sdiffstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
@@ -411,7 +411,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void zrem(string key, string members...) {
+  void zrem(string key, string[] members...) {
     zrem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
@@ -461,7 +461,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void watch(string keys...) {
+  void watch(string[] keys...) {
     watch(SafeEncoder.encodeMany(keys));
   }
 
@@ -480,7 +480,7 @@ class Client : BinaryClient, Commands {
     blpop(SafeEncoder.encodeMany(args));
   }
 
-  void blpop(int timeout, string keys...) {
+  void blpop(int timeout, string[] keys...) {
     int size = keys.length + 1;
     List!(string) args = new ArrayList!(string)(size);
     foreach(string arg ; keys) {
@@ -505,7 +505,7 @@ class Client : BinaryClient, Commands {
     brpop(SafeEncoder.encodeMany(args));
   }
 
-  void brpop(int timeout, string keys...) {
+  void brpop(int timeout, string[] keys...) {
     int size = keys.length + 1;
     List!(string) args = new ArrayList!(string)(size);
     foreach(string arg ; keys) {
@@ -637,22 +637,22 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void zunionstore(string dstkey, string sets...) {
+  void zunionstore(string dstkey, string[] sets...) {
     zunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
   }
 
   override
-  void zunionstore(string dstkey, ZParams params, string sets...) {
+  void zunionstore(string dstkey, ZParams params, string[] sets...) {
     zunionstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
   }
 
   override
-  void zinterstore(string dstkey, string sets...) {
+  void zinterstore(string dstkey, string[] sets...) {
     zinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
   }
 
   override
-  void zinterstore(string dstkey, ZParams params, string sets...) {
+  void zinterstore(string dstkey, ZParams params, string[] sets...) {
     zinterstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
   }
 
@@ -689,7 +689,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void lpushx(string key, string string...) {
+  void lpushx(string key, string[] string...) {
     lpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
@@ -699,7 +699,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void rpushx(string key, string string...) {
+  void rpushx(string key, string[] string...) {
     rpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
@@ -752,19 +752,19 @@ class Client : BinaryClient, Commands {
     publish(SafeEncoder.encode(channel), SafeEncoder.encode(message));
   }
 
-  void unsubscribe(string channels...) {
+  void unsubscribe(string[] channels...) {
     unsubscribe(SafeEncoder.encodeMany(channels));
   }
 
-  void psubscribe(string patterns...) {
+  void psubscribe(string[] patterns...) {
     psubscribe(SafeEncoder.encodeMany(patterns));
   }
 
-  void punsubscribe(string patterns...) {
+  void punsubscribe(string[] patterns...) {
     punsubscribe(SafeEncoder.encodeMany(patterns));
   }
 
-  void subscribe(string channels...) {
+  void subscribe(string[] channels...) {
     subscribe(SafeEncoder.encodeMany(channels));
   }
 
@@ -776,7 +776,7 @@ class Client : BinaryClient, Commands {
     pubsub(Protocol.PUBSUB_NUM_PAT);
   }
 
-  void pubsubNumSub(string channels...) {
+  void pubsubNumSub(string[] channels...) {
     pubsub(Protocol.PUBSUB_NUMSUB, channels);
   }
 
@@ -790,15 +790,15 @@ class Client : BinaryClient, Commands {
     configGet(SafeEncoder.encode(pattern));
   }
 
-  void eval(string script, int keyCount, string params...) {
+  void eval(string script, int keyCount, string[] params...) {
     eval(SafeEncoder.encode(script), toByteArray(keyCount), SafeEncoder.encodeMany(params));
   }
 
-  void evalsha(string sha1, int keyCount, string params...) {
+  void evalsha(string sha1, int keyCount, string[] params...) {
     evalsha(SafeEncoder.encode(sha1), toByteArray(keyCount), SafeEncoder.encodeMany(params));
   }
 
-  void scriptExists(string sha1...) {
+  void scriptExists(string[] sha1...) {
     scriptExists(SafeEncoder.encodeMany(sha1));
   }
 
@@ -832,11 +832,11 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void bitop(BitOP op, string destKey, string srcKeys...) {
+  void bitop(BitOP op, string destKey, string[] srcKeys...) {
     bitop(op, SafeEncoder.encode(destKey), SafeEncoder.encodeMany(srcKeys));
   }
 
-  void sentinel(string args...) {
+  void sentinel(string[] args...) {
     sentinel(SafeEncoder.encodeMany(args));
   }
 
@@ -897,7 +897,7 @@ class Client : BinaryClient, Commands {
 
   override
   void migrate(string host, int port, int destinationDB,
-      int timeout, MigrateParams params, string keys...) {
+      int timeout, MigrateParams params, string[] keys...) {
     migrate(host, port, destinationDB, timeout, params, SafeEncoder.encodeMany(keys));
   }
 
@@ -926,7 +926,7 @@ class Client : BinaryClient, Commands {
     zscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
   }
 
-  void cluster(string subcommand, int args...) {
+  void cluster(string subcommand, int[] args...) {
     byte[][] arg = new byte[args.length + 1][];
     for (int i = 1; i < arg.length; i++) {
       arg[i] = toByteArray(args[i - 1]);
@@ -935,7 +935,7 @@ class Client : BinaryClient, Commands {
     cluster(arg);
   }
 
-  void pubsub(string subcommand, string args...) {
+  void pubsub(string subcommand, string[] args...) {
     byte[][] arg = new byte[args.length + 1][];
     for (int i = 1; i < arg.length; i++) {
       arg[i] = SafeEncoder.encode(args[i - 1]);
@@ -944,7 +944,7 @@ class Client : BinaryClient, Commands {
     pubsub(arg);
   }
 
-  void cluster(string subcommand, string args...) {
+  void cluster(string subcommand, string[] args...) {
     byte[][] arg = new byte[args.length + 1][];
     for (int i = 1; i < arg.length; i++) {
       arg[i] = SafeEncoder.encode(args[i - 1]);
@@ -971,11 +971,11 @@ class Client : BinaryClient, Commands {
     cluster(Protocol.CLUSTER_RESET, resetType.name());
   }
 
-  void clusterAddSlots(int slots...) {
+  void clusterAddSlots(int[] slots...) {
     cluster(Protocol.CLUSTER_ADDSLOTS, slots);
   }
 
-  void clusterDelSlots(int slots...) {
+  void clusterDelSlots(int[] slots...) {
     cluster(Protocol.CLUSTER_DELSLOTS, slots);
   }
 
@@ -1002,7 +1002,7 @@ class Client : BinaryClient, Commands {
       nodeId);
   }
 
-  void pfadd(string key, string elements...) {
+  void pfadd(string key, string[] elements...) {
     pfadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(elements));
   }
 
@@ -1010,11 +1010,11 @@ class Client : BinaryClient, Commands {
     pfcount(SafeEncoder.encode(key));
   }
 
-  void pfcount(string keys...) {
+  void pfcount(string[] keys...) {
     pfcount(SafeEncoder.encodeMany(keys));
   }
 
-  void pfmerge(string destkey, string sourcekeys...) {
+  void pfmerge(string destkey, string[] sourcekeys...) {
     pfmerge(SafeEncoder.encode(destkey), SafeEncoder.encodeMany(sourcekeys));
   }
 
@@ -1074,7 +1074,7 @@ class Client : BinaryClient, Commands {
     geodist(SafeEncoder.encode(key), SafeEncoder.encode(member1), SafeEncoder.encode(member2), unit);
   }
 
-  void geohash(string key, string members...) {
+  void geohash(string key, string[] members...) {
     geohash(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
@@ -1144,7 +1144,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void bitfield(string key, string arguments...) {
+  void bitfield(string key, string[] arguments...) {
     bitfield(SafeEncoder.encode(key), SafeEncoder.encodeMany(arguments));
   }
 
@@ -1190,7 +1190,7 @@ class Client : BinaryClient, Commands {
   }
   
   override
-  void xack(string key, string group, StreamEntryID ids...) {
+  void xack(string key, string group, StreamEntryID[] ids...) {
     byte[][] bids = new byte[ids.length][];
     for (int i=0 ; i< ids.length; ++i ) {
       StreamEntryID id = ids[i];
@@ -1220,7 +1220,7 @@ class Client : BinaryClient, Commands {
   }
 
   override
-  void xdel(string key, StreamEntryID ids...) {
+  void xdel(string key, StreamEntryID[] ids...) {
     byte[][] bids = new byte[ids.length][];
     for (int i=0 ; i< ids.length; ++i ) {
       StreamEntryID id = ids[i];
@@ -1252,7 +1252,7 @@ class Client : BinaryClient, Commands {
 
   override
   void xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime, int retries,
-      bool force, StreamEntryID ids...) {
+      bool force, StreamEntryID[] ids...) {
     
     byte[][] bids = new byte[ids.length][];
     for (int i = 0; i < ids.length; i++) {

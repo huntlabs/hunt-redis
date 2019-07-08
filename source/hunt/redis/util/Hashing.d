@@ -3,11 +3,11 @@ module hunt.redis.util.Hashing;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public interface Hashing {
+interface Hashing {
   Hashing MURMUR_HASH = new MurmurHash();
   ThreadLocal!(MessageDigest) md5Holder = new ThreadLocal!(MessageDigest)();
 
-  Hashing MD5 = new Hashing() {
+  Hashing MD5 = new class Hashing {
     override
     long hash(string key) {
       return hash(SafeEncoder.encode(key));
@@ -27,8 +27,8 @@ public interface Hashing {
       md5.reset();
       md5.update(key);
       byte[] bKey = md5.digest();
-      long res = ((long) (bKey[3] & 0xFF) << 24) | ((long) (bKey[2] & 0xFF) << 16)
-          | ((long) (bKey[1] & 0xFF) << 8) | (long) (bKey[0] & 0xFF);
+      long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
+          | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
       return res;
     }
   };

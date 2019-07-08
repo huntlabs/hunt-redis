@@ -9,12 +9,12 @@ import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 import hunt.redis.exceptions.RedisRedirectionException;
 import hunt.redis.util.RedisClusterCRC16;
 
-abstract class RedisClusterCommand!(T) {
+abstract class RedisClusterCommand(T) {
 
   private RedisClusterConnectionHandler connectionHandler;
   private int maxAttempts;
 
-  RedisClusterCommand(RedisClusterConnectionHandler connectionHandler, int maxAttempts) {
+  this(RedisClusterConnectionHandler connectionHandler, int maxAttempts) {
     this.connectionHandler = connectionHandler;
     this.maxAttempts = maxAttempts;
   }
@@ -25,7 +25,7 @@ abstract class RedisClusterCommand!(T) {
     return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
   }
 
-  T run(int keyCount, string keys...) {
+  T run(int keyCount, string[] keys...) {
     if (keys is null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
@@ -49,7 +49,7 @@ abstract class RedisClusterCommand!(T) {
     return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
   }
 
-  T runBinary(int keyCount, byte[] keys...) {
+  T runBinary(int keyCount, byte[][] keys...) {
     if (keys is null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
@@ -91,8 +91,9 @@ abstract class RedisClusterCommand!(T) {
 
       if (redirect !is null) {
         connection = this.connectionHandler.getConnectionFromNode(redirect.getTargetNode());
-        if (redirect instanceof RedisAskDataException) {
-          // TODO: Pipeline asking with the original command to make it faster....
+        RedisAskDataException ex = cast(RedisAskDataException)redirect;
+        if (ex !is null) {
+          // TODO: Pipeline asking with the original command to make it[] faster....
           connection.asking();
         }
       } else {
@@ -124,7 +125,8 @@ abstract class RedisClusterCommand!(T) {
       return runWithRetries(slot, attempts - 1, tryRandomNode, redirect);
     } catch (RedisRedirectionException jre) {
       // if MOVED redirection occurred,
-      if (jre instanceof RedisMovedDataException) {
+      RedisMovedDataException ex = cast(RedisMovedDataException)jre;
+      if (jre !is null) {
         // it rebuilds cluster's slot cache recommended by Redis cluster specification
         this.connectionHandler.renewSlotCache(connection);
       }

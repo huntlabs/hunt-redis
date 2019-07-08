@@ -7,11 +7,11 @@ import hunt.redis.util.Pool;
 
 class RedisPoolAbstract : Pool!(Redis) {
 
-  RedisPoolAbstract() {
+  this() {
     super();
   }
 
-  RedisPoolAbstract(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(Redis) factory) {
+  this(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(Redis) factory) {
     super(poolConfig, factory);
   }
 

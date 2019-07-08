@@ -3,7 +3,7 @@ module hunt.redis.commands.ScriptingCommands;
 import hunt.collection.List;
 
 public interface ScriptingCommands {
-  Object eval(string script, int keyCount, string params...);
+  Object eval(string script, int keyCount, string[] params...);
 
   Object eval(string script, List!(string) keys, List!(string) args);
 
@@ -13,11 +13,11 @@ public interface ScriptingCommands {
 
   Object evalsha(string sha1, List!(string) keys, List!(string) args);
 
-  Object evalsha(string sha1, int keyCount, string params...);
+  Object evalsha(string sha1, int keyCount, string[] params...);
 
   Boolean scriptExists(string sha1);
 
-  List!(Boolean) scriptExists(string sha1...);
+  List!(Boolean) scriptExists(string[] sha1...);
 
   string scriptLoad(string script);
 }

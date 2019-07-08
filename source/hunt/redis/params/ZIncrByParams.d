@@ -24,7 +24,7 @@ class ZIncrByParams : Params {
   private enum string NX = "nx";
   private enum string INCR = "incr";
 
-  ZIncrByParams() {
+  this() {
   }
 
   static ZIncrByParams zIncrByParams() {

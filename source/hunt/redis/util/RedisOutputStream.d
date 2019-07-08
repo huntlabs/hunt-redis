@@ -1,8 +1,10 @@
 module hunt.redis.util.RedisOutputStream;
 
-import java.io.FilterOutputStream;
 import hunt.Exceptions;
-import java.io.OutputStream;
+import hunt.io.Common;
+import hunt.io.FilterInputStream;
+import hunt.io.FilterOutputStream;
+
 
 /**
  * The class implements a buffered output stream without synchronization There are also special
@@ -35,26 +37,26 @@ class RedisOutputStream : FilterOutputStream {
           'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
           't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-  RedisOutputStream(OutputStream out) {
-    this(out, 8192);
+  this(OutputStream outputStream) {
+    this(outputStream, 8192);
   }
 
-  RedisOutputStream(OutputStream out, int size) {
-    super(out);
+  this(OutputStream outputStream, int size) {
+    super(outputStream);
     if (size <= 0) {
       throw new IllegalArgumentException("Buffer size <= 0");
     }
     buf = new byte[size];
   }
 
-  private void flushBuffer() throws IOException {
+  private void flushBuffer() {
     if (count > 0) {
-      out.write(buf, 0, count);
+      outputStream.write(buf, 0, count);
       count = 0;
     }
   }
 
-  void write(byte b) throws IOException {
+  void write(byte b) {
     if (count == buf.length) {
       flushBuffer();
     }
@@ -62,15 +64,15 @@ class RedisOutputStream : FilterOutputStream {
   }
 
   override
-  void write(byte[] b) throws IOException {
+  void write(byte[] b) {
     write(b, 0, b.length);
   }
 
   override
-  void write(byte[] b, int off, int len) throws IOException {
+  void write(byte[] b, int off, int len) {
     if (len >= buf.length) {
       flushBuffer();
-      out.write(b, off, len);
+      outputStream.write(b, off, len);
     } else {
       if (len >= buf.length - count) {
         flushBuffer();
@@ -81,7 +83,7 @@ class RedisOutputStream : FilterOutputStream {
     }
   }
 
-  void writeCrLf() throws IOException {
+  void writeCrLf() {
     if (2 >= buf.length - count) {
       flushBuffer();
     }
@@ -90,7 +92,7 @@ class RedisOutputStream : FilterOutputStream {
     buf[count++] = '\n';
   }
 
-  void writeIntCrLf(int value) throws IOException {
+  void writeIntCrLf(int value) {
     if (value < 0) {
       write((byte) '-');
       value = -value;
@@ -129,8 +131,8 @@ class RedisOutputStream : FilterOutputStream {
   }
 
   override
-  void flush() throws IOException {
+  void flush() {
     flushBuffer();
-    out.flush();
+    outputStream.flush();
   }
 }

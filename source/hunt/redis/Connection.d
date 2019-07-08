@@ -108,7 +108,7 @@ class Connection : Closeable {
     }
   }
 
-  void sendCommand(ProtocolCommand cmd, string args...) {
+  void sendCommand(ProtocolCommand cmd, string[] args...) {
     byte[][] bargs = new byte[args.length][];
     for (int i = 0; i < args.length; i++) {
       bargs[i] = SafeEncoder.encode(args[i]);

@@ -12,7 +12,7 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 
-abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipeline {
+abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 
   protected abstract Client getClient(string key);
 
@@ -229,7 +229,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) hdel(string key, string field...) {
+  Response!(Long) hdel(string key, string[] field...) {
     getClient(key).hdel(key, field);
     return getResponse(BuilderFactory.LONG);
   }
@@ -313,7 +313,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(string)) hmget(string key, string fields...) {
+  Response!(List!(string)) hmget(string key, string[] fields...) {
     getClient(key).hmget(key, fields);
     return getResponse(BuilderFactory.STRING_LIST);
   }
@@ -457,7 +457,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) lpush(string key, string string...) {
+  Response!(Long) lpush(string key, string[] string...) {
     getClient(key).lpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -469,7 +469,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) lpushx(string key, string string...) {
+  Response!(Long) lpushx(string key, string[] string...) {
     getClient(key).lpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -565,7 +565,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) rpush(string key, string string...) {
+  Response!(Long) rpush(string key, string[] string...) {
     getClient(key).rpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -577,7 +577,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) rpushx(string key, string string...) {
+  Response!(Long) rpushx(string key, string[] string...) {
     getClient(key).rpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -589,7 +589,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) sadd(string key, string member...) {
+  Response!(Long) sadd(string key, string[] member...) {
     getClient(key).sadd(key, member);
     return getResponse(BuilderFactory.LONG);
   }
@@ -781,7 +781,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) srem(string key, string member...) {
+  Response!(Long) srem(string key, string[] member...) {
     getClient(key).srem(key, member);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1205,7 +1205,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) zrem(string key, string members...) {
+  Response!(Long) zrem(string key, string[] members...) {
     getClient(key).zrem(key, members);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1571,7 +1571,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) pfadd(string key, string elements...) {
+  Response!(Long) pfadd(string key, string[] elements...) {
     getClient(key).pfadd(key, elements);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1637,7 +1637,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(string)) geohash(string key, string members...) {
+  Response!(List!(string)) geohash(string key, string[] members...) {
     getClient(key).geohash(key, members);
     return getResponse(BuilderFactory.STRING_LIST);
   }
@@ -1649,7 +1649,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(GeoCoordinate)) geopos(string key, string members...) {
+  Response!(List!(GeoCoordinate)) geopos(string key, string[] members...) {
     getClient(key).geopos(key, members);
     return getResponse(BuilderFactory.GEO_COORDINATE_LIST);
   }
@@ -1767,7 +1767,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(Long)) bitfield(string key, string elements...) {
+  Response!(List!(Long)) bitfield(string key, string[] elements...) {
     getClient(key).bitfield(key, elements);
     return getResponse(BuilderFactory.LONG_LIST);
   }
@@ -1853,7 +1853,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
    
   override
-  Response!(Long) xack(string key, string group,  StreamEntryID ids...){
+  Response!(Long) xack(string key, string group,  StreamEntryID[] ids...){
     getClient(key).xack(key, group, ids);
     return getResponse(BuilderFactory.LONG);                
   }
@@ -1926,7 +1926,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
   
   override
-  Response!(Long) xdel( string key, StreamEntryID ids...){
+  Response!(Long) xdel( string key, StreamEntryID[] ids...){
     getClient(key).xdel(key, ids);
     return getResponse(BuilderFactory.LONG);        
   }
@@ -1951,7 +1951,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
  
   override
   Response!(List!(StreamEntry)) xclaim( string key, string group, string consumername, long minIdleTime, 
-      long newIdleTime, int retries, bool force, StreamEntryID ids...){
+      long newIdleTime, int retries, bool force, StreamEntryID[] ids...){
     getClient(key).xclaim(key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
     return getResponse(BuilderFactory.STREAM_ENTRY_LIST);        
   }
@@ -1964,7 +1964,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Object) sendCommand(ProtocolCommand cmd, string args...){
+  Response!(Object) sendCommand(ProtocolCommand cmd, string[] args...){
     string key = args.length > 0 ? args[0] : cmd.toString();
     getClient(key).sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);

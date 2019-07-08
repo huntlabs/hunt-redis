@@ -2,19 +2,24 @@ module hunt.redis.Response;
 
 import hunt.redis.exceptions.RedisDataException;
 
-class Response!(T) {
-  protected T response = null;
-  protected RedisDataException exception = null;
+abstract class AbstractResponse {
+  protected bool building = false;
+  protected bool built = false;
+  protected bool set = false;
 
-  private bool building = false;
-  private bool built = false;
-  private bool set = false;
+  protected RedisDataException exception = null;
+  protected Object data;
+
+  protected void build();
+}
+
+class Response(T) : AbstractResponse {
+  protected T response = null;
 
   private Builder!(T) builder;
-  private Object data;
-  private Response<?> dependency = null;
+  private AbstractResponse dependency = null;
 
-  Response(Builder!(T) b) {
+  this(Builder!(T) b) {
     this.builder = b;
   }
 
@@ -42,11 +47,11 @@ class Response!(T) {
     return response;
   }
 
-  void setDependency(Response<?> dependency) {
+  void setDependency(AbstractResponse dependency) {
     this.dependency = dependency;
   }
 
-  private void build() {
+  protected void build() {
     // check build state to prevent recursion
     if (building) {
       return;
@@ -55,9 +60,8 @@ class Response!(T) {
     building = true;
     try {
       if (data !is null) {
-        if (data instanceof RedisDataException) {
-          exception = (RedisDataException) data;
-        } else {
+        exception = cast(RedisDataException) data;
+        if (exception is null) {
           response = builder.build(data);
         }
       }

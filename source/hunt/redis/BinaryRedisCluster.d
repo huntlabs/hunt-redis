@@ -1950,7 +1950,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
   
 //   override
 //   ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor) {
-//     return new RedisClusterCommand<ScanResult!(MapEntry!(byte[], byte[]))>(connectionHandler,
+//     return new RedisClusterCommand!(ScanResult!(MapEntry!(byte[], byte[])))(connectionHandler,
 //                                                                           maxAttempts) {
 //       override
 //       ScanResult!(MapEntry!(byte[], byte[])) execute(Redis connection) {
@@ -1962,7 +1962,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   override
 //   ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor,
 //       ScanParams params) {
-//     return new RedisClusterCommand<ScanResult!(MapEntry!(byte[], byte[]))>(connectionHandler,
+//     return new RedisClusterCommand!(ScanResult!(MapEntry!(byte[], byte[])))(connectionHandler,
 //                                                                           maxAttempts) {
 //       override
 //       ScanResult!(MapEntry!(byte[], byte[])) execute(Redis connection) {

@@ -1,5 +1,7 @@
 module hunt.redis.Transaction;
 
+import hunt.redis.Response;
+
 import hunt.util.Common;
 import hunt.collection.ArraryList;
 import hunt.collection.List;
@@ -9,15 +11,15 @@ import hunt.redis.exceptions.RedisDataException;
 /**
  * Transaction is nearly identical to Pipeline, only differences are the multi/discard behaviors
  */
-class Transaction : MultiKeyPipelineBase implements Closeable {
+class Transaction : MultiKeyPipelineBase, Closeable {
 
   protected bool inTransaction = true;
 
-  protected Transaction() {
+  protected this() {
     // client will be set later in transaction block
   }
 
-  Transaction(Client client) {
+  this(Client client) {
     this.client = client;
   }
 
@@ -58,7 +60,7 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     return formatted;
   }
 
-  List<Response<?>> execGetResponse() {
+  List!(AbstractResponse) execGetResponse() {
     // Discard QUEUED or ERROR
     client.getMany(getPipelinedResponseLength());
     client.exec();
@@ -68,7 +70,7 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     if (unformatted is null) {
       return null;
     }
-    List<Response<?>> response = new ArrayList<Response<?>>();
+    List!AbstractResponse response = new ArrayList!AbstractResponse();
     foreach(Object o ; unformatted) {
       response.add(generateResponse(o));
     }

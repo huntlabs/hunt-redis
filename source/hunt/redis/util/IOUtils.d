@@ -1,10 +1,15 @@
 module hunt.redis.util.IOUtils;
 
 import hunt.Exceptions;
-import java.net.Socket;
+import hunt.logging.ConsoleLogger;
+// import java.net.Socket;
+
+import std.socket;
+
+
 
 class IOUtils {
-  private IOUtils() {
+  private this() {
   }
 
   static void closeQuietly(Socket sock) {
@@ -13,6 +18,7 @@ class IOUtils {
       try {
         sock.close();
       } catch (IOException e) {
+        version(HUNT_DEBUG) warning(e);
         // ignored
       }
     }

@@ -10,7 +10,7 @@ class ZAddParams : Params {
   private enum string NX = "nx";
   private enum string CH = "ch";
 
-  ZAddParams() {
+  this() {
   }
 
   static ZAddParams zAddParams() {

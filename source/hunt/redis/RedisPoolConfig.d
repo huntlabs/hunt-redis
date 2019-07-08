@@ -3,7 +3,8 @@ module hunt.redis.RedisPoolConfig;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
 class RedisPoolConfig : GenericObjectPoolConfig {
-  RedisPoolConfig() {
+  
+  this() {
     // defaults to make your life with connection pool easier :)
     setTestWhileIdle(true);
     setMinEvictableIdleTimeMillis(60000);

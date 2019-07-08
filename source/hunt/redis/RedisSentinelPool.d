@@ -4,15 +4,16 @@ import hunt.util.ArrayHelper;
 import hunt.collection.HashSet;
 import hunt.collection.List;
 import hunt.collection.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import hunt.logging.ConsoleLogger;
 import hunt.pool.impl.GenericObjectPoolConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 
+
+/**
+*/
 class RedisSentinelPool : RedisPoolAbstract {
 
   protected GenericObjectPoolConfig poolConfig;
@@ -28,62 +29,60 @@ class RedisSentinelPool : RedisPoolAbstract {
 
   protected Set!(MasterListener) masterListeners = new HashSet!(MasterListener)();
 
-  protected Logger log = LoggerFactory.getLogger(getClass().getName());
-
-  private volatile RedisFactory factory;
-  private volatile HostAndPort currentHostMaster;
+  private RedisFactory factory;
+  private HostAndPort currentHostMaster;
   
   private Object initPoolLock = new Object();
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels) {
+  this(string masterName, Set!(string) sentinels) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels, string password) {
+  this(string masterName, Set!(string) sentinels, string password) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int timeout, string password) {
     this(masterName, sentinels, poolConfig, timeout, password, Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int timeout) {
     this(masterName, sentinels, poolConfig, timeout, null, Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, string password) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int timeout, string password,
       int database) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int timeout, string password,
       int database, string clientName) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database, clientName);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int timeout, int soTimeout,
       string password, int database) {
     this(masterName, sentinels, poolConfig, timeout, soTimeout, password, database, null);
   }
 
-  RedisSentinelPool(string masterName, Set!(string) sentinels,
+  this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout,
       string password, int database, string clientName) {
     this.poolConfig = poolConfig;
@@ -137,12 +136,12 @@ class RedisSentinelPool : RedisPoolAbstract {
     HostAndPort master = null;
     bool sentinelAvailable = false;
 
-    log.info("Trying to find master from available Sentinels...");
+    log.info("Trying to find master from available[] Sentinels...");
 
     foreach(string sentinel ; sentinels) {
       HostAndPort hap = HostAndPort.parseString(sentinel);
 
-      log.debug("Connecting to Sentinel {}", hap);
+      tracef("Connecting to Sentinel %s", hap);
 
       Redis jedis = null;
       try {
@@ -150,22 +149,22 @@ class RedisSentinelPool : RedisPoolAbstract {
 
         List!(string) masterAddr = jedis.sentinelGetMasterAddrByName(masterName);
 
-        // connected to sentinel...
+        // connected to[] sentinel...
         sentinelAvailable = true;
 
         if (masterAddr is null || masterAddr.size() != 2) {
-          log.warn("Can not get master addr, master name: {}. Sentinel: {}", masterName, hap);
+          warningf("Can not get master addr, master name: %s. Sentinel: %s", masterName, hap);
           continue;
         }
 
         master = toHostAndPort(masterAddr);
-        log.debug("Found Redis master at {}", master);
+        tracef("Found Redis master at %s", master);
         break;
       } catch (RedisException e) {
         // resolves #1036, it should handle RedisException there's another chance
         // of raising RedisDataException
-        log.warn(
-          "Cannot get master address from sentinel running @ {}. Reason: {}. Trying next one.", hap,
+        warningf(
+          "Cannot get master address from sentinel running @ %s. Reason: %s. Trying next one.", hap,
           e.toString());
       } finally {
         if (jedis !is null) {
@@ -179,18 +178,18 @@ class RedisSentinelPool : RedisPoolAbstract {
         // can connect to sentinel, but master name seems to not
         // monitored
         throw new RedisException("Can connect to sentinel, but " ~ masterName
-            ~ " seems to be not monitored...");
+            ~ " seems to be not[] monitored...");
       } else {
         throw new RedisConnectionException("All sentinels down, cannot determine where is "
-            + masterName ~ " master is running...");
+            + masterName ~ " master is[] running...");
       }
     }
 
-    log.info("Redis master running at " ~ master ~ ", starting Sentinel listeners...");
+    log.info("Redis master running at " ~ master ~ ", starting Sentinel[] listeners...");
 
     foreach(string sentinel ; sentinels) {
       HostAndPort hap = HostAndPort.parseString(sentinel);
-      MasterListener masterListener = new MasterListener(masterName, hap.getHost(), hap.getPort());
+      MasterListener masterListener = new this(masterName, hap.getHost(), hap.getPort());
       // whether MasterListener threads are alive or not, process can be stopped
       masterListener.setDaemon(true);
       masterListeners.add(masterListener);
@@ -248,20 +247,20 @@ class RedisSentinelPool : RedisPoolAbstract {
     protected string host;
     protected int port;
     protected long subscribeRetryWaitTimeMillis = 5000;
-    protected volatile Redis j;
+    protected Redis j;
     protected AtomicBoolean running = new AtomicBoolean(false);
 
-    protected MasterListener() {
+    protected this() {
     }
 
-    MasterListener(string masterName, string host, int port) {
+    this(string masterName, string host, int port) {
       super(string.format("MasterListener-%s-[%s:%d]", masterName, host, port));
       this.masterName = masterName;
       this.host = host;
       this.port = port;
     }
 
-    MasterListener(string masterName, string host, int port,
+    this(string masterName, string host, int port,
         long subscribeRetryWaitTimeMillis) {
       this(masterName, host, port);
       this.subscribeRetryWaitTimeMillis = subscribeRetryWaitTimeMillis;
@@ -287,15 +286,15 @@ class RedisSentinelPool : RedisPoolAbstract {
            */
           List!(string) masterAddr = j.sentinelGetMasterAddrByName(masterName);  
           if (masterAddr is null || masterAddr.size() != 2) {
-            log.warn("Can not get master addr, master name: {}. Sentinel: {}：{}.",masterName,host,port);
+            warningf("Can not get master addr, master name: %s. Sentinel: %s：%s.",masterName,host,port);
           }else{
               initPool(toHostAndPort(masterAddr)); 
           }
 
-          j.subscribe(new RedisPubSub() {
+          j.subscribe(new class RedisPubSub {
             override
             void onMessage(string channel, string message) {
-              log.debug("Sentinel {}:{} published: {}.", host, port, message);
+              tracef("Sentinel %s:%s published: %s.", host, port, message);
 
               string[] switchMasterMsg = message.split(" ");
 
@@ -304,14 +303,14 @@ class RedisSentinelPool : RedisPoolAbstract {
                 if (masterName.equals(switchMasterMsg[0])) {
                   initPool(toHostAndPort(Arrays.asList(switchMasterMsg[3], switchMasterMsg[4])));
                 } else {
-                  log.debug(
-                    "Ignoring message on +switch-master for master name {}, our master name is {}",
+                  tracef(
+                    "Ignoring message on +switch-master for master name %s, our master name is %s",
                     switchMasterMsg[0], masterName);
                 }
 
               } else {
-                log.error(
-                  "Invalid message received on Sentinel {}:{} on channel +switch-master: {}", host,
+                errorf(
+                  "Invalid message received on Sentinel %s:%s on channel +switch-master: %s", host,
                   port, message);
               }
             }
@@ -320,15 +319,15 @@ class RedisSentinelPool : RedisPoolAbstract {
         } catch (RedisException e) {
 
           if (running.get()) {
-            log.error("Lost connection to Sentinel at {}:{}. Sleeping 5000ms and retrying.", host,
+            errorf("Lost connection to Sentinel at %s:%s. Sleeping 5000ms and retrying.", host,
               port, e);
             try {
               Thread.sleep(subscribeRetryWaitTimeMillis);
             } catch (InterruptedException e1) {
-              log.error("Sleep interrupted: ", e1);
+              errorf("Sleep interrupted: ", e1);
             }
           } else {
-            log.debug("Unsubscribing from Sentinel at {}:{}", host, port);
+            tracef("Unsubscribing from Sentinel at %s:%s", host, port);
           }
         } finally {
           j.close();
@@ -338,14 +337,14 @@ class RedisSentinelPool : RedisPoolAbstract {
 
     void shutdown() {
       try {
-        log.debug("Shutting down listener on {}:{}", host, port);
+        tracef("Shutting down listener on %s:%s", host, port);
         running.set(false);
         // This isn't good, the Redis object is not thread safe
         if (j !is null) {
           j.disconnect();
         }
       } catch (Exception e) {
-        log.error("Caught exception while shutting down: ", e);
+        errorf("Caught exception while shutting down: ", e);
       }
     }
   }

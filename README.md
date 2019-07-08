@@ -35,7 +35,7 @@ string value = jedis.get("foo");
 Redis cluster [specification](http://redis.io/topics/cluster-spec) (still under development) is implemented
 
 ```java
-Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+Set!(HostAndPort) jedisClusterNodes = new HashSet!(HostAndPort)();
 //Redis Cluster will attempt to discover cluster nodes automatically
 jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7379));
 RedisCluster jc = new RedisCluster(jedisClusterNodes);

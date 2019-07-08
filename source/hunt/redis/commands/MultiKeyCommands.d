@@ -13,20 +13,20 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-public interface MultiKeyCommands {
-  Long del(string keys...);
+interface MultiKeyCommands {
+  Long del(string[] keys...);
 
-  Long unlink(string keys...);
+  Long unlink(string[] keys...);
 
-  Long exists(string keys...);
+  Long exists(string[] keys...);
 
-  List!(string) blpop(int timeout, string keys...);
+  List!(string) blpop(int timeout, string[] keys...);
 
-  List!(string) brpop(int timeout, string keys...);
+  List!(string) brpop(int timeout, string[] keys...);
 
-  List!(string) blpop(string args...);
+  List!(string) blpop(string[] args...);
 
-  List!(string) brpop(string args...);
+  List!(string) brpop(string[] args...);
 
   /**
    * Returns all the keys matching the glob-style pattern. For example if
@@ -58,11 +58,11 @@ public interface MultiKeyCommands {
    */
   Set!(string) keys(string pattern);
 
-  List!(string) mget(string keys...);
+  List!(string) mget(string[] keys...);
 
-  string mset(string keysvalues...);
+  string mset(string[] keysvalues...);
 
-  Long msetnx(string keysvalues...);
+  Long msetnx(string[] keysvalues...);
 
   string rename(string oldkey, string newkey);
 
@@ -70,13 +70,13 @@ public interface MultiKeyCommands {
 
   string rpoplpush(string srckey, string dstkey);
 
-  Set!(string) sdiff(string keys...);
+  Set!(string) sdiff(string[] keys...);
 
-  Long sdiffstore(string dstkey, string keys...);
+  Long sdiffstore(string dstkey, string[] keys...);
 
-  Set!(string) sinter(string keys...);
+  Set!(string) sinter(string[] keys...);
 
-  Long sinterstore(string dstkey, string keys...);
+  Long sinterstore(string dstkey, string[] keys...);
 
   Long smove(string srckey, string dstkey, string member);
 
@@ -84,33 +84,33 @@ public interface MultiKeyCommands {
 
   Long sort(string key, string dstkey);
 
-  Set!(string) sunion(string keys...);
+  Set!(string) sunion(string[] keys...);
 
-  Long sunionstore(string dstkey, string keys...);
+  Long sunionstore(string dstkey, string[] keys...);
 
-  string watch(string keys...);
+  string watch(string[] keys...);
 
   string unwatch();
 
-  Long zinterstore(string dstkey, string sets...);
+  Long zinterstore(string dstkey, string[] sets...);
 
-  Long zinterstore(string dstkey, ZParams params, string sets...);
+  Long zinterstore(string dstkey, ZParams params, string[] sets...);
 
-  Long zunionstore(string dstkey, string sets...);
+  Long zunionstore(string dstkey, string[] sets...);
 
-  Long zunionstore(string dstkey, ZParams params, string sets...);
+  Long zunionstore(string dstkey, ZParams params, string[] sets...);
 
   string brpoplpush(string source, string destination, int timeout);
 
   Long publish(string channel, string message);
 
-  void subscribe(RedisPubSub jedisPubSub, string channels...);
+  void subscribe(RedisPubSub jedisPubSub, string[] channels...);
 
-  void psubscribe(RedisPubSub jedisPubSub, string patterns...);
+  void psubscribe(RedisPubSub jedisPubSub, string[] patterns...);
 
   string randomKey();
 
-  Long bitop(BitOP op, string destKey, string srcKeys...);
+  Long bitop(BitOP op, string destKey, string[] srcKeys...);
 
   /**
    * @see #scan(string, ScanParams)
@@ -163,11 +163,11 @@ public interface MultiKeyCommands {
    */
   ScanResult!(string) scan(string cursor, ScanParams params);
 
-  string pfmerge(string destkey, string sourcekeys...);
+  string pfmerge(string destkey, string[] sourcekeys...);
 
-  long pfcount(string keys...);
+  long pfcount(string[] keys...);
 
-  Long touch(string keys...);
+  Long touch(string[] keys...);
   
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -178,7 +178,7 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<MapEntry!(string, List!(StreamEntry))> xread(int count, long block, MapEntry!(string, StreamEntryID) streams...);
+  List!(MapEntry!(string, List!(StreamEntry))) xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...);
 
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -191,5 +191,6 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<MapEntry!(string, List!(StreamEntry))> xreadGroup(string groupname, string consumer, int count, long block, bool noAck, MapEntry!(string, StreamEntryID) streams...);
+  List!(MapEntry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, int count, 
+        long block, bool noAck, MapEntry!(string, StreamEntryID)[] streams...);
 }

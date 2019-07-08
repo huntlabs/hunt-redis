@@ -1,35 +1,38 @@
 module hunt.redis.ZParams;
 
-import hunt.redis.Protocol.Keyword.AGGREGATE;
-import hunt.redis.Protocol.Keyword.WEIGHTS;
+// import hunt.redis.Protocol.Keyword.AGGREGATE;
+// import hunt.redis.Protocol.Keyword.WEIGHTS;
+
+import hunt.redis.Protocol;
 
 import hunt.collection.ArraryList;
 import hunt.collection.Collection;
 import hunt.collection.Collections;
 import hunt.collection.List;
 
+import std.conv;
+
 import hunt.redis.util.SafeEncoder;
 
-class ZParams {
   enum Aggregate {
-    SUM, MIN, MAX;
-
-    byte[] raw;
-
-    Aggregate() {
-      raw = SafeEncoder.encode(name());
-    }
+    SUM, MIN, MAX
   }
 
-  private List!(byte[]) params = new ArrayList!(byte[])();
+class ZParams {
+
+  private List!(byte[]) params;
+
+  this() {
+    params = new ArrayList!(byte[])();
+  }
 
   /**
    * Set weights.
    * @param weights weights.
    * @return 
    */
-  ZParams weights(double weights...) {
-    params.add(WEIGHTS.raw);
+  ZParams weights(double[] weights...) {
+    params.add(SafeEncoder.encode(Protocol.Keyword.WEIGHTS.to!string()));
     foreach(double weight ; weights) {
       params.add(Protocol.toByteArray(weight));
     }
@@ -38,12 +41,12 @@ class ZParams {
   }
 
   Collection!(byte[]) getParams() {
-    return Collections.unmodifiableCollection(params);
+    return params; // Collections.unmodifiableCollection(params);
   }
 
   ZParams aggregate(Aggregate aggregate) {
-    params.add(AGGREGATE.raw);
-    params.add(aggregate.raw);
+    params.add(SafeEncoder.encode(Protocol.Keyword.AGGREGATE.to!string()));
+    params.add(SafeEncoder.encode(aggregate.to!string()));
     return this;
   }
 }

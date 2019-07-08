@@ -6,7 +6,7 @@ module hunt.redis.util.RedisClusterHashTagUtil;
  */
 class RedisClusterHashTagUtil {
 
-  private RedisClusterHashTagUtil() {
+  private this() {
     throw new InstantiationError("Must not instantiate this class");
   }
 

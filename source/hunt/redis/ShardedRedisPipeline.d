@@ -5,22 +5,26 @@ import hunt.collection.Linkedlist;
 import hunt.collection.List;
 import hunt.collection.Queue;
 
+
+private class FutureResult {
+  private Client client;
+
+  this(Client client) {
+    this.client = client;
+  }
+
+  Object get() {
+    return client.getOne();
+  }
+}
+
+/**
+*/
 class ShardedRedisPipeline : PipelineBase {
   private BinaryShardedRedis jedis;
   private List!(FutureResult) results = new ArrayList!(FutureResult)();
   private Queue!(Client) clients = new LinkedList!(Client)();
 
-  private static class FutureResult {
-    private Client client;
-
-    FutureResult(Client client) {
-      this.client = client;
-    }
-
-    Object get() {
-      return client.getOne();
-    }
-  }
 
   void setShardedRedis(BinaryShardedRedis jedis) {
     this.jedis = jedis;

@@ -3,7 +3,7 @@ module hunt.redis.commands.RedisClusterScriptingCommands;
 import hunt.collection.List;
 
 public interface RedisClusterScriptingCommands {
-  Object eval(string script, int keyCount, string params...);
+  Object eval(string script, int keyCount, string[] params...);
 
   Object eval(string script, List!(string) keys, List!(string) args);
 
@@ -23,7 +23,7 @@ public interface RedisClusterScriptingCommands {
 
   Object evalsha(string sha1, List!(string) keys, List!(string) args);
 
-  Object evalsha(string sha1, int keyCount, string params...);
+  Object evalsha(string sha1, int keyCount, string[] params...);
 
   /**
    * @param sha1
@@ -37,7 +37,7 @@ public interface RedisClusterScriptingCommands {
    * @param sha1
    * @return 
    */
-  List!(Boolean) scriptExists(string sampleKey, string sha1...);
+  List!(Boolean) scriptExists(string sampleKey, string[] sha1...);
 
   /**
    * @param script

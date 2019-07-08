@@ -9,12 +9,15 @@
 
 module hunt.redis.util.RedisInputStream;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
+// import java.io.ByteArrayOutputStream;
 import hunt.Exceptions;
-import java.io.InputStream;
+import hunt.text.StringBuilder;
 
-import hunt.redis.exceptions.RedisConnectionException;
+import hunt.io.Common;
+import hunt.io.FilterInputStream;
+import hunt.io.FilterOutputStream;
+
+import hunt.redis.Exceptions;
 
 /**
  * This class assumes (to some degree) that we are reading a RESP stream. As such it assumes certain
@@ -27,19 +30,19 @@ class RedisInputStream : FilterInputStream {
 
   protected int count, limit;
 
-  RedisInputStream(InputStream in, int size) {
-    super(in);
+  this(InputStream inputStream, int size) {
+    super(inputStream);
     if (size <= 0) {
       throw new IllegalArgumentException("Buffer size <= 0");
     }
     buf = new byte[size];
   }
 
-  RedisInputStream(InputStream in) {
-    this(in, 8192);
+  this(InputStream inputStream) {
+    this(inputStream, 8192);
   }
 
-  byte readByte() throws RedisConnectionException {
+  byte readByte() {
     ensureFill();
     return buf[count++];
   }
@@ -57,10 +60,10 @@ class RedisInputStream : FilterInputStream {
         if (c == '\n') {
           break;
         }
-        sb.append((char) b);
-        sb.append((char) c);
+        sb.append(cast(char) b);
+        sb.append(cast(char) c);
       } else {
-        sb.append((char) b);
+        sb.append(cast(char) b);
       }
     }
 
@@ -145,7 +148,7 @@ class RedisInputStream : FilterInputStream {
   }
 
   int readIntCrLf() {
-    return (int) readLongCrLf();
+    return cast(int) readLongCrLf();
   }
 
   long readLongCrLf() {
@@ -180,7 +183,7 @@ class RedisInputStream : FilterInputStream {
   }
 
   override
-  int read(byte[] b, int off, int len) throws RedisConnectionException {
+  int read(byte[] b, int off, int len) {
     ensureFill();
 
     int length = Math.min(limit - count, len);
@@ -193,10 +196,10 @@ class RedisInputStream : FilterInputStream {
    * This methods assumes there are required bytes to be read. If we cannot read anymore bytes an
    * exception is thrown to quickly ascertain that the stream was smaller than expected.
    */
-  private void ensureFill() throws RedisConnectionException {
+  private void ensureFill() {
     if (count >= limit) {
       try {
-        limit = in.read(buf);
+        limit = inputStream.read(buf);
         count = 0;
         if (limit == -1) {
           throw new RedisConnectionException("Unexpected end of stream.");

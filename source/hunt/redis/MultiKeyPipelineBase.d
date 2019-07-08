@@ -7,35 +7,35 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-abstract class MultiKeyPipelineBase : PipelineBase implements
+abstract class MultiKeyPipelineBase : PipelineBase,
     MultiKeyBinaryRedisPipeline, MultiKeyCommandsPipeline, ClusterPipeline,
     BinaryScriptingCommandsPipeline, ScriptingCommandsPipeline, BasicRedisPipeline {
 
   protected Client client = null;
 
   override
-  Response!(List!(string)) brpop(string args...) {
+  Response!(List!(string)) brpop(string[] args...) {
     client.brpop(args);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  Response!(List!(string)) brpop(int timeout, string keys...) {
+  Response!(List!(string)) brpop(int timeout, string[] keys...) {
     client.brpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(string)) blpop(string args...) {
+  Response!(List!(string)) blpop(string[] args...) {
     client.blpop(args);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  Response!(List!(string)) blpop(int timeout, string keys...) {
+  Response!(List!(string)) blpop(int timeout, string[] keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  Response!(Map!(string, string)) blpopMap(int timeout, string keys...) {
+  Response!(Map!(string, string)) blpopMap(int timeout, string[] keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_MAP);
   }
@@ -51,7 +51,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  Response!(Map!(string, string)) brpopMap(int timeout, string keys...) {
+  Response!(Map!(string, string)) brpopMap(int timeout, string[] keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_MAP);
   }
@@ -68,7 +68,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) del(string keys...) {
+  Response!(Long) del(string[] keys...) {
     client.del(keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -80,7 +80,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) unlink(string keys...) {
+  Response!(Long) unlink(string[] keys...) {
     client.unlink(keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -92,7 +92,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) exists(string keys...) {
+  Response!(Long) exists(string[] keys...) {
     client.exists(keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -116,7 +116,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(List!(string)) mget(string keys...) {
+  Response!(List!(string)) mget(string[] keys...) {
     client.mget(keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
@@ -128,7 +128,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(string) mset(string keysvalues...) {
+  Response!(string) mset(string[] keysvalues...) {
     client.mset(keysvalues);
     return getResponse(BuilderFactory.STRING);
   }
@@ -140,7 +140,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) msetnx(string keysvalues...) {
+  Response!(Long) msetnx(string[] keysvalues...) {
     client.msetnx(keysvalues);
     return getResponse(BuilderFactory.LONG);
   }
@@ -188,7 +188,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Set!(string)) sdiff(string keys...) {
+  Response!(Set!(string)) sdiff(string[] keys...) {
     client.sdiff(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
@@ -200,7 +200,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) sdiffstore(string dstkey, string keys...) {
+  Response!(Long) sdiffstore(string dstkey, string[] keys...) {
     client.sdiffstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -212,7 +212,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Set!(string)) sinter(string keys...) {
+  Response!(Set!(string)) sinter(string[] keys...) {
     client.sinter(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
@@ -224,7 +224,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) sinterstore(string dstkey, string keys...) {
+  Response!(Long) sinterstore(string dstkey, string[] keys...) {
     client.sinterstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -272,7 +272,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Set!(string)) sunion(string keys...) {
+  Response!(Set!(string)) sunion(string[] keys...) {
     client.sunion(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
@@ -284,7 +284,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) sunionstore(string dstkey, string keys...) {
+  Response!(Long) sunionstore(string dstkey, string[] keys...) {
     client.sunionstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -296,7 +296,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(string) watch(string keys...) {
+  Response!(string) watch(string[] keys...) {
     client.watch(keys);
     return getResponse(BuilderFactory.STRING);
   }
@@ -308,7 +308,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) zinterstore(string dstkey, string sets...) {
+  Response!(Long) zinterstore(string dstkey, string[] sets...) {
     client.zinterstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
@@ -320,7 +320,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) zinterstore(string dstkey, ZParams params, string sets...) {
+  Response!(Long) zinterstore(string dstkey, ZParams params, string[] sets...) {
     client.zinterstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
@@ -332,7 +332,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) zunionstore(string dstkey, string sets...) {
+  Response!(Long) zunionstore(string dstkey, string[] sets...) {
     client.zunionstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
@@ -344,7 +344,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) zunionstore(string dstkey, ZParams params, string sets...) {
+  Response!(Long) zunionstore(string dstkey, ZParams params, string[] sets...) {
     client.zunionstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
@@ -496,7 +496,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) bitop(BitOP op, string destKey, string srcKeys...) {
+  Response!(Long) bitop(BitOP op, string destKey, string[] srcKeys...) {
     client.bitop(op, destKey, srcKeys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -514,13 +514,13 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(string) clusterAddSlots(int slots...) {
+  Response!(string) clusterAddSlots(int[] slots...) {
     client.clusterAddSlots(slots);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(string) clusterDelSlots(int slots...) {
+  Response!(string) clusterDelSlots(int[] slots...) {
     client.clusterDelSlots(slots);
     return getResponse(BuilderFactory.STRING);
   }
@@ -567,7 +567,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Object) eval(string script, int keyCount, string params...) {
+  Response!(Object) eval(string script, int keyCount, string[] params...) {
     getClient(script).eval(script, keyCount, params);
     return getResponse(BuilderFactory.EVAL_RESULT);
   }
@@ -584,7 +584,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Object) evalsha(string sha1, int keyCount, string params...) {
+  Response!(Object) evalsha(string sha1, int keyCount, string[] params...) {
     getClient(sha1).evalsha(sha1, keyCount, params);
     return getResponse(BuilderFactory.EVAL_RESULT);
   }
@@ -630,7 +630,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) pfcount(string keys...) {
+  Response!(Long) pfcount(string[] keys...) {
     client.pfcount(keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -648,7 +648,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(string) pfmerge(string destkey, string sourcekeys...) {
+  Response!(string) pfmerge(string destkey, string[] sourcekeys...) {
     client.pfmerge(destkey, sourcekeys);
     return getResponse(BuilderFactory.STRING);
   }
@@ -660,7 +660,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Long) touch(string keys...) {
+  Response!(Long) touch(string[] keys...) {
     client.touch(keys);
     return getResponse(BuilderFactory.LONG);
   }
@@ -691,7 +691,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   
   override
   Response!(string) migrate(string host, int port, int destinationDB,
-      int timeout, MigrateParams params, string keys...) {
+      int timeout, MigrateParams params, string[] keys...) {
     client.migrate(host, port, destinationDB, timeout, params, keys);
     return getResponse(BuilderFactory.STRING);
   }
@@ -704,7 +704,7 @@ abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  Response!(Object) sendCommand(ProtocolCommand cmd, string args...){
+  Response!(Object) sendCommand(ProtocolCommand cmd, string[] args...){
     client.sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);
   }

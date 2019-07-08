@@ -127,7 +127,7 @@ class SortingParams {
    * @param patterns
    * @return the SortingParams Object
    */
-  SortingParams get(string patterns...) {
+  SortingParams get(string[] patterns...) {
     foreach(string pattern ; patterns) {
       params.add(GET.raw);
       params.add(SafeEncoder.encode(pattern));

@@ -92,13 +92,13 @@ public interface RedisClusterCommands {
 
   string hmset(string key, Map!(string, string) hash);
 
-  List!(string) hmget(string key, string fields...);
+  List!(string) hmget(string key, string[] fields...);
 
   Long hincrBy(string key, string field, long value);
 
   Boolean hexists(string key, string field);
 
-  Long hdel(string key, string field...);
+  Long hdel(string key, string[] field...);
 
   Long hlen(string key);
 
@@ -108,9 +108,9 @@ public interface RedisClusterCommands {
 
   Map!(string, string) hgetAll(string key);
 
-  Long rpush(string key, string string...);
+  Long rpush(string key, string[] string...);
 
-  Long lpush(string key, string string...);
+  Long lpush(string key, string[] string...);
 
   Long llen(string key);
 
@@ -128,11 +128,11 @@ public interface RedisClusterCommands {
 
   string rpop(string key);
 
-  Long sadd(string key, string member...);
+  Long sadd(string key, string[] member...);
 
   Set!(string) smembers(string key);
 
-  Long srem(string key, string member...);
+  Long srem(string key, string[] member...);
 
   string spop(string key);
 
@@ -158,7 +158,7 @@ public interface RedisClusterCommands {
 
   Set!(string) zrange(string key, long start, long stop);
 
-  Long zrem(string key, string members...);
+  Long zrem(string key, string[] members...);
 
   Double zincrby(string key, double increment, string member);
 
@@ -240,9 +240,9 @@ public interface RedisClusterCommands {
 
   Long linsert(string key, ListPosition where, string pivot, string value);
 
-  Long lpushx(string key, string string...);
+  Long lpushx(string key, string[] string...);
 
-  Long rpushx(string key, string string...);
+  Long rpushx(string key, string[] string...);
 
   List!(string) blpop(int timeout, string key);
 
@@ -258,13 +258,13 @@ public interface RedisClusterCommands {
 
   Long bitcount(string key, long start, long end);
 
-  ScanResult<MapEntry!(string, string)> hscan(string key, string cursor);
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor);
 
   ScanResult!(string) sscan(string key, string cursor);
 
   ScanResult!(Tuple) zscan(string key, string cursor);
 
-  Long pfadd(string key, string elements...);
+  Long pfadd(string key, string[] elements...);
 
   long pfcount(string key);
 
@@ -278,9 +278,9 @@ public interface RedisClusterCommands {
 
   Double geodist(string key, string member1, string member2, GeoUnit unit);
 
-  List!(string) geohash(string key, string members...);
+  List!(string) geohash(string key, string[] members...);
 
-  List!(GeoCoordinate) geopos(string key, string members...);
+  List!(GeoCoordinate) geopos(string key, string[] members...);
 
   List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -310,7 +310,7 @@ public interface RedisClusterCommands {
    * @param arguments
    * @return 
    */
-  List!(Long) bitfield(string key, string...arguments);
+  List!(Long) bitfield(string key, string[] arguments...);
   
   /**
    * Used for HSTRLEN Redis command
@@ -380,7 +380,8 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<MapEntry!(string, List!(StreamEntry))> xread(int count, long block, MapEntry!(string, StreamEntryID) streams...);
+  List!(MapEntry!(string, List!(StreamEntry))) xread(int count, long block, 
+        MapEntry!(string, StreamEntryID)[] streams...);
   
   /**
    * XACK key group ID [ID ...]
@@ -389,7 +390,7 @@ public interface RedisClusterCommands {
    * @param ids
    * @return
    */
-  Long xack(string key, string group,  StreamEntryID ids...);
+  Long xack(string key, string group,  StreamEntryID[] ids...);
   
   /**
    * XGROUP CREATE <key> <groupname> <id or $>
@@ -440,7 +441,8 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<MapEntry!(string, List!(StreamEntry))> xreadGroup(string groupname, string consumer, int count, long block, bool noAck, MapEntry!(string, StreamEntryID) streams...);
+  List!(MapEntry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, 
+        int count, long block, bool noAck, MapEntry!(string, StreamEntryID)[] streams...);
 
   
   /**
@@ -454,7 +456,8 @@ public interface RedisClusterCommands {
    * @param consumername
    * @return
    */
-  List!(StreamPendingEntry) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername);
+  List!(StreamPendingEntry) xpending(string key, string groupname, StreamEntryID start, 
+        StreamEntryID end, int count, string consumername);
   
   /**
    * XDEL key ID [ID ...]
@@ -462,7 +465,7 @@ public interface RedisClusterCommands {
    * @param ids
    * @return
    */
-  Long xdel( string key, StreamEntryID ids...);
+  Long xdel( string key, StreamEntryID[] ids...);
   
   /**
    * XTRIM key MAXLEN [~] count
@@ -479,9 +482,9 @@ public interface RedisClusterCommands {
    *        [FORCE] [JUSTID]
    */        
   List!(StreamEntry) xclaim( string key, string group, string consumername, long minIdleTime, 
-      long newIdleTime, int retries, bool force, StreamEntryID ids...);
+      long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
 
   Long waitReplicas(string key, int replicas, long timeout);
 
-  Object sendCommand(string sampleKey, ProtocolCommand cmd, string args...);
+  Object sendCommand(string sampleKey, ProtocolCommand cmd, string[] args...);
 }

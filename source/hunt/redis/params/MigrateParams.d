@@ -6,7 +6,7 @@ class MigrateParams : Params {
   private enum string REPLACE = "REPLACE";
   private enum string AUTH = "AUTH";
 
-  MigrateParams() {
+  this() {
   }
 
   static MigrateParams migrateParams() {

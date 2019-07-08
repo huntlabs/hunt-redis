@@ -16,7 +16,7 @@ class GeoRadiusParam : Params {
   private enum string DESC = "desc";
   private enum string COUNT = "count";
 
-  GeoRadiusParam() {
+  this() {
   }
 
   static GeoRadiusParam geoRadiusParam() {
@@ -65,7 +65,7 @@ class GeoRadiusParam : Params {
 
     if (contains(COUNT)) {
       byteParams.add(SafeEncoder.encode(COUNT));
-      byteParams.add(Protocol.toByteArray((Integer) getParam(COUNT)));
+      byteParams.add(Protocol.toByteArray(cast(Integer) getParam(COUNT)));
     }
 
     if (contains(ASC)) {

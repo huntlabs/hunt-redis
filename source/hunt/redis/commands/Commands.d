@@ -24,11 +24,11 @@ public interface Commands {
 
   void get(string key);
 
-  void exists(string keys...);
+  void exists(string[] keys...);
 
-  void del(string keys...);
+  void del(string[] keys...);
 
-  void unlink(string keys...);
+  void unlink(string[] keys...);
 
   void type(string key);
 
@@ -46,7 +46,7 @@ public interface Commands {
 
   void pttl(string key);
 
-  void touch(string keys...);
+  void touch(string[] keys...);
 
   void setbit(string key, long offset, bool value);
 
@@ -62,15 +62,15 @@ public interface Commands {
 
   void getSet(string key, string value);
 
-  void mget(string keys...);
+  void mget(string[] keys...);
 
   void setnx(string key, string value);
 
   void setex(string key, int seconds, string value);
 
-  void mset(string keysvalues...);
+  void mset(string[] keysvalues...);
 
-  void msetnx(string keysvalues...);
+  void msetnx(string[] keysvalues...);
 
   void decrBy(string key, long decrement);
 
@@ -96,7 +96,7 @@ public interface Commands {
 
   void hmset(string key, Map!(string, string) hash);
 
-  void hmget(string key, string fields...);
+  void hmget(string key, string[] fields...);
 
   void hincrBy(string key, string field, long value);
 
@@ -104,7 +104,7 @@ public interface Commands {
 
   void hexists(string key, string field);
 
-  void hdel(string key, string fields...);
+  void hdel(string key, string[] fields...);
 
   void hlen(string key);
 
@@ -114,9 +114,9 @@ public interface Commands {
 
   void hgetAll(string key);
 
-  void rpush(string key, string strings...);
+  void rpush(string key, string[] strings...);
 
-  void lpush(string key, string strings...);
+  void lpush(string key, string[] strings...);
 
   void llen(string key);
 
@@ -136,11 +136,11 @@ public interface Commands {
 
   void rpoplpush(string srckey, string dstkey);
 
-  void sadd(string key, string members...);
+  void sadd(string key, string[] members...);
 
   void smembers(string key);
 
-  void srem(string key, string member...);
+  void srem(string key, string[] member...);
 
   void spop(string key);
 
@@ -152,17 +152,17 @@ public interface Commands {
 
   void sismember(string key, string member);
 
-  void sinter(string keys...);
+  void sinter(string[] keys...);
 
-  void sinterstore(string dstkey, string keys...);
+  void sinterstore(string dstkey, string[] keys...);
 
-  void sunion(string keys...);
+  void sunion(string[] keys...);
 
-  void sunionstore(string dstkey, string keys...);
+  void sunionstore(string dstkey, string[] keys...);
 
-  void sdiff(string keys...);
+  void sdiff(string[] keys...);
 
-  void sdiffstore(string dstkey, string keys...);
+  void sdiffstore(string dstkey, string[] keys...);
 
   void srandmember(string key);
 
@@ -176,7 +176,7 @@ public interface Commands {
 
   void zrange(string key, long start, long stop);
 
-  void zrem(string key, string members...);
+  void zrem(string key, string[] members...);
 
   void zincrby(string key, double increment, string member);
 
@@ -196,7 +196,7 @@ public interface Commands {
 
   void zscore(string key, string member);
 
-  void watch(string keys...);
+  void watch(string[] keys...);
 
   void sort(string key);
 
@@ -260,21 +260,21 @@ public interface Commands {
 
   void zremrangeByScore(string key, string min, string max);
 
-  void zunionstore(string dstkey, string sets...);
+  void zunionstore(string dstkey, string[] sets...);
 
-  void zunionstore(string dstkey, ZParams params, string sets...);
+  void zunionstore(string dstkey, ZParams params, string[] sets...);
 
-  void zinterstore(string dstkey, string sets...);
+  void zinterstore(string dstkey, string[] sets...);
 
-  void zinterstore(string dstkey, ZParams params, string sets...);
+  void zinterstore(string dstkey, ZParams params, string[] sets...);
 
   void strlen(string key);
 
-  void lpushx(string key, string string...);
+  void lpushx(string key, string[] string...);
 
   void persist(string key);
 
-  void rpushx(string key, string string...);
+  void rpushx(string key, string[] string...);
 
   void echo(string string);
 
@@ -310,7 +310,7 @@ public interface Commands {
 
   void bitcount(string key, long start, long end);
 
-  void bitop(BitOP op, string destKey, string srcKeys...);
+  void bitop(BitOP op, string destKey, string[] srcKeys...);
 
   void dump(string key);
 
@@ -333,7 +333,7 @@ public interface Commands {
    * @param key
    * @param arguments
    */
-  void bitfield(string key, string arguments...);
+  void bitfield(string key, string[] arguments...);
 
   /**
    * Used for HSTRLEN Redis command
@@ -344,7 +344,7 @@ public interface Commands {
 
   void migrate(string host, int port, string key, int destinationDB, int timeout);
 
-  void migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string keys...);
+  void migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string[] keys...);
 
   void clientKill(string ipPort);
 
@@ -370,7 +370,7 @@ public interface Commands {
   
   void xread(int count, long block, Entry!(string, StreamEntryID) streams...);
   
-  void xack(string key, string group, StreamEntryID ids...);
+  void xack(string key, string group, StreamEntryID[] ids...);
   
   void xgroupCreate(string key, string consumer, StreamEntryID id, bool makeStream);
 
@@ -380,7 +380,7 @@ public interface Commands {
 
   void xgroupDelConsumer(string key, string consumer, string consumerName);
 
-  void xdel(string key, StreamEntryID ids...);
+  void xdel(string key, StreamEntryID[] ids...);
 
   void xtrim(string key, long maxLen, bool approximateLength);
 
@@ -389,5 +389,5 @@ public interface Commands {
   void xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername);
 
   void xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime, int retries,
-      bool force, StreamEntryID ids...);
+      bool force, StreamEntryID[] ids...);
 }

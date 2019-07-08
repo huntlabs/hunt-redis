@@ -132,7 +132,7 @@ public interface BasicCommands {
    */
   int getDB();
 
-  string debug(DebugParams params);
+  // string debug(DebugParams params);
 
   string configResetStat();
 

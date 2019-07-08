@@ -27,7 +27,7 @@ public interface AdvancedRedisCommands {
 
   string migrate(string host, int port, string key, int destinationDB, int timeout);
 
-  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string keys...);
+  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string[] keys...);
 
   string clientKill(string ipPort);
 

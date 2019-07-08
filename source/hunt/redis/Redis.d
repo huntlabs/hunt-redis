@@ -23,94 +23,101 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
-class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
-    AdvancedRedisCommands, ScriptingCommands, BasicCommands, ClusterCommands, SentinelCommands, ModuleCommands {
+
+import hunt.Exceptions;
+
+
+/**
+*/
+class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
+    AdvancedRedisCommands, ScriptingCommands, BasicCommands, 
+    ClusterCommands, SentinelCommands, ModuleCommands {
 
   protected RedisPoolAbstract dataSource = null;
 
-  Redis() {
+  this() {
     super();
   }
 
-  Redis(string host) {
+  this(string host) {
     super(host);
   }
 
-  Redis(HostAndPort hp) {
+  this(HostAndPort hp) {
     super(hp);
   }
 
-  Redis(string host, int port) {
+  this(string host, int port) {
     super(host, port);
   }
 
-  Redis(string host, int port, bool ssl) {
+  this(string host, int port, bool ssl) {
     super(host, port, ssl);
   }
 
-  Redis(string host, int port, bool ssl,
+  this(string host, int port, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  Redis(string host, int port, int timeout) {
+  this(string host, int port, int timeout) {
     super(host, port, timeout);
   }
 
-  Redis(string host, int port, int timeout, bool ssl) {
+  this(string host, int port, int timeout, bool ssl) {
     super(host, port, timeout, ssl);
   }
 
-  Redis(string host, int port, int timeout, bool ssl,
+  this(string host, int port, int timeout, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(host, port, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  Redis(string host, int port, int connectionTimeout, int soTimeout) {
+  this(string host, int port, int connectionTimeout, int soTimeout) {
     super(host, port, connectionTimeout, soTimeout);
   }
 
-  Redis(string host, int port, int connectionTimeout, int soTimeout,
+  this(string host, int port, int connectionTimeout, int soTimeout,
       bool ssl) {
     super(host, port, connectionTimeout, soTimeout, ssl);
   }
 
-  Redis(string host, int port, int connectionTimeout, int soTimeout,
+  this(string host, int port, int connectionTimeout, int soTimeout,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(host, port, connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  Redis(RedisShardInfo shardInfo) {
+  this(RedisShardInfo shardInfo) {
     super(shardInfo);
   }
 
-  Redis(URI uri) {
+  this(URI uri) {
     super(uri);
   }
 
-  Redis(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  this(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(uri, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  Redis(URI uri, int timeout) {
+  this(URI uri, int timeout) {
     super(uri, timeout);
   }
 
-  Redis(URI uri, int timeout, SSLSocketFactory sslSocketFactory,
+  this(URI uri, int timeout, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     super(uri, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  Redis(URI uri, int connectionTimeout, int soTimeout) {
+  this(URI uri, int connectionTimeout, int soTimeout) {
     super(uri, connectionTimeout, soTimeout);
   }
 
-  Redis(URI uri, int connectionTimeout, int soTimeout,
+  this(URI uri, int connectionTimeout, int soTimeout,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(uri, connectionTimeout, soTimeout, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -182,7 +189,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         0 if none of the specified keys exist.
    */
   override
-  Long exists(string keys...) {
+  Long exists(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.exists(keys);
     return client.getIntegerReply();
@@ -210,7 +217,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         0 if none of the specified key existed
    */
   override
-  Long del(string keys...) {
+  Long del(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.del(keys);
     return client.getIntegerReply();
@@ -237,7 +244,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply: The number of keys that were unlinked
    */
   override
-  Long unlink(string keys...) {
+  Long unlink(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.unlink(keys);
     return client.getIntegerReply();
@@ -399,7 +406,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply: The number of keys that were touched.
    */
   override
-  Long touch(string keys...) {
+  Long touch(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.touch(keys);
     return client.getIntegerReply();
@@ -456,7 +463,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Multi bulk reply
    */
   override
-  List!(string) mget(string keys...) {
+  List!(string) mget(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.mget(keys);
     return client.getMultiBulkReply();
@@ -513,7 +520,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Status code reply Basically +OK as MSET can't fail
    */
   override
-  string mset(string keysvalues...) {
+  string mset(string[] keysvalues...) {
     checkIsInMultiOrPipeline();
     client.mset(keysvalues);
     return client.getStatusCodeReply();
@@ -537,7 +544,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         least one key already existed)
    */
   override
-  Long msetnx(string keysvalues...) {
+  Long msetnx(string[] keysvalues...) {
     checkIsInMultiOrPipeline();
     client.msetnx(keysvalues);
     return client.getIntegerReply();
@@ -795,7 +802,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         fields, in the same order of the request.
    */
   override
-  List!(string) hmget(string key, string fields...) {
+  List!(string) hmget(string key, string[] fields...) {
     checkIsInMultiOrPipeline();
     client.hmget(key, fields);
     return client.getMultiBulkReply();
@@ -870,7 +877,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         returned and no operation is performed.
    */
   override
-  Long hdel(string key, string fields...) {
+  Long hdel(string key, string[] fields...) {
     checkIsInMultiOrPipeline();
     client.hdel(key, fields);
     return client.getIntegerReply();
@@ -946,7 +953,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         operation.
    */
   override
-  Long rpush(string key, string strings...) {
+  Long rpush(string key, string[] strings...) {
     checkIsInMultiOrPipeline();
     client.rpush(key, strings);
     return client.getIntegerReply();
@@ -964,7 +971,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         operation.
    */
   override
-  Long lpush(string key, string strings...) {
+  Long lpush(string key, string[] strings...) {
     checkIsInMultiOrPipeline();
     client.lpush(key, strings);
     return client.getIntegerReply();
@@ -1201,7 +1208,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         already a member of the set
    */
   override
-  Long sadd(string key, string members...) {
+  Long sadd(string key, string[] members...) {
     checkIsInMultiOrPipeline();
     client.sadd(key, members);
     return client.getIntegerReply();
@@ -1234,7 +1241,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         not a member of the set
    */
   override
-  Long srem(string key, string members...) {
+  Long srem(string key, string[] members...) {
     checkIsInMultiOrPipeline();
     client.srem(key, members);
     return client.getIntegerReply();
@@ -1339,7 +1346,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Multi bulk reply, specifically the list of common elements.
    */
   override
-  Set!(string) sinter(string keys...) {
+  Set!(string) sinter(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sinter(keys);
     List!(string) members = client.getMultiBulkReply();
@@ -1357,7 +1364,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Status code reply
    */
   override
-  Long sinterstore(string dstkey, string keys...) {
+  Long sinterstore(string dstkey, string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sinterstore(dstkey, keys);
     return client.getIntegerReply();
@@ -1376,7 +1383,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Multi bulk reply, specifically the list of common elements.
    */
   override
-  Set!(string) sunion(string keys...) {
+  Set!(string) sunion(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sunion(keys);
     List!(string) members = client.getMultiBulkReply();
@@ -1393,7 +1400,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Status code reply
    */
   override
-  Long sunionstore(string dstkey, string keys...) {
+  Long sunionstore(string dstkey, string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sunionstore(dstkey, keys);
     return client.getIntegerReply();
@@ -1421,7 +1428,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         provided and all the successive sets.
    */
   override
-  Set!(string) sdiff(string keys...) {
+  Set!(string) sdiff(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sdiff(keys);
     return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
@@ -1435,7 +1442,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Status code reply
    */
   override
-  Long sdiffstore(string dstkey, string keys...) {
+  Long sdiffstore(string dstkey, string[] keys...) {
     checkIsInMultiOrPipeline();
     client.sdiffstore(dstkey, keys);
     return client.getIntegerReply();
@@ -1530,7 +1537,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         not a member of the set
    */
   override
-  Long zrem(string key, string members...) {
+  Long zrem(string key, string[] members...) {
     checkIsInMultiOrPipeline();
     client.zrem(key, members);
     return client.getIntegerReply();
@@ -1669,7 +1676,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  string watch(string keys...) {
+  string watch(string[] keys...) {
     client.watch(keys);
     return client.getStatusCodeReply();
   }
@@ -1838,7 +1845,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         accordingly to the programming language used.
    */
   override
-  List!(string) blpop(int timeout, string keys...) {
+  List!(string) blpop(int timeout, string[] keys...) {
     return blpop(getArgsAddTimeout(timeout, keys));
   }
 
@@ -1854,7 +1861,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  List!(string) blpop(string args...) {
+  List!(string) blpop(string[] args...) {
     checkIsInMultiOrPipeline();
     client.blpop(args);
     client.setTimeoutInfinite();
@@ -1866,7 +1873,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  List!(string) brpop(string args...) {
+  List!(string) brpop(string[] args...) {
     checkIsInMultiOrPipeline();
     client.brpop(args);
     client.setTimeoutInfinite();
@@ -1977,7 +1984,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    *         accordingly to the programming language used.
    */
   override
-  List!(string) brpop(int timeout, string keys...) {
+  List!(string) brpop(int timeout, string[] keys...) {
     return brpop(getArgsAddTimeout(timeout, keys));
   }
 
@@ -2395,7 +2402,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
   override
-  Long zunionstore(string dstkey, string sets...) {
+  Long zunionstore(string dstkey, string[] sets...) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, sets);
     return client.getIntegerReply();
@@ -2433,7 +2440,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
   override
-  Long zunionstore(string dstkey, ZParams params, string sets...) {
+  Long zunionstore(string dstkey, ZParams params, string[] sets...) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, params, sets);
     return client.getIntegerReply();
@@ -2470,7 +2477,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
   override
-  Long zinterstore(string dstkey, string sets...) {
+  Long zinterstore(string dstkey, string[] sets...) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, sets);
     return client.getIntegerReply();
@@ -2508,7 +2515,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
   override
-  Long zinterstore(string dstkey, ZParams params, string sets...) {
+  Long zinterstore(string dstkey, ZParams params, string[] sets...) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, params, sets);
     return client.getIntegerReply();
@@ -2569,7 +2576,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Long lpushx(string key, string string...) {
+  Long lpushx(string key, string[] string...) {
     checkIsInMultiOrPipeline();
     client.lpushx(key, string);
     return client.getIntegerReply();
@@ -2590,7 +2597,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Long rpushx(string key, string string...) {
+  Long rpushx(string key, string[] string...) {
     checkIsInMultiOrPipeline();
     client.rpushx(key, string);
     return client.getIntegerReply();
@@ -2765,7 +2772,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Object eval(string script, int keyCount, string params...) {
+  Object eval(string script, int keyCount, string[] params...) {
     client.setTimeoutInfinite();
     try {
       client.eval(script, keyCount, params);
@@ -2776,7 +2783,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  void subscribe(RedisPubSub jedisPubSub, string channels...) {
+  void subscribe(RedisPubSub jedisPubSub, string[] channels...) {
     client.setTimeoutInfinite();
     try {
       jedisPubSub.proceed(client, channels);
@@ -2794,7 +2801,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  void psubscribe(RedisPubSub jedisPubSub, string patterns...) {
+  void psubscribe(RedisPubSub jedisPubSub, string[] patterns...) {
     checkIsInMultiOrPipeline();
     client.setTimeoutInfinite();
     try {
@@ -2839,19 +2846,21 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   private Object evalResult(Object result) {
-    if (result instanceof byte[]) return SafeEncoder.encode((byte[]) result);
+    implementationMissing();
+    return null;
+    // if (result instanceof byte[]) return SafeEncoder.encode((byte[]) result);
 
-    if (result instanceof List<?>) {
-      List<?> list = (List<?>) result;
-      List!(Object) listResult = new ArrayList!(Object)(list.size());
-      foreach(Object bin ; list) {
-        listResult.add(evalResult(bin));
-      }
+    // if (result instanceof List<?>) {
+    //   List<?> list = (List<?>) result;
+    //   List!(Object) listResult = new ArrayList!(Object)(list.size());
+    //   foreach(Object bin ; list) {
+    //     listResult.add(evalResult(bin));
+    //   }
 
-      return listResult;
-    }
+    //   return listResult;
+    // }
 
-    return result;
+    // return result;
   }
 
   override
@@ -2860,7 +2869,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Object evalsha(string sha1, int keyCount, string params...) {
+  Object evalsha(string sha1, int keyCount, string[] params...) {
     checkIsInMultiOrPipeline();
     client.evalsha(sha1, keyCount, params);
     return getEvalResult();
@@ -2874,7 +2883,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  List!(Boolean) scriptExists(string sha1...) {
+  List!(Boolean) scriptExists(string[] sha1...) {
     client.scriptExists(sha1);
     List!(Long) result = client.getIntegerMultiBulkReply();
     List!(Boolean) exists = new ArrayList!(Boolean)();
@@ -2936,7 +2945,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Long bitop(BitOP op, string destKey, string srcKeys...) {
+  Long bitop(BitOP op, string destKey, string[] srcKeys...) {
     checkIsInMultiOrPipeline();
     client.bitop(op, destKey, srcKeys);
     return client.getIntegerReply();
@@ -2974,15 +2983,15 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * @return
    */
   override
-  
   List!(Map!(string, string)) sentinelMasters() {
     client.sentinel(Protocol.SENTINEL_MASTERS);
     List!(Object) reply = client.getObjectMultiBulkReply();
 
     List!(Map!(string, string)) masters = new ArrayList!(Map!(string, string))();
-    foreach(Object obj ; reply) {
-      masters.add(BuilderFactory.STRING_MAP.build((List) obj));
-    }
+    // foreach(Object obj ; reply) {
+    //   masters.add(BuilderFactory.STRING_MAP.build((List) obj));
+    // }
+    implementationMissing(false);
     return masters;
   }
 
@@ -3058,9 +3067,10 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     List!(Object) reply = client.getObjectMultiBulkReply();
 
     List!(Map!(string, string)) slaves = new ArrayList!(Map!(string, string))();
-    foreach(Object obj ; reply) {
-      slaves.add(BuilderFactory.STRING_MAP.build((List) obj));
-    }
+    // foreach(Object obj ; reply) {
+    //   slaves.add(BuilderFactory.STRING_MAP.build((List) obj));
+    // }
+    implementationMissing(false);
     return slaves;
   }
 
@@ -3196,7 +3206,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
 
   override
   string migrate(string host, int port, int destinationDB,
-      int timeout, MigrateParams params, string keys...) {
+      int timeout, MigrateParams params, string[] keys...) {
     checkIsInMultiOrPipeline();
     client.migrate(host, port, destinationDB, timeout, params, keys);
     return client.getStatusCodeReply();
@@ -3212,35 +3222,41 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     checkIsInMultiOrPipeline();
     client.scan(cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    string newcursor = new string((byte[]) result.get(0));
-    List!(string) results = new ArrayList!(string)();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    foreach(byte[] bs ; rawResults) {
-      results.add(SafeEncoder.encode(bs));
-    }
-    return new ScanResult!(string)(newcursor, results);
+    // string newcursor = new string((byte[]) result.get(0));
+    // List!(string) results = new ArrayList!(string)();
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // foreach(byte[] bs ; rawResults) {
+    //   results.add(SafeEncoder.encode(bs));
+    // }
+    // return new ScanResult!(string)(newcursor, results);
+
+    implementationMissing();
+    return null;    
   }
 
   override
-  ScanResult<MapEntry!(string, string)> hscan(string key, string cursor) {
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor) {
     return hscan(key, cursor, new ScanParams());
   }
 
   override
-  ScanResult<MapEntry!(string, string)> hscan(string key, string cursor,
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor,
       ScanParams params) {
     checkIsInMultiOrPipeline();
     client.hscan(key, cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    string newcursor = new string((byte[]) result.get(0));
-    List<MapEntry!(string, string)> results = new ArrayList<MapEntry!(string, string)>();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    Iterator!(byte[]) iterator = rawResults.iterator();
-    while (iterator.hasNext()) {
-      results.add(new AbstractMap.SimpleEntry!(string, string)(SafeEncoder.encode(iterator.next()),
-          SafeEncoder.encode(iterator.next())));
-    }
-    return new ScanResult<MapEntry!(string, string)>(newcursor, results);
+    // string newcursor = new string((byte[]) result.get(0));
+    // List!(MapEntry!(string, string)) results = new ArrayList!(MapEntry!(string, string))();
+    // List!(byte[]) rawResults = cast(List!(byte[])) result.get(1);
+    // Iterator!(byte[]) iterator = rawResults.iterator();
+    // while (iterator.hasNext()) {
+    //   results.add(new AbstractMap.SimpleEntry!(string, string)(SafeEncoder.encode(iterator.next()),
+    //       SafeEncoder.encode(iterator.next())));
+    // }
+    // return new ScanResult!(MapEntry!(string, string))(newcursor, results);
+
+    implementationMissing();
+    return null;
   }
 
   override
@@ -3253,13 +3269,16 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     checkIsInMultiOrPipeline();
     client.sscan(key, cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    string newcursor = new string((byte[]) result.get(0));
-    List!(string) results = new ArrayList!(string)();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    foreach(byte[] bs ; rawResults) {
-      results.add(SafeEncoder.encode(bs));
-    }
-    return new ScanResult!(string)(newcursor, results);
+    // string newcursor = new string((byte[]) result.get(0));
+    // List!(string) results = new ArrayList!(string)();
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // foreach(byte[] bs ; rawResults) {
+    //   results.add(SafeEncoder.encode(bs));
+    // }
+    // return new ScanResult!(string)(newcursor, results);
+    implementationMissing();
+    return null;
+
   }
 
   override
@@ -3272,14 +3291,17 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     checkIsInMultiOrPipeline();
     client.zscan(key, cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    string newcursor = new string((byte[]) result.get(0));
-    List!(Tuple) results = new ArrayList!(Tuple)();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    Iterator!(byte[]) iterator = rawResults.iterator();
-    while (iterator.hasNext()) {
-      results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
-    }
-    return new ScanResult!(Tuple)(newcursor, results);
+    // string newcursor = new string((byte[]) result.get(0));
+    // List!(Tuple) results = new ArrayList!(Tuple)();
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // Iterator!(byte[]) iterator = rawResults.iterator();
+    // while (iterator.hasNext()) {
+    //   results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
+    // }
+    // return new ScanResult!(Tuple)(newcursor, results);
+    implementationMissing();
+    return null;
+
   }
 
   override
@@ -3310,14 +3332,14 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  string clusterAddSlots(int slots...) {
+  string clusterAddSlots(int[] slots...) {
     checkIsInMultiOrPipeline();
     client.clusterAddSlots(slots);
     return client.getStatusCodeReply();
   }
 
   override
-  string clusterDelSlots(int slots...) {
+  string clusterDelSlots(int[] slots...) {
     checkIsInMultiOrPipeline();
     client.clusterDelSlots(slots);
     return client.getStatusCodeReply();
@@ -3446,7 +3468,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     return client.getIntegerReply();
   }
 
-  Map!(string, string) pubsubNumSub(string channels...) {
+  Map!(string, string) pubsubNumSub(string[] channels...) {
     checkIsInMultiOrPipeline();
     client.pubsubNumSub(channels);
     return BuilderFactory.PUBSUB_NUMSUB_MAP.build(client.getBinaryMultiBulkReply());
@@ -3472,7 +3494,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Long pfadd(string key, string elements...) {
+  Long pfadd(string key, string[] elements...) {
     checkIsInMultiOrPipeline();
     client.pfadd(key, elements);
     return client.getIntegerReply();
@@ -3486,14 +3508,14 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  long pfcount(string keys...) {
+  long pfcount(string[] keys...) {
     checkIsInMultiOrPipeline();
     client.pfcount(keys);
     return client.getIntegerReply();
   }
 
   override
-  string pfmerge(string destkey, string sourcekeys...) {
+  string pfmerge(string destkey, string[] sourcekeys...) {
     checkIsInMultiOrPipeline();
     client.pfmerge(destkey, sourcekeys);
     return client.getStatusCodeReply();
@@ -3540,14 +3562,14 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  List!(string) geohash(string key, string members...) {
+  List!(string) geohash(string key, string[] members...) {
     checkIsInMultiOrPipeline();
     client.geohash(key, members);
     return client.getMultiBulkReply();
   }
 
   override
-  List!(GeoCoordinate) geopos(string key, string members...) {
+  List!(GeoCoordinate) geopos(string key, string[] members...) {
     checkIsInMultiOrPipeline();
     client.geopos(key, members);
     return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
@@ -3636,7 +3658,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  List!(Long) bitfield(string key, string...arguments) {
+  List!(Long) bitfield(string key, string[] arguments...) {
     checkIsInMultiOrPipeline();
     client.bitfield(key, arguments);
     return client.getIntegerMultiBulkReply();
@@ -3709,17 +3731,19 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     try {
       List!(Object) streamsEntries = client.getObjectMultiBulkReply();
       if(streamsEntries is null) {
-        return new ArrayList<>();
+        return new ArrayList!(Entry!(string, List!(StreamEntry)))();
       }
       
-      List!(Entry!(string, List!(StreamEntry))) result = new ArrayList<>(streamsEntries.size());
-      foreach(Object streamObj ; streamsEntries) {
-        List!(Object) stream = (List!(Object))streamObj;
-        string streamId = SafeEncoder.encode((byte[])stream.get(0));
-        List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
-        result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
-      }
-      
+      List!(Entry!(string, List!(StreamEntry))) result = 
+        new ArrayList!(Entry!(string, List!(StreamEntry)))(streamsEntries.size());
+
+      // foreach(Object streamObj ; streamsEntries) {
+      //   List!(Object) stream = cast(List!(Object))streamObj;
+      //   string streamId = SafeEncoder.encode((byte[])stream.get(0));
+      //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+      //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+      // }
+      implementationMissing(false);      
       return result;
     } finally {
       client.rollbackTimeout();
@@ -3730,7 +3754,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
    * {@inheritDoc}
    */
   override
-  long xack(string key, string group, StreamEntryID ids...) {
+  long xack(string key, string group, StreamEntryID[] ids...) {
     checkIsInMultiOrPipeline();
     client.xack(key, group, ids);
     return client.getIntegerReply();
@@ -3765,7 +3789,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  long xdel(string key, StreamEntryID ids...) {
+  long xdel(string key, StreamEntryID[] ids...) {
     checkIsInMultiOrPipeline();
     client.xdel(key, ids);
     return client.getIntegerReply();
@@ -3792,13 +3816,16 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
       return null;
     }
     
-    List!(Entry!(string, List!(StreamEntry))) result = new ArrayList<>(streamsEntries.size());
-    foreach(Object streamObj ; streamsEntries) {
-      List!(Object) stream = (List!(Object))streamObj;
-      string streamId = SafeEncoder.encode((byte[])stream.get(0));
-      List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
-      result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
-    }
+    List!(Entry!(string, List!(StreamEntry))) result = 
+      new ArrayList!(Entry!(string, List!(StreamEntry)))(streamsEntries.size());
+
+    // foreach(Object streamObj ; streamsEntries) {
+    //   List!(Object) stream = (List!(Object))streamObj;
+    //   string streamId = SafeEncoder.encode((byte[])stream.get(0));
+    //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+    //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+    // }
+    implementationMissing(false);
     return result;
   }
 
@@ -3815,7 +3842,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
 
   override
   List!(StreamEntry) xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime,
-      int retries, bool force, StreamEntryID ids...) {
+      int retries, bool force, StreamEntryID[] ids...) {
     
     checkIsInMultiOrPipeline();
     client.xclaim( key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
@@ -3824,7 +3851,7 @@ class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
   }
 
   override
-  Object sendCommand(ProtocolCommand cmd, string args...) {
+  Object sendCommand(ProtocolCommand cmd, string[] args...) {
     client.sendCommand(cmd, args);
     return client.getOne();
   }

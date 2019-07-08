@@ -99,7 +99,7 @@ public interface RedisCommands {
 
   string hmset(string key, Map!(string, string) hash);
 
-  List!(string) hmget(string key, string fields...);
+  List!(string) hmget(string key, string[] fields...);
 
   Long hincrBy(string key, string field, long value);
 
@@ -107,7 +107,7 @@ public interface RedisCommands {
 
   Boolean hexists(string key, string field);
 
-  Long hdel(string key, string field...);
+  Long hdel(string key, string[] field...);
 
   Long hlen(string key);
 
@@ -117,9 +117,9 @@ public interface RedisCommands {
 
   Map!(string, string) hgetAll(string key);
 
-  Long rpush(string key, string string...);
+  Long rpush(string key, string[] string...);
 
-  Long lpush(string key, string string...);
+  Long lpush(string key, string[] string...);
 
   Long llen(string key);
 
@@ -137,11 +137,11 @@ public interface RedisCommands {
 
   string rpop(string key);
 
-  Long sadd(string key, string member...);
+  Long sadd(string key, string[] member...);
 
   Set!(string) smembers(string key);
 
-  Long srem(string key, string member...);
+  Long srem(string key, string[] member...);
 
   string spop(string key);
 
@@ -167,7 +167,7 @@ public interface RedisCommands {
 
   Set!(string) zrange(string key, long start, long stop);
 
-  Long zrem(string key, string members...);
+  Long zrem(string key, string[] members...);
 
   Double zincrby(string key, double increment, string member);
 
@@ -249,9 +249,9 @@ public interface RedisCommands {
 
   Long linsert(string key, ListPosition where, string pivot, string value);
 
-  Long lpushx(string key, string string...);
+  Long lpushx(string key, string[] string...);
 
-  Long rpushx(string key, string string...);
+  Long rpushx(string key, string[] string...);
 
   List!(string) blpop(int timeout, string key);
 
@@ -273,9 +273,9 @@ public interface RedisCommands {
 
   Long bitpos(string key, bool value, BitPosParams params);
 
-  ScanResult<MapEntry!(string, string)> hscan(string key, string cursor);
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor);
 
-  ScanResult<MapEntry!(string, string)> hscan(string key, string cursor,
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor,
       ScanParams params);
 
   ScanResult!(string) sscan(string key, string cursor);
@@ -286,7 +286,7 @@ public interface RedisCommands {
 
   ScanResult!(string) sscan(string key, string cursor, ScanParams params);
 
-  Long pfadd(string key, string elements...);
+  Long pfadd(string key, string[] elements...);
 
   long pfcount(string key);
 
@@ -300,9 +300,9 @@ public interface RedisCommands {
 
   Double geodist(string key, string member1, string member2, GeoUnit unit);
 
-  List!(string) geohash(string key, string members...);
+  List!(string) geohash(string key, string[] members...);
 
-  List!(GeoCoordinate) geopos(string key, string members...);
+  List!(GeoCoordinate) geopos(string key, string[] members...);
 
   List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -332,7 +332,7 @@ public interface RedisCommands {
    * @param arguments
    * @return 
    */
-  List!(Long) bitfield(string key, string...arguments);
+  List!(Long) bitfield(string key, string[] arguments...);
 
   /**
    * Used for HSTRLEN Redis command
@@ -402,7 +402,7 @@ public interface RedisCommands {
    * @param ids
    * @return
    */
-  long xack(string key, string group,  StreamEntryID ids...);
+  long xack(string key, string group,  StreamEntryID[] ids...);
   
   /**
    * XGROUP CREATE <key> <groupname> <id or $>
@@ -462,7 +462,7 @@ public interface RedisCommands {
    * @param ids
    * @return
    */
-  long xdel( string key, StreamEntryID ids...);
+  long xdel( string key, StreamEntryID[] ids...);
   
   /**
    * XTRIM key MAXLEN [~] count
@@ -479,8 +479,8 @@ public interface RedisCommands {
    *        [FORCE] [JUSTID]
    */        
   List!(StreamEntry) xclaim( string key, string group, string consumername, long minIdleTime, 
-      long newIdleTime, int retries, bool force, StreamEntryID ids...);
+      long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
 
 
-  Object sendCommand(ProtocolCommand cmd, string args...);
+  Object sendCommand(ProtocolCommand cmd, string[] args...);
 }

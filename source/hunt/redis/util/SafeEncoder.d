@@ -2,19 +2,25 @@ module hunt.redis.util.SafeEncoder;
 
 import java.io.UnsupportedEncodingException;
 
+import hunt.redis.Exceptions;
 import hunt.redis.Protocol;
-import hunt.redis.exceptions.RedisDataException;
-import hunt.redis.exceptions.RedisException;
+
+import hunt.Exceptions;
+import hunt.text.StringUtils;
+
+import std.array;
+import std.conv;
 
 /**
  * The only reason to have this is to be able to compatible with java 1.5 :(
  */
 class SafeEncoder {
-  private SafeEncoder(){
+
+  private this(){
     throw new InstantiationError( "Must not instantiate this class" );
   }
 
-  static byte[][] encodeMany(string strs...) {
+  static byte[][] encodeMany(string[] strs...) {
     byte[][] many = new byte[strs.length][];
     for (int i = 0; i < strs.length; i++) {
       many[i] = encode(strs[i]);
@@ -24,10 +30,10 @@ class SafeEncoder {
 
   static byte[] encode(string str) {
     try {
-      if (str is null) {
+      if (str.empty) {
         throw new RedisDataException("value sent to redis cannot be null");
       }
-      return str.getBytes(Protocol.CHARSET);
+      return StringUtils.getBytes(str, Protocol.CHARSET);
     } catch (UnsupportedEncodingException e) {
       throw new RedisException(e);
     }
@@ -35,7 +41,7 @@ class SafeEncoder {
 
   static string encode(byte[] data) {
     try {
-      return new string(data, Protocol.CHARSET);
+      return cast(string)data.idup;
     } catch (UnsupportedEncodingException e) {
       throw new RedisException(e);
     }
