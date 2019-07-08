@@ -1,8 +1,7 @@
 module hunt.redis.exceptions.RedisBusyException;
 
-public class RedisBusyException extends RedisDataException {
+public class RedisBusyException : RedisDataException {
 
-    private static final long serialVersionUID = 3992655220229243478L;
 
     public RedisBusyException(final String message) {
         super(message);

@@ -7,7 +7,7 @@ import hunt.redis.params.ClientKillParams;
 
 public interface AdvancedBinaryRedisCommands {
 
-  List<byte[]> configGet(byte[] pattern);
+  List!(byte[]) configGet(byte[] pattern);
 
   byte[] configSet(byte[] parameter, byte[] value);
 
@@ -15,9 +15,9 @@ public interface AdvancedBinaryRedisCommands {
 
   Long slowlogLen();
 
-  List<byte[]> slowlogGetBinary();
+  List!(byte[]) slowlogGetBinary();
 
-  List<byte[]> slowlogGetBinary(long entries);
+  List!(byte[]) slowlogGetBinary(long entries);
 
   Long objectRefcount(byte[] key);
 

@@ -83,15 +83,15 @@ public interface BinaryRedisClusterCommands {
 
   Long hset(byte[] key, byte[] field, byte[] value);
 
-  Long hset(byte[] key, Map<byte[], byte[]> hash);
+  Long hset(byte[] key, Map!(byte[], byte[]) hash);
 
   byte[] hget(byte[] key, byte[] field);
 
   Long hsetnx(byte[] key, byte[] field, byte[] value);
 
-  String hmset(byte[] key, Map<byte[], byte[]> hash);
+  String hmset(byte[] key, Map!(byte[], byte[]) hash);
 
-  List<byte[]> hmget(byte[] key, byte[]... fields);
+  List!(byte[]) hmget(byte[] key, byte[]... fields);
 
   Long hincrBy(byte[] key, byte[] field, long value);
 
@@ -103,11 +103,11 @@ public interface BinaryRedisClusterCommands {
 
   Long hlen(byte[] key);
 
-  Set<byte[]> hkeys(byte[] key);
+  Set!(byte[]) hkeys(byte[] key);
 
-  Collection<byte[]> hvals(byte[] key);
+  Collection!(byte[]) hvals(byte[] key);
 
-  Map<byte[], byte[]> hgetAll(byte[] key);
+  Map!(byte[], byte[]) hgetAll(byte[] key);
 
   Long rpush(byte[] key, byte[]... args);
 
@@ -115,7 +115,7 @@ public interface BinaryRedisClusterCommands {
 
   Long llen(byte[] key);
 
-  List<byte[]> lrange(byte[] key, long start, long stop);
+  List!(byte[]) lrange(byte[] key, long start, long stop);
 
   String ltrim(byte[] key, long start, long stop);
 
@@ -131,13 +131,13 @@ public interface BinaryRedisClusterCommands {
 
   Long sadd(byte[] key, byte[]... member);
 
-  Set<byte[]> smembers(byte[] key);
+  Set!(byte[]) smembers(byte[] key);
 
   Long srem(byte[] key, byte[]... member);
 
   byte[] spop(byte[] key);
 
-  Set<byte[]> spop(byte[] key, long count);
+  Set!(byte[]) spop(byte[] key, long count);
 
   Long scard(byte[] key);
 
@@ -145,7 +145,7 @@ public interface BinaryRedisClusterCommands {
 
   byte[] srandmember(byte[] key);
 
-  List<byte[]> srandmember(byte[] key, int count);
+  List!(byte[]) srandmember(byte[] key, int count);
 
   Long strlen(byte[] key);
 
@@ -153,11 +153,11 @@ public interface BinaryRedisClusterCommands {
 
   Long zadd(byte[] key, double score, byte[] member, ZAddParams params);
 
-  Long zadd(byte[] key, Map<byte[], Double> scoreMembers);
+  Long zadd(byte[] key, Map!(byte[], Double) scoreMembers);
 
-  Long zadd(byte[] key, Map<byte[], Double> scoreMembers, ZAddParams params);
+  Long zadd(byte[] key, Map!(byte[], Double) scoreMembers, ZAddParams params);
 
-  Set<byte[]> zrange(byte[] key, long start, long stop);
+  Set!(byte[]) zrange(byte[] key, long start, long stop);
 
   Long zrem(byte[] key, byte[]... members);
 
@@ -169,55 +169,55 @@ public interface BinaryRedisClusterCommands {
 
   Long zrevrank(byte[] key, byte[] member);
 
-  Set<byte[]> zrevrange(byte[] key, long start, long stop);
+  Set!(byte[]) zrevrange(byte[] key, long start, long stop);
 
-  Set<Tuple> zrangeWithScores(byte[] key, long start, long stop);
+  Set!(Tuple) zrangeWithScores(byte[] key, long start, long stop);
 
-  Set<Tuple> zrevrangeWithScores(byte[] key, long start, long stop);
+  Set!(Tuple) zrevrangeWithScores(byte[] key, long start, long stop);
 
   Long zcard(byte[] key);
 
   Double zscore(byte[] key, byte[] member);
 
-  List<byte[]> sort(byte[] key);
+  List!(byte[]) sort(byte[] key);
 
-  List<byte[]> sort(byte[] key, SortingParams sortingParameters);
+  List!(byte[]) sort(byte[] key, SortingParams sortingParameters);
 
   Long zcount(byte[] key, double min, double max);
 
   Long zcount(byte[] key, byte[] min, byte[] max);
 
-  Set<byte[]> zrangeByScore(byte[] key, double min, double max);
+  Set!(byte[]) zrangeByScore(byte[] key, double min, double max);
 
-  Set<byte[]> zrangeByScore(byte[] key, byte[] min, byte[] max);
+  Set!(byte[]) zrangeByScore(byte[] key, byte[] min, byte[] max);
 
-  Set<byte[]> zrevrangeByScore(byte[] key, double max, double min);
+  Set!(byte[]) zrevrangeByScore(byte[] key, double max, double min);
 
-  Set<byte[]> zrangeByScore(byte[] key, double min, double max, int offset, int count);
+  Set!(byte[]) zrangeByScore(byte[] key, double min, double max, int offset, int count);
 
-  Set<byte[]> zrevrangeByScore(byte[] key, byte[] max, byte[] min);
+  Set!(byte[]) zrevrangeByScore(byte[] key, byte[] max, byte[] min);
 
-  Set<byte[]> zrangeByScore(byte[] key, byte[] min, byte[] max, int offset, int count);
+  Set!(byte[]) zrangeByScore(byte[] key, byte[] min, byte[] max, int offset, int count);
 
-  Set<byte[]> zrevrangeByScore(byte[] key, double max, double min, int offset, int count);
+  Set!(byte[]) zrevrangeByScore(byte[] key, double max, double min, int offset, int count);
 
-  Set<Tuple> zrangeByScoreWithScores(byte[] key, double min, double max);
+  Set!(Tuple) zrangeByScoreWithScores(byte[] key, double min, double max);
 
-  Set<Tuple> zrevrangeByScoreWithScores(byte[] key, double max, double min);
+  Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, double max, double min);
 
-  Set<Tuple> zrangeByScoreWithScores(byte[] key, double min, double max, int offset, int count);
+  Set!(Tuple) zrangeByScoreWithScores(byte[] key, double min, double max, int offset, int count);
 
-  Set<byte[]> zrevrangeByScore(byte[] key, byte[] max, byte[] min, int offset, int count);
+  Set!(byte[]) zrevrangeByScore(byte[] key, byte[] max, byte[] min, int offset, int count);
 
-  Set<Tuple> zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max);
+  Set!(Tuple) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max);
 
-  Set<Tuple> zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min);
+  Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min);
 
-  Set<Tuple> zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max, int offset, int count);
+  Set!(Tuple) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max, int offset, int count);
 
-  Set<Tuple> zrevrangeByScoreWithScores(byte[] key, double max, double min, int offset, int count);
+  Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, double max, double min, int offset, int count);
 
-  Set<Tuple> zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min, int offset, int count);
+  Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min, int offset, int count);
 
   Long zremrangeByRank(byte[] key, long start, long stop);
 
@@ -227,14 +227,14 @@ public interface BinaryRedisClusterCommands {
 
   Long zlexcount(byte[] key, byte[] min, byte[] max);
 
-  Set<byte[]> zrangeByLex(byte[] key, byte[] min, byte[] max);
+  Set!(byte[]) zrangeByLex(byte[] key, byte[] min, byte[] max);
 
-  Set<byte[]> zrangeByLex(byte[] key, byte[] min, byte[] max, int offset,
+  Set!(byte[]) zrangeByLex(byte[] key, byte[] min, byte[] max, int offset,
       int count);
 
-  Set<byte[]> zrevrangeByLex(byte[] key, byte[] max, byte[] min);
+  Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min);
 
-  Set<byte[]> zrevrangeByLex(byte[] key, byte[] max, byte[] min, int offset,
+  Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min, int offset,
       int count);
 
   Long zremrangeByLex(byte[] key, byte[] min, byte[] max);
@@ -263,49 +263,49 @@ public interface BinaryRedisClusterCommands {
 
   Long geoadd(byte[] key, double longitude, double latitude, byte[] member);
 
-  Long geoadd(byte[] key, Map<byte[], GeoCoordinate> memberCoordinateMap);
+  Long geoadd(byte[] key, Map!(byte[], GeoCoordinate) memberCoordinateMap);
 
   Double geodist(byte[] key, byte[] member1, byte[] member2);
 
   Double geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit);
 
-  List<byte[]> geohash(byte[] key, byte[]... members);
+  List!(byte[]) geohash(byte[] key, byte[]... members);
 
-  List<GeoCoordinate> geopos(byte[] key, byte[]... members);
+  List!(GeoCoordinate) geopos(byte[] key, byte[]... members);
 
-  List<GeoRadiusResponse> georadius(byte[] key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusReadonly(byte[] key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadiusReadonly(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit);
 
-  List<GeoRadiusResponse> georadius(byte[] key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusReadonly(byte[] key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadiusReadonly(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit);
+  List!(GeoRadiusResponse) georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit);
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit,
+  List!(GeoRadiusResponse) georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit,
       GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit,
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit,
       GeoRadiusParam param);
 
-  ScanResult<Map.Entry<byte[], byte[]>> hscan(byte[] key, byte[] cursor);
+  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor);
 
-  ScanResult<Map.Entry<byte[], byte[]>> hscan(byte[] key, byte[] cursor, ScanParams params);
+  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor, ScanParams params);
 
-  ScanResult<byte[]> sscan(byte[] key, byte[] cursor);
+  ScanResult!(byte[]) sscan(byte[] key, byte[] cursor);
 
-  ScanResult<byte[]> sscan(byte[] key, byte[] cursor, ScanParams params);
+  ScanResult!(byte[]) sscan(byte[] key, byte[] cursor, ScanParams params);
 
-  ScanResult<Tuple> zscan(byte[] key, byte[] cursor);
+  ScanResult!(Tuple) zscan(byte[] key, byte[] cursor);
 
-  ScanResult<Tuple> zscan(byte[] key, byte[] cursor, ScanParams params);
+  ScanResult!(Tuple) zscan(byte[] key, byte[] cursor, ScanParams params);
 
   /**
    * Executes BITFIELD Redis command
@@ -313,7 +313,7 @@ public interface BinaryRedisClusterCommands {
    * @param arguments
    * @return 
    */
-  List<Long> bitfield(byte[] key, byte[]... arguments);
+  List!(Long) bitfield(byte[] key, byte[]... arguments);
   
   /**
    * Used for HSTRLEN Redis command
@@ -323,13 +323,13 @@ public interface BinaryRedisClusterCommands {
    */
   Long hstrlen(byte[] key, byte[] field);
   
-  byte[] xadd(final byte[] key, final byte[] id, final Map<byte[], byte[]> hash, long maxLen, boolean approximateLength);
+  byte[] xadd(final byte[] key, final byte[] id, final Map!(byte[], byte[]) hash, long maxLen, boolean approximateLength);
 
   Long xlen(final byte[] key);
  
-  List<byte[]> xrange(final byte[] key, final byte[] start, final byte[] end, final long count);
+  List!(byte[]) xrange(final byte[] key, final byte[] start, final byte[] end, final long count);
 
-  List<byte[]> xrevrange(final byte[] key, final byte[] end, final byte[] start, final int count);
+  List!(byte[]) xrevrange(final byte[] key, final byte[] end, final byte[] start, final int count);
 
   Long xack(final byte[] key, final byte[] group, final byte[]... ids);
  
@@ -345,9 +345,9 @@ public interface BinaryRedisClusterCommands {
 
   Long xtrim(byte[] key, long maxLen, boolean approximateLength);
 
-  List<byte[]> xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername);
+  List!(byte[]) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername);
 
-  List<byte[]> xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids);
+  List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids);
 
   Long waitReplicas(byte[] key, final int replicas, final long timeout);
 

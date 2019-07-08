@@ -17,7 +17,7 @@ public class GeoCoordinate {
     return latitude;
   }
 
-  @Override
+  override
   public boolean equals(Object o) {
     if (o == null) return false;
     if (o == this) return true;
@@ -29,8 +29,8 @@ public class GeoCoordinate {
     return Double.compare(that.latitude, latitude) == 0;
   }
 
-  @Override
-  public int hashCode() {
+  override
+  public size_t toHash() @trusted nothrow() {
     // follows IntelliJ default hashCode implementation
     int result;
     long temp;
@@ -41,7 +41,7 @@ public class GeoCoordinate {
     return result;
   }
 
-  @Override
+  override
   public String toString() {
     return "(" + longitude + "," + latitude + ")";
   }

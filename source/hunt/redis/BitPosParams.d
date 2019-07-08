@@ -6,7 +6,7 @@ import hunt.collection.Collections;
 import hunt.collection.List;
 
 public class BitPosParams {
-  private List<byte[]> params = new ArrayList<byte[]>();
+  private List!(byte[]) params = new ArrayList!(byte[])();
 
   protected BitPosParams() {
   }
@@ -21,7 +21,7 @@ public class BitPosParams {
     params.add(Protocol.toByteArray(end));
   }
 
-  public Collection<byte[]> getParams() {
+  public Collection!(byte[]) getParams() {
     return Collections.unmodifiableCollection(params);
   }
 }

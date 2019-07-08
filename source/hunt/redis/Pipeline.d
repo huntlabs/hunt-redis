@@ -6,18 +6,18 @@ import hunt.collection.List;
 
 import hunt.redis.exceptions.RedisDataException;
 
-public class Pipeline extends MultiKeyPipelineBase implements Closeable {
+public class Pipeline : MultiKeyPipelineBase implements Closeable {
 
   private MultiResponseBuilder currentMulti;
 
-  private class MultiResponseBuilder extends Builder<List<Object>> {
+  private class MultiResponseBuilder : Builder!(List!(Object)) {
     private List<Response<?>> responses = new ArrayList<Response<?>>();
 
-    @Override
-    public List<Object> build(Object data) {
+    override
+    public List!(Object) build(Object data) {
       @SuppressWarnings("unchecked")
-      List<Object> list = (List<Object>) data;
-      List<Object> values = new ArrayList<Object>();
+      List!(Object) list = (List!(Object)) data;
+      List!(Object) values = new ArrayList!(Object)();
 
       if (list.size() != responses.size()) {
         throw new RedisDataException("Expected data size " + responses.size() + " but was "
@@ -49,12 +49,12 @@ public class Pipeline extends MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  @Override
-  protected <T> Response<T> getResponse(Builder<T> builder) {
+  override
+  protected <T> Response!(T) getResponse(Builder!(T) builder) {
     if (currentMulti != null) {
       super.getResponse(BuilderFactory.STRING); // Expected QUEUED
 
-      Response<T> lr = new Response<T>(builder);
+      Response!(T) lr = new Response!(T)(builder);
       currentMulti.addResponse(lr);
       return lr;
     } else {
@@ -66,12 +66,12 @@ public class Pipeline extends MultiKeyPipelineBase implements Closeable {
     this.client = client;
   }
 
-  @Override
+  override
   protected Client getClient(byte[] key) {
     return client;
   }
 
-  @Override
+  override
   protected Client getClient(String key) {
     return client;
   }
@@ -95,8 +95,8 @@ public class Pipeline extends MultiKeyPipelineBase implements Closeable {
    */
   public void sync() {
     if (getPipelinedResponseLength() > 0) {
-      List<Object> unformatted = client.getMany(getPipelinedResponseLength());
-      for (Object o : unformatted) {
+      List!(Object) unformatted = client.getMany(getPipelinedResponseLength());
+      foreach(Object o ; unformatted) {
         generateResponse(o);
       }
     }
@@ -108,11 +108,11 @@ public class Pipeline extends MultiKeyPipelineBase implements Closeable {
    * responses and generate the right response type (usually it is a waste of time).
    * @return A list of all the responses in the order you executed them.
    */
-  public List<Object> syncAndReturnAll() {
+  public List!(Object) syncAndReturnAll() {
     if (getPipelinedResponseLength() > 0) {
-      List<Object> unformatted = client.getMany(getPipelinedResponseLength());
-      List<Object> formatted = new ArrayList<Object>();
-      for (Object o : unformatted) {
+      List!(Object) unformatted = client.getMany(getPipelinedResponseLength());
+      List!(Object) formatted = new ArrayList!(Object)();
+      foreach(Object o ; unformatted) {
         try {
           formatted.add(generateResponse(o).get());
         } catch (RedisDataException e) {
@@ -125,34 +125,34 @@ public class Pipeline extends MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  public Response<String> discard() {
+  public Response!(String) discard() {
     if (currentMulti == null) throw new RedisDataException("DISCARD without MULTI");
     client.discard();
     currentMulti = null;
     return getResponse(BuilderFactory.STRING);
   }
 
-  public Response<List<Object>> exec() {
+  public Response!(List!(Object)) exec() {
     if (currentMulti == null) throw new RedisDataException("EXEC without MULTI");
 
     client.exec();
-    Response<List<Object>> response = super.getResponse(currentMulti);
+    Response!(List!(Object)) response = super.getResponse(currentMulti);
     currentMulti.setResponseDependency(response);
     currentMulti = null;
     return response;
   }
 
-  public Response<String> multi() {
+  public Response!(String) multi() {
     if (currentMulti != null) throw new RedisDataException("MULTI calls can not be nested");
 
     client.multi();
-    Response<String> response = getResponse(BuilderFactory.STRING); // Expecting
+    Response!(String) response = getResponse(BuilderFactory.STRING); // Expecting
     // OK
     currentMulti = new MultiResponseBuilder();
     return response;
   }
 
-  @Override
+  override
   public void close() {
     clear();
   }

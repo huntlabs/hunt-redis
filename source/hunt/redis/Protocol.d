@@ -19,19 +19,19 @@ import hunt.redis.util.SafeEncoder;
 
 public final class Protocol {
 
-  private static final String ASK_PREFIX = "ASK ";
-  private static final String MOVED_PREFIX = "MOVED ";
-  private static final String CLUSTERDOWN_PREFIX = "CLUSTERDOWN ";
-  private static final String BUSY_PREFIX = "BUSY ";
-  private static final String NOSCRIPT_PREFIX = "NOSCRIPT ";
+  private enum string ASK_PREFIX = "ASK ";
+  private enum string MOVED_PREFIX = "MOVED ";
+  private enum string CLUSTERDOWN_PREFIX = "CLUSTERDOWN ";
+  private enum string BUSY_PREFIX = "BUSY ";
+  private enum string NOSCRIPT_PREFIX = "NOSCRIPT ";
 
-  public static final String DEFAULT_HOST = "localhost";
-  public static final int DEFAULT_PORT = 6379;
-  public static final int DEFAULT_SENTINEL_PORT = 26379;
-  public static final int DEFAULT_TIMEOUT = 2000;
-  public static final int DEFAULT_DATABASE = 0;
+  public enum string DEFAULT_HOST = "localhost";
+  public enum int DEFAULT_PORT = 6379;
+  public enum int DEFAULT_SENTINEL_PORT = 26379;
+  public enum int DEFAULT_TIMEOUT = 2000;
+  public enum int DEFAULT_DATABASE = 0;
 
-  public static final String CHARSET = "UTF-8";
+  public enum string CHARSET = "UTF-8";
 
   public static final byte DOLLAR_BYTE = '$';
   public static final byte ASTERISK_BYTE = '*';
@@ -39,39 +39,39 @@ public final class Protocol {
   public static final byte MINUS_BYTE = '-';
   public static final byte COLON_BYTE = ':';
 
-  public static final String SENTINEL_MASTERS = "masters";
-  public static final String SENTINEL_GET_MASTER_ADDR_BY_NAME = "get-master-addr-by-name";
-  public static final String SENTINEL_RESET = "reset";
-  public static final String SENTINEL_SLAVES = "slaves";
-  public static final String SENTINEL_FAILOVER = "failover";
-  public static final String SENTINEL_MONITOR = "monitor";
-  public static final String SENTINEL_REMOVE = "remove";
-  public static final String SENTINEL_SET = "set";
+  public enum string SENTINEL_MASTERS = "masters";
+  public enum string SENTINEL_GET_MASTER_ADDR_BY_NAME = "get-master-addr-by-name";
+  public enum string SENTINEL_RESET = "reset";
+  public enum string SENTINEL_SLAVES = "slaves";
+  public enum string SENTINEL_FAILOVER = "failover";
+  public enum string SENTINEL_MONITOR = "monitor";
+  public enum string SENTINEL_REMOVE = "remove";
+  public enum string SENTINEL_SET = "set";
 
-  public static final String CLUSTER_NODES = "nodes";
-  public static final String CLUSTER_MEET = "meet";
-  public static final String CLUSTER_RESET = "reset";
-  public static final String CLUSTER_ADDSLOTS = "addslots";
-  public static final String CLUSTER_DELSLOTS = "delslots";
-  public static final String CLUSTER_INFO = "info";
-  public static final String CLUSTER_GETKEYSINSLOT = "getkeysinslot";
-  public static final String CLUSTER_SETSLOT = "setslot";
-  public static final String CLUSTER_SETSLOT_NODE = "node";
-  public static final String CLUSTER_SETSLOT_MIGRATING = "migrating";
-  public static final String CLUSTER_SETSLOT_IMPORTING = "importing";
-  public static final String CLUSTER_SETSLOT_STABLE = "stable";
-  public static final String CLUSTER_FORGET = "forget";
-  public static final String CLUSTER_FLUSHSLOT = "flushslots";
-  public static final String CLUSTER_KEYSLOT = "keyslot";
-  public static final String CLUSTER_COUNTKEYINSLOT = "countkeysinslot";
-  public static final String CLUSTER_SAVECONFIG = "saveconfig";
-  public static final String CLUSTER_REPLICATE = "replicate";
-  public static final String CLUSTER_SLAVES = "slaves";
-  public static final String CLUSTER_FAILOVER = "failover";
-  public static final String CLUSTER_SLOTS = "slots";
-  public static final String PUBSUB_CHANNELS = "channels";
-  public static final String PUBSUB_NUMSUB = "numsub";
-  public static final String PUBSUB_NUM_PAT = "numpat";
+  public enum string CLUSTER_NODES = "nodes";
+  public enum string CLUSTER_MEET = "meet";
+  public enum string CLUSTER_RESET = "reset";
+  public enum string CLUSTER_ADDSLOTS = "addslots";
+  public enum string CLUSTER_DELSLOTS = "delslots";
+  public enum string CLUSTER_INFO = "info";
+  public enum string CLUSTER_GETKEYSINSLOT = "getkeysinslot";
+  public enum string CLUSTER_SETSLOT = "setslot";
+  public enum string CLUSTER_SETSLOT_NODE = "node";
+  public enum string CLUSTER_SETSLOT_MIGRATING = "migrating";
+  public enum string CLUSTER_SETSLOT_IMPORTING = "importing";
+  public enum string CLUSTER_SETSLOT_STABLE = "stable";
+  public enum string CLUSTER_FORGET = "forget";
+  public enum string CLUSTER_FLUSHSLOT = "flushslots";
+  public enum string CLUSTER_KEYSLOT = "keyslot";
+  public enum string CLUSTER_COUNTKEYINSLOT = "countkeysinslot";
+  public enum string CLUSTER_SAVECONFIG = "saveconfig";
+  public enum string CLUSTER_REPLICATE = "replicate";
+  public enum string CLUSTER_SLAVES = "slaves";
+  public enum string CLUSTER_FAILOVER = "failover";
+  public enum string CLUSTER_SLOTS = "slots";
+  public enum string PUBSUB_CHANNELS = "channels";
+  public enum string PUBSUB_NUMSUB = "numsub";
+  public enum string PUBSUB_NUM_PAT = "numpat";
 
   public static final byte[] BYTES_TRUE = toByteArray(1);
   public static final byte[] BYTES_FALSE = toByteArray(0);
@@ -200,12 +200,12 @@ public final class Protocol {
     return is.readLongCrLf();
   }
 
-  private static List<Object> processMultiBulkReply(final RedisInputStream is) {
+  private static List!(Object) processMultiBulkReply(final RedisInputStream is) {
     final int num = is.readIntCrLf();
     if (num == -1) {
       return null;
     }
-    final List<Object> ret = new ArrayList<Object>(num);
+    final List!(Object) ret = new ArrayList!(Object)(num);
     for (int i = 0; i < num; i++) {
       try {
         ret.add(process(is));
@@ -267,7 +267,7 @@ public final class Protocol {
       raw = SafeEncoder.encode(this.name());
     }
 
-    @Override
+    override
     public byte[] getRaw() {
       return raw;
     }

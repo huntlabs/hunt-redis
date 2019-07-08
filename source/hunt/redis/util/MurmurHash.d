@@ -22,7 +22,7 @@ import java.nio.ByteOrder;
  * getopt org).
  * </p>
  */
-public class MurmurHash implements Hashing {
+public class MurmurHash : Hashing {
   /**
    * Hashes bytes in an array.
    * @param data The bytes to hash.
@@ -136,12 +136,12 @@ public class MurmurHash implements Hashing {
     return h;
   }
 
-  @Override
+  override
   public long hash(byte[] key) {
     return hash64A(key, 0x1234ABCD);
   }
 
-  @Override
+  override
   public long hash(String key) {
     return hash(SafeEncoder.encode(key));
   }

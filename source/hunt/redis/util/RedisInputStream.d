@@ -21,7 +21,7 @@ import hunt.redis.exceptions.RedisConnectionException;
  * conventions regarding CRLF line termination. It also assumes that if the Protocol layer requires
  * a byte that if that byte is not there it is a stream error.
  */
-public class RedisInputStream extends FilterInputStream {
+public class RedisInputStream : FilterInputStream {
 
   protected final byte[] buf;
 
@@ -179,7 +179,7 @@ public class RedisInputStream extends FilterInputStream {
     return (isNeg ? -value : value);
   }
 
-  @Override
+  override
   public int read(byte[] b, int off, int len) throws RedisConnectionException {
     ensureFill();
 

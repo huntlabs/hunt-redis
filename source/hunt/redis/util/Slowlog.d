@@ -7,18 +7,18 @@ public class Slowlog {
   private final long id;
   private final long timeStamp;
   private final long executionTime;
-  private final List<String> args;
-  private static final String COMMA = ",";
+  private final List!(String) args;
+  private enum string COMMA = ",";
 
   @SuppressWarnings("unchecked")
-  private Slowlog(List<Object> properties) {
+  private Slowlog(List!(Object) properties) {
     super();
     this.id = (Long) properties.get(0);
     this.timeStamp = (Long) properties.get(1);
     this.executionTime = (Long) properties.get(2);
 
-    List<byte[]> bargs = (List<byte[]>) properties.get(3);
-    this.args = new ArrayList<String>(bargs.size());
+    List!(byte[]) bargs = (List!(byte[])) properties.get(3);
+    this.args = new ArrayList!(String)(bargs.size());
 
     for (byte[] barg : bargs) {
       this.args.add(SafeEncoder.encode(barg));
@@ -26,10 +26,10 @@ public class Slowlog {
   }
 
   @SuppressWarnings("unchecked")
-  public static List<Slowlog> from(List<Object> nestedMultiBulkReply) {
-    List<Slowlog> logs = new ArrayList<Slowlog>(nestedMultiBulkReply.size());
-    for (Object obj : nestedMultiBulkReply) {
-      List<Object> properties = (List<Object>) obj;
+  public static List!(Slowlog) from(List!(Object) nestedMultiBulkReply) {
+    List!(Slowlog) logs = new ArrayList!(Slowlog)(nestedMultiBulkReply.size());
+    foreach(Object obj ; nestedMultiBulkReply) {
+      List!(Object) properties = (List!(Object)) obj;
       logs.add(new Slowlog(properties));
     }
 
@@ -48,11 +48,11 @@ public class Slowlog {
     return executionTime;
   }
 
-  public List<String> getArgs() {
+  public List!(String) getArgs() {
     return args;
   }
 
-  @Override
+  override
   public String toString() {
     return new StringBuilder().append(id).append(COMMA).append(timeStamp).append(COMMA)
         .append(executionTime).append(COMMA).append(args).toString();

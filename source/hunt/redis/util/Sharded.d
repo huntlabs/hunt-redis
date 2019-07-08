@@ -10,12 +10,12 @@ import hunt.collection.TreeMap;
 
 import std.regex;
 
-public class Sharded<R, S extends ShardInfo<R>> {
+public class Sharded!(R, S extends ShardInfo!(R)) {
 
-  public static final int DEFAULT_WEIGHT = 1;
-  private TreeMap<Long, S> nodes;
+  public enum int DEFAULT_WEIGHT = 1;
+  private TreeMap!(Long, S) nodes;
   private final Hashing algo;
-  private final Map<ShardInfo<R>, R> resources = new LinkedHashMap<ShardInfo<R>, R>();
+  private final Map!(ShardInfo!(R), R) resources = new LinkedHashMap!(ShardInfo!(R), R)();
 
   /**
    * The default pattern used for extracting a key tag. The pattern must have a group (between
@@ -26,30 +26,30 @@ public class Sharded<R, S extends ShardInfo<R>> {
   // the tag is anything between {}
   public static final Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");
 
-  public Sharded(List<S> shards) {
+  public Sharded(List!(S) shards) {
     this(shards, Hashing.MURMUR_HASH); // MD5 is really not good as we works
     // with 64-bits not 128
   }
 
-  public Sharded(List<S> shards, Hashing algo) {
+  public Sharded(List!(S) shards, Hashing algo) {
     this.algo = algo;
     initialize(shards);
   }
 
-  public Sharded(List<S> shards, Pattern tagPattern) {
+  public Sharded(List!(S) shards, Pattern tagPattern) {
     this(shards, Hashing.MURMUR_HASH, tagPattern); // MD5 is really not good
     // as we works with
     // 64-bits not 128
   }
 
-  public Sharded(List<S> shards, Hashing algo, Pattern tagPattern) {
+  public Sharded(List!(S) shards, Hashing algo, Pattern tagPattern) {
     this.algo = algo;
     this.tagPattern = tagPattern;
     initialize(shards);
   }
 
-  private void initialize(List<S> shards) {
-    nodes = new TreeMap<Long, S>();
+  private void initialize(List!(S) shards) {
+    nodes = new TreeMap!(Long, S)();
 
     for (int i = 0; i != shards.size(); ++i) {
       final S shardInfo = shards.get(i);
@@ -72,7 +72,7 @@ public class Sharded<R, S extends ShardInfo<R>> {
   }
 
   public S getShardInfo(byte[] key) {
-    SortedMap<Long, S> tail = nodes.tailMap(algo.hash(key));
+    SortedMap!(Long, S) tail = nodes.tailMap(algo.hash(key));
     if (tail.isEmpty()) {
       return nodes.get(nodes.firstKey());
     }
@@ -98,11 +98,11 @@ public class Sharded<R, S extends ShardInfo<R>> {
     return key;
   }
 
-  public Collection<S> getAllShardInfo() {
+  public Collection!(S) getAllShardInfo() {
     return Collections.unmodifiableCollection(nodes.values());
   }
 
-  public Collection<R> getAllShards() {
+  public Collection!(R) getAllShards() {
     return Collections.unmodifiableCollection(resources.values());
   }
 }

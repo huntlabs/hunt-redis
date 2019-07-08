@@ -5,10 +5,10 @@ import hunt.collection.Linkedlist;
 import hunt.collection.List;
 import hunt.collection.Queue;
 
-public class ShardedRedisPipeline extends PipelineBase {
+public class ShardedRedisPipeline : PipelineBase {
   private BinaryShardedRedis jedis;
-  private List<FutureResult> results = new ArrayList<FutureResult>();
-  private Queue<Client> clients = new LinkedList<Client>();
+  private List!(FutureResult) results = new ArrayList!(FutureResult)();
+  private Queue!(Client) clients = new LinkedList!(Client)();
 
   private static class FutureResult {
     private Client client;
@@ -26,9 +26,9 @@ public class ShardedRedisPipeline extends PipelineBase {
     this.jedis = jedis;
   }
 
-  public List<Object> getResults() {
-    List<Object> r = new ArrayList<Object>();
-    for (FutureResult fr : results) {
+  public List!(Object) getResults() {
+    List!(Object) r = new ArrayList!(Object)();
+    foreach(FutureResult fr ; results) {
       r.add(fr.get());
     }
     return r;
@@ -40,7 +40,7 @@ public class ShardedRedisPipeline extends PipelineBase {
    * commands you execute.
    */
   public void sync() {
-    for (Client client : clients) {
+    foreach(Client client ; clients) {
       generateResponse(client.getOne());
     }
   }
@@ -51,15 +51,15 @@ public class ShardedRedisPipeline extends PipelineBase {
    * through all the responses and generate the right response type (usually it is a waste of time).
    * @return A list of all the responses in the order you executed them.
    */
-  public List<Object> syncAndReturnAll() {
-    List<Object> formatted = new ArrayList<Object>();
-    for (Client client : clients) {
+  public List!(Object) syncAndReturnAll() {
+    List!(Object) formatted = new ArrayList!(Object)();
+    foreach(Client client ; clients) {
       formatted.add(generateResponse(client.getOne()).get());
     }
     return formatted;
   }
 
-  @Override
+  override
   protected Client getClient(String key) {
     Client client = jedis.getShard(key).getClient();
     clients.add(client);
@@ -67,7 +67,7 @@ public class ShardedRedisPipeline extends PipelineBase {
     return client;
   }
 
-  @Override
+  override
   protected Client getClient(byte[] key) {
     Client client = jedis.getShard(key).getClient();
     clients.add(client);

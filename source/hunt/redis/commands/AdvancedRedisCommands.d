@@ -7,7 +7,7 @@ import hunt.redis.params.ClientKillParams;
 import hunt.redis.util.Slowlog;
 
 public interface AdvancedRedisCommands {
-  List<String> configGet(String pattern);
+  List!(String) configGet(String pattern);
 
   String configSet(String parameter, String value);
 
@@ -15,9 +15,9 @@ public interface AdvancedRedisCommands {
 
   Long slowlogLen();
 
-  List<Slowlog> slowlogGet();
+  List!(Slowlog) slowlogGet();
 
-  List<Slowlog> slowlogGet(long entries);
+  List!(Slowlog) slowlogGet(long entries);
 
   Long objectRefcount(String key);
 

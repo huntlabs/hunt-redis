@@ -1,7 +1,6 @@
 module hunt.redis.exceptions.RedisClusterMaxAttemptsException;
 
-public class RedisClusterMaxAttemptsException extends RedisClusterOperationException {
-  private static final long serialVersionUID = 167600616259092761L;
+public class RedisClusterMaxAttemptsException : RedisClusterOperationException {
 
   public RedisClusterMaxAttemptsException(String message) {
     super(message);

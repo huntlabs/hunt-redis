@@ -1,11 +1,11 @@
 module hunt.redis.params.ClientKillParams;
 
-public class ClientKillParams extends Params {
+public class ClientKillParams : Params {
 
-  private static final String ID = "ID";
-  private static final String TYPE = "TYPE";
-  private static final String ADDR = "ADDR";
-  private static final String SKIPME = "SKIPME";
+  private enum string ID = "ID";
+  private enum string TYPE = "TYPE";
+  private enum string ADDR = "ADDR";
+  private enum string SKIPME = "SKIPME";
 
   public static enum Type {
     NORMAL, MASTER, SLAVE, PUBSUB;

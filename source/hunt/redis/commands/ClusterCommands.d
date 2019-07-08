@@ -15,7 +15,7 @@ public interface ClusterCommands {
 
   String clusterInfo();
 
-  List<String> clusterGetKeysInSlot(int slot, int count);
+  List!(String) clusterGetKeysInSlot(int slot, int count);
 
   String clusterSetSlotNode(int slot, String nodeId);
 
@@ -37,11 +37,11 @@ public interface ClusterCommands {
 
   String clusterReplicate(String nodeId);
 
-  List<String> clusterSlaves(String nodeId);
+  List!(String) clusterSlaves(String nodeId);
 
   String clusterFailover();
 
-  List<Object> clusterSlots();
+  List!(Object) clusterSlots();
 
   String clusterReset(ClusterReset resetType);
 

@@ -17,7 +17,7 @@ import hunt.redis.util.SafeEncoder;
 
 public abstract class RedisPubSub {
 
-  private static final String JEDIS_SUBSCRIPTION_MESSAGE = "RedisPubSub is not subscribed to a Redis instance.";
+  private enum string JEDIS_SUBSCRIPTION_MESSAGE = "RedisPubSub is not subscribed to a Redis instance.";
   private int subscribedChannels = 0;
   private volatile Client client;
 
@@ -120,7 +120,7 @@ public abstract class RedisPubSub {
   private void process(Client client) {
 
     do {
-      List<Object> reply = client.getUnflushedObjectMultiBulkReply();
+      List!(Object) reply = client.getUnflushedObjectMultiBulkReply();
       final Object firstObj = reply.get(0);
       if (!(firstObj instanceof byte[])) {
         throw new RedisException("Unknown message type: " + firstObj);

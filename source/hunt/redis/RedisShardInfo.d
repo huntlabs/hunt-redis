@@ -5,7 +5,7 @@ import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.ShardInfo;
 import hunt.redis.util.Sharded;
 
-public class RedisShardInfo extends ShardInfo<Redis> {
+public class RedisShardInfo : ShardInfo!(Redis) {
 
   private int connectionTimeout;
   private int soTimeout;
@@ -176,7 +176,7 @@ public class RedisShardInfo extends ShardInfo<Redis> {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  @Override
+  override
   public String toString() {
     return host + ":" + port + "*" + getWeight();
   }
@@ -213,7 +213,7 @@ public class RedisShardInfo extends ShardInfo<Redis> {
     this.soTimeout = soTimeout;
   }
 
-  @Override
+  override
   public String getName() {
     return name;
   }
@@ -238,7 +238,7 @@ public class RedisShardInfo extends ShardInfo<Redis> {
     return hostnameVerifier;
   }
 
-  @Override
+  override
   public Redis createResource() {
     return new Redis(this);
   }

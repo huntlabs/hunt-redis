@@ -2,7 +2,7 @@ module hunt.redis.Response;
 
 import hunt.redis.exceptions.RedisDataException;
 
-public class Response<T> {
+public class Response!(T) {
   protected T response = null;
   protected RedisDataException exception = null;
 
@@ -10,11 +10,11 @@ public class Response<T> {
   private boolean built = false;
   private boolean set = false;
 
-  private Builder<T> builder;
+  private Builder!(T) builder;
   private Object data;
   private Response<?> dependency = null;
 
-  public Response(Builder<T> b) {
+  public Response(Builder!(T) b) {
     this.builder = b;
   }
 
@@ -69,7 +69,7 @@ public class Response<T> {
     }
   }
 
-  @Override
+  override
   public String toString() {
     return "Response " + builder.toString();
   }

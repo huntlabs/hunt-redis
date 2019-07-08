@@ -5,22 +5,22 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import hunt.redis.util.Pool;
 
-public class RedisPoolAbstract extends Pool<Redis> {
+public class RedisPoolAbstract : Pool!(Redis) {
 
   public RedisPoolAbstract() {
     super();
   }
 
-  public RedisPoolAbstract(GenericObjectPoolConfig poolConfig, PooledObjectFactory<Redis> factory) {
+  public RedisPoolAbstract(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(Redis) factory) {
     super(poolConfig, factory);
   }
 
-  @Override
+  override
   protected void returnBrokenResource(Redis resource) {
     super.returnBrokenResource(resource);
   }
 
-  @Override
+  override
   protected void returnResource(Redis resource) {
     super.returnResource(resource);
   }

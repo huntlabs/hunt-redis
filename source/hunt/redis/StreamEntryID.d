@@ -2,9 +2,8 @@ module hunt.redis.StreamEntryID;
 
 import java.io.IOException;
 
-public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
+public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   
-  private static final long serialVersionUID = 1L;
 
   /**
   * Should be used only with XADD  
@@ -15,9 +14,8 @@ public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
   */
   public static final StreamEntryID NEW_ENTRY = new StreamEntryID() {
     
-    private static final long serialVersionUID = 1L;
     
-    @Override
+    override
     public String toString(){
       return "*";
     }
@@ -33,9 +31,8 @@ public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
   */
   public static final StreamEntryID LAST_ENTRY = new StreamEntryID() {
     
-    private static final long serialVersionUID = 1L;
     
-    @Override
+    override
     public String toString(){
       return "$";
     }
@@ -49,9 +46,8 @@ public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
    */
   public static final StreamEntryID UNRECEIVED_ENTRY = new StreamEntryID() {
     
-    private static final long serialVersionUID = 1L;
     
-    @Override
+    override
     public String toString(){
       return ">";
     }
@@ -75,12 +71,12 @@ public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
     this.sequence = sequence;
   }
 
-  @Override
+  override
   public String toString() {
     return time + "-" + sequence;
   }
 
-  @Override
+  override
   public boolean equals(Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
@@ -89,12 +85,12 @@ public class StreamEntryID implements Comparable<StreamEntryID>, Serializable{
     return this.time == other.time && this.sequence == other.sequence;
   }
   
-  @Override
-  public int hashCode() {
+  override
+  public size_t toHash() @trusted nothrow() {
     return this.toString().hashCode();
   }
 
-  @Override
+  override
   public int compareTo(StreamEntryID other) {
     int timeComapre = Long.compare(this.time, other.time);
     return timeComapre != 0 ? timeComapre : Long.compare(this.sequence, other.sequence);

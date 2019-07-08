@@ -9,7 +9,7 @@ import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 import hunt.redis.exceptions.RedisRedirectionException;
 import hunt.redis.util.RedisClusterCRC16;
 
-public abstract class RedisClusterCommand<T> {
+public abstract class RedisClusterCommand!(T) {
 
   private final RedisClusterConnectionHandler connectionHandler;
   private final int maxAttempts;

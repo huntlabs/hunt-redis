@@ -14,8 +14,8 @@ import hunt.redis.exceptions.RedisException;
 import hunt.redis.util.SafeEncoder;
 
 public class RedisClusterInfoCache {
-  private final Map<String, RedisPool> nodes = new HashMap<String, RedisPool>();
-  private final Map<Integer, RedisPool> slots = new HashMap<Integer, RedisPool>();
+  private final Map!(String, RedisPool) nodes = new HashMap!(String, RedisPool)();
+  private final Map!(Integer, RedisPool) slots = new HashMap!(Integer, RedisPool)();
 
   private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
   private final Lock r = rwl.readLock();
@@ -34,7 +34,7 @@ public class RedisClusterInfoCache {
   private HostnameVerifier hostnameVerifier;
   private RedisClusterHostAndPortMap hostAndPortMap;
 
-  private static final int MASTER_NODE_INDEX = 2;
+  private enum int MASTER_NODE_INDEX = 2;
 
   public RedisClusterInfoCache(final GenericObjectPoolConfig poolConfig, int timeout) {
     this(poolConfig, timeout, timeout, null, null);
@@ -66,21 +66,21 @@ public class RedisClusterInfoCache {
 
     try {
       reset();
-      List<Object> slots = jedis.clusterSlots();
+      List!(Object) slots = jedis.clusterSlots();
 
-      for (Object slotInfoObj : slots) {
-        List<Object> slotInfo = (List<Object>) slotInfoObj;
+      foreach(Object slotInfoObj ; slots) {
+        List!(Object) slotInfo = (List!(Object)) slotInfoObj;
 
         if (slotInfo.size() <= MASTER_NODE_INDEX) {
           continue;
         }
 
-        List<Integer> slotNums = getAssignedSlotArray(slotInfo);
+        List!(Integer) slotNums = getAssignedSlotArray(slotInfo);
 
         // hostInfos
         int size = slotInfo.size();
         for (int i = MASTER_NODE_INDEX; i < size; i++) {
-          List<Object> hostInfos = (List<Object>) slotInfo.get(i);
+          List!(Object) hostInfos = (List!(Object)) slotInfo.get(i);
           if (hostInfos.size() <= 0) {
             continue;
           }
@@ -115,7 +115,7 @@ public class RedisClusterInfoCache {
               }
             }
 
-            for (RedisPool jp : getShuffledNodesPool()) {
+            foreach(RedisPool jp ; getShuffledNodesPool()) {
               Redis j = null;
               try {
                 j = jp.getResource();
@@ -140,20 +140,20 @@ public class RedisClusterInfoCache {
   }
 
   private void discoverClusterSlots(Redis jedis) {
-    List<Object> slots = jedis.clusterSlots();
+    List!(Object) slots = jedis.clusterSlots();
     this.slots.clear();
 
-    for (Object slotInfoObj : slots) {
-      List<Object> slotInfo = (List<Object>) slotInfoObj;
+    foreach(Object slotInfoObj ; slots) {
+      List!(Object) slotInfo = (List!(Object)) slotInfoObj;
 
       if (slotInfo.size() <= MASTER_NODE_INDEX) {
         continue;
       }
 
-      List<Integer> slotNums = getAssignedSlotArray(slotInfo);
+      List!(Integer) slotNums = getAssignedSlotArray(slotInfo);
 
       // hostInfos
-      List<Object> hostInfos = (List<Object>) slotInfo.get(MASTER_NODE_INDEX);
+      List!(Object) hostInfos = (List!(Object)) slotInfo.get(MASTER_NODE_INDEX);
       if (hostInfos.isEmpty()) {
         continue;
       }
@@ -164,7 +164,7 @@ public class RedisClusterInfoCache {
     }
   }
 
-  private HostAndPort generateHostAndPort(List<Object> hostInfos) {
+  private HostAndPort generateHostAndPort(List!(Object) hostInfos) {
     String host = SafeEncoder.encode((byte[]) hostInfos.get(0));
     int port = ((Long) hostInfos.get(1)).intValue();
     if (ssl && hostAndPortMap != null) {
@@ -203,11 +203,11 @@ public class RedisClusterInfoCache {
     }
   }
 
-  public void assignSlotsToNode(List<Integer> targetSlots, HostAndPort targetNode) {
+  public void assignSlotsToNode(List!(Integer) targetSlots, HostAndPort targetNode) {
     w.lock();
     try {
       RedisPool targetPool = setupNodeIfNotExist(targetNode);
-      for (Integer slot : targetSlots) {
+      foreach(Integer slot ; targetSlots) {
         slots.put(slot, targetPool);
       }
     } finally {
@@ -233,19 +233,19 @@ public class RedisClusterInfoCache {
     }
   }
 
-  public Map<String, RedisPool> getNodes() {
+  public Map!(String, RedisPool) getNodes() {
     r.lock();
     try {
-      return new HashMap<String, RedisPool>(nodes);
+      return new HashMap!(String, RedisPool)(nodes);
     } finally {
       r.unlock();
     }
   }
 
-  public List<RedisPool> getShuffledNodesPool() {
+  public List!(RedisPool) getShuffledNodesPool() {
     r.lock();
     try {
-      List<RedisPool> pools = new ArrayList<RedisPool>(nodes.values());
+      List!(RedisPool) pools = new ArrayList!(RedisPool)(nodes.values());
       Collections.shuffle(pools);
       return pools;
     } finally {
@@ -259,7 +259,7 @@ public class RedisClusterInfoCache {
   public void reset() {
     w.lock();
     try {
-      for (RedisPool pool : nodes.values()) {
+      foreach(RedisPool pool ; nodes.values()) {
         try {
           if (pool != null) {
             pool.destroy();
@@ -287,8 +287,8 @@ public class RedisClusterInfoCache {
     return getNodeKey(jedis.getClient());
   }
 
-  private List<Integer> getAssignedSlotArray(List<Object> slotInfo) {
-    List<Integer> slotNums = new ArrayList<Integer>();
+  private List!(Integer) getAssignedSlotArray(List!(Object) slotInfo) {
+    List!(Integer) slotNums = new ArrayList!(Integer)();
     for (int slot = ((Long) slotInfo.get(0)).intValue(); slot <= ((Long) slotInfo.get(1))
         .intValue(); slot++) {
       slotNums.add(slot);

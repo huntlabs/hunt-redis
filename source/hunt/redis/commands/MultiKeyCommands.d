@@ -20,13 +20,13 @@ public interface MultiKeyCommands {
 
   Long exists(String... keys);
 
-  List<String> blpop(int timeout, String... keys);
+  List!(String) blpop(int timeout, String... keys);
 
-  List<String> brpop(int timeout, String... keys);
+  List!(String) brpop(int timeout, String... keys);
 
-  List<String> blpop(String... args);
+  List!(String) blpop(String... args);
 
-  List<String> brpop(String... args);
+  List!(String) brpop(String... args);
 
   /**
    * Returns all the keys matching the glob-style pattern. For example if
@@ -56,9 +56,9 @@ public interface MultiKeyCommands {
    * @return Multi bulk reply
    * @see <a href="https://redis.io/commands/keys">Redis KEYS documentation</a>
    */
-  Set<String> keys(String pattern);
+  Set!(String) keys(String pattern);
 
-  List<String> mget(String... keys);
+  List!(String) mget(String... keys);
 
   String mset(String... keysvalues);
 
@@ -70,11 +70,11 @@ public interface MultiKeyCommands {
 
   String rpoplpush(String srckey, String dstkey);
 
-  Set<String> sdiff(String... keys);
+  Set!(String) sdiff(String... keys);
 
   Long sdiffstore(String dstkey, String... keys);
 
-  Set<String> sinter(String... keys);
+  Set!(String) sinter(String... keys);
 
   Long sinterstore(String dstkey, String... keys);
 
@@ -84,7 +84,7 @@ public interface MultiKeyCommands {
 
   Long sort(String key, String dstkey);
 
-  Set<String> sunion(String... keys);
+  Set!(String) sunion(String... keys);
 
   Long sunionstore(String dstkey, String... keys);
 
@@ -118,7 +118,7 @@ public interface MultiKeyCommands {
    * @param cursor
    * @return 
    */
-  ScanResult<String> scan(String cursor);
+  ScanResult!(String) scan(String cursor);
 
   /**
    * Iterates the set of keys in the currently selected Redis database.
@@ -128,12 +128,12 @@ public interface MultiKeyCommands {
    * {@link RedisCommands#smembers(String)} )} that may block the server for a long time (even several seconds)
    * when called against big collections of keys or elements.
    * <p>
-   * SCAN basic usage<br>
+   * SCAN basic usage!(br)
    * SCAN is a cursor based iterator. This means that at every call of the command, the server returns an updated cursor
    * that the user needs to use as the cursor argument in the next call.
    * An iteration starts when the cursor is set to 0, and terminates when the cursor returned by the server is 0.
    * <p>
-   * Scan guarantees<br>
+   * Scan guarantees!(br)
    * The SCAN command, and the other commands in the SCAN family, are able to provide to the user a set of guarantees
    * associated to full iterations.
    * <ul>
@@ -161,7 +161,7 @@ public interface MultiKeyCommands {
    * @return the scan result with the results of this iteration and the new position of the cursor
    * @see <a href="https://redis.io/commands/scan">Redis SCAN documentation</a>
    */
-  ScanResult<String> scan(String cursor, ScanParams params);
+  ScanResult!(String) scan(String cursor, ScanParams params);
 
   String pfmerge(String destkey, String... sourcekeys);
 
@@ -178,7 +178,7 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry<String, List<StreamEntry>>> xread(int count, long block, Map.Entry<String, StreamEntryID>... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xread(int count, long block, Map.Entry!(String, StreamEntryID)... streams);
 
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -191,5 +191,5 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry<String, List<StreamEntry>>> xreadGroup(String groupname, String consumer, int count, long block, final boolean noAck, Map.Entry<String, StreamEntryID>... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xreadGroup(String groupname, String consumer, int count, long block, final boolean noAck, Map.Entry!(String, StreamEntryID)... streams);
 }

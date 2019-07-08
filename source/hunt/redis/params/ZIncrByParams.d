@@ -18,11 +18,11 @@ import hunt.collection.ArraryList;
  * <br/>
  * Works with Redis 3.0.2 and onwards.
  */
-public class ZIncrByParams extends Params {
+public class ZIncrByParams : Params {
 
-  private static final String XX = "xx";
-  private static final String NX = "nx";
-  private static final String INCR = "incr";
+  private enum string XX = "xx";
+  private enum string NX = "nx";
+  private enum string INCR = "incr";
 
   public ZIncrByParams() {
   }
@@ -50,7 +50,7 @@ public class ZIncrByParams extends Params {
   }
 
   public byte[][] getByteParams(byte[] key, byte[]... args) {
-    ArrayList<byte[]> byteParams = new ArrayList<byte[]>();
+    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     byteParams.add(key);
 
     if (contains(NX)) {

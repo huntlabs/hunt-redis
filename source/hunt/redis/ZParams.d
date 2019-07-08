@@ -21,7 +21,7 @@ public class ZParams {
     }
   }
 
-  private List<byte[]> params = new ArrayList<byte[]>();
+  private List!(byte[]) params = new ArrayList!(byte[])();
 
   /**
    * Set weights.
@@ -30,14 +30,14 @@ public class ZParams {
    */
   public ZParams weights(final double... weights) {
     params.add(WEIGHTS.raw);
-    for (final double weight : weights) {
+    foreach(final double weight ; weights) {
       params.add(Protocol.toByteArray(weight));
     }
 
     return this;
   }
 
-  public Collection<byte[]> getParams() {
+  public Collection!(byte[]) getParams() {
     return Collections.unmodifiableCollection(params);
   }
 

@@ -3,14 +3,13 @@ module hunt.redis.StreamEntry;
 import java.io.IOException;
 import hunt.collection.Map;
 
-public class StreamEntry implements Serializable{
+public class StreamEntry : Serializable{
   
-  private static final long serialVersionUID = 1L;
   
   private StreamEntryID id;
-  private Map<String, String> fields;
+  private Map!(String, String) fields;
   
-  public StreamEntry(StreamEntryID id, Map<String, String> fields) {
+  public StreamEntry(StreamEntryID id, Map!(String, String) fields) {
     this.id = id;
     this.fields = fields;
   }
@@ -19,11 +18,11 @@ public class StreamEntry implements Serializable{
     return id;
   }
   
-  public Map<String, String> getFields() {
+  public Map!(String, String) getFields() {
     return fields;
   }
   
-  @Override
+  override
   public String toString() {
     return id + " " + fields;
   }
@@ -35,6 +34,6 @@ public class StreamEntry implements Serializable{
   
   private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException{
     this.id = (StreamEntryID) in.readUnshared();
-    this.fields = (Map<String, String>) in.readUnshared();
+    this.fields = (Map!(String, String)) in.readUnshared();
   }
 }

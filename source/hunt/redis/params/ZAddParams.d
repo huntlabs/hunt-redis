@@ -4,11 +4,11 @@ import hunt.redis.util.SafeEncoder;
 
 import hunt.collection.ArraryList;
 
-public class ZAddParams extends Params {
+public class ZAddParams : Params {
 
-  private static final String XX = "xx";
-  private static final String NX = "nx";
-  private static final String CH = "ch";
+  private enum string XX = "xx";
+  private enum string NX = "nx";
+  private enum string CH = "ch";
 
   public ZAddParams() {
   }
@@ -46,7 +46,7 @@ public class ZAddParams extends Params {
   }
 
   public byte[][] getByteParams(byte[] key, byte[]... args) {
-    ArrayList<byte[]> byteParams = new ArrayList<byte[]>();
+    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     byteParams.add(key);
 
     if (contains(NX)) {

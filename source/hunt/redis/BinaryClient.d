@@ -26,7 +26,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-public class BinaryClient extends Connection {
+public class BinaryClient : Connection {
 
   private boolean isInMulti;
 
@@ -89,7 +89,7 @@ public class BinaryClient extends Connection {
     this.db = db;
   }
 
-  @Override
+  override
   public void connect() {
     if (!isConnected()) {
       super.connect();
@@ -257,12 +257,12 @@ public class BinaryClient extends Connection {
     sendCommand(HSET, key, field, value);
   }
 
-  public void hset(final byte[] key, final Map<byte[], byte[]> hash) {
+  public void hset(final byte[] key, final Map!(byte[], byte[]) hash) {
     final byte[][] params = new byte[1 + hash.size() * 2][];
 
     int index = 0;
     params[index++] = key;
-    for (final Entry<byte[], byte[]> entry : hash.entrySet()) {
+    for (final Entry!(byte[], byte[]) entry : hash.entrySet()) {
       params[index++] = entry.getKey();
       params[index++] = entry.getValue();
     }
@@ -277,11 +277,11 @@ public class BinaryClient extends Connection {
     sendCommand(HSETNX, key, field, value);
   }
 
-  public void hmset(final byte[] key, final Map<byte[], byte[]> hash) {
-    final List<byte[]> params = new ArrayList<byte[]>();
+  public void hmset(final byte[] key, final Map!(byte[], byte[]) hash) {
+    final List!(byte[]) params = new ArrayList!(byte[])();
     params.add(key);
 
-    for (final Entry<byte[], byte[]> entry : hash.entrySet()) {
+    for (final Entry!(byte[], byte[]) entry : hash.entrySet()) {
       params.add(entry.getKey());
       params.add(entry.getValue());
     }
@@ -433,8 +433,8 @@ public class BinaryClient extends Connection {
     sendCommand(ZADD, params.getByteParams(key, toByteArray(score), member));
   }
 
-  public void zadd(final byte[] key, final Map<byte[], Double> scoreMembers) {
-    ArrayList<byte[]> args = new ArrayList<byte[]>(scoreMembers.size() * 2 + 1);
+  public void zadd(final byte[] key, final Map!(byte[], Double) scoreMembers) {
+    ArrayList!(byte[]) args = new ArrayList!(byte[])(scoreMembers.size() * 2 + 1);
     args.add(key);
     args.addAll(convertScoreMembersToByteArrays(scoreMembers));
 
@@ -444,8 +444,8 @@ public class BinaryClient extends Connection {
     sendCommand(ZADD, argsArray);
   }
 
-  public void zadd(final byte[] key, final Map<byte[], Double> scoreMembers, final ZAddParams params) {
-    ArrayList<byte[]> args = convertScoreMembersToByteArrays(scoreMembers);
+  public void zadd(final byte[] key, final Map!(byte[], Double) scoreMembers, final ZAddParams params) {
+    ArrayList!(byte[]) args = convertScoreMembersToByteArrays(scoreMembers);
     byte[][] argsArray = new byte[args.size()][];
     args.toArray(argsArray);
 
@@ -530,7 +530,7 @@ public class BinaryClient extends Connection {
   }
 
   public void sort(final byte[] key, final SortingParams sortingParameters) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.addAll(sortingParameters.getParams());
     sendCommand(SORT, args.toArray(new byte[args.size()][]));
@@ -541,7 +541,7 @@ public class BinaryClient extends Connection {
   }
 
   public void blpop(final int timeout, final byte[]... keys) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     for (final byte[] arg : keys) {
       args.add(arg);
     }
@@ -550,7 +550,7 @@ public class BinaryClient extends Connection {
   }
 
   public void sort(final byte[] key, final SortingParams sortingParameters, final byte[] dstkey) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.addAll(sortingParameters.getParams());
     args.add(STORE.raw);
@@ -567,7 +567,7 @@ public class BinaryClient extends Connection {
   }
 
   public void brpop(final int timeout, final byte[]... keys) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     for (final byte[] arg : keys) {
       args.add(arg);
     }
@@ -715,7 +715,7 @@ public class BinaryClient extends Connection {
   }
 
   public void zunionstore(final byte[] dstkey, final ZParams params, final byte[]... sets) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(dstkey);
     args.add(Protocol.toByteArray(sets.length));
     for (final byte[] set : sets) {
@@ -730,7 +730,7 @@ public class BinaryClient extends Connection {
   }
 
   public void zinterstore(final byte[] dstkey, final ZParams params, final byte[]... sets) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(dstkey);
     args.add(Protocol.toByteArray(sets.length));
     for (final byte[] set : sets) {
@@ -872,7 +872,7 @@ public class BinaryClient extends Connection {
   }
 
   public void bitpos(final byte[] key, final boolean value, final BitPosParams params) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.add(toByteArray(value));
     args.addAll(params.getParams());
@@ -891,13 +891,13 @@ public class BinaryClient extends Connection {
     return db;
   }
 
-  @Override
+  override
   public void disconnect() {
     db = 0;
     super.disconnect();
   }
 
-  @Override
+  override
   public void close() {
     db = 0;
     super.close();
@@ -1083,14 +1083,14 @@ public class BinaryClient extends Connection {
   }
 
   public void scan(final byte[] cursor, final ScanParams params) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(cursor);
     args.addAll(params.getParams());
     sendCommand(SCAN, args.toArray(new byte[args.size()][]));
   }
 
   public void hscan(final byte[] key, final byte[] cursor, final ScanParams params) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
@@ -1098,7 +1098,7 @@ public class BinaryClient extends Connection {
   }
 
   public void sscan(final byte[] key, final byte[] cursor, final ScanParams params) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
@@ -1106,7 +1106,7 @@ public class BinaryClient extends Connection {
   }
 
   public void zscan(final byte[] key, final byte[] cursor, final ScanParams params) {
-    final List<byte[]> args = new ArrayList<byte[]>();
+    final List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
@@ -1149,8 +1149,8 @@ public class BinaryClient extends Connection {
     sendCommand(GEOADD, key, toByteArray(longitude), toByteArray(latitude), member);
   }
 
-  public void geoadd(final byte[] key, final Map<byte[], GeoCoordinate> memberCoordinateMap) {
-    List<byte[]> args = new ArrayList<byte[]>(memberCoordinateMap.size() * 3 + 1);
+  public void geoadd(final byte[] key, final Map!(byte[], GeoCoordinate) memberCoordinateMap) {
+    List!(byte[]) args = new ArrayList!(byte[])(memberCoordinateMap.size() * 3 + 1);
     args.add(key);
     args.addAll(convertGeoCoordinateMapToByteArrays(memberCoordinateMap));
 
@@ -1228,10 +1228,10 @@ public class BinaryClient extends Connection {
     sendCommand(MODULE, Keyword.UNLOAD.raw, name);
   }
 
-  private ArrayList<byte[]> convertScoreMembersToByteArrays(final Map<byte[], Double> scoreMembers) {
-    ArrayList<byte[]> args = new ArrayList<byte[]>(scoreMembers.size() * 2);
+  private ArrayList!(byte[]) convertScoreMembersToByteArrays(final Map!(byte[], Double) scoreMembers) {
+    ArrayList!(byte[]) args = new ArrayList!(byte[])(scoreMembers.size() * 2);
 
-    for (Map.Entry<byte[], Double> entry : scoreMembers.entrySet()) {
+    for (Map.Entry!(byte[], Double) entry : scoreMembers.entrySet()) {
       args.add(toByteArray(entry.getValue()));
       args.add(entry.getKey());
     }
@@ -1239,11 +1239,11 @@ public class BinaryClient extends Connection {
     return args;
   }
 
-  private List<byte[]> convertGeoCoordinateMapToByteArrays(
-      final Map<byte[], GeoCoordinate> memberCoordinateMap) {
-    List<byte[]> args = new ArrayList<byte[]>(memberCoordinateMap.size() * 3);
+  private List!(byte[]) convertGeoCoordinateMapToByteArrays(
+      final Map!(byte[], GeoCoordinate) memberCoordinateMap) {
+    List!(byte[]) args = new ArrayList!(byte[])(memberCoordinateMap.size() * 3);
 
-    for (Entry<byte[], GeoCoordinate> entry : memberCoordinateMap.entrySet()) {
+    for (Entry!(byte[], GeoCoordinate) entry : memberCoordinateMap.entrySet()) {
       GeoCoordinate coordinate = entry.getValue();
       args.add(toByteArray(coordinate.getLongitude()));
       args.add(toByteArray(coordinate.getLatitude()));
@@ -1261,7 +1261,7 @@ public class BinaryClient extends Connection {
     sendCommand(HSTRLEN, key, field);
   }
   
-  public void xadd(final byte[] key, final byte[] id, final Map<byte[], byte[]> hash, long maxLen, boolean approximateLength) {
+  public void xadd(final byte[] key, final byte[] id, final Map!(byte[], byte[]) hash, long maxLen, boolean approximateLength) {
       int maxLexArgs = 0;
       if(maxLen < Long.MAX_VALUE) { // optional arguments
         if(approximateLength) {
@@ -1283,7 +1283,7 @@ public class BinaryClient extends Connection {
 	  }
 	  
 	  params[index++] = id;
-	  for (final Entry<byte[], byte[]> entry : hash.entrySet()) {
+	  for (final Entry!(byte[], byte[]) entry : hash.entrySet()) {
 	    params[index++] = entry.getKey();
 	    params[index++] = entry.getValue();
 	  }
@@ -1302,7 +1302,7 @@ public class BinaryClient extends Connection {
     sendCommand(XREVRANGE, key, end, start, Keyword.COUNT.raw, toByteArray(count));
   }
 
-  public void xread(final int count, final long block, final Map<byte[], byte[]> streams) {
+  public void xread(final int count, final long block, final Map!(byte[], byte[]) streams) {
     final byte[][] params = new byte[3 + streams.size() * 2 + (block > 0 ? 2 : 0)][];
 
     int streamsIndex = 0;
@@ -1316,7 +1316,7 @@ public class BinaryClient extends Connection {
     params[streamsIndex++] = Keyword.STREAMS.raw;
     int idsIndex = streamsIndex + streams.size();
 
-    for (final Entry<byte[], byte[]> entry : streams.entrySet()) {
+    for (final Entry!(byte[], byte[]) entry : streams.entrySet()) {
       params[streamsIndex++] = entry.getKey();
       params[idsIndex++] = entry.getValue();
     }
@@ -1373,7 +1373,7 @@ public class BinaryClient extends Connection {
     }
   }
   
-  public void xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck, Map<byte[], byte[]> streams) {
+  public void xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck, Map!(byte[], byte[]) streams) {
     
     int optional = 0;
     if(count>0) {
@@ -1407,7 +1407,7 @@ public class BinaryClient extends Connection {
     params[streamsIndex++] = Keyword.STREAMS.raw;
     
     int idsIndex = streamsIndex + streams.size();
-    for (final Entry<byte[], byte[]> entry : streams.entrySet()) {
+    for (final Entry!(byte[], byte[]) entry : streams.entrySet()) {
       params[streamsIndex++] = entry.getKey();
       params[idsIndex++] = entry.getValue();
     }
@@ -1426,7 +1426,7 @@ public class BinaryClient extends Connection {
 
   public void xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids) {
       
-      ArrayList<byte[]> arguments = new ArrayList<>(10 + ids.length);
+      ArrayList!(byte[]) arguments = new ArrayList<>(10 + ids.length);
 
       arguments.add(key);
       arguments.add(groupname);

@@ -84,15 +84,15 @@ public interface RedisClusterCommands {
 
   Long hset(String key, String field, String value);
 
-  Long hset(String key, Map<String, String> hash);
+  Long hset(String key, Map!(String, String) hash);
 
   String hget(String key, String field);
 
   Long hsetnx(String key, String field, String value);
 
-  String hmset(String key, Map<String, String> hash);
+  String hmset(String key, Map!(String, String) hash);
 
-  List<String> hmget(String key, String... fields);
+  List!(String) hmget(String key, String... fields);
 
   Long hincrBy(String key, String field, long value);
 
@@ -102,11 +102,11 @@ public interface RedisClusterCommands {
 
   Long hlen(String key);
 
-  Set<String> hkeys(String key);
+  Set!(String) hkeys(String key);
 
-  List<String> hvals(String key);
+  List!(String) hvals(String key);
 
-  Map<String, String> hgetAll(String key);
+  Map!(String, String) hgetAll(String key);
 
   Long rpush(String key, String... string);
 
@@ -114,7 +114,7 @@ public interface RedisClusterCommands {
 
   Long llen(String key);
 
-  List<String> lrange(String key, long start, long stop);
+  List!(String) lrange(String key, long start, long stop);
 
   String ltrim(String key, long start, long stop);
 
@@ -130,13 +130,13 @@ public interface RedisClusterCommands {
 
   Long sadd(String key, String... member);
 
-  Set<String> smembers(String key);
+  Set!(String) smembers(String key);
 
   Long srem(String key, String... member);
 
   String spop(String key);
 
-  Set<String> spop(String key, long count);
+  Set!(String) spop(String key, long count);
 
   Long scard(String key);
 
@@ -144,7 +144,7 @@ public interface RedisClusterCommands {
 
   String srandmember(String key);
 
-  List<String> srandmember(String key, int count);
+  List!(String) srandmember(String key, int count);
 
   Long strlen(String key);
 
@@ -152,11 +152,11 @@ public interface RedisClusterCommands {
 
   Long zadd(String key, double score, String member, ZAddParams params);
 
-  Long zadd(String key, Map<String, Double> scoreMembers);
+  Long zadd(String key, Map!(String, Double) scoreMembers);
 
-  Long zadd(String key, Map<String, Double> scoreMembers, ZAddParams params);
+  Long zadd(String key, Map!(String, Double) scoreMembers, ZAddParams params);
 
-  Set<String> zrange(String key, long start, long stop);
+  Set!(String) zrange(String key, long start, long stop);
 
   Long zrem(String key, String... members);
 
@@ -168,55 +168,55 @@ public interface RedisClusterCommands {
 
   Long zrevrank(String key, String member);
 
-  Set<String> zrevrange(String key, long start, long stop);
+  Set!(String) zrevrange(String key, long start, long stop);
 
-  Set<Tuple> zrangeWithScores(String key, long start, long stop);
+  Set!(Tuple) zrangeWithScores(String key, long start, long stop);
 
-  Set<Tuple> zrevrangeWithScores(String key, long start, long stop);
+  Set!(Tuple) zrevrangeWithScores(String key, long start, long stop);
 
   Long zcard(String key);
 
   Double zscore(String key, String member);
 
-  List<String> sort(String key);
+  List!(String) sort(String key);
 
-  List<String> sort(String key, SortingParams sortingParameters);
+  List!(String) sort(String key, SortingParams sortingParameters);
 
   Long zcount(String key, double min, double max);
 
   Long zcount(String key, String min, String max);
 
-  Set<String> zrangeByScore(String key, double min, double max);
+  Set!(String) zrangeByScore(String key, double min, double max);
 
-  Set<String> zrangeByScore(String key, String min, String max);
+  Set!(String) zrangeByScore(String key, String min, String max);
 
-  Set<String> zrevrangeByScore(String key, double max, double min);
+  Set!(String) zrevrangeByScore(String key, double max, double min);
 
-  Set<String> zrangeByScore(String key, double min, double max, int offset, int count);
+  Set!(String) zrangeByScore(String key, double min, double max, int offset, int count);
 
-  Set<String> zrevrangeByScore(String key, String max, String min);
+  Set!(String) zrevrangeByScore(String key, String max, String min);
 
-  Set<String> zrangeByScore(String key, String min, String max, int offset, int count);
+  Set!(String) zrangeByScore(String key, String min, String max, int offset, int count);
 
-  Set<String> zrevrangeByScore(String key, double max, double min, int offset, int count);
+  Set!(String) zrevrangeByScore(String key, double max, double min, int offset, int count);
 
-  Set<Tuple> zrangeByScoreWithScores(String key, double min, double max);
+  Set!(Tuple) zrangeByScoreWithScores(String key, double min, double max);
 
-  Set<Tuple> zrevrangeByScoreWithScores(String key, double max, double min);
+  Set!(Tuple) zrevrangeByScoreWithScores(String key, double max, double min);
 
-  Set<Tuple> zrangeByScoreWithScores(String key, double min, double max, int offset, int count);
+  Set!(Tuple) zrangeByScoreWithScores(String key, double min, double max, int offset, int count);
 
-  Set<String> zrevrangeByScore(String key, String max, String min, int offset, int count);
+  Set!(String) zrevrangeByScore(String key, String max, String min, int offset, int count);
 
-  Set<Tuple> zrangeByScoreWithScores(String key, String min, String max);
+  Set!(Tuple) zrangeByScoreWithScores(String key, String min, String max);
 
-  Set<Tuple> zrevrangeByScoreWithScores(String key, String max, String min);
+  Set!(Tuple) zrevrangeByScoreWithScores(String key, String max, String min);
 
-  Set<Tuple> zrangeByScoreWithScores(String key, String min, String max, int offset, int count);
+  Set!(Tuple) zrangeByScoreWithScores(String key, String min, String max, int offset, int count);
 
-  Set<Tuple> zrevrangeByScoreWithScores(String key, double max, double min, int offset, int count);
+  Set!(Tuple) zrevrangeByScoreWithScores(String key, double max, double min, int offset, int count);
 
-  Set<Tuple> zrevrangeByScoreWithScores(String key, String max, String min, int offset, int count);
+  Set!(Tuple) zrevrangeByScoreWithScores(String key, String max, String min, int offset, int count);
 
   Long zremrangeByRank(String key, long start, long stop);
 
@@ -226,14 +226,14 @@ public interface RedisClusterCommands {
 
   Long zlexcount(String key, String min, String max);
 
-  Set<String> zrangeByLex(String key, String min, String max);
+  Set!(String) zrangeByLex(String key, String min, String max);
 
-  Set<String> zrangeByLex(String key, String min, String max, int offset,
+  Set!(String) zrangeByLex(String key, String min, String max, int offset,
       int count);
 
-  Set<String> zrevrangeByLex(String key, String max, String min);
+  Set!(String) zrevrangeByLex(String key, String max, String min);
 
-  Set<String> zrevrangeByLex(String key, String max, String min,
+  Set!(String) zrevrangeByLex(String key, String max, String min,
       int offset, int count);
 
   Long zremrangeByLex(String key, String min, String max);
@@ -244,9 +244,9 @@ public interface RedisClusterCommands {
 
   Long rpushx(String key, String... string);
 
-  List<String> blpop(int timeout, String key);
+  List!(String) blpop(int timeout, String key);
 
-  List<String> brpop(int timeout, String key);
+  List!(String) brpop(int timeout, String key);
 
   Long del(String key);
 
@@ -258,11 +258,11 @@ public interface RedisClusterCommands {
 
   Long bitcount(String key, long start, long end);
 
-  ScanResult<Map.Entry<String, String>> hscan(String key, String cursor);
+  ScanResult<Map.Entry!(String, String)> hscan(String key, String cursor);
 
-  ScanResult<String> sscan(String key, String cursor);
+  ScanResult!(String) sscan(String key, String cursor);
 
-  ScanResult<Tuple> zscan(String key, String cursor);
+  ScanResult!(Tuple) zscan(String key, String cursor);
 
   Long pfadd(String key, String... elements);
 
@@ -272,36 +272,36 @@ public interface RedisClusterCommands {
 
   Long geoadd(String key, double longitude, double latitude, String member);
 
-  Long geoadd(String key, Map<String, GeoCoordinate> memberCoordinateMap);
+  Long geoadd(String key, Map!(String, GeoCoordinate) memberCoordinateMap);
 
   Double geodist(String key, String member1, String member2);
 
   Double geodist(String key, String member1, String member2, GeoUnit unit);
 
-  List<String> geohash(String key, String... members);
+  List!(String) geohash(String key, String... members);
 
-  List<GeoCoordinate> geopos(String key, String... members);
+  List!(GeoCoordinate) geopos(String key, String... members);
 
-  List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadius(String key, double longitude, double latitude, double radius,
       GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusReadonly(String key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadiusReadonly(String key, double longitude, double latitude, double radius,
       GeoUnit unit);
 
-  List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadius(String key, double longitude, double latitude, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusReadonly(String key, double longitude, double latitude, double radius,
+  List!(GeoRadiusResponse) georadiusReadonly(String key, double longitude, double latitude, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusByMember(String key, String member, double radius, GeoUnit unit);
+  List!(GeoRadiusResponse) georadiusByMember(String key, String member, double radius, GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusByMemberReadonly(String key, String member, double radius, GeoUnit unit);
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(String key, String member, double radius, GeoUnit unit);
 
-  List<GeoRadiusResponse> georadiusByMember(String key, String member, double radius, GeoUnit unit,
+  List!(GeoRadiusResponse) georadiusByMember(String key, String member, double radius, GeoUnit unit,
       GeoRadiusParam param);
 
-  List<GeoRadiusResponse> georadiusByMemberReadonly(String key, String member, double radius, GeoUnit unit,
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(String key, String member, double radius, GeoUnit unit,
       GeoRadiusParam param);
 
   /**
@@ -310,7 +310,7 @@ public interface RedisClusterCommands {
    * @param arguments
    * @return 
    */
-  List<Long> bitfield(String key, String...arguments);
+  List!(Long) bitfield(String key, String...arguments);
   
   /**
    * Used for HSTRLEN Redis command
@@ -328,7 +328,7 @@ public interface RedisClusterCommands {
    * @param hash
    * @return the ID of the added entry
    */
-  StreamEntryID xadd(String key, StreamEntryID id, Map<String, String> hash);
+  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash);
 
   /**
    * XADD key MAXLEN ~ LEN ID field string [field string ...]
@@ -340,7 +340,7 @@ public interface RedisClusterCommands {
    * @param approximateLength
    * @return
    */
-  StreamEntryID xadd(String key, StreamEntryID id, Map<String, String> hash, long maxLen, boolean approximateLength);
+  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
   
   /**
    * XLEN key
@@ -359,7 +359,7 @@ public interface RedisClusterCommands {
    * @param count
    * @return
    */
-  List<StreamEntry> xrange(String key, StreamEntryID start, StreamEntryID end, int count);
+  List!(StreamEntry) xrange(String key, StreamEntryID start, StreamEntryID end, int count);
 
   /**
    * XREVRANGE key end start [COUNT <n>]
@@ -369,7 +369,7 @@ public interface RedisClusterCommands {
    * @param count
    * @return
    */
-  List<StreamEntry> xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
+  List!(StreamEntry) xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
   
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -380,7 +380,7 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry<String, List<StreamEntry>>> xread(int count, long block, Map.Entry<String, StreamEntryID>... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xread(int count, long block, Map.Entry!(String, StreamEntryID)... streams);
   
   /**
    * XACK key group ID [ID ...]
@@ -440,7 +440,7 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry<String, List<StreamEntry>>> xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Map.Entry<String, StreamEntryID>... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Map.Entry!(String, StreamEntryID)... streams);
 
   
   /**
@@ -454,7 +454,7 @@ public interface RedisClusterCommands {
    * @param consumername
    * @return
    */
-  List<StreamPendingEntry> xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
+  List!(StreamPendingEntry) xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
   
   /**
    * XDEL key ID [ID ...]
@@ -478,7 +478,7 @@ public interface RedisClusterCommands {
    *        [IDLE <milliseconds>] [TIME <mstime>] [RETRYCOUNT <count>]
    *        [FORCE] [JUSTID]
    */        
-  List<StreamEntry> xclaim( String key, String group, String consumername, long minIdleTime, 
+  List!(StreamEntry) xclaim( String key, String group, String consumername, long minIdleTime, 
       long newIdleTime, int retries, boolean force, StreamEntryID... ids);
 
   Long waitReplicas(final String key, final int replicas, final long timeout);

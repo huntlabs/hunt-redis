@@ -18,7 +18,7 @@ public class Module {
     return version;
   }
 
-  @Override
+  override
   public boolean equals(Object o) {
     if (o == null) return false;
     if (o == this) return true;
@@ -27,12 +27,12 @@ public class Module {
     Module module = (Module) o;
 
     if (version != module.version) return false;
-    return !(name != null ? !name.equals(module.name) : module.name != null);
+    return !(name != null ? !name == module.name : module.name != null);
 
   }
 
-  @Override
-  public int hashCode() {
+  override
+  public size_t toHash() @trusted nothrow() {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + version;
     return result;

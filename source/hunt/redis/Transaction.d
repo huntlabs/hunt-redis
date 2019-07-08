@@ -9,7 +9,7 @@ import hunt.redis.exceptions.RedisDataException;
 /**
  * Transaction is nearly identical to Pipeline, only differences are the multi/discard behaviors
  */
-public class Transaction extends MultiKeyPipelineBase implements Closeable {
+public class Transaction : MultiKeyPipelineBase implements Closeable {
 
   protected boolean inTransaction = true;
 
@@ -21,12 +21,12 @@ public class Transaction extends MultiKeyPipelineBase implements Closeable {
     this.client = client;
   }
 
-  @Override
+  override
   protected Client getClient(String key) {
     return client;
   }
 
-  @Override
+  override
   protected Client getClient(byte[] key) {
     return client;
   }
@@ -37,18 +37,18 @@ public class Transaction extends MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  public List<Object> exec() {
+  public List!(Object) exec() {
     // Discard QUEUED or ERROR
     client.getMany(getPipelinedResponseLength());
     client.exec();
     inTransaction = false;
 
-    List<Object> unformatted = client.getObjectMultiBulkReply();
+    List!(Object) unformatted = client.getObjectMultiBulkReply();
     if (unformatted == null) {
       return null;
     }
-    List<Object> formatted = new ArrayList<Object>();
-    for (Object o : unformatted) {
+    List!(Object) formatted = new ArrayList!(Object)();
+    foreach(Object o ; unformatted) {
       try {
         formatted.add(generateResponse(o).get());
       } catch (RedisDataException e) {
@@ -64,12 +64,12 @@ public class Transaction extends MultiKeyPipelineBase implements Closeable {
     client.exec();
     inTransaction = false;
 
-    List<Object> unformatted = client.getObjectMultiBulkReply();
+    List!(Object) unformatted = client.getObjectMultiBulkReply();
     if (unformatted == null) {
       return null;
     }
     List<Response<?>> response = new ArrayList<Response<?>>();
-    for (Object o : unformatted) {
+    foreach(Object o ; unformatted) {
       response.add(generateResponse(o));
     }
     return response;
@@ -87,7 +87,7 @@ public class Transaction extends MultiKeyPipelineBase implements Closeable {
     this.client = client;
   }
 
-  @Override
+  override
   public void close() {
     clear();
   }

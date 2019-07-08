@@ -6,7 +6,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.util.RedisURIHelper;
 
-public class RedisPool extends RedisPoolAbstract {
+public class RedisPool : RedisPoolAbstract {
 
   public RedisPool() {
     this(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
@@ -23,10 +23,10 @@ public class RedisPool extends RedisPoolAbstract {
   public RedisPool(final String host) {
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
-      this.internalPool = new GenericObjectPool<Redis>(new RedisFactory(uri,
+      this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(uri,
           Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, null), new GenericObjectPoolConfig());
     } else {
-      this.internalPool = new GenericObjectPool<Redis>(new RedisFactory(host,
+      this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(host,
           Protocol.DEFAULT_PORT, Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, null,
           Protocol.DEFAULT_DATABASE, null), new GenericObjectPoolConfig());
     }
@@ -36,11 +36,11 @@ public class RedisPool extends RedisPoolAbstract {
       final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
-      this.internalPool = new GenericObjectPool<Redis>(new RedisFactory(uri,
+      this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(uri,
           Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, null, sslSocketFactory, sslParameters,
           hostnameVerifier), new GenericObjectPoolConfig());
     } else {
-      this.internalPool = new GenericObjectPool<Redis>(new RedisFactory(host,
+      this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(host,
           Protocol.DEFAULT_PORT, Protocol.DEFAULT_TIMEOUT, Protocol.DEFAULT_TIMEOUT, null,
           Protocol.DEFAULT_DATABASE, null, false, null, null, null), new GenericObjectPoolConfig());
     }
@@ -223,21 +223,21 @@ public class RedisPool extends RedisPoolAbstract {
         sslParameters, hostnameVerifier));
   }
 
-  @Override
+  override
   public Redis getResource() {
     Redis jedis = super.getResource();
     jedis.setDataSource(this);
     return jedis;
   }
 
-  @Override
+  override
   protected void returnBrokenResource(final Redis resource) {
     if (resource != null) {
       returnBrokenResourceObject(resource);
     }
   }
 
-  @Override
+  override
   protected void returnResource(final Redis resource) {
     if (resource != null) {
       try {

@@ -5,16 +5,16 @@ import hunt.redis.util.SafeEncoder;
 
 import hunt.collection.ArraryList;
 
-public class GeoRadiusParam extends Params {
-  private static final String WITHCOORD = "withcoord";
-  private static final String WITHDIST = "withdist";
+public class GeoRadiusParam : Params {
+  private enum string WITHCOORD = "withcoord";
+  private enum string WITHDIST = "withdist";
 
   // Do not add WITHHASH since we can't classify result of WITHHASH and WITHDIST,
   // and WITHHASH is for debugging purposes
 
-  private static final String ASC = "asc";
-  private static final String DESC = "desc";
-  private static final String COUNT = "count";
+  private enum string ASC = "asc";
+  private enum string DESC = "desc";
+  private enum string COUNT = "count";
 
   public GeoRadiusParam() {
   }
@@ -51,7 +51,7 @@ public class GeoRadiusParam extends Params {
   }
 
   public byte[][] getByteParams(byte[]... args) {
-    ArrayList<byte[]> byteParams = new ArrayList<byte[]>();
+    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     for (byte[] arg : args) {
       byteParams.add(arg);
     }

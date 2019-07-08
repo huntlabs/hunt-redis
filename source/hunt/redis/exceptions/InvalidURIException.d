@@ -1,8 +1,7 @@
 module hunt.redis.exceptions.InvalidURIException;
 
-public class InvalidURIException extends RedisException {
+public class InvalidURIException : RedisException {
 
-  private static final long serialVersionUID = -781691993326357802L;
 
   public InvalidURIException(String message) {
     super(message);

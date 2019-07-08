@@ -15,7 +15,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-public class Client extends BinaryClient implements Commands {
+public class Client : BinaryClient implements Commands {
 
   public Client() {
     super();
@@ -39,619 +39,619 @@ public class Client extends BinaryClient implements Commands {
     super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  @Override
+  override
   public void ping(final String message) {
     ping(SafeEncoder.encode(message));
   }
   
-  @Override
+  override
   public void set(final String key, final String value) {
     set(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void set(final String key, final String value, final SetParams params) {
     set(SafeEncoder.encode(key), SafeEncoder.encode(value), params);
   }
 
-  @Override
+  override
   public void get(final String key) {
     get(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void exists(final String... keys) {
     exists(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void del(final String... keys) {
     del(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void unlink(final String... keys) {
     unlink(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void type(final String key) {
     type(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void keys(final String pattern) {
     keys(SafeEncoder.encode(pattern));
   }
 
-  @Override
+  override
   public void rename(final String oldkey, final String newkey) {
     rename(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
   }
 
-  @Override
+  override
   public void renamenx(final String oldkey, final String newkey) {
     renamenx(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
   }
 
-  @Override
+  override
   public void expire(final String key, final int seconds) {
     expire(SafeEncoder.encode(key), seconds);
   }
 
-  @Override
+  override
   public void expireAt(final String key, final long unixTime) {
     expireAt(SafeEncoder.encode(key), unixTime);
   }
 
-  @Override
+  override
   public void ttl(final String key) {
     ttl(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void touch(final String... keys) {
     touch(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void move(final String key, final int dbIndex) {
     move(SafeEncoder.encode(key), dbIndex);
   }
 
-  @Override
+  override
   public void getSet(final String key, final String value) {
     getSet(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void mget(final String... keys) {
     mget(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void setnx(final String key, final String value) {
     setnx(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void setex(final String key, final int seconds, final String value) {
     setex(SafeEncoder.encode(key), seconds, SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void mset(final String... keysvalues) {
     mset(SafeEncoder.encodeMany(keysvalues));
   }
 
-  @Override
+  override
   public void msetnx(final String... keysvalues) {
     msetnx(SafeEncoder.encodeMany(keysvalues));
   }
 
-  @Override
+  override
   public void decrBy(final String key, final long decrement) {
     decrBy(SafeEncoder.encode(key), decrement);
   }
 
-  @Override
+  override
   public void decr(final String key) {
     decr(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void incrBy(final String key, final long increment) {
     incrBy(SafeEncoder.encode(key), increment);
   }
 
-  @Override
+  override
   public void incr(final String key) {
     incr(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void append(final String key, final String value) {
     append(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void substr(final String key, final int start, final int end) {
     substr(SafeEncoder.encode(key), start, end);
   }
 
-  @Override
+  override
   public void hset(final String key, final String field, final String value) {
     hset(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
   }
 
-  @Override
-  public void hset(final String key, final Map<String, String> hash) {
-    final Map<byte[], byte[]> bhash = new HashMap<byte[], byte[]>(hash.size());
-    for (final Entry<String, String> entry : hash.entrySet()) {
+  override
+  public void hset(final String key, final Map!(String, String) hash) {
+    final Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
+    for (final Entry!(String, String) entry : hash.entrySet()) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()));
     }
     hset(SafeEncoder.encode(key), bhash);
   }
 
-  @Override
+  override
   public void hget(final String key, final String field) {
     hget(SafeEncoder.encode(key), SafeEncoder.encode(field));
   }
 
-  @Override
+  override
   public void hsetnx(final String key, final String field, final String value) {
     hsetnx(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
   }
 
-  @Override
-  public void hmset(final String key, final Map<String, String> hash) {
-    final Map<byte[], byte[]> bhash = new HashMap<byte[], byte[]>(hash.size());
-    for (final Entry<String, String> entry : hash.entrySet()) {
+  override
+  public void hmset(final String key, final Map!(String, String) hash) {
+    final Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
+    for (final Entry!(String, String) entry : hash.entrySet()) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()));
     }
     hmset(SafeEncoder.encode(key), bhash);
   }
 
-  @Override
+  override
   public void hmget(final String key, final String... fields) {
     hmget(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
 
-  @Override
+  override
   public void hincrBy(final String key, final String field, final long value) {
     hincrBy(SafeEncoder.encode(key), SafeEncoder.encode(field), value);
   }
 
-  @Override
+  override
   public void hexists(final String key, final String field) {
     hexists(SafeEncoder.encode(key), SafeEncoder.encode(field));
   }
 
-  @Override
+  override
   public void hdel(final String key, final String... fields) {
     hdel(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
 
-  @Override
+  override
   public void hlen(final String key) {
     hlen(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void hkeys(final String key) {
     hkeys(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void hvals(final String key) {
     hvals(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void hgetAll(final String key) {
     hgetAll(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void rpush(final String key, final String... string) {
     rpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
-  @Override
+  override
   public void lpush(final String key, final String... string) {
     lpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
-  @Override
+  override
   public void llen(final String key) {
     llen(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void lrange(final String key, final long start, final long stop) {
     lrange(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void ltrim(final String key, final long start, final long stop) {
     ltrim(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void lindex(final String key, final long index) {
     lindex(SafeEncoder.encode(key), index);
   }
 
-  @Override
+  override
   public void lset(final String key, final long index, final String value) {
     lset(SafeEncoder.encode(key), index, SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void lrem(final String key, final long count, final String value) {
     lrem(SafeEncoder.encode(key), count, SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void lpop(final String key) {
     lpop(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void rpop(final String key) {
     rpop(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void rpoplpush(final String srckey, final String dstkey) {
     rpoplpush(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey));
   }
 
-  @Override
+  override
   public void sadd(final String key, final String... members) {
     sadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
-  @Override
+  override
   public void smembers(final String key) {
     smembers(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void srem(final String key, final String... members) {
     srem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
-  @Override
+  override
   public void spop(final String key) {
     spop(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void spop(final String key, final long count) {
     spop(SafeEncoder.encode(key), count);
   }
 
-  @Override
+  override
   public void smove(final String srckey, final String dstkey, final String member) {
     smove(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey), SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void scard(final String key) {
     scard(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void sismember(final String key, final String member) {
     sismember(SafeEncoder.encode(key), SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void sinter(final String... keys) {
     sinter(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sinterstore(final String dstkey, final String... keys) {
     sinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sunion(final String... keys) {
     sunion(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sunionstore(final String dstkey, final String... keys) {
     sunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sdiff(final String... keys) {
     sdiff(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sdiffstore(final String dstkey, final String... keys) {
     sdiffstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void srandmember(final String key) {
     srandmember(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void zadd(final String key, final double score, final String member) {
     zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void zadd(final String key, final double score, final String member,
       final ZAddParams params) {
     zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member), params);
   }
 
-  @Override
-  public void zadd(final String key, final Map<String, Double> scoreMembers) {
-    HashMap<byte[], Double> binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
+  override
+  public void zadd(final String key, final Map!(String, Double) scoreMembers) {
+    HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
     zadd(SafeEncoder.encode(key), binaryScoreMembers);
   }
 
-  @Override
-  public void zadd(final String key, final Map<String, Double> scoreMembers, final ZAddParams params) {
-    HashMap<byte[], Double> binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
+  override
+  public void zadd(final String key, final Map!(String, Double) scoreMembers, final ZAddParams params) {
+    HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
     zadd(SafeEncoder.encode(key), binaryScoreMembers, params);
   }
 
-  @Override
+  override
   public void zrange(final String key, final long start, final long stop) {
     zrange(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void zrem(final String key, final String... members) {
     zrem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
 
-  @Override
+  override
   public void zincrby(final String key, final double increment, final String member) {
     zincrby(SafeEncoder.encode(key), increment, SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void zincrby(final String key, final double increment, final String member, final ZIncrByParams params) {
     zincrby(SafeEncoder.encode(key), increment, SafeEncoder.encode(member), params);
   }
 
-  @Override
+  override
   public void zrank(final String key, final String member) {
     zrank(SafeEncoder.encode(key), SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void zrevrank(final String key, final String member) {
     zrevrank(SafeEncoder.encode(key), SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void zrevrange(final String key, final long start, final long stop) {
     zrevrange(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void zrangeWithScores(final String key, final long start, final long stop) {
     zrangeWithScores(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void zrevrangeWithScores(final String key, final long start, final long stop) {
     zrevrangeWithScores(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void zcard(final String key) {
     zcard(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void zscore(final String key, final String member) {
     zscore(SafeEncoder.encode(key), SafeEncoder.encode(member));
   }
 
-  @Override
+  override
   public void watch(final String... keys) {
     watch(SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void sort(final String key) {
     sort(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void sort(final String key, final SortingParams sortingParameters) {
     sort(SafeEncoder.encode(key), sortingParameters);
   }
 
-  @Override
+  override
   public void blpop(final String[] args) {
     blpop(SafeEncoder.encodeMany(args));
   }
 
   public void blpop(final int timeout, final String... keys) {
     final int size = keys.length + 1;
-    List<String> args = new ArrayList<String>(size);
-    for (String arg : keys) {
+    List!(String) args = new ArrayList!(String)(size);
+    foreach(String arg ; keys) {
       args.add(arg);
     }
     args.add(String.valueOf(timeout));
     blpop(args.toArray(new String[size]));
   }
 
-  @Override
+  override
   public void sort(final String key, final SortingParams sortingParameters, final String dstkey) {
     sort(SafeEncoder.encode(key), sortingParameters, SafeEncoder.encode(dstkey));
   }
 
-  @Override
+  override
   public void sort(final String key, final String dstkey) {
     sort(SafeEncoder.encode(key), SafeEncoder.encode(dstkey));
   }
 
-  @Override
+  override
   public void brpop(final String[] args) {
     brpop(SafeEncoder.encodeMany(args));
   }
 
   public void brpop(final int timeout, final String... keys) {
     final int size = keys.length + 1;
-    List<String> args = new ArrayList<String>(size);
-    for (String arg : keys) {
+    List!(String) args = new ArrayList!(String)(size);
+    foreach(String arg ; keys) {
       args.add(arg);
     }
     args.add(String.valueOf(timeout));
     brpop(args.toArray(new String[size]));
   }
 
-  @Override
+  override
   public void zcount(final String key, final double min, final double max) {
     zcount(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
   }
 
-  @Override
+  override
   public void zcount(final String key, final String min, final String max) {
     zcount(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
   }
 
-  @Override
+  override
   public void zrangeByScore(final String key, final double min, final double max) {
     zrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
   }
 
-  @Override
+  override
   public void zrangeByScore(final String key, final String min, final String max) {
     zrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
   }
 
-  @Override
+  override
   public void zrangeByScore(final String key, final double min, final double max, final int offset,
       final int count) {
     zrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max), offset, count);
   }
 
-  @Override
+  override
   public void zrangeByScoreWithScores(final String key, final double min, final double max) {
     zrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
   }
 
-  @Override
+  override
   public void zrangeByScoreWithScores(final String key, final double min, final double max,
       final int offset, final int count) {
     zrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(min), toByteArray(max), offset,
       count);
   }
 
-  @Override
+  override
   public void zrevrangeByScore(final String key, final double max, final double min) {
     zrevrangeByScore(SafeEncoder.encode(key), toByteArray(max), toByteArray(min));
   }
 
-  @Override
+  override
   public void zrangeByScore(final String key, final String min, final String max, final int offset,
       final int count) {
     zrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max),
       offset, count);
   }
 
-  @Override
+  override
   public void zrangeByScoreWithScores(final String key, final String min, final String max) {
     zrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(min),
       SafeEncoder.encode(max));
   }
 
-  @Override
+  override
   public void zrangeByScoreWithScores(final String key, final String min, final String max,
       final int offset, final int count) {
     zrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(min),
       SafeEncoder.encode(max), offset, count);
   }
 
-  @Override
+  override
   public void zrevrangeByScore(final String key, final String max, final String min) {
     zrevrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min));
   }
 
-  @Override
+  override
   public void zrevrangeByScore(final String key, final double max, final double min,
       final int offset, final int count) {
     zrevrangeByScore(SafeEncoder.encode(key), toByteArray(max), toByteArray(min), offset, count);
   }
 
-  @Override
+  override
   public void zrevrangeByScore(final String key, final String max, final String min,
       final int offset, final int count) {
     zrevrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min),
       offset, count);
   }
 
-  @Override
+  override
   public void zrevrangeByScoreWithScores(final String key, final double max, final double min) {
     zrevrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(max), toByteArray(min));
   }
 
-  @Override
+  override
   public void zrevrangeByScoreWithScores(final String key, final String max, final String min) {
     zrevrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(max),
       SafeEncoder.encode(min));
   }
 
-  @Override
+  override
   public void zrevrangeByScoreWithScores(final String key, final double max, final double min,
       final int offset, final int count) {
     zrevrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(max), toByteArray(min), offset,
       count);
   }
 
-  @Override
+  override
   public void zrevrangeByScoreWithScores(final String key, final String max, final String min,
       final int offset, final int count) {
     zrevrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(max),
       SafeEncoder.encode(min), offset, count);
   }
 
-  @Override
+  override
   public void zremrangeByRank(final String key, final long start, final long stop) {
     zremrangeByRank(SafeEncoder.encode(key), start, stop);
   }
 
-  @Override
+  override
   public void zremrangeByScore(final String key, final double min, final double max) {
     zremrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
   }
 
-  @Override
+  override
   public void zremrangeByScore(final String key, final String min, final String max) {
     zremrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
   }
 
-  @Override
+  override
   public void zunionstore(final String dstkey, final String... sets) {
     zunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
   }
 
-  @Override
+  override
   public void zunionstore(final String dstkey, final ZParams params, final String... sets) {
     zunionstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
   }
 
-  @Override
+  override
   public void zinterstore(final String dstkey, final String... sets) {
     zinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
   }
 
-  @Override
+  override
   public void zinterstore(final String dstkey, final ZParams params, final String... sets) {
     zinterstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
   }
@@ -683,53 +683,53 @@ public class Client extends BinaryClient implements Commands {
     zremrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
   }
 
-  @Override
+  override
   public void strlen(final String key) {
     strlen(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void lpushx(final String key, final String... string) {
     lpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
-  @Override
+  override
   public void persist(final String key) {
     persist(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void rpushx(final String key, final String... string) {
     rpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
 
-  @Override
+  override
   public void echo(final String string) {
     echo(SafeEncoder.encode(string));
   }
 
-  @Override
+  override
   public void linsert(final String key, final ListPosition where, final String pivot,
       final String value) {
     linsert(SafeEncoder.encode(key), where, SafeEncoder.encode(pivot), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void brpoplpush(final String source, final String destination, final int timeout) {
     brpoplpush(SafeEncoder.encode(source), SafeEncoder.encode(destination), timeout);
   }
 
-  @Override
+  override
   public void setbit(final String key, final long offset, final boolean value) {
     setbit(SafeEncoder.encode(key), offset, value);
   }
 
-  @Override
+  override
   public void setbit(final String key, final long offset, final String value) {
     setbit(SafeEncoder.encode(key), offset, SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void getbit(final String key, final long offset) {
     getbit(SafeEncoder.encode(key), offset);
   }
@@ -738,12 +738,12 @@ public class Client extends BinaryClient implements Commands {
     bitpos(SafeEncoder.encode(key), value, params);
   }
 
-  @Override
+  override
   public void setrange(final String key, final long offset, final String value) {
     setrange(SafeEncoder.encode(key), offset, SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void getrange(final String key, final long startOffset, final long endOffset) {
     getrange(SafeEncoder.encode(key), startOffset, endOffset);
   }
@@ -780,12 +780,12 @@ public class Client extends BinaryClient implements Commands {
     pubsub(Protocol.PUBSUB_NUMSUB, channels);
   }
 
-  @Override
+  override
   public void configSet(final String parameter, final String value) {
     configSet(SafeEncoder.encode(parameter), SafeEncoder.encode(value));
   }
 
-  @Override
+  override
   public void configGet(final String pattern) {
     configGet(SafeEncoder.encode(pattern));
   }
@@ -806,32 +806,32 @@ public class Client extends BinaryClient implements Commands {
     scriptLoad(SafeEncoder.encode(script));
   }
 
-  @Override
+  override
   public void objectRefcount(final String key) {
     objectRefcount(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void objectIdletime(final String key) {
     objectIdletime(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void objectEncoding(final String key) {
     objectEncoding(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void bitcount(final String key) {
     bitcount(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void bitcount(final String key, final long start, final long end) {
     bitcount(SafeEncoder.encode(key), start, end);
   }
 
-  @Override
+  override
   public void bitop(final BitOP op, final String destKey, final String... srcKeys) {
     bitop(op, SafeEncoder.encode(destKey), SafeEncoder.encodeMany(srcKeys));
   }
@@ -840,17 +840,17 @@ public class Client extends BinaryClient implements Commands {
     sentinel(SafeEncoder.encodeMany(args));
   }
 
-  @Override
+  override
   public void dump(final String key) {
     dump(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void restore(final String key, final int ttl, final byte[] serializedValue) {
     restore(SafeEncoder.encode(key), ttl, serializedValue);
   }
 
-  @Override
+  override
   public void restoreReplace(final String key, final int ttl, final byte[] serializedValue) {
     restoreReplace(SafeEncoder.encode(key), ttl, serializedValue);
   }
@@ -863,12 +863,12 @@ public class Client extends BinaryClient implements Commands {
     pexpireAt(SafeEncoder.encode(key), millisecondsTimestamp);
   }
 
-  @Override
+  override
   public void pttl(final String key) {
     pttl(SafeEncoder.encode(key));
   }
 
-  @Override
+  override
   public void incrByFloat(final String key, final double increment) {
     incrByFloat(SafeEncoder.encode(key), increment);
   }
@@ -889,39 +889,39 @@ public class Client extends BinaryClient implements Commands {
     clientSetname(SafeEncoder.encode(name));
   }
 
-  @Override
+  override
   public void migrate(final String host, final int port, final String key,
       final int destinationDb, final int timeout) {
     migrate(host, port, SafeEncoder.encode(key), destinationDb, timeout);
   }
 
-  @Override
+  override
   public void migrate(final String host, final int port, final int destinationDB,
       final int timeout, final MigrateParams params, String... keys) {
     migrate(host, port, destinationDB, timeout, params, SafeEncoder.encodeMany(keys));
   }
 
-  @Override
+  override
   public void hincrByFloat(final String key, final String field, final double increment) {
     hincrByFloat(SafeEncoder.encode(key), SafeEncoder.encode(field), increment);
   }
 
-  @Override
+  override
   public void scan(final String cursor, final ScanParams params) {
     scan(SafeEncoder.encode(cursor), params);
   }
 
-  @Override
+  override
   public void hscan(final String key, final String cursor, final ScanParams params) {
     hscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
   }
 
-  @Override
+  override
   public void sscan(final String key, final String cursor, final ScanParams params) {
     sscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
   }
 
-  @Override
+  override
   public void zscan(final String key, final String cursor, final ScanParams params) {
     zscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
   }
@@ -1062,7 +1062,7 @@ public class Client extends BinaryClient implements Commands {
     geoadd(SafeEncoder.encode(key), longitude, latitude, SafeEncoder.encode(member));
   }
 
-  public void geoadd(final String key, final Map<String, GeoCoordinate> memberCoordinateMap) {
+  public void geoadd(final String key, final Map!(String, GeoCoordinate) memberCoordinateMap) {
     geoadd(SafeEncoder.encode(key), convertMemberCoordinateMapToBinary(memberCoordinateMap));
   }
 
@@ -1126,67 +1126,67 @@ public class Client extends BinaryClient implements Commands {
     moduleUnload(SafeEncoder.encode(name));
   }
 
-  private HashMap<byte[], Double> convertScoreMembersToBinary(final Map<String, Double> scoreMembers) {
-    HashMap<byte[], Double> binaryScoreMembers = new HashMap<byte[], Double>();
-    for (Entry<String, Double> entry : scoreMembers.entrySet()) {
+  private HashMap!(byte[], Double) convertScoreMembersToBinary(final Map!(String, Double) scoreMembers) {
+    HashMap!(byte[], Double) binaryScoreMembers = new HashMap!(byte[], Double)();
+    for (Entry!(String, Double) entry : scoreMembers.entrySet()) {
       binaryScoreMembers.put(SafeEncoder.encode(entry.getKey()), entry.getValue());
     }
     return binaryScoreMembers;
   }
 
-  private HashMap<byte[], GeoCoordinate> convertMemberCoordinateMapToBinary(
-      final Map<String, GeoCoordinate> memberCoordinateMap) {
-    HashMap<byte[], GeoCoordinate> binaryMemberCoordinateMap = new HashMap<byte[], GeoCoordinate>();
-    for (Entry<String, GeoCoordinate> entry : memberCoordinateMap.entrySet()) {
+  private HashMap!(byte[], GeoCoordinate) convertMemberCoordinateMapToBinary(
+      final Map!(String, GeoCoordinate) memberCoordinateMap) {
+    HashMap!(byte[], GeoCoordinate) binaryMemberCoordinateMap = new HashMap!(byte[], GeoCoordinate)();
+    for (Entry!(String, GeoCoordinate) entry : memberCoordinateMap.entrySet()) {
       binaryMemberCoordinateMap.put(SafeEncoder.encode(entry.getKey()), entry.getValue());
     }
     return binaryMemberCoordinateMap;
   }
 
-  @Override
+  override
   public void bitfield(final String key, final String... arguments) {
     bitfield(SafeEncoder.encode(key), SafeEncoder.encodeMany(arguments));
   }
 
-  @Override
+  override
   public void hstrlen(final String key, final String field) {
     hstrlen(SafeEncoder.encode(key), SafeEncoder.encode(field));
   }
 
-  @Override
-  public void xadd(final String key, final  StreamEntryID id, final Map<String, String> hash, long maxLen, boolean approximateLength) {
-    final Map<byte[], byte[]> bhash = new HashMap<>(hash.size());
-    for (final Entry<String, String> entry : hash.entrySet()) {
+  override
+  public void xadd(final String key, final  StreamEntryID id, final Map!(String, String) hash, long maxLen, boolean approximateLength) {
+    final Map!(byte[], byte[]) bhash = new HashMap<>(hash.size());
+    for (final Entry!(String, String) entry : hash.entrySet()) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()));
     }
     xadd(SafeEncoder.encode(key), SafeEncoder.encode(id==null ? "*" : id.toString()), bhash, maxLen, approximateLength);
   }
   
-  @Override
+  override
   public void xlen(final String key) {
 	  xlen(SafeEncoder.encode(key));
   }
   
-  @Override
+  override
   public void xrange(final String key, final StreamEntryID start, final  StreamEntryID end, final long count) {
 	  xrange(SafeEncoder.encode(key), SafeEncoder.encode(start==null ? "-" : start.toString()), SafeEncoder.encode(end==null ? "+" : end.toString()), count);
   }
   
-  @Override
+  override
   public void xrevrange(String key, StreamEntryID end, StreamEntryID start, int count) {
     xrevrange(SafeEncoder.encode(key), SafeEncoder.encode(end==null ? "+" : end.toString()), SafeEncoder.encode(start==null ? "-" : start.toString()), count);
   }
   
-  @Override
-  public void xread(final int count, final long block, final Entry<String, StreamEntryID>... streams) {
-    final Map<byte[], byte[]> bhash = new HashMap<byte[], byte[]>(streams.length);
-    for (final Entry<String, StreamEntryID> entry : streams) {
+  override
+  public void xread(final int count, final long block, final Entry!(String, StreamEntryID)... streams) {
+    final Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(streams.length);
+    for (final Entry!(String, StreamEntryID) entry : streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()==null ? "0-0" : entry.getValue().toString()));
     }
     xread(count, block, bhash);
   }
   
-  @Override
+  override
   public void xack(final String key, final String group, final StreamEntryID... ids) {
     final byte[][] bids = new byte[ids.length][];
     for (int i=0 ; i< ids.length; ++i ) {
@@ -1196,27 +1196,27 @@ public class Client extends BinaryClient implements Commands {
     xack(SafeEncoder.encode(key), SafeEncoder.encode(group), bids);
   }
   
-  @Override
+  override
   public void xgroupCreate(String key, String groupname, StreamEntryID id, boolean makeStream) {
     xgroupCreate(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(id==null ? "0-0" : id.toString()), makeStream);
   }
 
-  @Override
+  override
   public void xgroupSetID(String key, String groupname, StreamEntryID id) {
     xgroupSetID(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(id==null ? "0-0" : id.toString()));    
   }
 
-  @Override
+  override
   public void xgroupDestroy(String key, String groupname) {
     xgroupDestroy(SafeEncoder.encode(key), SafeEncoder.encode(groupname));    
   }
 
-  @Override
+  override
   public void xgroupDelConsumer(String key, String groupname, String consumerName) {
     xgroupDelConsumer(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(consumerName));    
   }
 
-  @Override
+  override
   public void xdel(final String key, final StreamEntryID... ids) {
     final byte[][] bids = new byte[ids.length][];
     for (int i=0 ; i< ids.length; ++i ) {
@@ -1226,27 +1226,27 @@ public class Client extends BinaryClient implements Commands {
     xdel(SafeEncoder.encode(key), bids);    
   }
 
-  @Override
+  override
   public void xtrim(String key, long maxLen, boolean approximateLength) {
     xtrim(SafeEncoder.encode(key), maxLen, approximateLength);    
   }
 
-  @Override
-  public void xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Entry<String, StreamEntryID>... streams) {
-    final Map<byte[], byte[]> bhash = new HashMap<>(streams.length);
-    for (final Entry<String, StreamEntryID> entry : streams) {
+  override
+  public void xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Entry!(String, StreamEntryID)... streams) {
+    final Map!(byte[], byte[]) bhash = new HashMap<>(streams.length);
+    for (final Entry!(String, StreamEntryID) entry : streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()==null ? ">" : entry.getValue().toString()));
     }
     xreadGroup(SafeEncoder.encode(groupname), SafeEncoder.encode(consumer), count, block, noAck, bhash);    
   }
 
-  @Override
+  override
   public void xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername) {
     xpending(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(start==null ? "-" : start.toString()),
         SafeEncoder.encode(end==null ? "+" : end.toString()), count, consumername == null? null : SafeEncoder.encode(consumername));    
   }
 
-  @Override
+  override
   public void xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime, int retries,
       boolean force, StreamEntryID... ids) {
     

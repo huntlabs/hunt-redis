@@ -2,8 +2,7 @@ module hunt.redis.exceptions.RedisMovedDataException;
 
 import hunt.redis.HostAndPort;
 
-public class RedisMovedDataException extends RedisRedirectionException {
-  private static final long serialVersionUID = 3878126572474819403L;
+public class RedisMovedDataException : RedisRedirectionException {
 
   public RedisMovedDataException(String message, HostAndPort targetNode, int slot) {
     super(message, targetNode, slot);

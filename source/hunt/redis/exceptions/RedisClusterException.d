@@ -1,7 +1,6 @@
 module hunt.redis.exceptions.RedisClusterException;
 
-public class RedisClusterException extends RedisDataException {
-  private static final long serialVersionUID = 3878126572474819403L;
+public class RedisClusterException : RedisDataException {
 
   public RedisClusterException(Throwable cause) {
     super(cause);

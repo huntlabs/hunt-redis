@@ -13,809 +13,809 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.Hashing;
 
-public class ShardedRedis extends BinaryShardedRedis implements RedisCommands, Closeable {
+public class ShardedRedis : BinaryShardedRedis implements RedisCommands, Closeable {
 
   protected ShardedRedisPool dataSource = null;
 
-  public ShardedRedis(List<RedisShardInfo> shards) {
+  public ShardedRedis(List!(RedisShardInfo) shards) {
     super(shards);
   }
 
-  public ShardedRedis(List<RedisShardInfo> shards, Hashing algo) {
+  public ShardedRedis(List!(RedisShardInfo) shards, Hashing algo) {
     super(shards, algo);
   }
 
-  public ShardedRedis(List<RedisShardInfo> shards, Pattern keyTagPattern) {
+  public ShardedRedis(List!(RedisShardInfo) shards, Pattern keyTagPattern) {
     super(shards, keyTagPattern);
   }
 
-  public ShardedRedis(List<RedisShardInfo> shards, Hashing algo, Pattern keyTagPattern) {
+  public ShardedRedis(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
     super(shards, algo, keyTagPattern);
   }
 
-  @Override
+  override
   public String set(final String key, final String value) {
     Redis j = getShard(key);
     return j.set(key, value);
   }
 
-  @Override
+  override
   public String set(final String key, final String value, SetParams params) {
     Redis j = getShard(key);
     return j.set(key, value, params);
   }
 
-  @Override
+  override
   public String get(final String key) {
     Redis j = getShard(key);
     return j.get(key);
   }
 
-  @Override
+  override
   public String echo(final String string) {
     Redis j = getShard(string);
     return j.echo(string);
   }
 
-  @Override
+  override
   public Boolean exists(final String key) {
     Redis j = getShard(key);
     return j.exists(key);
   }
 
-  @Override
+  override
   public String type(final String key) {
     Redis j = getShard(key);
     return j.type(key);
   }
 
-  @Override
+  override
   public byte[] dump(final String key) {
     Redis j = getShard(key);
     return j.dump(key);
   }
 
-  @Override
+  override
   public String restore(final String key, final int ttl, final byte[] serializedValue) {
     Redis j = getShard(key);
     return j.restore(key, ttl, serializedValue);
   }
 
-  @Override
+  override
   public String restoreReplace(final String key, final int ttl, final byte[] serializedValue) {
     Redis j = getShard(key);
     return j.restoreReplace(key, ttl, serializedValue);
   }
 
-  @Override
+  override
   public Long expire(final String key, final int seconds) {
     Redis j = getShard(key);
     return j.expire(key, seconds);
   }
 
-  @Override
+  override
   public Long pexpire(final String key, final long milliseconds) {
     Redis j = getShard(key);
     return j.pexpire(key, milliseconds);
   }
 
-  @Override
+  override
   public Long expireAt(final String key, final long unixTime) {
     Redis j = getShard(key);
     return j.expireAt(key, unixTime);
   }
 
-  @Override
+  override
   public Long pexpireAt(final String key, final long millisecondsTimestamp) {
     Redis j = getShard(key);
     return j.pexpireAt(key, millisecondsTimestamp);
   }
 
-  @Override
+  override
   public Long ttl(final String key) {
     Redis j = getShard(key);
     return j.ttl(key);
   }
 
-  @Override
+  override
   public Long pttl(final String key) {
     Redis j = getShard(key);
     return j.pttl(key);
   }
 
-  @Override
+  override
   public Boolean setbit(final String key, final long offset, boolean value) {
     Redis j = getShard(key);
     return j.setbit(key, offset, value);
   }
 
-  @Override
+  override
   public Boolean setbit(final String key, final long offset, final String value) {
     Redis j = getShard(key);
     return j.setbit(key, offset, value);
   }
 
-  @Override
+  override
   public Boolean getbit(final String key, final long offset) {
     Redis j = getShard(key);
     return j.getbit(key, offset);
   }
 
-  @Override
+  override
   public Long setrange(final String key, final long offset, final String value) {
     Redis j = getShard(key);
     return j.setrange(key, offset, value);
   }
 
-  @Override
+  override
   public String getrange(final String key, final long startOffset, final long endOffset) {
     Redis j = getShard(key);
     return j.getrange(key, startOffset, endOffset);
   }
 
-  @Override
+  override
   public String getSet(final String key, final String value) {
     Redis j = getShard(key);
     return j.getSet(key, value);
   }
 
-  @Override
+  override
   public Long setnx(final String key, final String value) {
     Redis j = getShard(key);
     return j.setnx(key, value);
   }
 
-  @Override
+  override
   public String setex(final String key, final int seconds, final String value) {
     Redis j = getShard(key);
     return j.setex(key, seconds, value);
   }
 
-  @Override
+  override
   public String psetex(final String key, final long milliseconds, final String value) {
     Redis j = getShard(key);
     return j.psetex(key, milliseconds, value);
   }
 
-  public List<String> blpop(final String arg) {
+  public List!(String) blpop(final String arg) {
     Redis j = getShard(arg);
     return j.blpop(arg);
   }
 
-  @Override
-  public List<String> blpop(final int timeout, final String key) {
+  override
+  public List!(String) blpop(final int timeout, final String key) {
     Redis j = getShard(key);
     return j.blpop(timeout, key);
   }
 
-  public List<String> brpop(final String arg) {
+  public List!(String) brpop(final String arg) {
     Redis j = getShard(arg);
     return j.brpop(arg);
   }
 
-  @Override
-  public List<String> brpop(final int timeout, final String key) {
+  override
+  public List!(String) brpop(final int timeout, final String key) {
     Redis j = getShard(key);
     return j.brpop(timeout, key);
   }
 
-  @Override
+  override
   public Long decrBy(final String key, final long decrement) {
     Redis j = getShard(key);
     return j.decrBy(key, decrement);
   }
 
-  @Override
+  override
   public Long decr(final String key) {
     Redis j = getShard(key);
     return j.decr(key);
   }
 
-  @Override
+  override
   public Long incrBy(final String key, final long increment) {
     Redis j = getShard(key);
     return j.incrBy(key, increment);
   }
 
-  @Override
+  override
   public Double incrByFloat(final String key, final double increment) {
     Redis j = getShard(key);
     return j.incrByFloat(key, increment);
   }
 
-  @Override
+  override
   public Long incr(final String key) {
     Redis j = getShard(key);
     return j.incr(key);
   }
 
-  @Override
+  override
   public Long append(final String key, final String value) {
     Redis j = getShard(key);
     return j.append(key, value);
   }
 
-  @Override
+  override
   public String substr(final String key, final int start, final int end) {
     Redis j = getShard(key);
     return j.substr(key, start, end);
   }
 
-  @Override
+  override
   public Long hset(final String key, final String field, final String value) {
     Redis j = getShard(key);
     return j.hset(key, field, value);
   }
 
-  @Override
-  public Long hset(final String key, final Map<String, String> hash) {
+  override
+  public Long hset(final String key, final Map!(String, String) hash) {
     Redis j = getShard(key);
     return j.hset(key, hash);
   }
 
-  @Override
+  override
   public String hget(final String key, final String field) {
     Redis j = getShard(key);
     return j.hget(key, field);
   }
 
-  @Override
+  override
   public Long hsetnx(final String key, final String field, final String value) {
     Redis j = getShard(key);
     return j.hsetnx(key, field, value);
   }
 
-  @Override
-  public String hmset(final String key, final Map<String, String> hash) {
+  override
+  public String hmset(final String key, final Map!(String, String) hash) {
     Redis j = getShard(key);
     return j.hmset(key, hash);
   }
 
-  @Override
-  public List<String> hmget(final String key, String... fields) {
+  override
+  public List!(String) hmget(final String key, String... fields) {
     Redis j = getShard(key);
     return j.hmget(key, fields);
   }
 
-  @Override
+  override
   public Long hincrBy(final String key, final String field, final long value) {
     Redis j = getShard(key);
     return j.hincrBy(key, field, value);
   }
 
-  @Override
+  override
   public Double hincrByFloat(final String key, final String field, final double value) {
     Redis j = getShard(key);
     return j.hincrByFloat(key, field, value);
   }
 
-  @Override
+  override
   public Boolean hexists(final String key, final String field) {
     Redis j = getShard(key);
     return j.hexists(key, field);
   }
 
-  @Override
+  override
   public Long del(final String key) {
     Redis j = getShard(key);
     return j.del(key);
   }
 
-  @Override
+  override
   public Long unlink(final String key) {
     Redis j = getShard(key);
     return j.unlink(key);
   }
 
-  @Override
+  override
   public Long hdel(final String key, String... fields) {
     Redis j = getShard(key);
     return j.hdel(key, fields);
   }
 
-  @Override
+  override
   public Long hlen(final String key) {
     Redis j = getShard(key);
     return j.hlen(key);
   }
 
-  @Override
-  public Set<String> hkeys(final String key) {
+  override
+  public Set!(String) hkeys(final String key) {
     Redis j = getShard(key);
     return j.hkeys(key);
   }
 
-  @Override
-  public List<String> hvals(final String key) {
+  override
+  public List!(String) hvals(final String key) {
     Redis j = getShard(key);
     return j.hvals(key);
   }
 
-  @Override
-  public Map<String, String> hgetAll(final String key) {
+  override
+  public Map!(String, String) hgetAll(final String key) {
     Redis j = getShard(key);
     return j.hgetAll(key);
   }
 
-  @Override
+  override
   public Long rpush(final String key, String... strings) {
     Redis j = getShard(key);
     return j.rpush(key, strings);
   }
 
-  @Override
+  override
   public Long lpush(final String key, String... strings) {
     Redis j = getShard(key);
     return j.lpush(key, strings);
   }
 
-  @Override
+  override
   public Long lpushx(final String key, String... string) {
     Redis j = getShard(key);
     return j.lpushx(key, string);
   }
 
-  @Override
+  override
   public Long strlen(final String key) {
     Redis j = getShard(key);
     return j.strlen(key);
   }
 
-  @Override
+  override
   public Long move(final String key, final int dbIndex) {
     Redis j = getShard(key);
     return j.move(key, dbIndex);
   }
 
-  @Override
+  override
   public Long rpushx(final String key, String... string) {
     Redis j = getShard(key);
     return j.rpushx(key, string);
   }
 
-  @Override
+  override
   public Long persist(final String key) {
     Redis j = getShard(key);
     return j.persist(key);
   }
 
-  @Override
+  override
   public Long llen(final String key) {
     Redis j = getShard(key);
     return j.llen(key);
   }
 
-  @Override
-  public List<String> lrange(final String key, final long start, final long stop) {
+  override
+  public List!(String) lrange(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.lrange(key, start, stop);
   }
 
-  @Override
+  override
   public String ltrim(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.ltrim(key, start, stop);
   }
 
-  @Override
+  override
   public String lindex(final String key, final long index) {
     Redis j = getShard(key);
     return j.lindex(key, index);
   }
 
-  @Override
+  override
   public String lset(final String key, final long index, final String value) {
     Redis j = getShard(key);
     return j.lset(key, index, value);
   }
 
-  @Override
+  override
   public Long lrem(final String key, final long count, final String value) {
     Redis j = getShard(key);
     return j.lrem(key, count, value);
   }
 
-  @Override
+  override
   public String lpop(final String key) {
     Redis j = getShard(key);
     return j.lpop(key);
   }
 
-  @Override
+  override
   public String rpop(final String key) {
     Redis j = getShard(key);
     return j.rpop(key);
   }
 
-  @Override
+  override
   public Long sadd(final String key, String... members) {
     Redis j = getShard(key);
     return j.sadd(key, members);
   }
 
-  @Override
-  public Set<String> smembers(final String key) {
+  override
+  public Set!(String) smembers(final String key) {
     Redis j = getShard(key);
     return j.smembers(key);
   }
 
-  @Override
+  override
   public Long srem(final String key, String... members) {
     Redis j = getShard(key);
     return j.srem(key, members);
   }
 
-  @Override
+  override
   public String spop(final String key) {
     Redis j = getShard(key);
     return j.spop(key);
   }
 
-  @Override
-  public Set<String> spop(final String key, final long count) {
+  override
+  public Set!(String) spop(final String key, final long count) {
     Redis j = getShard(key);
     return j.spop(key, count);
   }
 
-  @Override
+  override
   public Long scard(final String key) {
     Redis j = getShard(key);
     return j.scard(key);
   }
 
-  @Override
+  override
   public Boolean sismember(final String key, final String member) {
     Redis j = getShard(key);
     return j.sismember(key, member);
   }
 
-  @Override
+  override
   public String srandmember(final String key) {
     Redis j = getShard(key);
     return j.srandmember(key);
   }
 
-  @Override
-  public List<String> srandmember(final String key, final int count) {
+  override
+  public List!(String) srandmember(final String key, final int count) {
     Redis j = getShard(key);
     return j.srandmember(key, count);
   }
 
-  @Override
+  override
   public Long zadd(final String key, final double score, final String member) {
     Redis j = getShard(key);
     return j.zadd(key, score, member);
   }
 
-  @Override
+  override
   public Long zadd(final String key, final double score, final String member, final ZAddParams params) {
     Redis j = getShard(key);
     return j.zadd(key, score, member, params);
   }
 
-  @Override
-  public Long zadd(final String key, final Map<String, Double> scoreMembers) {
+  override
+  public Long zadd(final String key, final Map!(String, Double) scoreMembers) {
     Redis j = getShard(key);
     return j.zadd(key, scoreMembers);
   }
 
-  @Override
-  public Long zadd(final String key, final Map<String, Double> scoreMembers, final ZAddParams params) {
+  override
+  public Long zadd(final String key, final Map!(String, Double) scoreMembers, final ZAddParams params) {
     Redis j = getShard(key);
     return j.zadd(key, scoreMembers, params);
   }
 
-  @Override
-  public Set<String> zrange(final String key, final long start, final long stop) {
+  override
+  public Set!(String) zrange(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.zrange(key, start, stop);
   }
 
-  @Override
+  override
   public Long zrem(final String key, String... members) {
     Redis j = getShard(key);
     return j.zrem(key, members);
   }
 
-  @Override
+  override
   public Double zincrby(final String key, final double increment, final String member) {
     Redis j = getShard(key);
     return j.zincrby(key, increment, member);
   }
 
-  @Override
+  override
   public Double zincrby(final String key, final double increment, final String member, ZIncrByParams params) {
     Redis j = getShard(key);
     return j.zincrby(key, increment, member, params);
   }
 
-  @Override
+  override
   public Long zrank(final String key, final String member) {
     Redis j = getShard(key);
     return j.zrank(key, member);
   }
 
-  @Override
+  override
   public Long zrevrank(final String key, final String member) {
     Redis j = getShard(key);
     return j.zrevrank(key, member);
   }
 
-  @Override
-  public Set<String> zrevrange(final String key, final long start, final long stop) {
+  override
+  public Set!(String) zrevrange(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.zrevrange(key, start, stop);
   }
 
-  @Override
-  public Set<Tuple> zrangeWithScores(final String key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrangeWithScores(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.zrangeWithScores(key, start, stop);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeWithScores(final String key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrevrangeWithScores(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.zrevrangeWithScores(key, start, stop);
   }
 
-  @Override
+  override
   public Long zcard(final String key) {
     Redis j = getShard(key);
     return j.zcard(key);
   }
 
-  @Override
+  override
   public Double zscore(final String key, final String member) {
     Redis j = getShard(key);
     return j.zscore(key, member);
   }
 
-  @Override
-  public List<String> sort(final String key) {
+  override
+  public List!(String) sort(final String key) {
     Redis j = getShard(key);
     return j.sort(key);
   }
 
-  @Override
-  public List<String> sort(final String key, final SortingParams sortingParameters) {
+  override
+  public List!(String) sort(final String key, final SortingParams sortingParameters) {
     Redis j = getShard(key);
     return j.sort(key, sortingParameters);
   }
 
-  @Override
+  override
   public Long zcount(final String key, final double min, final double max) {
     Redis j = getShard(key);
     return j.zcount(key, min, max);
   }
 
-  @Override
+  override
   public Long zcount(final String key, final String min, final String max) {
     Redis j = getShard(key);
     return j.zcount(key, min, max);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final double min, final double max) {
+  override
+  public Set!(String) zrangeByScore(final String key, final double min, final double max) {
     Redis j = getShard(key);
     return j.zrangeByScore(key, min, max);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final double max, final double min) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final double max, final double min) {
     Redis j = getShard(key);
     return j.zrevrangeByScore(key, max, min);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final double min, final double max, final int offset, final int count) {
+  override
+  public Set!(String) zrangeByScore(final String key, final double min, final double max, final int offset, final int count) {
     Redis j = getShard(key);
     return j.zrangeByScore(key, min, max, offset, count);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final double max, final double min, final int offset, final int count) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final double max, final double min, final int offset, final int count) {
     Redis j = getShard(key);
     return j.zrevrangeByScore(key, max, min, offset, count);
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final double min, final double max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max) {
     Redis j = getShard(key);
     return j.zrangeByScoreWithScores(key, min, max);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final double max, final double min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max, final double min) {
     Redis j = getShard(key);
     return j.zrevrangeByScoreWithScores(key, max, min);
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final double min, final double max, final int offset,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max, final int offset,
       final int count) {
     Redis j = getShard(key);
     return j.zrangeByScoreWithScores(key, min, max, offset, count);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final double max, final double min, final int offset,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max, final double min, final int offset,
       final int count) {
     Redis j = getShard(key);
     return j.zrevrangeByScoreWithScores(key, max, min, offset, count);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final String min, final String max) {
+  override
+  public Set!(String) zrangeByScore(final String key, final String min, final String max) {
     Redis j = getShard(key);
     return j.zrangeByScore(key, min, max);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final String max, final String min) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final String max, final String min) {
     Redis j = getShard(key);
     return j.zrevrangeByScore(key, max, min);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final String min, final String max, final int offset, final int count) {
+  override
+  public Set!(String) zrangeByScore(final String key, final String min, final String max, final int offset, final int count) {
     Redis j = getShard(key);
     return j.zrangeByScore(key, min, max, offset, count);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final String max, final String min, final int offset, final int count) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final String max, final String min, final int offset, final int count) {
     Redis j = getShard(key);
     return j.zrevrangeByScore(key, max, min, offset, count);
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final String min, final String max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max) {
     Redis j = getShard(key);
     return j.zrangeByScoreWithScores(key, min, max);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final String max, final String min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max, final String min) {
     Redis j = getShard(key);
     return j.zrevrangeByScoreWithScores(key, max, min);
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final String min, final String max, final int offset,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max, final int offset,
       final int count) {
     Redis j = getShard(key);
     return j.zrangeByScoreWithScores(key, min, max, offset, count);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final String max, final String min, final int offset,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max, final String min, final int offset,
       final int count) {
     Redis j = getShard(key);
     return j.zrevrangeByScoreWithScores(key, max, min, offset, count);
   }
 
-  @Override
+  override
   public Long zremrangeByRank(final String key, final long start, final long stop) {
     Redis j = getShard(key);
     return j.zremrangeByRank(key, start, stop);
   }
 
-  @Override
+  override
   public Long zremrangeByScore(final String key, final double min, final double max) {
     Redis j = getShard(key);
     return j.zremrangeByScore(key, min, max);
   }
 
-  @Override
+  override
   public Long zremrangeByScore(final String key, final String min, final String max) {
     Redis j = getShard(key);
     return j.zremrangeByScore(key, min, max);
   }
 
-  @Override
+  override
   public Long zlexcount(final String key, final String min, final String max) {
     return getShard(key).zlexcount(key, min, max);
   }
 
-  @Override
-  public Set<String> zrangeByLex(final String key, final String min, final String max) {
+  override
+  public Set!(String) zrangeByLex(final String key, final String min, final String max) {
     return getShard(key).zrangeByLex(key, min, max);
   }
 
-  @Override
-  public Set<String> zrangeByLex(final String key, final String min, final String max,
+  override
+  public Set!(String) zrangeByLex(final String key, final String min, final String max,
       final int offset, final int count) {
     return getShard(key).zrangeByLex(key, min, max, offset, count);
   }
 
-  @Override
-  public Set<String> zrevrangeByLex(final String key, final String max, final String min) {
+  override
+  public Set!(String) zrevrangeByLex(final String key, final String max, final String min) {
     return getShard(key).zrevrangeByLex(key, max, min);
   }
 
-  @Override
-  public Set<String> zrevrangeByLex(final String key, final String max, final String min, final int offset, final int count) {
+  override
+  public Set!(String) zrevrangeByLex(final String key, final String max, final String min, final int offset, final int count) {
     return getShard(key).zrevrangeByLex(key, max, min, offset, count);
   }
 
-  @Override
+  override
   public Long zremrangeByLex(final String key, final String min, final String max) {
     return getShard(key).zremrangeByLex(key, min, max);
   }
 
-  @Override
+  override
   public Long linsert(final String key, final ListPosition where, final String pivot, final String value) {
     Redis j = getShard(key);
     return j.linsert(key, where, pivot, value);
   }
 
-  @Override
+  override
   public Long bitcount(final String key) {
     Redis j = getShard(key);
     return j.bitcount(key);
   }
 
-  @Override
+  override
   public Long bitcount(final String key, final long start, final long end) {
     Redis j = getShard(key);
     return j.bitcount(key, start, end);
   }
 
-  @Override
+  override
   public Long bitpos(final String key, final boolean value) {
     Redis j = getShard(key);
     return j.bitpos(key, value);
   }
 
-  @Override
+  override
   public Long bitpos(final String key, boolean value, final BitPosParams params) {
     Redis j = getShard(key);
     return j.bitpos(key, value, params);
   }
 
-  @Override
-  public ScanResult<Entry<String, String>> hscan(final String key, final String cursor) {
+  override
+  public ScanResult!(Entry!(String, String)) hscan(final String key, final String cursor) {
     Redis j = getShard(key);
     return j.hscan(key, cursor);
   }
 
-  @Override
-  public ScanResult<Entry<String, String>> hscan(final String key, final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(Entry!(String, String)) hscan(final String key, final String cursor, final ScanParams params) {
     Redis j = getShard(key);
     return j.hscan(key, cursor, params);
   }
 
-  @Override
-  public ScanResult<String> sscan(final String key, final String cursor) {
+  override
+  public ScanResult!(String) sscan(final String key, final String cursor) {
     Redis j = getShard(key);
     return j.sscan(key, cursor);
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final String key, final String cursor) {
+  override
+  public ScanResult!(Tuple) zscan(final String key, final String cursor) {
     Redis j = getShard(key);
     return j.zscan(key, cursor);
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final String key, final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(Tuple) zscan(final String key, final String cursor, final ScanParams params) {
     Redis j = getShard(key);
     return j.zscan(key, cursor, params);
   }
 
-  @Override
-  public ScanResult<String> sscan(final String key, final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(String) sscan(final String key, final String cursor, final ScanParams params) {
     Redis j = getShard(key);
     return j.sscan(key, cursor, params);
   }
 
-  @Override
+  override
   public void close() {
     if (dataSource != null) {
       boolean broken = false;
 
-      for (Redis jedis : getAllShards()) {
+      foreach(Redis jedis ; getAllShards()) {
         if (jedis.getClient().isBroken()) {
           broken = true;
           break;
@@ -839,221 +839,221 @@ public class ShardedRedis extends BinaryShardedRedis implements RedisCommands, C
   }
 
   public void resetState() {
-    for (Redis jedis : getAllShards()) {
+    foreach(Redis jedis ; getAllShards()) {
       jedis.resetState();
     }
   }
 
-  @Override
+  override
   public Long pfadd(final String key, final String... elements) {
     Redis j = getShard(key);
     return j.pfadd(key, elements);
   }
 
-  @Override
+  override
   public long pfcount(final String key) {
     Redis j = getShard(key);
     return j.pfcount(key);
   }
 
-  @Override
+  override
   public Long touch(final String key) {
     Redis j = getShard(key);
     return j.touch(key);
   }
 
-  @Override
+  override
   public Long geoadd(final String key, final double longitude, final double latitude, final String member) {
     Redis j = getShard(key);
     return j.geoadd(key, longitude, latitude, member);
   }
 
-  @Override
-  public Long geoadd(final String key, final Map<String, GeoCoordinate> memberCoordinateMap) {
+  override
+  public Long geoadd(final String key, final Map!(String, GeoCoordinate) memberCoordinateMap) {
     Redis j = getShard(key);
     return j.geoadd(key, memberCoordinateMap);
   }
 
-  @Override
+  override
   public Double geodist(final String key, final String member1, final String member2) {
     Redis j = getShard(key);
     return j.geodist(key, member1, member2);
   }
 
-  @Override
+  override
   public Double geodist(final String key, final String member1, final String member2, final GeoUnit unit) {
     Redis j = getShard(key);
     return j.geodist(key, member1, member2, unit);
   }
 
-  @Override
-  public List<String> geohash(final String key, final String... members) {
+  override
+  public List!(String) geohash(final String key, final String... members) {
     Redis j = getShard(key);
     return j.geohash(key, members);
   }
 
-  @Override
-  public List<GeoCoordinate> geopos(final String key, final String... members) {
+  override
+  public List!(GeoCoordinate) geopos(final String key, final String... members) {
     Redis j = getShard(key);
     return j.geopos(key, members);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     Redis j = getShard(key);
     return j.georadius(key, longitude, latitude, radius, unit);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     Redis j = getShard(key);
     return j.georadiusReadonly(key, longitude, latitude, radius, unit);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     Redis j = getShard(key);
     return j.georadius(key, longitude, latitude, radius, unit, param);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     Redis j = getShard(key);
     return j.georadiusReadonly(key, longitude, latitude, radius, unit, param);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final String key, final String member, final double radius,
       final GeoUnit unit) {
     Redis j = getShard(key);
     return j.georadiusByMember(key, member, radius, unit);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member, final double radius,
       final GeoUnit unit) {
     Redis j = getShard(key);
     return j.georadiusByMemberReadonly(key, member, radius, unit);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final String key, final String member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     Redis j = getShard(key);
     return j.georadiusByMember(key, member, radius, unit, param);
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     Redis j = getShard(key);
     return j.georadiusByMemberReadonly(key, member, radius, unit, param);
   }
 
-  @Override
-  public List<Long> bitfield(final String key, final String... arguments) {
+  override
+  public List!(Long) bitfield(final String key, final String... arguments) {
     Redis j = getShard(key);
     return j.bitfield(key, arguments);
   }
 
-  @Override
+  override
   public Long hstrlen(final String key, final String field) {
     Redis j = getShard(key);
     return j.hstrlen(key, field);
   }
 
-  @Override
-  public StreamEntryID xadd(String key, StreamEntryID id, Map<String, String> hash) {
+  override
+  public StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash) {
     Redis j = getShard(key);
     return j.xadd(key, id, hash);
   }
   
-  @Override
-  public StreamEntryID xadd(String key, StreamEntryID id, Map<String, String> hash, long maxLen, boolean approximateLength) {
+  override
+  public StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength) {
     Redis j = getShard(key);
     return j.xadd(key, id, hash, maxLen, approximateLength);
   }
 
-  @Override
+  override
   public Long xlen(String key) {
     Redis j = getShard(key);
     return j.xlen(key);
   }
   
-  @Override
-  public List<StreamEntry> xrange(String key, StreamEntryID start, StreamEntryID end, int count) {
+  override
+  public List!(StreamEntry) xrange(String key, StreamEntryID start, StreamEntryID end, int count) {
     Redis j = getShard(key);
     return j.xrange(key, start, end, count);
   }
 
-  @Override
+  override
   public long xack(String key, String group, StreamEntryID... ids) {
     Redis j = getShard(key);
     return j.xack(key, group, ids);
   }
 
-  @Override
+  override
   public String xgroupCreate(String key, String consumer, StreamEntryID id, boolean makeStream) {
     Redis j = getShard(key);
     return j.xgroupCreate(key, consumer, id, makeStream);
   }
 
-  @Override
+  override
   public String xgroupSetID(String key, String groupname, StreamEntryID id) {
     Redis j = getShard(key);
     return j.xgroupSetID(key, groupname, id);
   }
 
-  @Override
+  override
   public long xgroupDestroy(String key, String groupname) {
     Redis j = getShard(key);
     return j.xgroupDestroy(key, groupname);
   }
 
-  @Override
+  override
   public String xgroupDelConsumer(String key, String groupname, String consumername) {
     Redis j = getShard(key);
     return j.xgroupDelConsumer(key, groupname, consumername);
   }
 
 
-  @Override
+  override
   public long xdel(String key, StreamEntryID... ids) {
     Redis j = getShard(key);
     return j.xdel(key, ids);
   }
 
-  @Override
+  override
   public long xtrim(String key, long maxLen, boolean approximateLength) {
     Redis j = getShard(key);
     return j.xtrim(key, maxLen, approximateLength);
   }
 
-  @Override
-  public List<StreamEntry> xrevrange(String key, StreamEntryID end, StreamEntryID start, int count) {
+  override
+  public List!(StreamEntry) xrevrange(String key, StreamEntryID end, StreamEntryID start, int count) {
     Redis j = getShard(key);
     return j.xrevrange(key, end, start, count);
   }
 
-  @Override
-  public List<StreamPendingEntry> xpending(String key, String groupname, StreamEntryID start, StreamEntryID end,
+  override
+  public List!(StreamPendingEntry) xpending(String key, String groupname, StreamEntryID start, StreamEntryID end,
       int count, String consumername) {
     Redis j = getShard(key);
     return j.xpending(key, groupname, start, end, count, consumername);
   }
 
-  @Override
-  public List<StreamEntry> xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime,
+  override
+  public List!(StreamEntry) xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime,
       int retries, boolean force, StreamEntryID... ids) {
     Redis j = getShard(key);
     return j.xclaim(key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
   }
 
-  @Override
+  override
   public Object sendCommand(ProtocolCommand cmd, String... args) {
     // default since no sample key provided in RedisCommands interface
     String sampleKey = args.length > 0 ? args[0] : cmd.toString();

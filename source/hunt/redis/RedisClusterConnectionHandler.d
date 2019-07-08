@@ -7,20 +7,20 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import hunt.redis.exceptions.RedisConnectionException;
 
-public abstract class RedisClusterConnectionHandler implements Closeable {
+public abstract class RedisClusterConnectionHandler : Closeable {
   protected final RedisClusterInfoCache cache;
 
-  public RedisClusterConnectionHandler(Set<HostAndPort> nodes,
+  public RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
       final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password) {
     this(nodes, poolConfig, connectionTimeout, soTimeout, password, null);
   }
 
-  public RedisClusterConnectionHandler(Set<HostAndPort> nodes,
+  public RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
       final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName) {
     this(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, false, null, null, null, null);
   }
 
-  public RedisClusterConnectionHandler(Set<HostAndPort> nodes,
+  public RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
       final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName,
       boolean ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
@@ -37,14 +37,14 @@ public abstract class RedisClusterConnectionHandler implements Closeable {
     return cache.setupNodeIfNotExist(node).getResource();
   }
   
-  public Map<String, RedisPool> getNodes() {
+  public Map!(String, RedisPool) getNodes() {
     return cache.getNodes();
   }
 
-  private void initializeSlotsCache(Set<HostAndPort> startNodes, GenericObjectPoolConfig poolConfig,
+  private void initializeSlotsCache(Set!(HostAndPort) startNodes, GenericObjectPoolConfig poolConfig,
       int connectionTimeout, int soTimeout, String password, String clientName,
       boolean ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    for (HostAndPort hostAndPort : startNodes) {
+    foreach(HostAndPort hostAndPort ; startNodes) {
       Redis jedis = null;
       try {
         jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -74,7 +74,7 @@ public abstract class RedisClusterConnectionHandler implements Closeable {
     cache.renewClusterSlots(jedis);
   }
 
-  @Override
+  override
   public void close() {
     cache.reset();
   }

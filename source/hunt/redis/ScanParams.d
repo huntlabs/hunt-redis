@@ -17,7 +17,7 @@ import hunt.redis.util.SafeEncoder;
 
 public class ScanParams {
 
-  private final Map<Keyword, ByteBuffer> params = new EnumMap<Keyword, ByteBuffer>(Keyword.class);
+  private final Map!(Keyword, ByteBuffer) params = new EnumMap!(Keyword, ByteBuffer)(Keyword.class);
 
   public final static String SCAN_POINTER_START = String.valueOf(0);
   public final static byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
@@ -49,9 +49,9 @@ public class ScanParams {
     return this;
   }
 
-  public Collection<byte[]> getParams() {
-    List<byte[]> paramsList = new ArrayList<byte[]>(params.size());
-    for (Map.Entry<Keyword, ByteBuffer> param : params.entrySet()) {
+  public Collection!(byte[]) getParams() {
+    List!(byte[]) paramsList = new ArrayList!(byte[])(params.size());
+    for (Map.Entry!(Keyword, ByteBuffer) param : params.entrySet()) {
       paramsList.add(param.getKey().raw);
       paramsList.add(param.getValue().array());
     }

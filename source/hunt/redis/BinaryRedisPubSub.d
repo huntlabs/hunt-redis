@@ -84,7 +84,7 @@ public abstract class BinaryRedisPubSub {
 
   private void process(Client client) {
     do {
-      List<Object> reply = client.getUnflushedObjectMultiBulkReply();
+      List!(Object) reply = client.getUnflushedObjectMultiBulkReply();
       final Object firstObj = reply.get(0);
       if (!(firstObj instanceof byte[])) {
         throw new RedisException("Unknown message type: " + firstObj);

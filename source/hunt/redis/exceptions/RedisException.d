@@ -1,7 +1,6 @@
 module hunt.redis.exceptions.RedisException;
 
-public class RedisException extends RuntimeException {
-  private static final long serialVersionUID = -2946266495682282677L;
+public class RedisException : RuntimeException {
 
   public RedisException(String message) {
     super(message);

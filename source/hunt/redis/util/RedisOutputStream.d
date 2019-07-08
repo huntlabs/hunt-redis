@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * operations like in-place string encoding. This stream fully ignore mark/reset and should not be
  * used outside Redis
  */
-public final class RedisOutputStream extends FilterOutputStream {
+public final class RedisOutputStream : FilterOutputStream {
   protected final byte[] buf;
 
   protected int count;
@@ -61,12 +61,12 @@ public final class RedisOutputStream extends FilterOutputStream {
     buf[count++] = b;
   }
 
-  @Override
+  override
   public void write(final byte[] b) throws IOException {
     write(b, 0, b.length);
   }
 
-  @Override
+  override
   public void write(final byte[] b, final int off, final int len) throws IOException {
     if (len >= buf.length) {
       flushBuffer();
@@ -128,7 +128,7 @@ public final class RedisOutputStream extends FilterOutputStream {
     writeCrLf();
   }
 
-  @Override
+  override
   public void flush() throws IOException {
     flushBuffer();
     out.flush();

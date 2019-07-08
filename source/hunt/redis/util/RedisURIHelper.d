@@ -2,10 +2,10 @@ module hunt.redis.util.RedisURIHelper;
 
 public final class RedisURIHelper {
 
-  private static final int DEFAULT_DB = 0;
+  private enum int DEFAULT_DB = 0;
 
-  private static final String REDIS = "redis";
-  private static final String REDISS = "rediss";
+  private enum string REDIS = "redis";
+  private enum string REDISS = "rediss";
 
   private RedisURIHelper(){
     throw new InstantiationError( "Must not instantiate this class" );
@@ -45,11 +45,11 @@ public final class RedisURIHelper {
   }
 
   public static boolean isRedisScheme(URI uri) {
-    return REDIS.equals(uri.getScheme());
+    return REDIS == uri.getScheme();
   }
 
   public static boolean isRedisSSLScheme(URI uri) {
-    return REDISS.equals(uri.getScheme());
+    return REDISS == uri.getScheme();
   }
 
 }

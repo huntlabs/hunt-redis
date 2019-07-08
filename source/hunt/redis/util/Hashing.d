@@ -5,15 +5,15 @@ import java.security.NoSuchAlgorithmException;
 
 public interface Hashing {
   Hashing MURMUR_HASH = new MurmurHash();
-  ThreadLocal<MessageDigest> md5Holder = new ThreadLocal<MessageDigest>();
+  ThreadLocal!(MessageDigest) md5Holder = new ThreadLocal!(MessageDigest)();
 
   Hashing MD5 = new Hashing() {
-    @Override
+    override
     public long hash(String key) {
       return hash(SafeEncoder.encode(key));
     }
 
-    @Override
+    override
     public long hash(byte[] key) {
       try {
         if (md5Holder.get() == null) {

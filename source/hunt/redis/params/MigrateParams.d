@@ -1,10 +1,10 @@
 module hunt.redis.params.MigrateParams;
 
-public class MigrateParams extends Params {
+public class MigrateParams : Params {
 
-  private static final String COPY = "COPY";
-  private static final String REPLACE = "REPLACE";
-  private static final String AUTH = "AUTH";
+  private enum string COPY = "COPY";
+  private enum string REPLACE = "REPLACE";
+  private enum string AUTH = "AUTH";
 
   public MigrateParams() {
   }

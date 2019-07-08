@@ -5,8 +5,7 @@ import java.net.InetAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HostAndPort implements Serializable {
-  private static final long serialVersionUID = -519876229978427751L;
+public class HostAndPort : Serializable {
 
   protected static Logger log = LoggerFactory.getLogger(HostAndPort.class.getName());
   public static volatile String localhost;
@@ -28,7 +27,7 @@ public class HostAndPort implements Serializable {
     return port;
   }
 
-  @Override
+  override
   public boolean equals(Object obj) {
     if (obj == null) return false;
     if (obj == this) return true;
@@ -38,15 +37,15 @@ public class HostAndPort implements Serializable {
 
     String thisHost = convertHost(host);
     String hpHost = convertHost(hp.host);
-    return port == hp.port && thisHost.equals(hpHost);
+    return port == hp.port && thisHost == hpHost;
   }
 
-  @Override
-  public int hashCode() {
+  override
+  public size_t toHash() @trusted nothrow() {
     return 31 * convertHost(host).hashCode() + port;
   }
 
-  @Override
+  override
   public String toString() {
     return host + ":" + port;
   }

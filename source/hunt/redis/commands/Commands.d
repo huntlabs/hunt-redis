@@ -90,11 +90,11 @@ public interface Commands {
 
   void hget(String key, String field);
 
-  void hset(String key, Map<String, String> hash);
+  void hset(String key, Map!(String, String) hash);
 
   void hsetnx(String key, String field, String value);
 
-  void hmset(String key, Map<String, String> hash);
+  void hmset(String key, Map!(String, String) hash);
 
   void hmget(String key, String... fields);
 
@@ -170,9 +170,9 @@ public interface Commands {
 
   void zadd(String key, double score, String member, ZAddParams params);
 
-  void zadd(String key, Map<String, Double> scoreMembers);
+  void zadd(String key, Map!(String, Double) scoreMembers);
 
-  void zadd(String key, Map<String, Double> scoreMembers, ZAddParams params);
+  void zadd(String key, Map!(String, Double) scoreMembers, ZAddParams params);
 
   void zrange(String key, long start, long stop);
 
@@ -360,7 +360,7 @@ public interface Commands {
 
   void memoryDoctor();
 
-  void xadd(String key, StreamEntryID id, Map<String, String> hash, long maxLen, boolean approximateLength);
+  void xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
   
   void xlen(String key);
 
@@ -368,7 +368,7 @@ public interface Commands {
   
   void xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
   
-  void xread(int count, long block, Entry<String, StreamEntryID>... streams);
+  void xread(int count, long block, Entry!(String, StreamEntryID)... streams);
   
   void xack(String key, String group, StreamEntryID... ids);
   
@@ -384,7 +384,7 @@ public interface Commands {
 
   void xtrim(String key, long maxLen, boolean approximateLength);
 
-  void xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Entry<String, StreamEntryID>... streams);
+  void xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Entry!(String, StreamEntryID)... streams);
 
   void xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
 

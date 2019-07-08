@@ -18,11 +18,11 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   Long exists(byte[]... keys);
 
-  List<byte[]> blpop(int timeout, byte[]... keys);
+  List!(byte[]) blpop(int timeout, byte[]... keys);
 
-  List<byte[]> brpop(int timeout, byte[]... keys);
+  List!(byte[]) brpop(int timeout, byte[]... keys);
 
-  List<byte[]> mget(byte[]... keys);
+  List!(byte[]) mget(byte[]... keys);
 
   String mset(byte[]... keysvalues);
 
@@ -34,11 +34,11 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   byte[] rpoplpush(byte[] srckey, byte[] dstkey);
 
-  Set<byte[]> sdiff(byte[]... keys);
+  Set!(byte[]) sdiff(byte[]... keys);
 
   Long sdiffstore(byte[] dstkey, byte[]... keys);
 
-  Set<byte[]> sinter(byte[]... keys);
+  Set!(byte[]) sinter(byte[]... keys);
 
   Long sinterstore(byte[] dstkey, byte[]... keys);
 
@@ -48,7 +48,7 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   Long sort(byte[] key, byte[] dstkey);
 
-  Set<byte[]> sunion(byte[]... keys);
+  Set!(byte[]) sunion(byte[]... keys);
 
   Long sunionstore(byte[] dstkey, byte[]... keys);
 
@@ -76,11 +76,11 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   Long touch(byte[]... keys);
 
-  ScanResult<byte[]> scan(byte[] cursor, ScanParams params);
+  ScanResult!(byte[]) scan(byte[] cursor, ScanParams params);
 
-  Set<byte[]> keys(byte[] pattern);
+  Set!(byte[]) keys(byte[] pattern);
   
-  List<byte[]> xread(final int count, final long block, final Map<byte[], byte[]> streams);
+  List!(byte[]) xread(final int count, final long block, final Map!(byte[], byte[]) streams);
   
-  List<byte[]> xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck, Map<byte[], byte[]> streams);
+  List!(byte[]) xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck, Map!(byte[], byte[]) streams);
 }

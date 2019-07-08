@@ -11,8 +11,8 @@ import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.exceptions.RedisExhaustedPoolException;
 
-public abstract class Pool<T> implements Closeable {
-  protected GenericObjectPool<T> internalPool;
+public abstract class Pool!(T) implements Closeable {
+  protected GenericObjectPool!(T) internalPool;
 
   /**
    * Using this constructor means you have to set and initialize the internalPool yourself.
@@ -20,11 +20,11 @@ public abstract class Pool<T> implements Closeable {
   public Pool() {
   }
 
-  public Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
+  public Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
     initPool(poolConfig, factory);
   }
 
-  @Override
+  override
   public void close() {
     destroy();
   }
@@ -33,7 +33,7 @@ public abstract class Pool<T> implements Closeable {
     return this.internalPool.isClosed();
   }
 
-  public void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
+  public void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
 
     if (this.internalPool != null) {
       try {
@@ -42,7 +42,7 @@ public abstract class Pool<T> implements Closeable {
       }
     }
 
-    this.internalPool = new GenericObjectPool<T>(factory, poolConfig);
+    this.internalPool = new GenericObjectPool!(T)(factory, poolConfig);
   }
 
   public T getResource() {

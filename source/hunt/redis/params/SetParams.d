@@ -4,12 +4,12 @@ import hunt.collection.ArraryList;
 
 import hunt.redis.util.SafeEncoder;
 
-public class SetParams extends Params {
+public class SetParams : Params {
 
-  private static final String XX = "xx";
-  private static final String NX = "nx";
-  private static final String PX = "px";
-  private static final String EX = "ex";
+  private enum string XX = "xx";
+  private enum string NX = "nx";
+  private enum string PX = "px";
+  private enum string EX = "ex";
 
   public SetParams() {
   }
@@ -57,7 +57,7 @@ public class SetParams extends Params {
   }
 
   public byte[][] getByteParams(byte[]... args) {
-    ArrayList<byte[]> byteParams = new ArrayList<byte[]>();
+    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     for (byte[] arg : args) {
       byteParams.add(arg);
     }

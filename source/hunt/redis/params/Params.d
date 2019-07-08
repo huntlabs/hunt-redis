@@ -8,7 +8,7 @@ import hunt.redis.util.SafeEncoder;
 
 public abstract class Params {
 
-  private Map<String, Object> params;
+  private Map!(String, Object) params;
 
   @SuppressWarnings("unchecked")
   public <T> T getParam(String name) {
@@ -19,9 +19,9 @@ public abstract class Params {
 
   public byte[][] getByteParams() {
     if (params == null) return new byte[0][];
-    ArrayList<byte[]> byteParams = new ArrayList<byte[]>();
+    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
 
-    for (Entry<String, Object> param : params.entrySet()) {
+    for (Entry!(String, Object) param : params.entrySet()) {
       byteParams.add(SafeEncoder.encode(param.getKey()));
 
       Object value = param.getValue();
@@ -45,14 +45,14 @@ public abstract class Params {
 
   protected void addParam(String name, Object value) {
     if (params == null) {
-      params = new HashMap<String, Object>();
+      params = new HashMap!(String, Object)();
     }
     params.put(name, value);
   }
 
   protected void addParam(String name) {
     if (params == null) {
-      params = new HashMap<String, Object>();
+      params = new HashMap!(String, Object)();
     }
     params.put(name, null);
   }

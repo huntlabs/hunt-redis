@@ -33,7 +33,7 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.RedisURIHelper;
 
-public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
+public class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     AdvancedBinaryRedisCommands, BinaryScriptingCommands, Closeable {
   protected Client client = null;
   protected Transaction transaction = null;
@@ -176,7 +176,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
+  override
   public String ping() {
     checkIsInMultiOrPipeline();
     client.ping();
@@ -203,7 +203,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String set(final byte[] key, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.set(key, value);
@@ -218,7 +218,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param params
    * @return Status code reply
    */
-  @Override
+  override
   public String set(final byte[] key, final byte[] value, final SetParams params) {
     checkIsInMultiOrPipeline();
     client.set(key, value, params);
@@ -234,7 +234,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] get(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.get(key);
@@ -244,7 +244,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
   /**
    * Ask the server to silently close the connection.
    */
-  @Override
+  override
   public String quit() {
     checkIsInMultiOrPipeline();
     client.quit();
@@ -260,7 +260,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: an integer greater than 0 if one or more keys exist,
    *         0 if none of the specified keys exist.
    */
-  @Override
+  override
   public Long exists(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.exists(keys);
@@ -274,7 +274,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Boolean reply, true if the key exists, otherwise false
    */
-  @Override
+  override
   public Boolean exists(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.exists(key);
@@ -288,14 +288,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: an integer greater than 0 if one or more keys were removed
    *         0 if none of the specified key existed
    */
-  @Override
+  override
   public Long del(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.del(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long del(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.del(key);
@@ -315,14 +315,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Integer reply: The number of keys that were unlinked
    */
-  @Override
+  override
   public Long unlink(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.unlink(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long unlink(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.unlink(key);
@@ -338,7 +338,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         contains a Set value "zset" if the key contains a Sorted Set value "hash" if the key
    *         contains a Hash value
    */
-  @Override
+  override
   public String type(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.type(key);
@@ -349,7 +349,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * Delete all the keys of the currently selected DB. This command never fails.
    * @return Status code reply
    */
-  @Override
+  override
   public String flushDB() {
     checkIsInMultiOrPipeline();
     client.flushDB();
@@ -384,8 +384,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param pattern
    * @return Multi bulk reply
    */
-  @Override
-  public Set<byte[]> keys(final byte[] pattern) {
+  override
+  public Set!(byte[]) keys(final byte[] pattern) {
     checkIsInMultiOrPipeline();
     client.keys(pattern);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -398,7 +398,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Single line reply, specifically the randomly selected key or an empty string is the
    *         database is empty
    */
-  @Override
+  override
   public byte[] randomBinaryKey() {
     checkIsInMultiOrPipeline();
     client.randomKey();
@@ -414,7 +414,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param newkey
    * @return Status code repy
    */
-  @Override
+  override
   public String rename(final byte[] oldkey, final byte[] newkey) {
     checkIsInMultiOrPipeline();
     client.rename(oldkey, newkey);
@@ -429,7 +429,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param newkey
    * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
    */
-  @Override
+  override
   public Long renamenx(final byte[] oldkey, final byte[] newkey) {
     checkIsInMultiOrPipeline();
     client.renamenx(oldkey, newkey);
@@ -440,7 +440,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * Return the number of keys in the currently selected database.
    * @return Integer reply
    */
-  @Override
+  override
   public Long dbSize() {
     checkIsInMultiOrPipeline();
     client.dbSize();
@@ -468,7 +468,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         the key already has an associated timeout (this may happen only in Redis versions &lt;
    *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
    */
-  @Override
+  override
   public Long expire(final byte[] key, final int seconds) {
     checkIsInMultiOrPipeline();
     client.expire(key, seconds);
@@ -498,7 +498,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         the key already has an associated timeout (this may happen only in Redis versions &lt;
    *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
    */
-  @Override
+  override
   public Long expireAt(final byte[] key, final long unixTime) {
     checkIsInMultiOrPipeline();
     client.expireAt(key, unixTime);
@@ -514,7 +514,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         EXPIRE. If the Key does not exists or does not have an associated expire, -1 is
    *         returned.
    */
-  @Override
+  override
   public Long ttl(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.ttl(key);
@@ -527,14 +527,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Integer reply: The number of keys that were touched.
    */
-  @Override
+  override
   public Long touch(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.touch(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long touch(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.touch(key);
@@ -547,7 +547,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param index
    * @return Status code reply
    */
-  @Override
+  override
   public String select(final int index) {
     checkIsInMultiOrPipeline();
     client.select(index);
@@ -557,7 +557,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return statusCodeReply;
   }
 
-  @Override
+  override
   public String swapDB(final int index1, final int index2) {
     checkIsInMultiOrPipeline();
     client.swapDB(index1, index2);
@@ -574,7 +574,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the key was moved 0 if the key was not moved because
    *         already present on the target DB or was not found in the current DB.
    */
-  @Override
+  override
   public Long move(final byte[] key, final int dbIndex) {
     checkIsInMultiOrPipeline();
     client.move(key, dbIndex);
@@ -586,7 +586,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * command never fails.
    * @return Status code reply
    */
-  @Override
+  override
   public String flushAll() {
     checkIsInMultiOrPipeline();
     client.flushAll();
@@ -603,7 +603,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] getSet(final byte[] key, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.getSet(key, value);
@@ -619,8 +619,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Multi bulk reply
    */
-  @Override
-  public List<byte[]> mget(final byte[]... keys) {
+  override
+  public List!(byte[]) mget(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.mget(keys);
     return client.getBinaryMultiBulkReply();
@@ -635,7 +635,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Integer reply, specifically: 1 if the key was set 0 if the key was not set
    */
-  @Override
+  override
   public Long setnx(final byte[] key, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.setnx(key, value);
@@ -653,7 +653,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String setex(final byte[] key, final int seconds, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.setex(key, seconds, value);
@@ -676,7 +676,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keysvalues
    * @return Status code reply Basically +OK as MSET can't fail
    */
-  @Override
+  override
   public String mset(final byte[]... keysvalues) {
     checkIsInMultiOrPipeline();
     client.mset(keysvalues);
@@ -700,7 +700,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the all the keys were set 0 if no key was set (at
    *         least one key already existed)
    */
-  @Override
+  override
   public Long msetnx(final byte[]... keysvalues) {
     checkIsInMultiOrPipeline();
     client.msetnx(keysvalues);
@@ -725,7 +725,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param decrement
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long decrBy(final byte[] key, final long decrement) {
     checkIsInMultiOrPipeline();
     client.decrBy(key, decrement);
@@ -749,7 +749,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long decr(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.decr(key);
@@ -774,7 +774,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param increment
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long incrBy(final byte[] key, final long increment) {
     checkIsInMultiOrPipeline();
     client.incrBy(key, increment);
@@ -800,7 +800,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param increment the value to increment by
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Double incrByFloat(final byte[] key, final double increment) {
     checkIsInMultiOrPipeline();
     client.incrByFloat(key, increment);
@@ -825,7 +825,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long incr(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.incr(key);
@@ -844,7 +844,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Integer reply, specifically the total length of the string after the append operation.
    */
-  @Override
+  override
   public Long append(final byte[] key, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.append(key, value);
@@ -867,7 +867,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param end
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] substr(final byte[] key, final int start, final int end) {
     checkIsInMultiOrPipeline();
     client.substr(key, start, end);
@@ -886,15 +886,15 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return If the field already exists, and the HSET just produced an update of the value, 0 is
    *         returned, otherwise if a new field is created 1 is returned.
    */
-  @Override
+  override
   public Long hset(final byte[] key, final byte[] field, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.hset(key, field, value);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long hset(final byte[] key, final Map<byte[], byte[]> hash) {
+  override
+  public Long hset(final byte[] key, final Map!(byte[], byte[]) hash) {
     checkIsInMultiOrPipeline();
     client.hset(key, hash);
     return client.getIntegerReply();
@@ -910,7 +910,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param field
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] hget(final byte[] key, final byte[] field) {
     checkIsInMultiOrPipeline();
     client.hget(key, field);
@@ -926,7 +926,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return If the field already exists, 0 is returned, otherwise if a new field is created 1 is
    *         returned.
    */
-  @Override
+  override
   public Long hsetnx(final byte[] key, final byte[] field, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.hsetnx(key, field, value);
@@ -943,8 +943,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param hash
    * @return Always OK because HMSET can't fail
    */
-  @Override
-  public String hmset(final byte[] key, final Map<byte[], byte[]> hash) {
+  override
+  public String hmset(final byte[] key, final Map!(byte[], byte[]) hash) {
     checkIsInMultiOrPipeline();
     client.hmset(key, hash);
     return client.getStatusCodeReply();
@@ -962,8 +962,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Multi Bulk Reply specifically a list of all the values associated with the specified
    *         fields, in the same order of the request.
    */
-  @Override
-  public List<byte[]> hmget(final byte[] key, final byte[]... fields) {
+  override
+  public List!(byte[]) hmget(final byte[] key, final byte[]... fields) {
     checkIsInMultiOrPipeline();
     client.hmget(key, fields);
     return client.getBinaryMultiBulkReply();
@@ -983,7 +983,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Integer reply The new value at field after the increment operation.
    */
-  @Override
+  override
   public Long hincrBy(final byte[] key, final byte[] field, final long value) {
     checkIsInMultiOrPipeline();
     client.hincrBy(key, field, value);
@@ -1006,7 +1006,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Double precision floating point reply The new value at field after the increment
    *         operation.
    */
-  @Override
+  override
   public Double hincrByFloat(final byte[] key, final byte[] field, final double value) {
     checkIsInMultiOrPipeline();
     client.hincrByFloat(key, field, value);
@@ -1021,7 +1021,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Return true if the hash stored at key contains the specified field. Return false if the key is
    *         not found or the field is not present.
    */
-  @Override
+  override
   public Boolean hexists(final byte[] key, final byte[] field) {
     checkIsInMultiOrPipeline();
     client.hexists(key, field);
@@ -1037,7 +1037,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return If the field was present in the hash it is deleted and 1 is returned, otherwise 0 is
    *         returned and no operation is performed.
    */
-  @Override
+  override
   public Long hdel(final byte[] key, final byte[]... fields) {
     checkIsInMultiOrPipeline();
     client.hdel(key, fields);
@@ -1052,7 +1052,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return The number of entries (fields) contained in the hash stored at key. If the specified
    *         key does not exist, 0 is returned assuming an empty hash.
    */
-  @Override
+  override
   public Long hlen(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.hlen(key);
@@ -1066,8 +1066,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return All the fields names contained into a hash.
    */
-  @Override
-  public Set<byte[]> hkeys(final byte[] key) {
+  override
+  public Set!(byte[]) hkeys(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.hkeys(key);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1080,8 +1080,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return All the fields values contained into a hash.
    */
-  @Override
-  public List<byte[]> hvals(final byte[] key) {
+  override
+  public List!(byte[]) hvals(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.hvals(key);
     return client.getBinaryMultiBulkReply();
@@ -1094,13 +1094,13 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return All the fields and values contained into a hash.
    */
-  @Override
-  public Map<byte[], byte[]> hgetAll(final byte[] key) {
+  override
+  public Map!(byte[], byte[]) hgetAll(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.hgetAll(key);
-    final List<byte[]> flatHash = client.getBinaryMultiBulkReply();
-    final Map<byte[], byte[]> hash = new RedisByteHashMap();
-    final Iterator<byte[]> iterator = flatHash.iterator();
+    final List!(byte[]) flatHash = client.getBinaryMultiBulkReply();
+    final Map!(byte[], byte[]) hash = new RedisByteHashMap();
+    final Iterator!(byte[]) iterator = flatHash.iterator();
     while (iterator.hasNext()) {
       hash.put(iterator.next(), iterator.next());
     }
@@ -1120,7 +1120,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically, the number of elements inside the list after the push
    *         operation.
    */
-  @Override
+  override
   public Long rpush(final byte[] key, final byte[]... strings) {
     checkIsInMultiOrPipeline();
     client.rpush(key, strings);
@@ -1139,7 +1139,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically, the number of elements inside the list after the push
    *         operation.
    */
-  @Override
+  override
   public Long lpush(final byte[] key, final byte[]... strings) {
     checkIsInMultiOrPipeline();
     client.lpush(key, strings);
@@ -1155,7 +1155,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return The length of the list.
    */
-  @Override
+  override
   public Long llen(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.llen(key);
@@ -1194,8 +1194,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param stop
    * @return Multi bulk reply, specifically a list of elements in the specified range.
    */
-  @Override
-  public List<byte[]> lrange(final byte[] key, final long start, final long stop) {
+  override
+  public List!(byte[]) lrange(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.lrange(key, start, stop);
     return client.getBinaryMultiBulkReply();
@@ -1231,7 +1231,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param stop
    * @return Status code reply
    */
-  @Override
+  override
   public String ltrim(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.ltrim(key, start, stop);
@@ -1254,7 +1254,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param index
    * @return Bulk reply, specifically the requested element
    */
-  @Override
+  override
   public byte[] lindex(final byte[] key, final long index) {
     checkIsInMultiOrPipeline();
     client.lindex(key, index);
@@ -1280,7 +1280,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String lset(final byte[] key, final long index, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.lset(key, index, value);
@@ -1302,7 +1302,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Integer Reply, specifically: The number of removed elements if the operation succeeded
    */
-  @Override
+  override
   public Long lrem(final byte[] key, final long count, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.lrem(key, count, value);
@@ -1319,7 +1319,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] lpop(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.lpop(key);
@@ -1336,7 +1336,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] rpop(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.rpop(key);
@@ -1358,7 +1358,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param dstkey
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] rpoplpush(final byte[] srckey, final byte[] dstkey) {
     checkIsInMultiOrPipeline();
     client.rpoplpush(srckey, dstkey);
@@ -1376,7 +1376,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
    *         already a member of the set
    */
-  @Override
+  override
   public Long sadd(final byte[] key, final byte[]... members) {
     checkIsInMultiOrPipeline();
     client.sadd(key, members);
@@ -1391,8 +1391,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key the key of the set
    * @return Multi bulk reply
    */
-  @Override
-  public Set<byte[]> smembers(final byte[] key) {
+  override
+  public Set!(byte[]) smembers(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.smembers(key);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1408,7 +1408,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
    *         not a member of the set
    */
-  @Override
+  override
   public Long srem(final byte[] key, final byte[]... member) {
     checkIsInMultiOrPipeline();
     client.srem(key, member);
@@ -1426,18 +1426,18 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] spop(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.spop(key);
     return client.getBinaryBulkReply();
   }
 
-  @Override
-  public Set<byte[]> spop(final byte[] key, final long count) {
+  override
+  public Set!(byte[]) spop(final byte[] key, final long count) {
     checkIsInMultiOrPipeline();
     client.spop(key, count);
-    List<byte[]> members = client.getBinaryMultiBulkReply();
+    List!(byte[]) members = client.getBinaryMultiBulkReply();
     if (members == null) return null;
     return SetFromList.of(members);
   }
@@ -1461,7 +1461,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the element was moved 0 if the element was not found
    *         on the first set and no operation was performed
    */
-  @Override
+  override
   public Long smove(final byte[] srckey, final byte[] dstkey, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.smove(srckey, dstkey, member);
@@ -1475,7 +1475,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: the cardinality (number of elements) of the set as an
    *         integer.
    */
-  @Override
+  override
   public Long scard(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.scard(key);
@@ -1491,7 +1491,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Boolean reply, specifically: true if the element is a member of the set false if the element
    *         is not a member of the set OR if the key does not exist
    */
-  @Override
+  override
   public Boolean sismember(final byte[] key, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.sismember(key, member);
@@ -1513,8 +1513,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Multi bulk reply, specifically the list of common elements.
    */
-  @Override
-  public Set<byte[]> sinter(final byte[]... keys) {
+  override
+  public Set!(byte[]) sinter(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sinter(keys);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1530,7 +1530,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sinterstore(final byte[] dstkey, final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sinterstore(dstkey, keys);
@@ -1549,8 +1549,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Multi bulk reply, specifically the list of common elements.
    */
-  @Override
-  public Set<byte[]> sunion(final byte[]... keys) {
+  override
+  public Set!(byte[]) sunion(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sunion(keys);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1565,7 +1565,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sunionstore(final byte[] dstkey, final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sunionstore(dstkey, keys);
@@ -1593,8 +1593,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Return the members of a set resulting from the difference between the first set
    *         provided and all the successive sets.
    */
-  @Override
-  public Set<byte[]> sdiff(final byte[]... keys) {
+  override
+  public Set!(byte[]) sdiff(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sdiff(keys);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1607,7 +1607,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sdiffstore(final byte[] dstkey, final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.sdiffstore(dstkey, keys);
@@ -1624,15 +1624,15 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public byte[] srandmember(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.srandmember(key);
     return client.getBinaryBulkReply();
   }
 
-  @Override
-  public List<byte[]> srandmember(final byte[] key, final int count) {
+  override
+  public List!(byte[]) srandmember(final byte[] key, final int count) {
     checkIsInMultiOrPipeline();
     client.srandmember(key, count);
     return client.getBinaryMultiBulkReply();
@@ -1654,36 +1654,36 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
    *         already a member of the sorted set and the score was updated
    */
-  @Override
+  override
   public Long zadd(final byte[] key, final double score, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.zadd(key, score, member);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zadd(final byte[] key, final double score, final byte[] member, final ZAddParams params) {
     checkIsInMultiOrPipeline();
     client.zadd(key, score, member, params);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long zadd(final byte[] key, final Map<byte[], Double> scoreMembers) {
+  override
+  public Long zadd(final byte[] key, final Map!(byte[], Double) scoreMembers) {
     checkIsInMultiOrPipeline();
     client.zadd(key, scoreMembers);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long zadd(final byte[] key, final Map<byte[], Double> scoreMembers, final ZAddParams params) {
+  override
+  public Long zadd(final byte[] key, final Map!(byte[], Double) scoreMembers, final ZAddParams params) {
     checkIsInMultiOrPipeline();
     client.zadd(key, scoreMembers, params);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<byte[]> zrange(final byte[] key, final long start, final long stop) {
+  override
+  public Set!(byte[]) zrange(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrange(key, start, stop);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -1700,7 +1700,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
    *         not a member of the set
    */
-  @Override
+  override
   public Long zrem(final byte[] key, final byte[]... members) {
     checkIsInMultiOrPipeline();
     client.zrem(key, members);
@@ -1725,14 +1725,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param member
    * @return The new score
    */
-  @Override
+  override
   public Double zincrby(final byte[] key, final double increment, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.zincrby(key, increment, member);
     return BuilderFactory.DOUBLE.build(client.getOne());
   }
 
-  @Override
+  override
   public Double zincrby(final byte[] key, final double increment, final byte[] member, final ZIncrByParams params) {
     checkIsInMultiOrPipeline();
     client.zincrby(key, increment, member, params);
@@ -1755,7 +1755,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
    *         reply if the element exists. A nil bulk reply if there is no such element.
    */
-  @Override
+  override
   public Long zrank(final byte[] key, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.zrank(key, member);
@@ -1778,29 +1778,29 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
    *         reply if the element exists. A nil bulk reply if there is no such element.
    */
-  @Override
+  override
   public Long zrevrank(final byte[] key, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.zrevrank(key, member);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<byte[]> zrevrange(final byte[] key, final long start, final long stop) {
+  override
+  public Set!(byte[]) zrevrange(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrevrange(key, start, stop);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<Tuple> zrangeWithScores(final byte[] key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrangeWithScores(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrangeWithScores(key, start, stop);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeWithScores(final byte[] key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrevrangeWithScores(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrevrangeWithScores(key, start, stop);
     return getTupledSet();
@@ -1814,7 +1814,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param key
    * @return the cardinality (number of elements) of the set as an integer.
    */
-  @Override
+  override
   public Long zcard(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.zcard(key);
@@ -1831,7 +1831,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param member
    * @return the score
    */
-  @Override
+  override
   public Double zscore(final byte[] key, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.zscore(key, member);
@@ -1881,19 +1881,19 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     pipeline = null;
   }
 
-  @Override
+  override
   public String watch(final byte[]... keys) {
     client.watch(keys);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String unwatch() {
     client.unwatch();
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public void close() {
     client.close();
   }
@@ -1911,8 +1911,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Assuming the Set/List at key contains a list of numbers, the return value will be the
    *         list of numbers ordered from the smallest to the biggest number.
    */
-  @Override
-  public List<byte[]> sort(final byte[] key) {
+  override
+  public List!(byte[]) sort(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.sort(key);
     return client.getBinaryMultiBulkReply();
@@ -1992,8 +1992,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param sortingParameters
    * @return a list of sorted elements.
    */
-  @Override
-  public List<byte[]> sort(final byte[] key, final SortingParams sortingParameters) {
+  override
+  public List!(byte[]) sort(final byte[] key, final SortingParams sortingParameters) {
     checkIsInMultiOrPipeline();
     client.sort(key, sortingParameters);
     return client.getBinaryMultiBulkReply();
@@ -2061,8 +2061,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         value is a nil multi bulk reply. Most client values will return false or nil
    *         accordingly to the programming language used.
    */
-  @Override
-  public List<byte[]> blpop(final int timeout, final byte[]... keys) {
+  override
+  public List!(byte[]) blpop(final int timeout, final byte[]... keys) {
     return blpop(getArgsAddTimeout(timeout, keys));
   }
 
@@ -2086,7 +2086,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param dstkey
    * @return The number of elements of the list at dstkey.
    */
-  @Override
+  override
   public Long sort(final byte[] key, final SortingParams sortingParameters, final byte[] dstkey) {
     checkIsInMultiOrPipeline();
     client.sort(key, sortingParameters, dstkey);
@@ -2106,7 +2106,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param dstkey
    * @return The number of elements of the list at dstkey.
    */
-  @Override
+  override
   public Long sort(final byte[] key, final byte[] dstkey) {
     checkIsInMultiOrPipeline();
     client.sort(key, dstkey);
@@ -2175,13 +2175,13 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         value is a nil multi bulk reply. Most client values will return false or nil
    *         accordingly to the programming language used.
    */
-  @Override
-  public List<byte[]> brpop(final int timeout, final byte[]... keys) {
+  override
+  public List!(byte[]) brpop(final int timeout, final byte[]... keys) {
     return brpop(getArgsAddTimeout(timeout, keys));
   }
 
-  @Override
-  public List<byte[]> blpop(final byte[]... args) {
+  override
+  public List!(byte[]) blpop(final byte[]... args) {
     checkIsInMultiOrPipeline();
     client.blpop(args);
     client.setTimeoutInfinite();
@@ -2192,8 +2192,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
-  public List<byte[]> brpop(final byte[]... args) {
+  override
+  public List!(byte[]) brpop(final byte[]... args) {
     checkIsInMultiOrPipeline();
     client.brpop(args);
     client.setTimeoutInfinite();
@@ -2216,7 +2216,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param password
    * @return Status code reply
    */
-  @Override
+  override
   public String auth(final String password) {
     checkIsInMultiOrPipeline();
     client.auth(password);
@@ -2229,14 +2229,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return pipeline;
   }
 
-  @Override
+  override
   public Long zcount(final byte[] key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zcount(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zcount(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zcount(key, min, max);
@@ -2290,15 +2290,15 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param max
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<byte[]> zrangeByScore(final byte[] key, final double min, final double max) {
+  override
+  public Set!(byte[]) zrangeByScore(final byte[] key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrangeByScore(final byte[] key, final byte[] min, final byte[] max) {
+  override
+  public Set!(byte[]) zrangeByScore(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
     return SetFromList.of(client.getBinaryMultiBulkReply());
@@ -2353,16 +2353,16 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param count
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<byte[]> zrangeByScore(final byte[] key, final double min, final double max,
+  override
+  public Set!(byte[]) zrangeByScore(final byte[] key, final double min, final double max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrangeByScore(final byte[] key, final byte[] min, final byte[] max,
+  override
+  public Set!(byte[]) zrangeByScore(final byte[] key, final byte[] min, final byte[] max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
@@ -2416,15 +2416,15 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param max
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final byte[] key, final double min, final double max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final byte[] key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max);
     return getTupledSet();
@@ -2479,89 +2479,89 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param count
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final byte[] key, final double min, final double max,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final byte[] key, final double min, final double max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max, offset, count);
     return getTupledSet();
   }
 
-  protected Set<Tuple> getTupledSet() {
-    List<byte[]> membersWithScores = client.getBinaryMultiBulkReply();
+  protected Set!(Tuple) getTupledSet() {
+    List!(byte[]) membersWithScores = client.getBinaryMultiBulkReply();
     if (membersWithScores.isEmpty()) {
       return Collections.emptySet();
     }
-    Set<Tuple> set = new LinkedHashSet<>(membersWithScores.size() / 2, 1.0f);
-    Iterator<byte[]> iterator = membersWithScores.iterator();
+    Set!(Tuple) set = new LinkedHashSet<>(membersWithScores.size() / 2, 1.0f);
+    Iterator!(byte[]) iterator = membersWithScores.iterator();
     while (iterator.hasNext()) {
       set.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
     }
     return set;
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByScore(final byte[] key, final double max, final double min) {
+  override
+  public Set!(byte[]) zrevrangeByScore(final byte[] key, final double max, final double min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min) {
+  override
+  public Set!(byte[]) zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByScore(final byte[] key, final double max, final double min,
+  override
+  public Set!(byte[]) zrevrangeByScore(final byte[] key, final double max, final double min,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min,
+  override
+  public Set!(byte[]) zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final byte[] key, final double max, final double min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final byte[] key, final double max, final double min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final byte[] key, final double max,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final byte[] key, final double max,
       final double min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final byte[] key, final byte[] max, final byte[] min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final byte[] key, final byte[] max, final byte[] min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final byte[] key, final byte[] max,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final byte[] key, final byte[] max,
       final byte[] min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min, offset, count);
@@ -2582,7 +2582,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param stop
    * @return
    */
-  @Override
+  override
   public Long zremrangeByRank(final byte[] key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zremrangeByRank(key, start, stop);
@@ -2602,14 +2602,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param max
    * @return Integer reply, specifically the number of elements removed.
    */
-  @Override
+  override
   public Long zremrangeByScore(final byte[] key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByScore(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zremrangeByScore(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByScore(key, min, max);
@@ -2645,7 +2645,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param sets
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zunionstore(final byte[] dstkey, final byte[]... sets) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, sets);
@@ -2682,7 +2682,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param params
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zunionstore(final byte[] dstkey, final ZParams params, final byte[]... sets) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, params, sets);
@@ -2718,7 +2718,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param sets
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zinterstore(final byte[] dstkey, final byte[]... sets) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, sets);
@@ -2755,50 +2755,50 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param params
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zinterstore(final byte[] dstkey, final ZParams params, final byte[]... sets) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, params, sets);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zlexcount(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zlexcount(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<byte[]> zrangeByLex(final byte[] key, final byte[] min, final byte[] max) {
+  override
+  public Set!(byte[]) zrangeByLex(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrangeByLex(final byte[] key, final byte[] min, final byte[] max,
+  override
+  public Set!(byte[]) zrangeByLex(final byte[] key, final byte[] min, final byte[] max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max, offset, count);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min) {
+  override
+  public Set!(byte[]) zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
-  public Set<byte[]> zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min, final int offset, final int count) {
+  override
+  public Set!(byte[]) zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min, offset, count);
     return SetFromList.of(client.getBinaryMultiBulkReply());
   }
 
-  @Override
+  override
   public Long zremrangeByLex(final byte[] key, final byte[] min, final byte[] max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByLex(key, min, max);
@@ -2818,7 +2818,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * <p>
    * @return Status code reply
    */
-  @Override
+  override
   public String save() {
     client.save();
     return client.getStatusCodeReply();
@@ -2832,7 +2832,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * to check if the operation succeeded using the LASTSAVE command.
    * @return Status code reply
    */
-  @Override
+  override
   public String bgsave() {
     client.bgsave();
     return client.getStatusCodeReply();
@@ -2852,7 +2852,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * <p>
    * @return Status code reply
    */
-  @Override
+  override
   public String bgrewriteaof() {
     client.bgrewriteaof();
     return client.getStatusCodeReply();
@@ -2866,7 +2866,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * command and checking at regular intervals every N seconds if LASTSAVE changed.
    * @return Integer reply, specifically an UNIX time stamp.
    */
-  @Override
+  override
   public Long lastsave() {
     client.lastsave();
     return client.getIntegerReply();
@@ -2882,7 +2882,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Status code reply on error. On success nothing is returned since the server quits and
    *         the connection is closed.
    */
-  @Override
+  override
   public String shutdown() {
     client.shutdown();
     String status;
@@ -2930,13 +2930,13 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * <p>
    * @return Bulk reply
    */
-  @Override
+  override
   public String info() {
     client.info();
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public String info(final String section) {
     client.info(section);
     return client.getBulkReply();
@@ -2977,13 +2977,13 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param port
    * @return Status code reply
    */
-  @Override
+  override
   public String slaveof(final String host, final int port) {
     client.slaveof(host, port);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String slaveofNoOne() {
     client.slaveofNoOne();
     return client.getStatusCodeReply();
@@ -3023,8 +3023,8 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param pattern
    * @return Bulk reply.
    */
-  @Override
-  public List<byte[]> configGet(final byte[] pattern) {
+  override
+  public List!(byte[]) configGet(final byte[] pattern) {
     checkIsInMultiOrPipeline();
     client.configGet(pattern);
     return client.getBinaryMultiBulkReply();
@@ -3034,7 +3034,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * Reset the stats returned by INFO
    * @return
    */
-  @Override
+  override
   public String configResetStat() {
     checkIsInMultiOrPipeline();
     client.configResetStat();
@@ -3061,7 +3061,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * file at all, the CONFIG REWRITE will just return an error.
    * @return OK when the configuration was rewritten properly. Otherwise an error is returned.
    */
-  @Override
+  override
   public String configRewrite() {
     checkIsInMultiOrPipeline();
     client.configRewrite();
@@ -3097,7 +3097,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public byte[] configSet(final byte[] parameter, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.configSet(parameter, value);
@@ -3108,7 +3108,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return client.isConnected();
   }
 
-  @Override
+  override
   public Long strlen(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.strlen(key);
@@ -3119,7 +3119,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     client.sync();
   }
 
-  @Override
+  override
   public Long lpushx(final byte[] key, final byte[]... string) {
     checkIsInMultiOrPipeline();
     client.lpushx(key, string);
@@ -3134,27 +3134,27 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @return Integer reply, specifically: 1: the key is now persist. 0: the key is not persist (only
    *         happens when key not set).
    */
-  @Override
+  override
   public Long persist(final byte[] key) {
     client.persist(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long rpushx(final byte[] key, final byte[]... string) {
     checkIsInMultiOrPipeline();
     client.rpushx(key, string);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public byte[] echo(final byte[] string) {
     checkIsInMultiOrPipeline();
     client.echo(string);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public Long linsert(final byte[] key, final ListPosition where, final byte[] pivot,
       final byte[] value) {
     checkIsInMultiOrPipeline();
@@ -3162,7 +3162,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String debug(final DebugParams params) {
     client.debug(params);
     return client.getStatusCodeReply();
@@ -3179,7 +3179,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param timeout
    * @return the element
    */
-  @Override
+  override
   public byte[] brpoplpush(final byte[] source, final byte[] destination, final int timeout) {
     client.brpoplpush(source, destination, timeout);
     client.setTimeoutInfinite();
@@ -3197,14 +3197,14 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return
    */
-  @Override
+  override
   public Boolean setbit(final byte[] key, final long offset, final boolean value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
     return client.getIntegerReply() == 1;
   }
 
-  @Override
+  override
   public Boolean setbit(final byte[] key, final long offset, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
@@ -3217,7 +3217,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param offset
    * @return
    */
-  @Override
+  override
   public Boolean getbit(final byte[] key, final long offset) {
     checkIsInMultiOrPipeline();
     client.getbit(key, offset);
@@ -3234,28 +3234,28 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long setrange(final byte[] key, final long offset, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.setrange(key, offset, value);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public byte[] getrange(final byte[] key, final long startOffset, final long endOffset) {
     checkIsInMultiOrPipeline();
     client.getrange(key, startOffset, endOffset);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public Long publish(final byte[] channel, final byte[] message) {
     checkIsInMultiOrPipeline();
     client.publish(channel, message);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public void subscribe(BinaryRedisPubSub jedisPubSub, final byte[]... channels) {
     client.setTimeoutInfinite();
     try {
@@ -3265,7 +3265,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
+  override
   public void psubscribe(BinaryRedisPubSub jedisPubSub, final byte[]... patterns) {
     client.setTimeoutInfinite();
     try {
@@ -3275,7 +3275,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
+  override
   public int getDB() {
     return client.getDB();
   }
@@ -3288,12 +3288,12 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param args
    * @return Script result
    */
-  @Override
-  public Object eval(final byte[] script, final List<byte[]> keys, final List<byte[]> args) {
+  override
+  public Object eval(final byte[] script, final List!(byte[]) keys, final List!(byte[]) args) {
     return eval(script, toByteArray(keys.size()), getParamsWithBinary(keys, args));
   }
 
-  protected static byte[][] getParamsWithBinary(List<byte[]> keys, List<byte[]> args) {
+  protected static byte[][] getParamsWithBinary(List!(byte[]) keys, List!(byte[]) args) {
     final int keyCount = keys.size();
     final int argCount = args.size();
     byte[][] params = new byte[keyCount + argCount][];
@@ -3307,7 +3307,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return params;
   }
 
-  @Override
+  override
   public Object eval(final byte[] script, final byte[] keyCount, final byte[]... params) {
     client.setTimeoutInfinite();
     try {
@@ -3318,27 +3318,27 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
+  override
   public Object eval(final byte[] script, final int keyCount, final byte[]... params) {
     return eval(script, toByteArray(keyCount), params);
   }
 
-  @Override
+  override
   public Object eval(final byte[] script) {
     return eval(script, 0);
   }
 
-  @Override
+  override
   public Object evalsha(final byte[] sha1) {
     return evalsha(sha1, 0);
   }
 
-  @Override
-  public Object evalsha(final byte[] sha1, final List<byte[]> keys, final List<byte[]> args) {
+  override
+  public Object evalsha(final byte[] sha1, final List!(byte[]) keys, final List!(byte[]) args) {
     return evalsha(sha1, keys.size(), getParamsWithBinary(keys, args));
   }
 
-  @Override
+  override
   public Object evalsha(final byte[] sha1, final int keyCount, final byte[]... params) {
     client.setTimeoutInfinite();
     try {
@@ -3349,7 +3349,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     }
   }
 
-  @Override
+  override
   public String scriptFlush() {
     client.scriptFlush();
     return client.getStatusCodeReply();
@@ -3361,102 +3361,102 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return scriptExists(a).get(0);
   }
 
-  @Override
-  public List<Long> scriptExists(final byte[]... sha1) {
+  override
+  public List!(Long) scriptExists(final byte[]... sha1) {
     client.scriptExists(sha1);
     return client.getIntegerMultiBulkReply();
   }
 
-  @Override
+  override
   public byte[] scriptLoad(final byte[] script) {
     client.scriptLoad(script);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public String scriptKill() {
     client.scriptKill();
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String slowlogReset() {
     client.slowlogReset();
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public Long slowlogLen() {
     client.slowlogLen();
     return client.getIntegerReply();
   }
 
-  @Override
-  public List<byte[]> slowlogGetBinary() {
+  override
+  public List!(byte[]) slowlogGetBinary() {
     client.slowlogGet();
     return client.getBinaryMultiBulkReply();
   }
 
-  @Override
-  public List<byte[]> slowlogGetBinary(final long entries) {
+  override
+  public List!(byte[]) slowlogGetBinary(final long entries) {
     client.slowlogGet(entries);
     return client.getBinaryMultiBulkReply();
   }
 
-  @Override
+  override
   public Long objectRefcount(final byte[] key) {
     client.objectRefcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public byte[] objectEncoding(final byte[] key) {
     client.objectEncoding(key);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public Long objectIdletime(final byte[] key) {
     client.objectIdletime(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitcount(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.bitcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitcount(final byte[] key, final long start, final long end) {
     checkIsInMultiOrPipeline();
     client.bitcount(key, start, end);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitop(final BitOP op, final byte[] destKey, final byte[]... srcKeys) {
     checkIsInMultiOrPipeline();
     client.bitop(op, destKey, srcKeys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public byte[] dump(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.dump(key);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public String restore(final byte[] key, final int ttl, final byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restore(key, ttl, serializedValue);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String restoreReplace(final byte[] key, final int ttl, final byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restoreReplace(key, ttl, serializedValue);
@@ -3484,21 +3484,21 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    *         the key already has an associated timeout (this may happen only in Redis versions <
    *         2.1.3, Redis >= 2.1.3 will happily update the timeout), or the key does not exist.
    */
-  @Override
+  override
   public Long pexpire(final byte[] key, final long milliseconds) {
     checkIsInMultiOrPipeline();
     client.pexpire(key, milliseconds);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long pexpireAt(final byte[] key, final long millisecondsTimestamp) {
     checkIsInMultiOrPipeline();
     client.pexpireAt(key, millisecondsTimestamp);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long pttl(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.pttl(key);
@@ -3513,56 +3513,56 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String psetex(final byte[] key, final long milliseconds, final byte[] value) {
     checkIsInMultiOrPipeline();
     client.psetex(key, milliseconds, value);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public byte[] memoryDoctorBinary() {
     checkIsInMultiOrPipeline();
     client.memoryDoctor();
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public String clientKill(final byte[] ipPort) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(ipPort);
     return this.client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clientKill(final String ip, final int port) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(ip, port);
     return this.client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Long clientKill(ClientKillParams params) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(params);
     return this.client.getIntegerReply();
   }
 
-  @Override
+  override
   public byte[] clientGetnameBinary() {
     checkIsInMultiOrPipeline();
     client.clientGetname();
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public byte[] clientListBinary() {
     checkIsInMultiOrPipeline();
     client.clientList();
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public String clientSetname(final byte[] name) {
     checkIsInMultiOrPipeline();
     client.clientSetname(name);
@@ -3575,13 +3575,13 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return client.getBulkReply();
   }
 
-  public List<String> time() {
+  public List!(String) time() {
     checkIsInMultiOrPipeline();
     client.time();
     return client.getMultiBulkReply();
   }
 
-  @Override
+  override
   public String migrate(final String host, final int port, final byte[] key,
       final int destinationDb, final int timeout) {
     checkIsInMultiOrPipeline();
@@ -3589,7 +3589,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String migrate(final String host, final int port, final int destinationDB,
       final int timeout, final MigrateParams params, final byte[]... keys) {
     checkIsInMultiOrPipeline();
@@ -3602,125 +3602,125 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * Object class has implemented "wait" method, we cannot use it, so I had to change the name of
    * the method. Sorry :S
    */
-  @Override
+  override
   public Long waitReplicas(final int replicas, final long timeout) {
     checkIsInMultiOrPipeline();
     client.waitReplicas(replicas, timeout);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long pfadd(final byte[] key, final byte[]... elements) {
     checkIsInMultiOrPipeline();
     client.pfadd(key, elements);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public long pfcount(final byte[] key) {
     checkIsInMultiOrPipeline();
     client.pfcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String pfmerge(final byte[] destkey, final byte[]... sourcekeys) {
     checkIsInMultiOrPipeline();
     client.pfmerge(destkey, sourcekeys);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Long pfcount(final byte[]... keys) {
     checkIsInMultiOrPipeline();
     client.pfcount(keys);
     return client.getIntegerReply();
   }
 
-  public ScanResult<byte[]> scan(final byte[] cursor) {
+  public ScanResult!(byte[]) scan(final byte[] cursor) {
     return scan(cursor, new ScanParams());
   }
 
-  public ScanResult<byte[]> scan(final byte[] cursor, final ScanParams params) {
+  public ScanResult!(byte[]) scan(final byte[] cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.scan(cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     byte[] newcursor = (byte[]) result.get(0);
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
-    return new ScanResult<byte[]>(newcursor, rawResults);
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    return new ScanResult!(byte[])(newcursor, rawResults);
   }
 
-  @Override
-  public ScanResult<Map.Entry<byte[], byte[]>> hscan(final byte[] key, final byte[] cursor) {
+  override
+  public ScanResult<Map.Entry!(byte[], byte[])> hscan(final byte[] key, final byte[] cursor) {
     return hscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<Map.Entry<byte[], byte[]>> hscan(final byte[] key, final byte[] cursor,
+  override
+  public ScanResult<Map.Entry!(byte[], byte[])> hscan(final byte[] key, final byte[] cursor,
       final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.hscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     byte[] newcursor = (byte[]) result.get(0);
-    List<Map.Entry<byte[], byte[]>> results = new ArrayList<Map.Entry<byte[], byte[]>>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
-    Iterator<byte[]> iterator = rawResults.iterator();
+    List<Map.Entry!(byte[], byte[])> results = new ArrayList<Map.Entry!(byte[], byte[])>();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    Iterator!(byte[]) iterator = rawResults.iterator();
     while (iterator.hasNext()) {
-      results.add(new AbstractMap.SimpleEntry<byte[], byte[]>(iterator.next(), iterator.next()));
+      results.add(new AbstractMap.SimpleEntry!(byte[], byte[])(iterator.next(), iterator.next()));
     }
     return new ScanResult<>(newcursor, results);
   }
 
-  @Override
-  public ScanResult<byte[]> sscan(final byte[] key, final byte[] cursor) {
+  override
+  public ScanResult!(byte[]) sscan(final byte[] key, final byte[] cursor) {
     return sscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<byte[]> sscan(final byte[] key, final byte[] cursor, final ScanParams params) {
+  override
+  public ScanResult!(byte[]) sscan(final byte[] key, final byte[] cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.sscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     byte[] newcursor = (byte[]) result.get(0);
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
     return new ScanResult<>(newcursor, rawResults);
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final byte[] key, final byte[] cursor) {
+  override
+  public ScanResult!(Tuple) zscan(final byte[] key, final byte[] cursor) {
     return zscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final byte[] key, final byte[] cursor, final ScanParams params) {
+  override
+  public ScanResult!(Tuple) zscan(final byte[] key, final byte[] cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.zscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     byte[] newcursor = (byte[]) result.get(0);
-    List<Tuple> results = new ArrayList<>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
-    Iterator<byte[]> iterator = rawResults.iterator();
+    List!(Tuple) results = new ArrayList<>();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    Iterator!(byte[]) iterator = rawResults.iterator();
     while (iterator.hasNext()) {
       results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
     }
     return new ScanResult<>(newcursor, results);
   }
 
-  @Override
+  override
   public Long geoadd(final byte[] key, final double longitude, final double latitude, final byte[] member) {
     checkIsInMultiOrPipeline();
     client.geoadd(key, longitude, latitude, member);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long geoadd(final byte[] key, final Map<byte[], GeoCoordinate> memberCoordinateMap) {
+  override
+  public Long geoadd(final byte[] key, final Map!(byte[], GeoCoordinate) memberCoordinateMap) {
     checkIsInMultiOrPipeline();
     client.geoadd(key, memberCoordinateMap);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Double geodist(final byte[] key, final byte[] member1, final byte[] member2) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2);
@@ -3728,7 +3728,7 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return (dval != null ? new Double(dval) : null);
   }
 
-  @Override
+  override
   public Double geodist(final byte[] key, final byte[] member1, final byte[] member2, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2, unit);
@@ -3736,78 +3736,78 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
     return (dval != null ? new Double(dval) : null);
   }
 
-  @Override
-  public List<byte[]> geohash(final byte[] key, final byte[]... members) {
+  override
+  public List!(byte[]) geohash(final byte[] key, final byte[]... members) {
     checkIsInMultiOrPipeline();
     client.geohash(key, members);
     return client.getBinaryMultiBulkReply();
   }
 
-  @Override
-  public List<GeoCoordinate> geopos(final byte[] key, final byte[]... members) {
+  override
+  public List!(GeoCoordinate) geopos(final byte[] key, final byte[]... members) {
     checkIsInMultiOrPipeline();
     client.geopos(key, members);
     return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final byte[] key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final byte[] key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final byte[] key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final byte[] key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final byte[] key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final byte[] key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final byte[] key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final byte[] key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
   
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final byte[] key, final byte[] member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final byte[] key, final byte[] member, final double radius,
       final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final byte[] key, final byte[] member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final byte[] key, final byte[] member, final double radius,
       final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final byte[] key, final byte[] member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final byte[] key, final byte[] member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final byte[] key, final byte[] member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final byte[] key, final byte[] member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit, param);
@@ -3821,73 +3821,72 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
    * return Set result.
    * @param <E>
    */
-  protected static class SetFromList<E> extends AbstractSet<E> implements Serializable {
-    private static final long serialVersionUID = -2850347066962734052L;
-    private final transient List<E> list;
+  protected static class SetFromList!(E) extends AbstractSet!(E) implements Serializable {
+    private final transient List!(E) list;
 
-    private SetFromList(List<E> list) {
+    private SetFromList(List!(E) list) {
       if (list == null) {
         throw new NullPointerException("list");
       }
       this.list = list;
     }
 
-    @Override
+    override
     public void clear() {
       list.clear();
     }
 
-    @Override
+    override
     public int size() {
       return list.size();
     }
 
-    @Override
+    override
     public boolean isEmpty() {
       return list.isEmpty();
     }
 
-    @Override
+    override
     public boolean contains(Object o) {
       return list.contains(o);
     }
 
-    @Override
+    override
     public boolean remove(Object o) {
       return list.remove(o);
     }
 
-    @Override
+    override
     public boolean add(E e) {
       return !contains(e) && list.add(e);
     }
 
-    @Override
-    public Iterator<E> iterator() {
+    override
+    public Iterator!(E) iterator() {
       return list.iterator();
     }
 
-    @Override
+    override
     public Object[] toArray() {
       return list.toArray();
     }
 
-    @Override
+    override
     public <T> T[] toArray(T[] a) {
       return list.toArray(a);
     }
 
-    @Override
+    override
     public String toString() {
       return list.toString();
     }
 
-    @Override
-    public int hashCode() {
+    override
+    public size_t toHash() @trusted nothrow() {
       return list.hashCode();
     }
 
-    @Override
+    override
     public boolean equals(Object o) {
       if (o == null) return false;
       if (o == this) return true;
@@ -3901,146 +3900,146 @@ public class BinaryRedis implements BasicCommands, BinaryRedisCommands, MultiKey
       return containsAll(c);
     }
 
-    @Override
+    override
     public boolean containsAll(Collection<?> c) {
       return list.containsAll(c);
     }
 
-    @Override
+    override
     public boolean removeAll(Collection<?> c) {
       return list.removeAll(c);
     }
 
-    @Override
+    override
     public boolean retainAll(Collection<?> c) {
       return list.retainAll(c);
     }
 
-    protected static <E> SetFromList<E> of(List<E> list) {
+    protected static <E> SetFromList!(E) of(List!(E) list) {
       return new SetFromList<>(list);
     }
   }
 
-  @Override
-  public List<Long> bitfield(final byte[] key, final byte[]... arguments) {
+  override
+  public List!(Long) bitfield(final byte[] key, final byte[]... arguments) {
     checkIsInMultiOrPipeline();
     client.bitfield(key, arguments);
     return client.getIntegerMultiBulkReply();
   }
 
-  @Override
+  override
   public Long hstrlen(final byte[] key, final byte[] field) {
     checkIsInMultiOrPipeline();
     client.hstrlen(key, field);
     return client.getIntegerReply();
   }
 
-  @Override
-  public List<byte[]> xread(int count, long block, Map<byte[], byte[]> streams) {
+  override
+  public List!(byte[]) xread(int count, long block, Map!(byte[], byte[]) streams) {
     checkIsInMultiOrPipeline();
     client.xread(count, block, streams);
     return client.getBinaryMultiBulkReply();
   }
 
-  @Override
-  public List<byte[]> xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck,
-      Map<byte[], byte[]> streams) {
+  override
+  public List!(byte[]) xreadGroup(byte[] groupname, byte[] consumer, int count, long block, boolean noAck,
+      Map!(byte[], byte[]) streams) {
     checkIsInMultiOrPipeline();
     client.xreadGroup(groupname, consumer, count, block, noAck, streams);
     return client.getBinaryMultiBulkReply();  
   }
 
-  @Override
-  public byte[] xadd(byte[] key, byte[] id, Map<byte[], byte[]> hash, long maxLen, boolean approximateLength) {
+  override
+  public byte[] xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, boolean approximateLength) {
     checkIsInMultiOrPipeline();
     client.xadd(key, id, hash, maxLen, approximateLength);
     return client.getBinaryBulkReply();  
   }
 
-  @Override
+  override
   public Long xlen(byte[] key) {
     checkIsInMultiOrPipeline();
     client.xlen(key);
     return client.getIntegerReply();  
   }
 
-  @Override
-  public List<byte[]> xrange(byte[] key, byte[] start, byte[] end, long count) {
+  override
+  public List!(byte[]) xrange(byte[] key, byte[] start, byte[] end, long count) {
     checkIsInMultiOrPipeline();
     client.xrange(key, start, end, count);
     return client.getBinaryMultiBulkReply();  
   }
 
-  @Override
-  public List<byte[]> xrevrange(byte[] key, byte[] end, byte[] start, int count) {
+  override
+  public List!(byte[]) xrevrange(byte[] key, byte[] end, byte[] start, int count) {
     checkIsInMultiOrPipeline();
     client.xrevrange(key, end, start, count);
     return client.getBinaryMultiBulkReply();  
   }
 
-  @Override
+  override
   public Long xack(byte[] key, byte[] group, byte[]... ids) {
     checkIsInMultiOrPipeline();
     client.xack(key, group, ids);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String xgroupCreate(byte[] key, byte[] consumer, byte[] id, boolean makeStream) {
     checkIsInMultiOrPipeline();
     client.xgroupCreate(key, consumer, id, makeStream);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String xgroupSetID(byte[] key, byte[] consumer, byte[] id) {
     checkIsInMultiOrPipeline();
     client.xgroupSetID(key, consumer, id);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Long xgroupDestroy(byte[] key, byte[] consumer) {
     checkIsInMultiOrPipeline();
     client.xgroupDestroy(key, consumer);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName) {
     checkIsInMultiOrPipeline();
     client.xgroupDelConsumer(key, consumer, consumerName);
     return client.getStatusCodeReply();  
   }
 
-  @Override
+  override
   public Long xdel(byte[] key, byte[]... ids) {
     checkIsInMultiOrPipeline();
     client.xdel(key, ids);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long xtrim(byte[] key, long maxLen, boolean approximateLength) {
     checkIsInMultiOrPipeline();
     client.xtrim(key, maxLen, approximateLength);
     return client.getIntegerReply();
   }
 
-  @Override
-  public List<byte[]> xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername) {
+  override
+  public List!(byte[]) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername) {
     checkIsInMultiOrPipeline();
     client.xpending(key, groupname, start, end, count, consumername);
     return client.getBinaryMultiBulkReply();  }
 
-  @Override
-  public   List<byte[]> xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids){
+  override
+  public   List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids){
     checkIsInMultiOrPipeline();
     client.xclaim(key, groupname, consumername, minIdleTime, newIdleTime, retries, force, ids);
     return client.getBinaryMultiBulkReply();  
   }
 
-  @Override
+  override
   public Object sendCommand(ProtocolCommand cmd, byte[]... args) {
     client.sendCommand(cmd, args);
     return client.getOne();

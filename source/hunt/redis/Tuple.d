@@ -6,7 +6,7 @@ import java.util.Objects;
 import hunt.redis.util.ByteArrayComparator;
 import hunt.redis.util.SafeEncoder;
 
-public class Tuple implements Comparable<Tuple> {
+public class Tuple : Comparable!(Tuple) {
   private byte[] element;
   private Double score;
 
@@ -20,13 +20,13 @@ public class Tuple implements Comparable<Tuple> {
     this.score = score;
   }
 
-  @Override
-  public int hashCode() {
+  override
+  public size_t toHash() @trusted nothrow() {
     final int prime = 31;
     int result = 1;
     result = prime * result;
     if (null != element) {
-      for (final byte b : element) {
+      foreach(final byte b ; element) {
         result = prime * result + b;
       }
     }
@@ -35,7 +35,7 @@ public class Tuple implements Comparable<Tuple> {
     return result;
   }
 
-  @Override
+  override
   public boolean equals(Object obj) {
     if (obj == null) return false;
     if (obj == this) return true;
@@ -46,7 +46,7 @@ public class Tuple implements Comparable<Tuple> {
     return Objects.equals(score, other.score);
   }
 
-  @Override
+  override
   public int compareTo(Tuple other) {
     return compare(this, other);
   }
@@ -74,7 +74,7 @@ public class Tuple implements Comparable<Tuple> {
     return score;
   }
 
-  @Override
+  override
   public String toString() {
     return '[' + SafeEncoder.encode(element) + ',' + score + ']';
   }

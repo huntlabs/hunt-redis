@@ -17,11 +17,11 @@ public interface MultiKeyRedisClusterCommands {
 
   Long exists(String... keys);
 
-  List<String> blpop(int timeout, String... keys);
+  List!(String) blpop(int timeout, String... keys);
 
-  List<String> brpop(int timeout, String... keys);
+  List!(String) brpop(int timeout, String... keys);
 
-  List<String> mget(String... keys);
+  List!(String) mget(String... keys);
 
   String mset(String... keysvalues);
 
@@ -33,11 +33,11 @@ public interface MultiKeyRedisClusterCommands {
 
   String rpoplpush(String srckey, String dstkey);
 
-  Set<String> sdiff(String... keys);
+  Set!(String) sdiff(String... keys);
 
   Long sdiffstore(String dstkey, String... keys);
 
-  Set<String> sinter(String... keys);
+  Set!(String) sinter(String... keys);
 
   Long sinterstore(String dstkey, String... keys);
 
@@ -47,7 +47,7 @@ public interface MultiKeyRedisClusterCommands {
 
   Long sort(String key, String dstkey);
 
-  Set<String> sunion(String... keys);
+  Set!(String) sunion(String... keys);
 
   Long sunionstore(String dstkey, String... keys);
 
@@ -75,7 +75,7 @@ public interface MultiKeyRedisClusterCommands {
 
   Long touch(String... keys);
 
-  ScanResult<String> scan(String cursor, ScanParams params);
+  ScanResult!(String) scan(String cursor, ScanParams params);
 
-  Set<String> keys(String pattern);
+  Set!(String) keys(String pattern);
 }

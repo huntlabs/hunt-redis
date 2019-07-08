@@ -21,7 +21,7 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
-public class Connection implements Closeable {
+public class Connection : Closeable {
 
   private static final byte[][] EMPTY_ARGS = new byte[0][];
 
@@ -207,7 +207,7 @@ public class Connection implements Closeable {
     }
   }
 
-  @Override
+  override
   public void close() {
     disconnect();
   }
@@ -260,35 +260,35 @@ public class Connection implements Closeable {
     return (Long) readProtocolWithCheckingBroken();
   }
 
-  public List<String> getMultiBulkReply() {
+  public List!(String) getMultiBulkReply() {
     return BuilderFactory.STRING_LIST.build(getBinaryMultiBulkReply());
   }
 
   @SuppressWarnings("unchecked")
-  public List<byte[]> getBinaryMultiBulkReply() {
+  public List!(byte[]) getBinaryMultiBulkReply() {
     flush();
-    return (List<byte[]>) readProtocolWithCheckingBroken();
+    return (List!(byte[])) readProtocolWithCheckingBroken();
   }
 
-  @Deprecated
-  public List<Object> getRawObjectMultiBulkReply() {
+  deprecated("")
+  public List!(Object) getRawObjectMultiBulkReply() {
     return getUnflushedObjectMultiBulkReply();
   }
 
   @SuppressWarnings("unchecked")
-  public List<Object> getUnflushedObjectMultiBulkReply() {
-    return (List<Object>) readProtocolWithCheckingBroken();
+  public List!(Object) getUnflushedObjectMultiBulkReply() {
+    return (List!(Object)) readProtocolWithCheckingBroken();
   }
 
-  public List<Object> getObjectMultiBulkReply() {
+  public List!(Object) getObjectMultiBulkReply() {
     flush();
     return getUnflushedObjectMultiBulkReply();
   }
 
   @SuppressWarnings("unchecked")
-  public List<Long> getIntegerMultiBulkReply() {
+  public List!(Long) getIntegerMultiBulkReply() {
     flush();
-    return (List<Long>) readProtocolWithCheckingBroken();
+    return (List!(Long)) readProtocolWithCheckingBroken();
   }
 
   public Object getOne() {
@@ -322,9 +322,9 @@ public class Connection implements Closeable {
     }
   }
 
-  public List<Object> getMany(final int count) {
+  public List!(Object) getMany(final int count) {
     flush();
-    final List<Object> responses = new ArrayList<Object>(count);
+    final List!(Object) responses = new ArrayList!(Object)(count);
     for (int i = 0; i < count; i++) {
       try {
         responses.add(readProtocolWithCheckingBroken());

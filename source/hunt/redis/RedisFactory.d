@@ -12,8 +12,8 @@ import hunt.redis.util.RedisURIHelper;
 /**
  * PoolableObjectFactory custom impl.
  */
-class RedisFactory implements PooledObjectFactory<Redis> {
-  private final AtomicReference<HostAndPort> hostAndPort = new AtomicReference<HostAndPort>();
+class RedisFactory : PooledObjectFactory!(Redis) {
+  private final AtomicReference!(HostAndPort) hostAndPort = new AtomicReference!(HostAndPort)();
   private final int connectionTimeout;
   private final int soTimeout;
   private final String password;
@@ -75,8 +75,8 @@ class RedisFactory implements PooledObjectFactory<Redis> {
     this.hostAndPort.set(hostAndPort);
   }
 
-  @Override
-  public void activateObject(PooledObject<Redis> pooledRedis) throws Exception {
+  override
+  public void activateObject(PooledObject!(Redis) pooledRedis) throws Exception {
     final BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.getDB() != database) {
       jedis.select(database);
@@ -84,8 +84,8 @@ class RedisFactory implements PooledObjectFactory<Redis> {
 
   }
 
-  @Override
-  public void destroyObject(PooledObject<Redis> pooledRedis) throws Exception {
+  override
+  public void destroyObject(PooledObject!(Redis) pooledRedis) throws Exception {
     final BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.isConnected()) {
       try {
@@ -101,8 +101,8 @@ class RedisFactory implements PooledObjectFactory<Redis> {
 
   }
 
-  @Override
-  public PooledObject<Redis> makeObject() throws Exception {
+  override
+  public PooledObject!(Redis) makeObject() throws Exception {
     final HostAndPort hostAndPort = this.hostAndPort.get();
     final Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout,
         soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -123,17 +123,17 @@ class RedisFactory implements PooledObjectFactory<Redis> {
       throw je;
     }
 
-    return new DefaultPooledObject<Redis>(jedis);
+    return new DefaultPooledObject!(Redis)(jedis);
 
   }
 
-  @Override
-  public void passivateObject(PooledObject<Redis> pooledRedis) throws Exception {
+  override
+  public void passivateObject(PooledObject!(Redis) pooledRedis) throws Exception {
     // TODO maybe should select db 0? Not sure right now.
   }
 
-  @Override
-  public boolean validateObject(PooledObject<Redis> pooledRedis) {
+  override
+  public boolean validateObject(PooledObject!(Redis) pooledRedis) {
     final BinaryRedis jedis = pooledRedis.getObject();
     try {
       HostAndPort hostAndPort = this.hostAndPort.get();
@@ -141,7 +141,7 @@ class RedisFactory implements PooledObjectFactory<Redis> {
       String connectionHost = jedis.getClient().getHost();
       int connectionPort = jedis.getClient().getPort();
 
-      return hostAndPort.getHost().equals(connectionHost)
+      return hostAndPort.getHost() == connectionHost
           && hostAndPort.getPort() == connectionPort && jedis.isConnected()
           && jedis.ping().equals("PONG");
     } catch (final Exception e) {

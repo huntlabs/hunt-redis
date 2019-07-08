@@ -7,7 +7,7 @@ public interface RedisClusterBinaryScriptingCommands {
 
   Object eval(byte[] script, int keyCount, byte[]... params);
 
-  Object eval(byte[] script, List<byte[]> keys, List<byte[]> args);
+  Object eval(byte[] script, List!(byte[]) keys, List!(byte[]) args);
 
   /**
    * @param script
@@ -23,7 +23,7 @@ public interface RedisClusterBinaryScriptingCommands {
    */
   Object evalsha(byte[] sha1, byte[] sampleKey);
 
-  Object evalsha(byte[] sha1, List<byte[]> keys, List<byte[]> args);
+  Object evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args);
 
   Object evalsha(byte[] sha1, int keyCount, byte[]... params);
 
@@ -32,7 +32,7 @@ public interface RedisClusterBinaryScriptingCommands {
    * @param sha1
    * @return 
    */
-  List<Long> scriptExists(byte[] sampleKey, byte[]... sha1);
+  List!(Long) scriptExists(byte[] sampleKey, byte[]... sha1);
 
   /**
    * @param script

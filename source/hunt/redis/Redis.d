@@ -23,7 +23,7 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
-public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommands,
+public class Redis : BinaryRedis implements RedisCommands, MultiKeyCommands,
     AdvancedRedisCommands, ScriptingCommands, BasicCommands, ClusterCommands, SentinelCommands, ModuleCommands {
 
   protected RedisPoolAbstract dataSource = null;
@@ -136,7 +136,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String set(final String key, final String value) {
     checkIsInMultiOrPipeline();
     client.set(key, value);
@@ -152,7 +152,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *          key if it already exist. EX|PX, expire time units: EX = seconds; PX = milliseconds
    * @return Status code reply
    */
-  @Override
+  override
   public String set(final String key, final String value, final SetParams params) {
     checkIsInMultiOrPipeline();
     client.set(key, value, params);
@@ -167,7 +167,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public String get(final String key) {
     checkIsInMultiOrPipeline();
     client.get(key);
@@ -181,7 +181,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: an integer greater than 0 if one or more keys exist,
    *         0 if none of the specified keys exist.
    */
-  @Override
+  override
   public Long exists(final String... keys) {
     checkIsInMultiOrPipeline();
     client.exists(keys);
@@ -195,7 +195,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Boolean reply, true if the key exists, otherwise false
    */
-  @Override
+  override
   public Boolean exists(final String key) {
     checkIsInMultiOrPipeline();
     client.exists(key);
@@ -209,14 +209,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: an integer greater than 0 if one or more keys were removed
    *         0 if none of the specified key existed
    */
-  @Override
+  override
   public Long del(final String... keys) {
     checkIsInMultiOrPipeline();
     client.del(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long del(final String key) {
     checkIsInMultiOrPipeline();
     client.del(key);
@@ -236,14 +236,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Integer reply: The number of keys that were unlinked
    */
-  @Override
+  override
   public Long unlink(final String... keys) {
     checkIsInMultiOrPipeline();
     client.unlink(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long unlink(final String key) {
     client.unlink(key);
     return client.getIntegerReply();
@@ -258,15 +258,15 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         contains a Set value "zset" if the key contains a Sorted Set value "hash" if the key
    *         contains a Hash value
    */
-  @Override
+  override
   public String type(final String key) {
     checkIsInMultiOrPipeline();
     client.type(key);
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public Set<String> keys(final String pattern) {
+  override
+  public Set!(String) keys(final String pattern) {
     checkIsInMultiOrPipeline();
     client.keys(pattern);
     return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
@@ -279,7 +279,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Singe line reply, specifically the randomly selected key or an empty string is the
    *         database is empty
    */
-  @Override
+  override
   public String randomKey() {
     checkIsInMultiOrPipeline();
     client.randomKey();
@@ -295,7 +295,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param newkey
    * @return Status code repy
    */
-  @Override
+  override
   public String rename(final String oldkey, final String newkey) {
     checkIsInMultiOrPipeline();
     client.rename(oldkey, newkey);
@@ -310,7 +310,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param newkey
    * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
    */
-  @Override
+  override
   public Long renamenx(final String oldkey, final String newkey) {
     checkIsInMultiOrPipeline();
     client.renamenx(oldkey, newkey);
@@ -338,7 +338,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         the key already has an associated timeout (this may happen only in Redis versions &lt;
    *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
    */
-  @Override
+  override
   public Long expire(final String key, final int seconds) {
     checkIsInMultiOrPipeline();
     client.expire(key, seconds);
@@ -368,7 +368,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         the key already has an associated timeout (this may happen only in Redis versions &lt;
    *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
    */
-  @Override
+  override
   public Long expireAt(final String key, final long unixTime) {
     checkIsInMultiOrPipeline();
     client.expireAt(key, unixTime);
@@ -385,7 +385,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         associated expire, -1 is returned. In Redis 2.8 or newer, if the Key does not have an
    *         associated expire, -1 is returned or if the Key does not exists, -2 is returned.
    */
-  @Override
+  override
   public Long ttl(final String key) {
     checkIsInMultiOrPipeline();
     client.ttl(key);
@@ -398,14 +398,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Integer reply: The number of keys that were touched.
    */
-  @Override
+  override
   public Long touch(final String... keys) {
     checkIsInMultiOrPipeline();
     client.touch(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long touch(final String key) {
     checkIsInMultiOrPipeline();
     client.touch(key);
@@ -422,7 +422,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the key was moved 0 if the key was not moved because
    *         already present on the target DB or was not found in the current DB.
    */
-  @Override
+  override
   public Long move(final String key, final int dbIndex) {
     checkIsInMultiOrPipeline();
     client.move(key, dbIndex);
@@ -439,7 +439,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Bulk reply
    */
-  @Override
+  override
   public String getSet(final String key, final String value) {
     checkIsInMultiOrPipeline();
     client.getSet(key, value);
@@ -455,8 +455,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Multi bulk reply
    */
-  @Override
-  public List<String> mget(final String... keys) {
+  override
+  public List!(String) mget(final String... keys) {
     checkIsInMultiOrPipeline();
     client.mget(keys);
     return client.getMultiBulkReply();
@@ -471,7 +471,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Integer reply, specifically: 1 if the key was set 0 if the key was not set
    */
-  @Override
+  override
   public Long setnx(final String key, final String value) {
     checkIsInMultiOrPipeline();
     client.setnx(key, value);
@@ -489,7 +489,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String setex(final String key, final int seconds, final String value) {
     checkIsInMultiOrPipeline();
     client.setex(key, seconds, value);
@@ -512,7 +512,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keysvalues
    * @return Status code reply Basically +OK as MSET can't fail
    */
-  @Override
+  override
   public String mset(final String... keysvalues) {
     checkIsInMultiOrPipeline();
     client.mset(keysvalues);
@@ -536,7 +536,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the all the keys were set 0 if no key was set (at
    *         least one key already existed)
    */
-  @Override
+  override
   public Long msetnx(final String... keysvalues) {
     checkIsInMultiOrPipeline();
     client.msetnx(keysvalues);
@@ -561,7 +561,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param decrement
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long decrBy(final String key, final long decrement) {
     checkIsInMultiOrPipeline();
     client.decrBy(key, decrement);
@@ -585,7 +585,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long decr(final String key) {
     checkIsInMultiOrPipeline();
     client.decr(key);
@@ -610,7 +610,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param increment
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long incrBy(final String key, final long increment) {
     checkIsInMultiOrPipeline();
     client.incrBy(key, increment);
@@ -632,7 +632,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param increment
    * @return Double reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Double incrByFloat(final String key, final double increment) {
     checkIsInMultiOrPipeline();
     client.incrByFloat(key, increment);
@@ -657,7 +657,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Integer reply, this commands will reply with the new value of key after the increment.
    */
-  @Override
+  override
   public Long incr(final String key) {
     checkIsInMultiOrPipeline();
     client.incr(key);
@@ -676,7 +676,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Integer reply, specifically the total length of the string after the append operation.
    */
-  @Override
+  override
   public Long append(final String key, final String value) {
     checkIsInMultiOrPipeline();
     client.append(key, value);
@@ -699,7 +699,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param end
    * @return Bulk reply
    */
-  @Override
+  override
   public String substr(final String key, final int start, final int end) {
     checkIsInMultiOrPipeline();
     client.substr(key, start, end);
@@ -718,15 +718,15 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return If the field already exists, and the HSET just produced an update of the value, 0 is
    *         returned, otherwise if a new field is created 1 is returned.
    */
-  @Override
+  override
   public Long hset(final String key, final String field, final String value) {
     checkIsInMultiOrPipeline();
     client.hset(key, field, value);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long hset(final String key, final Map<String, String> hash) {
+  override
+  public Long hset(final String key, final Map!(String, String) hash) {
     checkIsInMultiOrPipeline();
     client.hset(key, hash);
     return client.getIntegerReply();
@@ -742,7 +742,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param field
    * @return Bulk reply
    */
-  @Override
+  override
   public String hget(final String key, final String field) {
     checkIsInMultiOrPipeline();
     client.hget(key, field);
@@ -758,7 +758,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return If the field already exists, 0 is returned, otherwise if a new field is created 1 is
    *         returned.
    */
-  @Override
+  override
   public Long hsetnx(final String key, final String field, final String value) {
     checkIsInMultiOrPipeline();
     client.hsetnx(key, field, value);
@@ -775,8 +775,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param hash
    * @return Return OK or Exception if hash is empty
    */
-  @Override
-  public String hmset(final String key, final Map<String, String> hash) {
+  override
+  public String hmset(final String key, final Map!(String, String) hash) {
     checkIsInMultiOrPipeline();
     client.hmset(key, hash);
     return client.getStatusCodeReply();
@@ -794,8 +794,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Multi Bulk Reply specifically a list of all the values associated with the specified
    *         fields, in the same order of the request.
    */
-  @Override
-  public List<String> hmget(final String key, final String... fields) {
+  override
+  public List!(String) hmget(final String key, final String... fields) {
     checkIsInMultiOrPipeline();
     client.hmget(key, fields);
     return client.getMultiBulkReply();
@@ -815,7 +815,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Integer reply The new value at field after the increment operation.
    */
-  @Override
+  override
   public Long hincrBy(final String key, final String field, final long value) {
     checkIsInMultiOrPipeline();
     client.hincrBy(key, field, value);
@@ -838,7 +838,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Double precision floating point reply The new value at field after the increment
    *         operation.
    */
-  @Override
+  override
   public Double hincrByFloat(final String key, final String field, final double value) {
     checkIsInMultiOrPipeline();
     client.hincrByFloat(key, field, value);
@@ -853,7 +853,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Return true if the hash stored at key contains the specified field. Return false if the key is
    *         not found or the field is not present.
    */
-  @Override
+  override
   public Boolean hexists(final String key, final String field) {
     checkIsInMultiOrPipeline();
     client.hexists(key, field);
@@ -869,7 +869,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return If the field was present in the hash it is deleted and 1 is returned, otherwise 0 is
    *         returned and no operation is performed.
    */
-  @Override
+  override
   public Long hdel(final String key, final String... fields) {
     checkIsInMultiOrPipeline();
     client.hdel(key, fields);
@@ -884,7 +884,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return The number of entries (fields) contained in the hash stored at key. If the specified
    *         key does not exist, 0 is returned assuming an empty hash.
    */
-  @Override
+  override
   public Long hlen(final String key) {
     checkIsInMultiOrPipeline();
     client.hlen(key);
@@ -898,8 +898,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return All the fields names contained into a hash.
    */
-  @Override
-  public Set<String> hkeys(final String key) {
+  override
+  public Set!(String) hkeys(final String key) {
     checkIsInMultiOrPipeline();
     client.hkeys(key);
     return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
@@ -912,11 +912,11 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return All the fields values contained into a hash.
    */
-  @Override
-  public List<String> hvals(final String key) {
+  override
+  public List!(String) hvals(final String key) {
     checkIsInMultiOrPipeline();
     client.hvals(key);
-    final List<String> lresult = client.getMultiBulkReply();
+    final List!(String) lresult = client.getMultiBulkReply();
     return lresult;
   }
 
@@ -927,8 +927,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return All the fields and values contained into a hash.
    */
-  @Override
-  public Map<String, String> hgetAll(final String key) {
+  override
+  public Map!(String, String) hgetAll(final String key) {
     checkIsInMultiOrPipeline();
     client.hgetAll(key);
     return BuilderFactory.STRING_MAP.build(client.getBinaryMultiBulkReply());
@@ -945,7 +945,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically, the number of elements inside the list after the push
    *         operation.
    */
-  @Override
+  override
   public Long rpush(final String key, final String... strings) {
     checkIsInMultiOrPipeline();
     client.rpush(key, strings);
@@ -963,7 +963,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically, the number of elements inside the list after the push
    *         operation.
    */
-  @Override
+  override
   public Long lpush(final String key, final String... strings) {
     checkIsInMultiOrPipeline();
     client.lpush(key, strings);
@@ -979,7 +979,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return The length of the list.
    */
-  @Override
+  override
   public Long llen(final String key) {
     checkIsInMultiOrPipeline();
     client.llen(key);
@@ -1018,8 +1018,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param stop
    * @return Multi bulk reply, specifically a list of elements in the specified range.
    */
-  @Override
-  public List<String> lrange(final String key, final long start, final long stop) {
+  override
+  public List!(String) lrange(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.lrange(key, start, stop);
     return client.getMultiBulkReply();
@@ -1055,7 +1055,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param stop
    * @return Status code reply
    */
-  @Override
+  override
   public String ltrim(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.ltrim(key, start, stop);
@@ -1078,7 +1078,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param index
    * @return Bulk reply, specifically the requested element
    */
-  @Override
+  override
   public String lindex(final String key, final long index) {
     checkIsInMultiOrPipeline();
     client.lindex(key, index);
@@ -1104,7 +1104,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String lset(final String key, final long index, final String value) {
     checkIsInMultiOrPipeline();
     client.lset(key, index, value);
@@ -1126,7 +1126,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Integer Reply, specifically: The number of removed elements if the operation succeeded
    */
-  @Override
+  override
   public Long lrem(final String key, final long count, final String value) {
     checkIsInMultiOrPipeline();
     client.lrem(key, count, value);
@@ -1143,7 +1143,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public String lpop(final String key) {
     checkIsInMultiOrPipeline();
     client.lpop(key);
@@ -1160,7 +1160,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public String rpop(final String key) {
     checkIsInMultiOrPipeline();
     client.rpop(key);
@@ -1182,7 +1182,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param dstkey
    * @return Bulk reply
    */
-  @Override
+  override
   public String rpoplpush(final String srckey, final String dstkey) {
     checkIsInMultiOrPipeline();
     client.rpoplpush(srckey, dstkey);
@@ -1200,7 +1200,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
    *         already a member of the set
    */
-  @Override
+  override
   public Long sadd(final String key, final String... members) {
     checkIsInMultiOrPipeline();
     client.sadd(key, members);
@@ -1215,11 +1215,11 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Multi bulk reply
    */
-  @Override
-  public Set<String> smembers(final String key) {
+  override
+  public Set!(String) smembers(final String key) {
     checkIsInMultiOrPipeline();
     client.smembers(key);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -1233,7 +1233,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
    *         not a member of the set
    */
-  @Override
+  override
   public Long srem(final String key, final String... members) {
     checkIsInMultiOrPipeline();
     client.srem(key, members);
@@ -1251,18 +1251,18 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public String spop(final String key) {
     checkIsInMultiOrPipeline();
     client.spop(key);
     return client.getBulkReply();
   }
 
-  @Override
-  public Set<String> spop(final String key, final long count) {
+  override
+  public Set!(String) spop(final String key, final long count) {
     checkIsInMultiOrPipeline();
     client.spop(key, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     if (members == null) return null;
     return SetFromList.of(members);
   }
@@ -1286,7 +1286,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the element was moved 0 if the element was not found
    *         on the first set and no operation was performed
    */
-  @Override
+  override
   public Long smove(final String srckey, final String dstkey, final String member) {
     checkIsInMultiOrPipeline();
     client.smove(srckey, dstkey, member);
@@ -1300,7 +1300,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: the cardinality (number of elements) of the set as an
    *         integer.
    */
-  @Override
+  override
   public Long scard(final String key) {
     checkIsInMultiOrPipeline();
     client.scard(key);
@@ -1316,7 +1316,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Boolean reply, specifically: true if the element is a member of the set false if the element
    *         is not a member of the set OR if the key does not exist
    */
-  @Override
+  override
   public Boolean sismember(final String key, final String member) {
     checkIsInMultiOrPipeline();
     client.sismember(key, member);
@@ -1338,11 +1338,11 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Multi bulk reply, specifically the list of common elements.
    */
-  @Override
-  public Set<String> sinter(final String... keys) {
+  override
+  public Set!(String) sinter(final String... keys) {
     checkIsInMultiOrPipeline();
     client.sinter(keys);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -1356,7 +1356,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sinterstore(final String dstkey, final String... keys) {
     checkIsInMultiOrPipeline();
     client.sinterstore(dstkey, keys);
@@ -1375,11 +1375,11 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Multi bulk reply, specifically the list of common elements.
    */
-  @Override
-  public Set<String> sunion(final String... keys) {
+  override
+  public Set!(String) sunion(final String... keys) {
     checkIsInMultiOrPipeline();
     client.sunion(keys);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -1392,7 +1392,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sunionstore(final String dstkey, final String... keys) {
     checkIsInMultiOrPipeline();
     client.sunionstore(dstkey, keys);
@@ -1420,8 +1420,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Return the members of a set resulting from the difference between the first set
    *         provided and all the successive sets.
    */
-  @Override
-  public Set<String> sdiff(final String... keys) {
+  override
+  public Set!(String) sdiff(final String... keys) {
     checkIsInMultiOrPipeline();
     client.sdiff(keys);
     return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
@@ -1434,7 +1434,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param keys
    * @return Status code reply
    */
-  @Override
+  override
   public Long sdiffstore(final String dstkey, final String... keys) {
     checkIsInMultiOrPipeline();
     client.sdiffstore(dstkey, keys);
@@ -1451,15 +1451,15 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return Bulk reply
    */
-  @Override
+  override
   public String srandmember(final String key) {
     checkIsInMultiOrPipeline();
     client.srandmember(key);
     return client.getBulkReply();
   }
 
-  @Override
-  public List<String> srandmember(final String key, final int count) {
+  override
+  public List!(String) srandmember(final String key, final int count) {
     checkIsInMultiOrPipeline();
     client.srandmember(key, count);
     return client.getMultiBulkReply();
@@ -1481,14 +1481,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
    *         already a member of the sorted set and the score was updated
    */
-  @Override
+  override
   public Long zadd(final String key, final double score, final String member) {
     checkIsInMultiOrPipeline();
     client.zadd(key, score, member);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zadd(final String key, final double score, final String member,
       final ZAddParams params) {
     checkIsInMultiOrPipeline();
@@ -1496,25 +1496,25 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long zadd(final String key, final Map<String, Double> scoreMembers) {
+  override
+  public Long zadd(final String key, final Map!(String, Double) scoreMembers) {
     checkIsInMultiOrPipeline();
     client.zadd(key, scoreMembers);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long zadd(final String key, final Map<String, Double> scoreMembers, final ZAddParams params) {
+  override
+  public Long zadd(final String key, final Map!(String, Double) scoreMembers, final ZAddParams params) {
     checkIsInMultiOrPipeline();
     client.zadd(key, scoreMembers, params);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<String> zrange(final String key, final long start, final long stop) {
+  override
+  public Set!(String) zrange(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrange(key, start, stop);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -1529,7 +1529,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
    *         not a member of the set
    */
-  @Override
+  override
   public Long zrem(final String key, final String... members) {
     checkIsInMultiOrPipeline();
     client.zrem(key, members);
@@ -1554,14 +1554,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param member
    * @return The new score
    */
-  @Override
+  override
   public Double zincrby(final String key, final double increment, final String member) {
     checkIsInMultiOrPipeline();
     client.zincrby(key, increment, member);
     return BuilderFactory.DOUBLE.build(client.getOne());
   }
 
-  @Override
+  override
   public Double zincrby(final String key, final double increment, final String member, final ZIncrByParams params) {
     checkIsInMultiOrPipeline();
     client.zincrby(key, increment, member, params);
@@ -1584,7 +1584,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
    *         reply if the element exists. A nil bulk reply if there is no such element.
    */
-  @Override
+  override
   public Long zrank(final String key, final String member) {
     checkIsInMultiOrPipeline();
     client.zrank(key, member);
@@ -1607,30 +1607,30 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
    *         reply if the element exists. A nil bulk reply if there is no such element.
    */
-  @Override
+  override
   public Long zrevrank(final String key, final String member) {
     checkIsInMultiOrPipeline();
     client.zrevrank(key, member);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<String> zrevrange(final String key, final long start, final long stop) {
+  override
+  public Set!(String) zrevrange(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrevrange(key, start, stop);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<Tuple> zrangeWithScores(final String key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrangeWithScores(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrangeWithScores(key, start, stop);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeWithScores(final String key, final long start, final long stop) {
+  override
+  public Set!(Tuple) zrevrangeWithScores(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zrevrangeWithScores(key, start, stop);
     return getTupledSet();
@@ -1644,7 +1644,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param key
    * @return the cardinality (number of elements) of the set as an integer.
    */
-  @Override
+  override
   public Long zcard(final String key) {
     checkIsInMultiOrPipeline();
     client.zcard(key);
@@ -1661,14 +1661,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param member
    * @return the score
    */
-  @Override
+  override
   public Double zscore(final String key, final String member) {
     checkIsInMultiOrPipeline();
     client.zscore(key, member);
     return BuilderFactory.DOUBLE.build(client.getOne());
   }
 
-  @Override
+  override
   public String watch(final String... keys) {
     client.watch(keys);
     return client.getStatusCodeReply();
@@ -1687,8 +1687,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Assuming the Set/List at key contains a list of numbers, the return value will be the
    *         list of numbers ordered from the smallest to the biggest number.
    */
-  @Override
-  public List<String> sort(final String key) {
+  override
+  public List!(String) sort(final String key) {
     checkIsInMultiOrPipeline();
     client.sort(key);
     return client.getMultiBulkReply();
@@ -1768,8 +1768,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param sortingParameters
    * @return a list of sorted elements.
    */
-  @Override
-  public List<String> sort(final String key, final SortingParams sortingParameters) {
+  override
+  public List!(String) sort(final String key, final SortingParams sortingParameters) {
     checkIsInMultiOrPipeline();
     client.sort(key, sortingParameters);
     return client.getMultiBulkReply();
@@ -1837,8 +1837,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         value is a nil multi bulk reply. Most client values will return false or nil
    *         accordingly to the programming language used.
    */
-  @Override
-  public List<String> blpop(final int timeout, final String... keys) {
+  override
+  public List!(String) blpop(final int timeout, final String... keys) {
     return blpop(getArgsAddTimeout(timeout, keys));
   }
 
@@ -1853,8 +1853,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return args;
   }
 
-  @Override
-  public List<String> blpop(final String... args) {
+  override
+  public List!(String) blpop(final String... args) {
     checkIsInMultiOrPipeline();
     client.blpop(args);
     client.setTimeoutInfinite();
@@ -1865,8 +1865,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     }
   }
 
-  @Override
-  public List<String> brpop(final String... args) {
+  override
+  public List!(String) brpop(final String... args) {
     checkIsInMultiOrPipeline();
     client.brpop(args);
     client.setTimeoutInfinite();
@@ -1887,7 +1887,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param dstkey
    * @return The number of elements of the list at dstkey.
    */
-  @Override
+  override
   public Long sort(final String key, final SortingParams sortingParameters, final String dstkey) {
     checkIsInMultiOrPipeline();
     client.sort(key, sortingParameters, dstkey);
@@ -1907,7 +1907,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param dstkey
    * @return The number of elements of the list at dstkey.
    */
-  @Override
+  override
   public Long sort(final String key, final String dstkey) {
     checkIsInMultiOrPipeline();
     client.sort(key, dstkey);
@@ -1976,19 +1976,19 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    *         value is a nil multi bulk reply. Most client values will return false or nil
    *         accordingly to the programming language used.
    */
-  @Override
-  public List<String> brpop(final int timeout, final String... keys) {
+  override
+  public List!(String) brpop(final int timeout, final String... keys) {
     return brpop(getArgsAddTimeout(timeout, keys));
   }
 
-  @Override
+  override
   public Long zcount(final String key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zcount(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zcount(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zcount(key, min, max);
@@ -2043,19 +2043,19 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param max a double or Double.POSITIVE_INFINITY for "+inf"
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<String> zrangeByScore(final String key, final double min, final double max) {
+  override
+  public Set!(String) zrangeByScore(final String key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final String min, final String max) {
+  override
+  public Set!(String) zrangeByScore(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -2108,21 +2108,21 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param count
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<String> zrangeByScore(final String key, final double min, final double max,
+  override
+  public Set!(String) zrangeByScore(final String key, final double min, final double max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrangeByScore(final String key, final String min, final String max,
+  override
+  public Set!(String) zrangeByScore(final String key, final String min, final String max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
@@ -2173,15 +2173,15 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param max
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final double min, final double max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final String min, final String max) {
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max);
     return getTupledSet();
@@ -2236,81 +2236,81 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param count
    * @return Multi bulk reply specifically a list of elements in the specified score range.
    */
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final double min, final double max,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrangeByScoreWithScores(final String key, final String min, final String max,
+  override
+  public Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScoreWithScores(key, min, max, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final double max, final double min) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final double max, final double min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final String max, final String min) {
+  override
+  public Set!(String) zrevrangeByScore(final String key, final String max, final String min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final double max, final double min,
+  override
+  public Set!(String) zrevrangeByScore(final String key, final double max, final double min,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final double max, final double min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max, final double min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final double max,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max,
       final double min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final String max,
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max,
       final String min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getTupledSet();
   }
 
-  @Override
-  public Set<String> zrevrangeByScore(final String key, final String max, final String min,
+  override
+  public Set!(String) zrevrangeByScore(final String key, final String max, final String min,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<Tuple> zrevrangeByScoreWithScores(final String key, final String max, final String min) {
+  override
+  public Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max, final String min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScoreWithScores(key, max, min);
     return getTupledSet();
@@ -2330,7 +2330,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param stop
    * @return 
    */
-  @Override
+  override
   public Long zremrangeByRank(final String key, final long start, final long stop) {
     checkIsInMultiOrPipeline();
     client.zremrangeByRank(key, start, stop);
@@ -2350,14 +2350,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param max
    * @return Integer reply, specifically the number of elements removed.
    */
-  @Override
+  override
   public Long zremrangeByScore(final String key, final double min, final double max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByScore(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zremrangeByScore(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByScore(key, min, max);
@@ -2394,7 +2394,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param sets
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zunionstore(final String dstkey, final String... sets) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, sets);
@@ -2432,7 +2432,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param params
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zunionstore(final String dstkey, final ZParams params, final String... sets) {
     checkIsInMultiOrPipeline();
     client.zunionstore(dstkey, params, sets);
@@ -2469,7 +2469,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param sets
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zinterstore(final String dstkey, final String... sets) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, sets);
@@ -2507,68 +2507,68 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param params
    * @return Integer reply, specifically the number of elements in the sorted set at dstkey
    */
-  @Override
+  override
   public Long zinterstore(final String dstkey, final ZParams params, final String... sets) {
     checkIsInMultiOrPipeline();
     client.zinterstore(dstkey, params, sets);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long zlexcount(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zlexcount(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Set<String> zrangeByLex(final String key, final String min, final String max) {
+  override
+  public Set!(String) zrangeByLex(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrangeByLex(final String key, final String min, final String max,
+  override
+  public Set!(String) zrangeByLex(final String key, final String min, final String max,
       final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrevrangeByLex(final String key, final String max, final String min) {
+  override
+  public Set!(String) zrevrangeByLex(final String key, final String max, final String min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
-  public Set<String> zrevrangeByLex(final String key, final String max, final String min, final int offset, final int count) {
+  override
+  public Set!(String) zrevrangeByLex(final String key, final String max, final String min, final int offset, final int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min, offset, count);
-    final List<String> members = client.getMultiBulkReply();
+    final List!(String) members = client.getMultiBulkReply();
     return SetFromList.of(members);
   }
 
-  @Override
+  override
   public Long zremrangeByLex(final String key, final String min, final String max) {
     checkIsInMultiOrPipeline();
     client.zremrangeByLex(key, min, max);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long strlen(final String key) {
     checkIsInMultiOrPipeline();
     client.strlen(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long lpushx(final String key, final String... string) {
     checkIsInMultiOrPipeline();
     client.lpushx(key, string);
@@ -2583,27 +2583,27 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Integer reply, specifically: 1: the key is now persist. 0: the key is not persist (only
    *         happens when key not set).
    */
-  @Override
+  override
   public Long persist(final String key) {
     client.persist(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long rpushx(final String key, final String... string) {
     checkIsInMultiOrPipeline();
     client.rpushx(key, string);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String echo(final String string) {
     checkIsInMultiOrPipeline();
     client.echo(string);
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public Long linsert(final String key, final ListPosition where, final String pivot,
       final String value) {
     checkIsInMultiOrPipeline();
@@ -2618,7 +2618,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param timeout
    * @return the element
    */
-  @Override
+  override
   public String brpoplpush(final String source, final String destination, final int timeout) {
     client.brpoplpush(source, destination, timeout);
     client.setTimeoutInfinite();
@@ -2636,14 +2636,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return
    */
-  @Override
+  override
   public Boolean setbit(final String key, final long offset, final boolean value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
     return client.getIntegerReply() == 1;
   }
 
-  @Override
+  override
   public Boolean setbit(final String key, final long offset, final String value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
@@ -2656,33 +2656,33 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param offset
    * @return
    */
-  @Override
+  override
   public Boolean getbit(final String key, final long offset) {
     checkIsInMultiOrPipeline();
     client.getbit(key, offset);
     return client.getIntegerReply() == 1;
   }
 
-  @Override
+  override
   public Long setrange(final String key, final long offset, final String value) {
     checkIsInMultiOrPipeline();
     client.setrange(key, offset, value);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String getrange(final String key, final long startOffset, final long endOffset) {
     checkIsInMultiOrPipeline();
     client.getrange(key, startOffset, endOffset);
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public Long bitpos(final String key, final boolean value) {
     return bitpos(key, value, new BitPosParams());
   }
 
-  @Override
+  override
   public Long bitpos(final String key, final boolean value, final BitPosParams params) {
     checkIsInMultiOrPipeline();
     client.bitpos(key, value, params);
@@ -2723,8 +2723,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param pattern
    * @return Bulk reply.
    */
-  @Override
-  public List<String> configGet(final String pattern) {
+  override
+  public List!(String) configGet(final String pattern) {
     client.configGet(pattern);
     return client.getMultiBulkReply();
   }
@@ -2758,13 +2758,13 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param value
    * @return Status code reply
    */
-  @Override
+  override
   public String configSet(final String parameter, final String value) {
     client.configSet(parameter, value);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Object eval(final String script, final int keyCount, final String... params) {
     client.setTimeoutInfinite();
     try {
@@ -2775,7 +2775,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     }
   }
 
-  @Override
+  override
   public void subscribe(final RedisPubSub jedisPubSub, final String... channels) {
     client.setTimeoutInfinite();
     try {
@@ -2785,7 +2785,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     }
   }
 
-  @Override
+  override
   public Long publish(final String channel, final String message) {
     checkIsInMultiOrPipeline();
     connect();
@@ -2793,7 +2793,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public void psubscribe(final RedisPubSub jedisPubSub, final String... patterns) {
     checkIsInMultiOrPipeline();
     client.setTimeoutInfinite();
@@ -2804,7 +2804,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     }
   }
 
-  protected static String[] getParams(List<String> keys, List<String> args) {
+  protected static String[] getParams(List!(String) keys, List!(String) args) {
     int keyCount = keys.size();
     int argCount = args.size();
 
@@ -2819,17 +2819,17 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return params;
   }
 
-  @Override
-  public Object eval(final String script, final List<String> keys, final List<String> args) {
+  override
+  public Object eval(final String script, final List!(String) keys, final List!(String) args) {
     return eval(script, keys.size(), getParams(keys, args));
   }
 
-  @Override
+  override
   public Object eval(final String script) {
     return eval(script, 0);
   }
 
-  @Override
+  override
   public Object evalsha(final String sha1) {
     return evalsha(sha1, 0);
   }
@@ -2843,8 +2843,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
 
     if (result instanceof List<?>) {
       List<?> list = (List<?>) result;
-      List<Object> listResult = new ArrayList<Object>(list.size());
-      for (Object bin : list) {
+      List!(Object) listResult = new ArrayList!(Object)(list.size());
+      foreach(Object bin ; list) {
         listResult.add(evalResult(bin));
       }
 
@@ -2854,88 +2854,88 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return result;
   }
 
-  @Override
-  public Object evalsha(final String sha1, final List<String> keys, final List<String> args) {
+  override
+  public Object evalsha(final String sha1, final List!(String) keys, final List!(String) args) {
     return evalsha(sha1, keys.size(), getParams(keys, args));
   }
 
-  @Override
+  override
   public Object evalsha(final String sha1, final int keyCount, final String... params) {
     checkIsInMultiOrPipeline();
     client.evalsha(sha1, keyCount, params);
     return getEvalResult();
   }
 
-  @Override
+  override
   public Boolean scriptExists(final String sha1) {
     String[] a = new String[1];
     a[0] = sha1;
     return scriptExists(a).get(0);
   }
 
-  @Override
-  public List<Boolean> scriptExists(final String... sha1) {
+  override
+  public List!(Boolean) scriptExists(final String... sha1) {
     client.scriptExists(sha1);
-    List<Long> result = client.getIntegerMultiBulkReply();
-    List<Boolean> exists = new ArrayList<Boolean>();
+    List!(Long) result = client.getIntegerMultiBulkReply();
+    List!(Boolean) exists = new ArrayList!(Boolean)();
 
-    for (Long value : result)
+    foreach(Long value ; result)
       exists.add(value == 1);
 
     return exists;
   }
 
-  @Override
+  override
   public String scriptLoad(final String script) {
     client.scriptLoad(script);
     return client.getBulkReply();
   }
 
-  @Override
-  public List<Slowlog> slowlogGet() {
+  override
+  public List!(Slowlog) slowlogGet() {
     client.slowlogGet();
     return Slowlog.from(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<Slowlog> slowlogGet(final long entries) {
+  override
+  public List!(Slowlog) slowlogGet(final long entries) {
     client.slowlogGet(entries);
     return Slowlog.from(client.getObjectMultiBulkReply());
   }
 
-  @Override
+  override
   public Long objectRefcount(final String key) {
     client.objectRefcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String objectEncoding(final String key) {
     client.objectEncoding(key);
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public Long objectIdletime(final String key) {
     client.objectIdletime(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitcount(final String key) {
     checkIsInMultiOrPipeline();
     client.bitcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitcount(final String key, final long start, final long end) {
     checkIsInMultiOrPipeline();
     client.bitcount(key, start, end);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long bitop(final BitOP op, final String destKey, final String... srcKeys) {
     checkIsInMultiOrPipeline();
     client.bitop(op, destKey, srcKeys);
@@ -2973,14 +2973,14 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * </pre>
    * @return
    */
-  @Override
+  override
   @SuppressWarnings("rawtypes")
-  public List<Map<String, String>> sentinelMasters() {
+  public List!(Map!(String, String)) sentinelMasters() {
     client.sentinel(Protocol.SENTINEL_MASTERS);
-    final List<Object> reply = client.getObjectMultiBulkReply();
+    final List!(Object) reply = client.getObjectMultiBulkReply();
 
-    final List<Map<String, String>> masters = new ArrayList<Map<String, String>>();
-    for (Object obj : reply) {
+    final List!(Map!(String, String)) masters = new ArrayList!(Map!(String, String))();
+    foreach(Object obj ; reply) {
       masters.add(BuilderFactory.STRING_MAP.build((List) obj));
     }
     return masters;
@@ -2995,10 +2995,10 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param masterName
    * @return two elements list of strings : host and port.
    */
-  @Override
-  public List<String> sentinelGetMasterAddrByName(final String masterName) {
+  override
+  public List!(String) sentinelGetMasterAddrByName(final String masterName) {
     client.sentinel(Protocol.SENTINEL_GET_MASTER_ADDR_BY_NAME, masterName);
-    final List<Object> reply = client.getObjectMultiBulkReply();
+    final List!(Object) reply = client.getObjectMultiBulkReply();
     return BuilderFactory.STRING_LIST.build(reply);
   }
 
@@ -3010,7 +3010,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param pattern
    * @return
    */
-  @Override
+  override
   public Long sentinelReset(final String pattern) {
     client.sentinel(Protocol.SENTINEL_RESET, pattern);
     return client.getIntegerReply();
@@ -3051,47 +3051,47 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @param masterName
    * @return
    */
-  @Override
+  override
   @SuppressWarnings("rawtypes")
-  public List<Map<String, String>> sentinelSlaves(final String masterName) {
+  public List!(Map!(String, String)) sentinelSlaves(final String masterName) {
     client.sentinel(Protocol.SENTINEL_SLAVES, masterName);
-    final List<Object> reply = client.getObjectMultiBulkReply();
+    final List!(Object) reply = client.getObjectMultiBulkReply();
 
-    final List<Map<String, String>> slaves = new ArrayList<Map<String, String>>();
-    for (Object obj : reply) {
+    final List!(Map!(String, String)) slaves = new ArrayList!(Map!(String, String))();
+    foreach(Object obj ; reply) {
       slaves.add(BuilderFactory.STRING_MAP.build((List) obj));
     }
     return slaves;
   }
 
-  @Override
+  override
   public String sentinelFailover(final String masterName) {
     client.sentinel(Protocol.SENTINEL_FAILOVER, masterName);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String sentinelMonitor(final String masterName, final String ip, final int port, final int quorum) {
     client.sentinel(Protocol.SENTINEL_MONITOR, masterName, ip, String.valueOf(port),
       String.valueOf(quorum));
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String sentinelRemove(final String masterName) {
     client.sentinel(Protocol.SENTINEL_REMOVE, masterName);
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public String sentinelSet(final String masterName, final Map<String, String> parameterMap) {
+  override
+  public String sentinelSet(final String masterName, final Map!(String, String) parameterMap) {
     int index = 0;
     int paramsLength = parameterMap.size() * 2 + 2;
     String[] params = new String[paramsLength];
 
     params[index++] = Protocol.SENTINEL_SET;
     params[index++] = masterName;
-    for (Entry<String, String> entry : parameterMap.entrySet()) {
+    for (Entry!(String, String) entry : parameterMap.entrySet()) {
       params[index++] = entry.getKey();
       params[index++] = entry.getValue();
     }
@@ -3100,42 +3100,42 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public byte[] dump(final String key) {
     checkIsInMultiOrPipeline();
     client.dump(key);
     return client.getBinaryBulkReply();
   }
 
-  @Override
+  override
   public String restore(final String key, final int ttl, final byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restore(key, ttl, serializedValue);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String restoreReplace(final String key, final int ttl, final byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restoreReplace(key, ttl, serializedValue);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Long pexpire(final String key, final long milliseconds) {
     checkIsInMultiOrPipeline();
     client.pexpire(key, milliseconds);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long pexpireAt(final String key, final long millisecondsTimestamp) {
     checkIsInMultiOrPipeline();
     client.pexpireAt(key, millisecondsTimestamp);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long pttl(final String key) {
     checkIsInMultiOrPipeline();
     client.pttl(key);
@@ -3151,42 +3151,42 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
    * @return Status code reply
    */
 
-  @Override
+  override
   public String psetex(final String key, final long milliseconds, final String value) {
     checkIsInMultiOrPipeline();
     client.psetex(key, milliseconds, value);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clientKill(final String ipPort) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(ipPort);
     return this.client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clientGetname() {
     checkIsInMultiOrPipeline();
     client.clientGetname();
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public String clientList() {
     checkIsInMultiOrPipeline();
     client.clientList();
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public String clientSetname(final String name) {
     checkIsInMultiOrPipeline();
     client.clientSetname(name);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String migrate(final String host, final int port, final String key,
       final int destinationDb, final int timeout) {
     checkIsInMultiOrPipeline();
@@ -3194,7 +3194,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String migrate(final String host, final int port, final int destinationDB,
       final int timeout, final MigrateParams params, final String... keys) {
     checkIsInMultiOrPipeline();
@@ -3202,227 +3202,227 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public ScanResult<String> scan(final String cursor) {
+  override
+  public ScanResult!(String) scan(final String cursor) {
     return scan(cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<String> scan(final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(String) scan(final String cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.scan(cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     String newcursor = new String((byte[]) result.get(0));
-    List<String> results = new ArrayList<String>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
+    List!(String) results = new ArrayList!(String)();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
     for (byte[] bs : rawResults) {
       results.add(SafeEncoder.encode(bs));
     }
-    return new ScanResult<String>(newcursor, results);
+    return new ScanResult!(String)(newcursor, results);
   }
 
-  @Override
-  public ScanResult<Map.Entry<String, String>> hscan(final String key, final String cursor) {
+  override
+  public ScanResult<Map.Entry!(String, String)> hscan(final String key, final String cursor) {
     return hscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<Map.Entry<String, String>> hscan(final String key, final String cursor,
+  override
+  public ScanResult<Map.Entry!(String, String)> hscan(final String key, final String cursor,
       final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.hscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     String newcursor = new String((byte[]) result.get(0));
-    List<Map.Entry<String, String>> results = new ArrayList<Map.Entry<String, String>>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
-    Iterator<byte[]> iterator = rawResults.iterator();
+    List<Map.Entry!(String, String)> results = new ArrayList<Map.Entry!(String, String)>();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    Iterator!(byte[]) iterator = rawResults.iterator();
     while (iterator.hasNext()) {
-      results.add(new AbstractMap.SimpleEntry<String, String>(SafeEncoder.encode(iterator.next()),
+      results.add(new AbstractMap.SimpleEntry!(String, String)(SafeEncoder.encode(iterator.next()),
           SafeEncoder.encode(iterator.next())));
     }
-    return new ScanResult<Map.Entry<String, String>>(newcursor, results);
+    return new ScanResult<Map.Entry!(String, String)>(newcursor, results);
   }
 
-  @Override
-  public ScanResult<String> sscan(final String key, final String cursor) {
+  override
+  public ScanResult!(String) sscan(final String key, final String cursor) {
     return sscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<String> sscan(final String key, final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(String) sscan(final String key, final String cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.sscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     String newcursor = new String((byte[]) result.get(0));
-    List<String> results = new ArrayList<String>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
+    List!(String) results = new ArrayList!(String)();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
     for (byte[] bs : rawResults) {
       results.add(SafeEncoder.encode(bs));
     }
-    return new ScanResult<String>(newcursor, results);
+    return new ScanResult!(String)(newcursor, results);
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final String key, final String cursor) {
+  override
+  public ScanResult!(Tuple) zscan(final String key, final String cursor) {
     return zscan(key, cursor, new ScanParams());
   }
 
-  @Override
-  public ScanResult<Tuple> zscan(final String key, final String cursor, final ScanParams params) {
+  override
+  public ScanResult!(Tuple) zscan(final String key, final String cursor, final ScanParams params) {
     checkIsInMultiOrPipeline();
     client.zscan(key, cursor, params);
-    List<Object> result = client.getObjectMultiBulkReply();
+    List!(Object) result = client.getObjectMultiBulkReply();
     String newcursor = new String((byte[]) result.get(0));
-    List<Tuple> results = new ArrayList<Tuple>();
-    List<byte[]> rawResults = (List<byte[]>) result.get(1);
-    Iterator<byte[]> iterator = rawResults.iterator();
+    List!(Tuple) results = new ArrayList!(Tuple)();
+    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    Iterator!(byte[]) iterator = rawResults.iterator();
     while (iterator.hasNext()) {
       results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
     }
-    return new ScanResult<Tuple>(newcursor, results);
+    return new ScanResult!(Tuple)(newcursor, results);
   }
 
-  @Override
+  override
   public String clusterNodes() {
     checkIsInMultiOrPipeline();
     client.clusterNodes();
     return client.getBulkReply();
   }
 
-  @Override
+  override
   public String readonly() {
     client.readonly();
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterMeet(final String ip, final int port) {
     checkIsInMultiOrPipeline();
     client.clusterMeet(ip, port);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterReset(final ClusterReset resetType) {
     checkIsInMultiOrPipeline();
     client.clusterReset(resetType);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterAddSlots(final int... slots) {
     checkIsInMultiOrPipeline();
     client.clusterAddSlots(slots);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterDelSlots(final int... slots) {
     checkIsInMultiOrPipeline();
     client.clusterDelSlots(slots);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterInfo() {
     checkIsInMultiOrPipeline();
     client.clusterInfo();
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public List<String> clusterGetKeysInSlot(final int slot, final int count) {
+  override
+  public List!(String) clusterGetKeysInSlot(final int slot, final int count) {
     checkIsInMultiOrPipeline();
     client.clusterGetKeysInSlot(slot, count);
     return client.getMultiBulkReply();
   }
 
-  @Override
+  override
   public String clusterSetSlotNode(final int slot, final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterSetSlotNode(slot, nodeId);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterSetSlotMigrating(final int slot, final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterSetSlotMigrating(slot, nodeId);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterSetSlotImporting(final int slot, final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterSetSlotImporting(slot, nodeId);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterSetSlotStable(final int slot) {
     checkIsInMultiOrPipeline();
     client.clusterSetSlotStable(slot);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterForget(final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterForget(nodeId);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterFlushSlots() {
     checkIsInMultiOrPipeline();
     client.clusterFlushSlots();
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public Long clusterKeySlot(final String key) {
     checkIsInMultiOrPipeline();
     client.clusterKeySlot(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Long clusterCountKeysInSlot(final int slot) {
     checkIsInMultiOrPipeline();
     client.clusterCountKeysInSlot(slot);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String clusterSaveConfig() {
     checkIsInMultiOrPipeline();
     client.clusterSaveConfig();
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String clusterReplicate(final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterReplicate(nodeId);
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public List<String> clusterSlaves(final String nodeId) {
+  override
+  public List!(String) clusterSlaves(final String nodeId) {
     checkIsInMultiOrPipeline();
     client.clusterSlaves(nodeId);
     return client.getMultiBulkReply();
   }
 
-  @Override
+  override
   public String clusterFailover() {
     checkIsInMultiOrPipeline();
     client.clusterFailover();
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public List<Object> clusterSlots() {
+  override
+  public List!(Object) clusterSlots() {
     checkIsInMultiOrPipeline();
     client.clusterSlots();
     return client.getObjectMultiBulkReply();
@@ -3434,7 +3434,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getStatusCodeReply();
   }
 
-  public List<String> pubsubChannels(final String pattern) {
+  public List!(String) pubsubChannels(final String pattern) {
     checkIsInMultiOrPipeline();
     client.pubsubChannels(pattern);
     return client.getMultiBulkReply();
@@ -3446,13 +3446,13 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return client.getIntegerReply();
   }
 
-  public Map<String, String> pubsubNumSub(String... channels) {
+  public Map!(String, String) pubsubNumSub(String... channels) {
     checkIsInMultiOrPipeline();
     client.pubsubNumSub(channels);
     return BuilderFactory.PUBSUB_NUMSUB_MAP.build(client.getBinaryMultiBulkReply());
   }
 
-  @Override
+  override
   public void close() {
     if (dataSource != null) {
       RedisPoolAbstract pool = this.dataSource;
@@ -3471,59 +3471,59 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     this.dataSource = jedisPool;
   }
 
-  @Override
+  override
   public Long pfadd(final String key, final String... elements) {
     checkIsInMultiOrPipeline();
     client.pfadd(key, elements);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public long pfcount(final String key) {
     checkIsInMultiOrPipeline();
     client.pfcount(key);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public long pfcount(final String... keys) {
     checkIsInMultiOrPipeline();
     client.pfcount(keys);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String pfmerge(final String destkey, final String... sourcekeys) {
     checkIsInMultiOrPipeline();
     client.pfmerge(destkey, sourcekeys);
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public List<String> blpop(final int timeout, final String key) {
+  override
+  public List!(String) blpop(final int timeout, final String key) {
     return blpop(key, String.valueOf(timeout));
   }
 
-  @Override
-  public List<String> brpop(final int timeout, final String key) {
+  override
+  public List!(String) brpop(final int timeout, final String key) {
     return brpop(key, String.valueOf(timeout));
   }
 
-  @Override
+  override
   public Long geoadd(final String key, final double longitude, final double latitude, final String member) {
     checkIsInMultiOrPipeline();
     client.geoadd(key, longitude, latitude, member);
     return client.getIntegerReply();
   }
 
-  @Override
-  public Long geoadd(final String key, final Map<String, GeoCoordinate> memberCoordinateMap) {
+  override
+  public Long geoadd(final String key, final Map!(String, GeoCoordinate) memberCoordinateMap) {
     checkIsInMultiOrPipeline();
     client.geoadd(key, memberCoordinateMap);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public Double geodist(final String key, final String member1, final String member2) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2);
@@ -3531,7 +3531,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return (dval != null ? new Double(dval) : null);
   }
 
-  @Override
+  override
   public Double geodist(final String key, final String member1, final String member2, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2, unit);
@@ -3539,137 +3539,137 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return (dval != null ? new Double(dval) : null);
   }
 
-  @Override
-  public List<String> geohash(final String key, String... members) {
+  override
+  public List!(String) geohash(final String key, String... members) {
     checkIsInMultiOrPipeline();
     client.geohash(key, members);
     return client.getMultiBulkReply();
   }
 
-  @Override
-  public List<GeoCoordinate> geopos(final String key, String... members) {
+  override
+  public List!(GeoCoordinate) geopos(final String key, String... members) {
     checkIsInMultiOrPipeline();
     client.geopos(key, members);
     return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadius(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadius(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusReadonly(final String key, final double longitude, final double latitude,
+  override
+  public List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude, final double latitude,
       final double radius, final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final String key, final String member, final double radius,
       final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member, final double radius,
       final GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMember(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMember(final String key, final String member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<GeoRadiusResponse> georadiusByMemberReadonly(final String key, final String member, final double radius,
+  override
+  public List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member, final double radius,
       final GeoUnit unit, final GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit, param);
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
+  override
   public String moduleLoad(final String path) {
     client.moduleLoad(path);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String moduleUnload(final String name) {
     client.moduleUnload(name);
     return client.getStatusCodeReply();
   }
 
-  @Override
-  public List<Module> moduleList() {
+  override
+  public List!(Module) moduleList() {
     client.moduleList();
     return BuilderFactory.MODULE_LIST.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<Long> bitfield(final String key, final String...arguments) {
+  override
+  public List!(Long) bitfield(final String key, final String...arguments) {
     checkIsInMultiOrPipeline();
     client.bitfield(key, arguments);
     return client.getIntegerMultiBulkReply();
   }
 
-  @Override
+  override
   public Long hstrlen(final String key, final String field) {
     checkIsInMultiOrPipeline();
     client.hstrlen(key, field);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String memoryDoctor() {
     checkIsInMultiOrPipeline();
     client.memoryDoctor();
     return client.getBulkReply();
   }
       
-  @Override
-  public StreamEntryID xadd(final String key, final StreamEntryID id, final Map<String, String> hash) {
+  override
+  public StreamEntryID xadd(final String key, final StreamEntryID id, final Map!(String, String) hash) {
     return xadd(key, id, hash, Long.MAX_VALUE, false);
   }
   
-  @Override
-  public StreamEntryID xadd(final String key, StreamEntryID id, final Map<String, String> hash, final long maxLen, final boolean approximateLength) {
+  override
+  public StreamEntryID xadd(final String key, StreamEntryID id, final Map!(String, String) hash, final long maxLen, final boolean approximateLength) {
     checkIsInMultiOrPipeline();
     client.xadd(key, id, hash, maxLen, approximateLength);
     String result = client.getBulkReply();
     return new StreamEntryID(result);
   }
 
-  @Override
+  override
   public Long xlen(final String key) {
     checkIsInMultiOrPipeline();
     client.xlen(key);
@@ -3679,8 +3679,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
   /**
    * {@inheritDoc}
    */
-  @Override
-  public List<StreamEntry> xrange(final String key, final StreamEntryID start, final StreamEntryID end, final int count) {
+  override
+  public List!(StreamEntry) xrange(final String key, final StreamEntryID start, final StreamEntryID end, final int count) {
     checkIsInMultiOrPipeline();
     client.xrange(key, start, end, count);
     return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
@@ -3689,8 +3689,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
   /**
    * {@inheritDoc}
    */
-  @Override
-  public List<StreamEntry> xrevrange(final String key, final StreamEntryID end, final StreamEntryID start, final int count) {
+  override
+  public List!(StreamEntry) xrevrange(final String key, final StreamEntryID end, final StreamEntryID start, final int count) {
     checkIsInMultiOrPipeline();
     client.xrevrange(key, end, start, count);
     return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
@@ -3700,24 +3700,24 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
   /**
    * {@inheritDoc}
    */
-  @Override
-  public List<Entry<String, List<StreamEntry>>> xread(final int count, final long block, final Entry<String, StreamEntryID>... streams) {
+  override
+  public List!(Entry!(String, List!(StreamEntry))) xread(final int count, final long block, final Entry!(String, StreamEntryID)... streams) {
     checkIsInMultiOrPipeline();
     client.xread(count, block, streams);
     client.setTimeoutInfinite();
     
     try {
-      List<Object> streamsEntries = client.getObjectMultiBulkReply();
+      List!(Object) streamsEntries = client.getObjectMultiBulkReply();
       if(streamsEntries == null) {
         return new ArrayList<>();
       }
       
-      List<Entry<String, List<StreamEntry>>> result = new ArrayList<>(streamsEntries.size());
-      for(Object streamObj : streamsEntries) {
-        List<Object> stream = (List<Object>)streamObj;
+      List!(Entry!(String, List!(StreamEntry))) result = new ArrayList<>(streamsEntries.size());
+      foreach(Object streamObj ; streamsEntries) {
+        List!(Object) stream = (List!(Object))streamObj;
         String streamId = SafeEncoder.encode((byte[])stream.get(0));
-        List<StreamEntry> streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
-        result.add(new AbstractMap.SimpleEntry<String, List<StreamEntry>>(streamId, streamEntries));
+        List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+        result.add(new AbstractMap.SimpleEntry!(String, List!(StreamEntry))(streamId, streamEntries));
       }
       
       return result;
@@ -3729,49 +3729,49 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
   /**
    * {@inheritDoc}
    */
-  @Override
+  override
   public long xack(final String key, final String group, final StreamEntryID... ids) {
     checkIsInMultiOrPipeline();
     client.xack(key, group, ids);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String xgroupCreate(final String key, final String groupname, final StreamEntryID id, final boolean makeStream) {
     checkIsInMultiOrPipeline();
     client.xgroupCreate(key, groupname, id, makeStream);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public String xgroupSetID(final String key, final String groupname, final StreamEntryID id) {
     checkIsInMultiOrPipeline();
     client.xgroupSetID(key, groupname, id);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public long xgroupDestroy(final String key, final String groupname) {
     checkIsInMultiOrPipeline();
     client.xgroupDestroy(key, groupname);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public String xgroupDelConsumer(final String key, final String groupname, final String consumerName) {
     checkIsInMultiOrPipeline();
     client.xgroupDelConsumer(key, groupname, consumerName);
     return client.getStatusCodeReply();
   }
 
-  @Override
+  override
   public long xdel(final String key, final StreamEntryID... ids) {
     checkIsInMultiOrPipeline();
     client.xdel(key, ids);
     return client.getIntegerReply();
   }
 
-  @Override
+  override
   public long xtrim(final String key, final long maxLen, final boolean approximateLength) {
     checkIsInMultiOrPipeline();
     client.xtrim(key, maxLen, approximateLength);
@@ -3781,29 +3781,29 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
   /**
    * {@inheritDoc}
    */
-  @Override
-  public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block,
-      final boolean noAck, final Entry<String, StreamEntryID>... streams) {
+  override
+  public List!(Entry!(String, List!(StreamEntry))) xreadGroup(final String groupname, final String consumer, final int count, final long block,
+      final boolean noAck, final Entry!(String, StreamEntryID)... streams) {
     checkIsInMultiOrPipeline();
     client.xreadGroup(groupname, consumer, count, block, noAck, streams);
 
-    List<Object> streamsEntries = client.getObjectMultiBulkReply();
+    List!(Object) streamsEntries = client.getObjectMultiBulkReply();
     if(streamsEntries == null) {
       return null;
     }
     
-    List<Entry<String, List<StreamEntry>>> result = new ArrayList<>(streamsEntries.size());
-    for(Object streamObj : streamsEntries) {
-      List<Object> stream = (List<Object>)streamObj;
+    List!(Entry!(String, List!(StreamEntry))) result = new ArrayList<>(streamsEntries.size());
+    foreach(Object streamObj ; streamsEntries) {
+      List!(Object) stream = (List!(Object))streamObj;
       String streamId = SafeEncoder.encode((byte[])stream.get(0));
-      List<StreamEntry> streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
-      result.add(new AbstractMap.SimpleEntry<String, List<StreamEntry>>(streamId, streamEntries));
+      List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+      result.add(new AbstractMap.SimpleEntry!(String, List!(StreamEntry))(streamId, streamEntries));
     }
     return result;
   }
 
-  @Override
-  public List<StreamPendingEntry> xpending(final String key, final String groupname, final StreamEntryID start, final StreamEntryID end,
+  override
+  public List!(StreamPendingEntry) xpending(final String key, final String groupname, final StreamEntryID start, final StreamEntryID end,
       final int count, final String consumername) {
     checkIsInMultiOrPipeline();
     client.xpending(key, groupname, start, end, count, consumername);
@@ -3813,8 +3813,8 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
-  public List<StreamEntry> xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime,
+  override
+  public List!(StreamEntry) xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime,
       int retries, boolean force, StreamEntryID... ids) {
     
     checkIsInMultiOrPipeline();
@@ -3823,7 +3823,7 @@ public class Redis extends BinaryRedis implements RedisCommands, MultiKeyCommand
     return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
   }
 
-  @Override
+  override
   public Object sendCommand(ProtocolCommand cmd, String... args) {
     client.sendCommand(cmd, args);
     return client.getOne();

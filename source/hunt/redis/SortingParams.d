@@ -19,7 +19,7 @@ import hunt.redis.util.SafeEncoder;
  * Builder Class for {@link Redis#sort(String, SortingParams) SORT} Parameters.
  */
 public class SortingParams {
-  private List<byte[]> params = new ArrayList<byte[]>();
+  private List!(byte[]) params = new ArrayList!(byte[])();
 
   /**
    * Sort by weight in keys.
@@ -68,7 +68,7 @@ public class SortingParams {
     return this;
   }
 
-  public Collection<byte[]> getParams() {
+  public Collection!(byte[]) getParams() {
     return Collections.unmodifiableCollection(params);
   }
 
@@ -128,7 +128,7 @@ public class SortingParams {
    * @return the SortingParams Object
    */
   public SortingParams get(String... patterns) {
-    for (final String pattern : patterns) {
+    foreach(final String pattern ; patterns) {
       params.add(GET.raw);
       params.add(SafeEncoder.encode(pattern));
     }
