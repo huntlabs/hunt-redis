@@ -1,6 +1,6 @@
 module hunt.redis.Transaction;
 
-import java.io.Closeable;
+import hunt.util.Common;
 import hunt.collection.ArraryList;
 import hunt.collection.List;
 
@@ -17,12 +17,12 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     // client will be set later in transaction block
   }
 
-  Transaction(final Client client) {
+  Transaction(Client client) {
     this.client = client;
   }
 
   override
-  protected Client getClient(String key) {
+  protected Client getClient(string key) {
     return client;
   }
 
@@ -44,7 +44,7 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     inTransaction = false;
 
     List!(Object) unformatted = client.getObjectMultiBulkReply();
-    if (unformatted == null) {
+    if (unformatted is null) {
       return null;
     }
     List!(Object) formatted = new ArrayList!(Object)();
@@ -65,7 +65,7 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     inTransaction = false;
 
     List!(Object) unformatted = client.getObjectMultiBulkReply();
-    if (unformatted == null) {
+    if (unformatted is null) {
       return null;
     }
     List<Response<?>> response = new ArrayList<Response<?>>();
@@ -75,7 +75,7 @@ class Transaction : MultiKeyPipelineBase implements Closeable {
     return response;
   }
 
-  String discard() {
+  string discard() {
     client.getMany(getPipelinedResponseLength());
     client.discard();
     inTransaction = false;

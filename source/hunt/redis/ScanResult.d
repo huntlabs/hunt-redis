@@ -8,7 +8,7 @@ class ScanResult!(T) {
   private byte[] cursor;
   private List!(T) results;
 
-  ScanResult(String cursor, List!(T) results) {
+  ScanResult(string cursor, List!(T) results) {
     this(SafeEncoder.encode(cursor), results);
   }
 
@@ -21,7 +21,7 @@ class ScanResult!(T) {
    * Returns the new value of the cursor
    * @return the new cursor value. {@link ScanParams#SCAN_POINTER_START} when a complete iteration has finished
    */
-  String getCursor() {
+  string getCursor() {
     return SafeEncoder.encode(cursor);
   }
 

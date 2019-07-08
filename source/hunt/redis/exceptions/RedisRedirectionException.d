@@ -7,7 +7,7 @@ class RedisRedirectionException : RedisDataException {
   private HostAndPort targetNode;
   private int slot;
 
-  RedisRedirectionException(String message, HostAndPort targetNode, int slot) {
+  RedisRedirectionException(string message, HostAndPort targetNode, int slot) {
     super(message);
     this.targetNode = targetNode;
     this.slot = slot;
@@ -19,7 +19,7 @@ class RedisRedirectionException : RedisDataException {
     this.slot = slot;
   }
 
-  RedisRedirectionException(String message, Throwable cause, HostAndPort targetNode, int slot) {
+  RedisRedirectionException(string message, Throwable cause, HostAndPort targetNode, int slot) {
     super(message, cause);
     this.targetNode = targetNode;
     this.slot = slot;

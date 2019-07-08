@@ -15,7 +15,7 @@ import hunt.collection.Collections;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
     MultiKeyRedisClusterCommands, RedisClusterScriptingCommands {
@@ -32,42 +32,42 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
     this(Collections.singleton(node), timeout, maxAttempts);
   }
 
-  RedisCluster(HostAndPort node, final GenericObjectPoolConfig poolConfig) {
+  RedisCluster(HostAndPort node, GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), poolConfig);
   }
 
-  RedisCluster(HostAndPort node, int timeout, final GenericObjectPoolConfig poolConfig) {
+  RedisCluster(HostAndPort node, int timeout, GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), timeout, poolConfig);
   }
 
   RedisCluster(HostAndPort node, int timeout, int maxAttempts,
-      final GenericObjectPoolConfig poolConfig) {
+      GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), timeout, maxAttempts, poolConfig);
   }
 
   RedisCluster(HostAndPort node, int connectionTimeout, int soTimeout,
-      int maxAttempts, final GenericObjectPoolConfig poolConfig) {
+      int maxAttempts, GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, poolConfig);
   }
 
   RedisCluster(HostAndPort node, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, final GenericObjectPoolConfig poolConfig) {
+      int maxAttempts, string password, GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
   }
 
   RedisCluster(HostAndPort node, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig) {
+      int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig) {
     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
   }
 
   RedisCluster(HostAndPort node, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig,
+      int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
       bool ssl) {
     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
   }
 
   RedisCluster(HostAndPort node, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig,
+      int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
@@ -86,42 +86,42 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
     this(nodes, timeout, maxAttempts, new GenericObjectPoolConfig());
   }
 
-  RedisCluster(Set!(HostAndPort) nodes, final GenericObjectPoolConfig poolConfig) {
+  RedisCluster(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig) {
     this(nodes, DEFAULT_TIMEOUT, DEFAULT_MAX_ATTEMPTS, poolConfig);
   }
 
-  RedisCluster(Set!(HostAndPort) nodes, int timeout, final GenericObjectPoolConfig poolConfig) {
+  RedisCluster(Set!(HostAndPort) nodes, int timeout, GenericObjectPoolConfig poolConfig) {
     this(nodes, timeout, DEFAULT_MAX_ATTEMPTS, poolConfig);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int timeout, int maxAttempts,
-      final GenericObjectPoolConfig poolConfig) {
+      GenericObjectPoolConfig poolConfig) {
     super(jedisClusterNode, timeout, maxAttempts, poolConfig);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
-      int maxAttempts, final GenericObjectPoolConfig poolConfig) {
+      int maxAttempts, GenericObjectPoolConfig poolConfig) {
     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, poolConfig);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
-                      int maxAttempts, String password, final GenericObjectPoolConfig poolConfig) {
+                      int maxAttempts, string password, GenericObjectPoolConfig poolConfig) {
     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
-          int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig) {
+          int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig) {
     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig,
+      int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
       bool ssl) {
     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
   }
 
   RedisCluster(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
-      int maxAttempts, String password, String clientName, final GenericObjectPoolConfig poolConfig,
+      int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
@@ -129,37 +129,37 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String set(final String key, final String value) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string set(string key, string value) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.set(key, value);
       }
     }.run(key);
   }
 
   override
-  String set(final String key, final String value, final SetParams params) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string set(string key, string value, SetParams params) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.set(key, value, params);
       }
     }.run(key);
   }
 
   override
-  String get(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string get(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.get(key);
       }
     }.run(key);
   }
 
   override
-  Boolean exists(final String key) {
+  Boolean exists(string key) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -169,7 +169,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long exists(final String keys...) {
+  Long exists(string keys...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -179,7 +179,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long persist(final String key) {
+  Long persist(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -189,17 +189,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String type(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string type(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.type(key);
       }
     }.run(key);
   }
 
   override
-  byte[] dump(final String key) {
+  byte[] dump(string key) {
     return new RedisClusterCommand!(byte[])(connectionHandler, maxAttempts) {
       override
       byte[] execute(Redis connection) {
@@ -209,17 +209,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String restore(final String key, final int ttl, final byte[] serializedValue) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string restore(string key, int ttl, byte[] serializedValue) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.restore(key, ttl, serializedValue);
       }
     }.run(key);
   }
 
   override
-  Long expire(final String key, final int seconds) {
+  Long expire(string key, int seconds) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -229,7 +229,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long pexpire(final String key, final long milliseconds) {
+  Long pexpire(string key, long milliseconds) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -239,7 +239,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long expireAt(final String key, final long unixTime) {
+  Long expireAt(string key, long unixTime) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -249,7 +249,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long pexpireAt(final String key, final long millisecondsTimestamp) {
+  Long pexpireAt(string key, long millisecondsTimestamp) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -259,7 +259,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long ttl(final String key) {
+  Long ttl(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -269,7 +269,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long pttl(final String key) {
+  Long pttl(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -279,7 +279,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long touch(final String key) {
+  Long touch(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -289,7 +289,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long touch(final String keys...) {
+  Long touch(string keys...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -299,7 +299,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean setbit(final String key, final long offset, final bool value) {
+  Boolean setbit(string key, long offset, bool value) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -309,7 +309,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean setbit(final String key, final long offset, final String value) {
+  Boolean setbit(string key, long offset, string value) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -319,7 +319,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean getbit(final String key, final long offset) {
+  Boolean getbit(string key, long offset) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -329,7 +329,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long setrange(final String key, final long offset, final String value) {
+  Long setrange(string key, long offset, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -339,27 +339,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String getrange(final String key, final long startOffset, final long endOffset) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string getrange(string key, long startOffset, long endOffset) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.getrange(key, startOffset, endOffset);
       }
     }.run(key);
   }
 
   override
-  String getSet(final String key, final String value) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string getSet(string key, string value) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.getSet(key, value);
       }
     }.run(key);
   }
 
   override
-  Long setnx(final String key, final String value) {
+  Long setnx(string key, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -369,27 +369,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String setex(final String key, final int seconds, final String value) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string setex(string key, int seconds, string value) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.setex(key, seconds, value);
       }
     }.run(key);
   }
 
   override
-  String psetex(final String key, final long milliseconds, final String value) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string psetex(string key, long milliseconds, string value) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.psetex(key, milliseconds, value);
       }
     }.run(key);
   }
 
   override
-  Long decrBy(final String key, final long decrement) {
+  Long decrBy(string key, long decrement) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -399,7 +399,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long decr(final String key) {
+  Long decr(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -409,7 +409,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long incrBy(final String key, final long increment) {
+  Long incrBy(string key, long increment) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -419,7 +419,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double incrByFloat(final String key, final double increment) {
+  Double incrByFloat(string key, double increment) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -429,7 +429,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long incr(final String key) {
+  Long incr(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -439,7 +439,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long append(final String key, final String value) {
+  Long append(string key, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -449,17 +449,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String substr(final String key, final int start, final int end) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string substr(string key, int start, int end) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.substr(key, start, end);
       }
     }.run(key);
   }
 
   override
-  Long hset(final String key, final String field, final String value) {
+  Long hset(string key, string field, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -469,7 +469,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long hset(final String key, final Map!(String, String) hash) {
+  Long hset(string key, Map!(string, string) hash) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -479,17 +479,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String hget(final String key, final String field) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string hget(string key, string field) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.hget(key, field);
       }
     }.run(key);
   }
 
   override
-  Long hsetnx(final String key, final String field, final String value) {
+  Long hsetnx(string key, string field, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -499,27 +499,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String hmset(final String key, final Map!(String, String) hash) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string hmset(string key, Map!(string, string) hash) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.hmset(key, hash);
       }
     }.run(key);
   }
 
   override
-  List!(String) hmget(final String key, final String fields...) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) hmget(string key, string fields...) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.hmget(key, fields);
       }
     }.run(key);
   }
 
   override
-  Long hincrBy(final String key, final String field, final long value) {
+  Long hincrBy(string key, string field, long value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -529,7 +529,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean hexists(final String key, final String field) {
+  Boolean hexists(string key, string field) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -539,7 +539,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long hdel(final String key, final String field...) {
+  Long hdel(string key, string field...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -549,7 +549,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long hlen(final String key) {
+  Long hlen(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -559,37 +559,37 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) hkeys(final String key) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) hkeys(string key) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.hkeys(key);
       }
     }.run(key);
   }
 
   override
-  List!(String) hvals(final String key) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) hvals(string key) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.hvals(key);
       }
     }.run(key);
   }
 
   override
-  Map!(String, String) hgetAll(final String key) {
-    return new RedisClusterCommand!(Map!(String, String))(connectionHandler, maxAttempts) {
+  Map!(string, string) hgetAll(string key) {
+    return new RedisClusterCommand!(Map!(string, string))(connectionHandler, maxAttempts) {
       override
-      Map!(String, String) execute(Redis connection) {
+      Map!(string, string) execute(Redis connection) {
         return connection.hgetAll(key);
       }
     }.run(key);
   }
 
   override
-  Long rpush(final String key, final String string...) {
+  Long rpush(string key, string string...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -599,7 +599,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long lpush(final String key, final String string...) {
+  Long lpush(string key, string string...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -609,7 +609,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long llen(final String key) {
+  Long llen(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -619,47 +619,47 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) lrange(final String key, final long start, final long stop) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) lrange(string key, long start, long stop) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.lrange(key, start, stop);
       }
     }.run(key);
   }
 
   override
-  String ltrim(final String key, final long start, final long stop) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string ltrim(string key, long start, long stop) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.ltrim(key, start, stop);
       }
     }.run(key);
   }
 
   override
-  String lindex(final String key, final long index) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string lindex(string key, long index) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.lindex(key, index);
       }
     }.run(key);
   }
 
   override
-  String lset(final String key, final long index, final String value) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string lset(string key, long index, string value) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.lset(key, index, value);
       }
     }.run(key);
   }
 
   override
-  Long lrem(final String key, final long count, final String value) {
+  Long lrem(string key, long count, string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -669,27 +669,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String lpop(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string lpop(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.lpop(key);
       }
     }.run(key);
   }
 
   override
-  String rpop(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string rpop(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.rpop(key);
       }
     }.run(key);
   }
 
   override
-  Long sadd(final String key, final String member...) {
+  Long sadd(string key, string member...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -699,17 +699,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) smembers(final String key) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) smembers(string key) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.smembers(key);
       }
     }.run(key);
   }
 
   override
-  Long srem(final String key, final String member...) {
+  Long srem(string key, string member...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -719,27 +719,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String spop(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string spop(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.spop(key);
       }
     }.run(key);
   }
 
   override
-  Set!(String) spop(final String key, final long count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) spop(string key, long count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.spop(key, count);
       }
     }.run(key);
   }
 
   override
-  Long scard(final String key) {
+  Long scard(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -749,7 +749,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean sismember(final String key, final String member) {
+  Boolean sismember(string key, string member) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -759,27 +759,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String srandmember(final String key) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string srandmember(string key) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.srandmember(key);
       }
     }.run(key);
   }
 
   override
-  List!(String) srandmember(final String key, final int count) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) srandmember(string key, int count) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.srandmember(key, count);
       }
     }.run(key);
   }
 
   override
-  Long strlen(final String key) {
+  Long strlen(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -789,7 +789,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zadd(final String key, final double score, final String member) {
+  Long zadd(string key, double score, string member) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -799,8 +799,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zadd(final String key, final double score, final String member,
-      final ZAddParams params) {
+  Long zadd(string key, double score, string member,
+      ZAddParams params) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -810,7 +810,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zadd(final String key, final Map!(String, Double) scoreMembers) {
+  Long zadd(string key, Map!(string, Double) scoreMembers) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -820,7 +820,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zadd(final String key, final Map!(String, Double) scoreMembers, final ZAddParams params) {
+  Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -830,17 +830,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) zrange(final String key, final long start, final long stop) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrange(string key, long start, long stop) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrange(key, start, stop);
       }
     }.run(key);
   }
 
   override
-  Long zrem(final String key, final String members...) {
+  Long zrem(string key, string members...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -850,7 +850,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double zincrby(final String key, final double increment, final String member) {
+  Double zincrby(string key, double increment, string member) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -860,8 +860,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double zincrby(final String key, final double increment, final String member,
-      final ZIncrByParams params) {
+  Double zincrby(string key, double increment, string member,
+      ZIncrByParams params) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -871,7 +871,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zrank(final String key, final String member) {
+  Long zrank(string key, string member) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -881,7 +881,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zrevrank(final String key, final String member) {
+  Long zrevrank(string key, string member) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -891,17 +891,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) zrevrange(final String key, final long start, final long stop) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrange(string key, long start, long stop) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrange(key, start, stop);
       }
     }.run(key);
   }
 
   override
-  Set!(Tuple) zrangeWithScores(final String key, final long start, final long stop) {
+  Set!(Tuple) zrangeWithScores(string key, long start, long stop) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -911,7 +911,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrevrangeWithScores(final String key, final long start, final long stop) {
+  Set!(Tuple) zrevrangeWithScores(string key, long start, long stop) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -921,7 +921,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zcard(final String key) {
+  Long zcard(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -931,7 +931,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double zscore(final String key, final String member) {
+  Double zscore(string key, string member) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -941,27 +941,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) sort(final String key) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) sort(string key) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.sort(key);
       }
     }.run(key);
   }
 
   override
-  List!(String) sort(final String key, final SortingParams sortingParameters) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) sort(string key, SortingParams sortingParameters) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.sort(key, sortingParameters);
       }
     }.run(key);
   }
 
   override
-  Long zcount(final String key, final double min, final double max) {
+  Long zcount(string key, double min, double max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -971,7 +971,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zcount(final String key, final String min, final String max) {
+  Long zcount(string key, string min, string max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -981,80 +981,80 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) zrangeByScore(final String key, final double min, final double max) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByScore(string key, double min, double max) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByScore(key, min, max);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrangeByScore(final String key, final String min, final String max) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByScore(string key, string min, string max) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByScore(key, min, max);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrevrangeByScore(final String key, final double max, final double min) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByScore(string key, double max, double min) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByScore(key, max, min);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrangeByScore(final String key, final double min, final double max,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByScore(string key, double min, double max,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByScore(key, min, max, offset, count);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrevrangeByScore(final String key, final String max, final String min) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByScore(string key, string max, string min) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByScore(key, max, min);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrangeByScore(final String key, final String min, final String max,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByScore(string key, string min, string max,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByScore(key, min, max, offset, count);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrevrangeByScore(final String key, final double max, final double min,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByScore(string key, double max, double min,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByScore(key, max, min, offset, count);
       }
     }.run(key);
   }
 
   override
-  Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max) {
+  Set!(Tuple) zrangeByScoreWithScores(string key, double min, double max) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1064,7 +1064,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max, final double min) {
+  Set!(Tuple) zrevrangeByScoreWithScores(string key, double max, double min) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1074,8 +1074,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrangeByScoreWithScores(final String key, final double min, final double max,
-      final int offset, final int count) {
+  Set!(Tuple) zrangeByScoreWithScores(string key, double min, double max,
+      int offset, int count) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1085,18 +1085,18 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) zrevrangeByScore(final String key, final String max, final String min,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByScore(string key, string max, string min,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByScore(key, max, min, offset, count);
       }
     }.run(key);
   }
 
   override
-  Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max) {
+  Set!(Tuple) zrangeByScoreWithScores(string key, string min, string max) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1106,7 +1106,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max, final String min) {
+  Set!(Tuple) zrevrangeByScoreWithScores(string key, string max, string min) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1116,8 +1116,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrangeByScoreWithScores(final String key, final String min, final String max,
-      final int offset, final int count) {
+  Set!(Tuple) zrangeByScoreWithScores(string key, string min, string max,
+      int offset, int count) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1127,8 +1127,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrevrangeByScoreWithScores(final String key, final double max,
-      final double min, final int offset, final int count) {
+  Set!(Tuple) zrevrangeByScoreWithScores(string key, double max,
+      double min, int offset, int count) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1138,8 +1138,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(Tuple) zrevrangeByScoreWithScores(final String key, final String max,
-      final String min, final int offset, final int count) {
+  Set!(Tuple) zrevrangeByScoreWithScores(string key, string max,
+      string min, int offset, int count) {
     return new RedisClusterCommand!(Set!(Tuple))(connectionHandler, maxAttempts) {
       override
       Set!(Tuple) execute(Redis connection) {
@@ -1149,7 +1149,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zremrangeByRank(final String key, final long start, final long stop) {
+  Long zremrangeByRank(string key, long start, long stop) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1159,7 +1159,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zremrangeByScore(final String key, final double min, final double max) {
+  Long zremrangeByScore(string key, double min, double max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1169,7 +1169,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zremrangeByScore(final String key, final String min, final String max) {
+  Long zremrangeByScore(string key, string min, string max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1179,7 +1179,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zlexcount(final String key, final String min, final String max) {
+  Long zlexcount(string key, string min, string max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1189,49 +1189,49 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) zrangeByLex(final String key, final String min, final String max) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByLex(string key, string min, string max) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByLex(key, min, max);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrangeByLex(final String key, final String min, final String max,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrangeByLex(string key, string min, string max,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrangeByLex(key, min, max, offset, count);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrevrangeByLex(final String key, final String max, final String min) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByLex(string key, string max, string min) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByLex(key, max, min);
       }
     }.run(key);
   }
 
   override
-  Set!(String) zrevrangeByLex(final String key, final String max, final String min,
-      final int offset, final int count) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) zrevrangeByLex(string key, string max, string min,
+      int offset, int count) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.zrevrangeByLex(key, max, min, offset, count);
       }
     }.run(key);
   }
 
   override
-  Long zremrangeByLex(final String key, final String min, final String max) {
+  Long zremrangeByLex(string key, string min, string max) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1241,8 +1241,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long linsert(final String key, final ListPosition where, final String pivot,
-      final String value) {
+  Long linsert(string key, ListPosition where, string pivot,
+      string value) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1252,7 +1252,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long lpushx(final String key, final String string...) {
+  Long lpushx(string key, string string...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1262,7 +1262,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long rpushx(final String key, final String string...) {
+  Long rpushx(string key, string string...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1272,7 +1272,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long del(final String key) {
+  Long del(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1282,7 +1282,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long unlink(final String key) {
+  Long unlink(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1292,7 +1292,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long unlink(final String keys...) {
+  Long unlink(string keys...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1302,18 +1302,18 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String echo(final String string) {
+  string echo(string string) {
     // note that it'll be run from arbitrary node
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.echo(string);
       }
     }.run(string);
   }
 
   override
-  Long bitcount(final String key) {
+  Long bitcount(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1323,7 +1323,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long bitcount(final String key, final long start, final long end) {
+  Long bitcount(string key, long start, long end) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1333,69 +1333,69 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) keys(final String pattern) {
-    if (pattern == null || pattern.isEmpty()) {
+  Set!(string) keys(string pattern) {
+    if (pattern is null || pattern.isEmpty()) {
       throw new IllegalArgumentException(this.getClass().getSimpleName()
-          + " only supports KEYS commands with non-empty patterns");
+          ~ " only supports KEYS commands with non-empty patterns");
     }
     if (!RedisClusterHashTagUtil.isClusterCompliantMatchPattern(pattern)) {
       throw new IllegalArgumentException(this.getClass().getSimpleName()
-          + " only supports KEYS commands with patterns containing hash-tags ( curly-brackets enclosed strings )");
+          ~ " only supports KEYS commands with patterns containing hash-tags ( curly-brackets enclosed strings )");
     }
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.keys(pattern);
       }
     }.run(pattern);
   }
 
   override
-  ScanResult!(String) scan(final String cursor, final ScanParams params) {
+  ScanResult!(string) scan(string cursor, ScanParams params) {
 
-    String matchPattern = null;
+    string matchPattern = null;
 
-    if (params == null || (matchPattern = params.match()) == null || matchPattern.isEmpty()) {
+    if (params is null || (matchPattern = params.match()) is null || matchPattern.isEmpty()) {
       throw new IllegalArgumentException(RedisCluster.class.getSimpleName()
-          + " only supports SCAN commands with non-empty MATCH patterns");
+          ~ " only supports SCAN commands with non-empty MATCH patterns");
     }
 
     if (!RedisClusterHashTagUtil.isClusterCompliantMatchPattern(matchPattern)) {
       throw new IllegalArgumentException(RedisCluster.class.getSimpleName()
-          + " only supports SCAN commands with MATCH patterns containing hash-tags ( curly-brackets enclosed strings )");
+          ~ " only supports SCAN commands with MATCH patterns containing hash-tags ( curly-brackets enclosed strings )");
     }
 
-    return new RedisClusterCommand!( ScanResult!(String))(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand!( ScanResult!(string))(connectionHandler, maxAttempts) {
       override
-      ScanResult!(String) execute(Redis connection) {
+      ScanResult!(string) execute(Redis connection) {
         return connection.scan(cursor, params);
       }
     }.run(matchPattern);
   }
   
   override
-  ScanResult!(Entry!(String, String)) hscan(final String key, final String cursor) {
-    return new RedisClusterCommand!(ScanResult!(Entry!(String, String)))(connectionHandler,
+  ScanResult!(Entry!(string, string)) hscan(string key, string cursor) {
+    return new RedisClusterCommand!(ScanResult!(Entry!(string, string)))(connectionHandler,
                                                                       maxAttempts) {
       override
-      ScanResult!(Entry!(String, String)) execute(Redis connection) {
+      ScanResult!(Entry!(string, string)) execute(Redis connection) {
         return connection.hscan(key, cursor);
       }
     }.run(key);
   }
 
   override
-  ScanResult!(String) sscan(final String key, final String cursor) {
-    return new RedisClusterCommand!(ScanResult!(String))(connectionHandler, maxAttempts) {
+  ScanResult!(string) sscan(string key, string cursor) {
+    return new RedisClusterCommand!(ScanResult!(string))(connectionHandler, maxAttempts) {
       override
-      ScanResult!(String) execute(Redis connection) {
+      ScanResult!(string) execute(Redis connection) {
         return connection.sscan(key, cursor);
       }
     }.run(key);
   }
 
   override
-  ScanResult!(Tuple) zscan(final String key, final String cursor) {
+  ScanResult!(Tuple) zscan(string key, string cursor) {
     return new RedisClusterCommand!(ScanResult!(Tuple))(connectionHandler, maxAttempts) {
       override
       ScanResult!(Tuple) execute(Redis connection) {
@@ -1405,7 +1405,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long pfadd(final String key, final String elements...) {
+  Long pfadd(string key, string elements...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1415,7 +1415,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  long pfcount(final String key) {
+  long pfcount(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1425,27 +1425,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) blpop(final int timeout, final String key) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) blpop(int timeout, string key) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.blpop(timeout, key);
       }
     }.run(key);
   }
 
   override
-  List!(String) brpop(final int timeout, final String key) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) brpop(int timeout, string key) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.brpop(timeout, key);
       }
     }.run(key);
   }
 
   override
-  Long del(final String keys...) {
+  Long del(string keys...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1455,10 +1455,10 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) blpop(final int timeout, final String keys...) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) blpop(int timeout, string keys...) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.blpop(timeout, keys);
       }
     }.run(keys.length, keys);
@@ -1466,44 +1466,44 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) brpop(final int timeout, final String keys...) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) brpop(int timeout, string keys...) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.brpop(timeout, keys);
       }
     }.run(keys.length, keys);
   }
 
   override
-  List!(String) mget(final String keys...) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) mget(string keys...) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.mget(keys);
       }
     }.run(keys.length, keys);
   }
 
   override
-  String mset(final String keysvalues...) {
-    String[] keys = new String[keysvalues.length / 2];
+  string mset(string keysvalues...) {
+    string[] keys = new string[keysvalues.length / 2];
 
     for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
       keys[keyIdx] = keysvalues[keyIdx * 2];
     }
 
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.mset(keysvalues);
       }
     }.run(keys.length, keys);
   }
 
   override
-  Long msetnx(final String keysvalues...) {
-    String[] keys = new String[keysvalues.length / 2];
+  Long msetnx(string keysvalues...) {
+    string[] keys = new string[keysvalues.length / 2];
 
     for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
       keys[keyIdx] = keysvalues[keyIdx * 2];
@@ -1518,17 +1518,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String rename(final String oldkey, final String newkey) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string rename(string oldkey, string newkey) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.rename(oldkey, newkey);
       }
     }.run(2, oldkey, newkey);
   }
 
   override
-  Long renamenx(final String oldkey, final String newkey) {
+  Long renamenx(string oldkey, string newkey) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1538,28 +1538,28 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String rpoplpush(final String srckey, final String dstkey) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string rpoplpush(string srckey, string dstkey) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.rpoplpush(srckey, dstkey);
       }
     }.run(2, srckey, dstkey);
   }
 
   override
-  Set!(String) sdiff(final String keys...) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) sdiff(string keys...) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.sdiff(keys);
       }
     }.run(keys.length, keys);
   }
 
   override
-  Long sdiffstore(final String dstkey, final String keys...) {
-    String[] mergedKeys = KeyMergeUtil.merge(dstkey, keys);
+  Long sdiffstore(string dstkey, string keys...) {
+    string[] mergedKeys = KeyMergeUtil.merge(dstkey, keys);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1570,18 +1570,18 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) sinter(final String keys...) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) sinter(string keys...) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.sinter(keys);
       }
     }.run(keys.length, keys);
   }
 
   override
-  Long sinterstore(final String dstkey, final String keys...) {
-    String[] mergedKeys = KeyMergeUtil.merge(dstkey, keys);
+  Long sinterstore(string dstkey, string keys...) {
+    string[] mergedKeys = KeyMergeUtil.merge(dstkey, keys);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1592,7 +1592,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long smove(final String srckey, final String dstkey, final String member) {
+  Long smove(string srckey, string dstkey, string member) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1602,7 +1602,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long sort(final String key, final SortingParams sortingParameters, final String dstkey) {
+  Long sort(string key, SortingParams sortingParameters, string dstkey) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1612,7 +1612,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long sort(final String key, final String dstkey) {
+  Long sort(string key, string dstkey) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1622,18 +1622,18 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Set!(String) sunion(final String keys...) {
-    return new RedisClusterCommand!(Set!(String))(connectionHandler, maxAttempts) {
+  Set!(string) sunion(string keys...) {
+    return new RedisClusterCommand!(Set!(string))(connectionHandler, maxAttempts) {
       override
-      Set!(String) execute(Redis connection) {
+      Set!(string) execute(Redis connection) {
         return connection.sunion(keys);
       }
     }.run(keys.length, keys);
   }
 
   override
-  Long sunionstore(final String dstkey, final String keys...) {
-    String[] wholeKeys = KeyMergeUtil.merge(dstkey, keys);
+  Long sunionstore(string dstkey, string keys...) {
+    string[] wholeKeys = KeyMergeUtil.merge(dstkey, keys);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1644,8 +1644,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zinterstore(final String dstkey, final String sets...) {
-    String[] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
+  Long zinterstore(string dstkey, string sets...) {
+    string[] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1656,8 +1656,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zinterstore(final String dstkey, final ZParams params, final String sets...) {
-    String[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
+  Long zinterstore(string dstkey, ZParams params, string sets...) {
+    string[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1668,8 +1668,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zunionstore(final String dstkey, final String sets...) {
-    String[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
+  Long zunionstore(string dstkey, string sets...) {
+    string[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1680,8 +1680,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long zunionstore(final String dstkey, final ZParams params, final String sets...) {
-    String[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
+  Long zunionstore(string dstkey, ZParams params, string sets...) {
+    string[] mergedKeys = KeyMergeUtil.merge(dstkey, sets);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1692,17 +1692,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String brpoplpush(final String source, final String destination, final int timeout) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string brpoplpush(string source, string destination, int timeout) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.brpoplpush(source, destination, timeout);
       }
     }.run(2, source, destination);
   }
 
   override
-  Long publish(final String channel, final String message) {
+  Long publish(string channel, string message) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1712,7 +1712,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  void subscribe(final RedisPubSub jedisPubSub, final String channels...) {
+  void subscribe(RedisPubSub jedisPubSub, string channels...) {
     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
       override
       Integer execute(Redis connection) {
@@ -1723,7 +1723,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  void psubscribe(final RedisPubSub jedisPubSub, final String patterns...) {
+  void psubscribe(RedisPubSub jedisPubSub, string patterns...) {
     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
       override
       Integer execute(Redis connection) {
@@ -1734,8 +1734,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long bitop(final BitOP op, final String destKey, final String srcKeys...) {
-    String[] mergedKeys = KeyMergeUtil.merge(destKey, srcKeys);
+  Long bitop(BitOP op, string destKey, string srcKeys...) {
+    string[] mergedKeys = KeyMergeUtil.merge(destKey, srcKeys);
 
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
@@ -1746,19 +1746,19 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String pfmerge(final String destkey, final String sourcekeys...) {
-    String[] mergedKeys = KeyMergeUtil.merge(destkey, sourcekeys);
+  string pfmerge(string destkey, string sourcekeys...) {
+    string[] mergedKeys = KeyMergeUtil.merge(destkey, sourcekeys);
 
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.pfmerge(destkey, sourcekeys);
       }
     }.run(mergedKeys.length, mergedKeys);
   }
 
   override
-  long pfcount(final String keys...) {
+  long pfcount(string keys...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1768,7 +1768,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Object eval(final String script, final int keyCount, final String params...) {
+  Object eval(string script, int keyCount, string params...) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
@@ -1778,7 +1778,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Object eval(final String script, final String sampleKey) {
+  Object eval(string script, string sampleKey) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
@@ -1788,17 +1788,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Object eval(final String script, final List!(String) keys, final List!(String) args) {
+  Object eval(string script, List!(string) keys, List!(string) args) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
         return connection.eval(script, keys, args);
       }
-    }.run(keys.size(), keys.toArray(new String[keys.size()]));
+    }.run(keys.size(), keys.toArray(new string[keys.size()]));
   }
 
   override
-  Object evalsha(final String sha1, final int keyCount, final String params...) {
+  Object evalsha(string sha1, int keyCount, string params...) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
@@ -1808,17 +1808,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Object evalsha(final String sha1, final List!(String) keys, final List!(String) args) {
+  Object evalsha(string sha1, List!(string) keys, List!(string) args) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
         return connection.evalsha(sha1, keys, args);
       }
-    }.run(keys.size(), keys.toArray(new String[keys.size()]));
+    }.run(keys.size(), keys.toArray(new string[keys.size()]));
   }
 
   override
-  Object evalsha(final String sha1, final String sampleKey) {
+  Object evalsha(string sha1, string sampleKey) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection) {
@@ -1828,7 +1828,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Boolean scriptExists(final String sha1, final String sampleKey) {
+  Boolean scriptExists(string sha1, string sampleKey) {
     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
       override
       Boolean execute(Redis connection) {
@@ -1838,7 +1838,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(Boolean) scriptExists(final String sampleKey, final String sha1...) {
+  List!(Boolean) scriptExists(string sampleKey, string sha1...) {
     return new RedisClusterCommand!(List!(Boolean))(connectionHandler, maxAttempts) {
       override
       List!(Boolean) execute(Redis connection) {
@@ -1848,38 +1848,38 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String scriptLoad(final String script, final String sampleKey) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string scriptLoad(string script, string sampleKey) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.scriptLoad(script);
       }
     }.run(sampleKey);
   }
 
   override
-  String scriptFlush(final String sampleKey) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string scriptFlush(string sampleKey) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.scriptFlush();
       }
     }.run(sampleKey);
   }
 
   override
-  String scriptKill(final String sampleKey) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string scriptKill(string sampleKey) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.scriptKill();
       }
     }.run(sampleKey);
   }
 
   override
-  Long geoadd(final String key, final double longitude, final double latitude,
-      final String member) {
+  Long geoadd(string key, double longitude, double latitude,
+      string member) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1889,7 +1889,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long geoadd(final String key, final Map!(String, GeoCoordinate) memberCoordinateMap) {
+  Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -1899,7 +1899,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double geodist(final String key, final String member1, final String member2) {
+  Double geodist(string key, string member1, string member2) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -1909,8 +1909,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Double geodist(final String key, final String member1, final String member2,
-      final GeoUnit unit) {
+  Double geodist(string key, string member1, string member2,
+      GeoUnit unit) {
     return new RedisClusterCommand!(Double)(connectionHandler, maxAttempts) {
       override
       Double execute(Redis connection) {
@@ -1920,17 +1920,17 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(String) geohash(final String key, final String members...) {
-    return new RedisClusterCommand!(List!(String))(connectionHandler, maxAttempts) {
+  List!(string) geohash(string key, string members...) {
+    return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
       override
-      List!(String) execute(Redis connection) {
+      List!(string) execute(Redis connection) {
         return connection.geohash(key, members);
       }
     }.run(key);
   }
 
   override
-  List!(GeoCoordinate) geopos(final String key, final String members...) {
+  List!(GeoCoordinate) geopos(string key, string members...) {
     return new RedisClusterCommand!(List!(GeoCoordinate))(connectionHandler, maxAttempts) {
       override
       List!(GeoCoordinate) execute(Redis connection) {
@@ -1940,8 +1940,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadius(final String key, final double longitude,
-      final double latitude, final double radius, final GeoUnit unit) {
+  List!(GeoRadiusResponse) georadius(string key, double longitude,
+      double latitude, double radius, GeoUnit unit) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -1951,8 +1951,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude,
-      final double latitude, final double radius, final GeoUnit unit) {
+  List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude,
+      double latitude, double radius, GeoUnit unit) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -1962,8 +1962,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadius(final String key, final double longitude,
-      final double latitude, final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  List!(GeoRadiusResponse) georadius(string key, double longitude,
+      double latitude, double radius, GeoUnit unit, GeoRadiusParam param) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -1973,8 +1973,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusReadonly(final String key, final double longitude,
-      final double latitude, final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude,
+      double latitude, double radius, GeoUnit unit, GeoRadiusParam param) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -1984,8 +1984,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusByMember(final String key, final String member,
-      final double radius, final GeoUnit unit) {
+  List!(GeoRadiusResponse) georadiusByMember(string key, string member,
+      double radius, GeoUnit unit) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -1995,8 +1995,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member,
-      final double radius, final GeoUnit unit) {
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(string key, string member,
+      double radius, GeoUnit unit) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -2006,8 +2006,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusByMember(final String key, final String member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  List!(GeoRadiusResponse) georadiusByMember(string key, string member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -2017,8 +2017,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(GeoRadiusResponse) georadiusByMemberReadonly(final String key, final String member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  List!(GeoRadiusResponse) georadiusByMemberReadonly(string key, string member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     return new RedisClusterCommand!(List!(GeoRadiusResponse))(connectionHandler, maxAttempts) {
       override
       List!(GeoRadiusResponse) execute(Redis connection) {
@@ -2028,7 +2028,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(Long) bitfield(final String key, final String arguments...) {
+  List!(Long) bitfield(string key, string arguments...) {
     return new RedisClusterCommand!(List!(Long))(connectionHandler, maxAttempts) {
       override
       List!(Long) execute(Redis connection) {
@@ -2038,7 +2038,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long hstrlen(final String key, final String field) {
+  Long hstrlen(string key, string field) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2048,7 +2048,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  StreamEntryID xadd(final String key, final StreamEntryID id, final Map!(String, String) hash) {
+  StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash) {
     return new RedisClusterCommand!(StreamEntryID)(connectionHandler, maxAttempts) {
       override
       StreamEntryID execute(Redis connection) {
@@ -2058,7 +2058,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  StreamEntryID xadd(final String key, final StreamEntryID id, final Map!(String, String) hash, final long maxLen, final bool approximateLength) {
+  StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
     return new RedisClusterCommand!(StreamEntryID)(connectionHandler, maxAttempts) {
       override
       StreamEntryID execute(Redis connection) {
@@ -2068,7 +2068,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long xlen(final String key) {
+  Long xlen(string key) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2078,7 +2078,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(StreamEntry) xrange(final String key, final StreamEntryID start, final StreamEntryID end, final int count) {
+  List!(StreamEntry) xrange(string key, StreamEntryID start, StreamEntryID end, int count) {
     return new RedisClusterCommand!(List!(StreamEntry))(connectionHandler, maxAttempts) {
       override
       List!(StreamEntry) execute(Redis connection) {
@@ -2088,7 +2088,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(StreamEntry) xrevrange(final String key, final StreamEntryID end, final StreamEntryID start, final int count) {
+  List!(StreamEntry) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
     return new RedisClusterCommand!(List!(StreamEntry))(connectionHandler, maxAttempts) {
       override
       List!(StreamEntry) execute(Redis connection) {
@@ -2098,22 +2098,22 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(Entry!(String, List!(StreamEntry))) xread(final int count, final long block, final Entry!(String, StreamEntryID) streams...) {
-    String[] keys = new String[streams.length];
+  List!(Entry!(string, List!(StreamEntry))) xread(int count, long block, Entry!(string, StreamEntryID) streams...) {
+    string[] keys = new string[streams.length];
     for(int i=0; i<streams.length; ++i) {
       keys[i] = streams[i].getKey();
     }
     
-    return new RedisClusterCommand<List!(Entry!(String, List!(StreamEntry)))>(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand<List!(Entry!(string, List!(StreamEntry)))>(connectionHandler, maxAttempts) {
       override
-      List!(Entry!(String, List!(StreamEntry))) execute(Redis connection) {
+      List!(Entry!(string, List!(StreamEntry))) execute(Redis connection) {
         return connection.xread(count, block, streams);
       }
     }.run(keys.length, keys);  
   }
 
   override
-  Long xack(final String key, final String group, final StreamEntryID ids...) {
+  Long xack(string key, string group, StreamEntryID ids...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2123,27 +2123,27 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String xgroupCreate(final String key, final String groupname, final StreamEntryID id, final bool makeStream) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string xgroupCreate(string key, string groupname, StreamEntryID id, bool makeStream) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.xgroupCreate(key, groupname, id, makeStream);
       }
     }.run(key);  
   }
 
   override
-  String xgroupSetID(final String key, final String groupname, final StreamEntryID id) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string xgroupSetID(string key, string groupname, StreamEntryID id) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.xgroupSetID(key, groupname, id);
       }
     }.run(key);
   }
 
   override
-  Long xgroupDestroy(final String key, final String groupname) {
+  Long xgroupDestroy(string key, string groupname) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2153,35 +2153,35 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  String xgroupDelConsumer(final String key, final String groupname, final String consumername) {
-    return new RedisClusterCommand!(String)(connectionHandler, maxAttempts) {
+  string xgroupDelConsumer(string key, string groupname, string consumername) {
+    return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
       override
-      String execute(Redis connection) {
+      string execute(Redis connection) {
         return connection.xgroupDelConsumer(key, groupname, consumername);
       }
     }.run(key);
   }
 
   override
-  List!(Entry!(String, List!(StreamEntry))) xreadGroup(final String groupname, final String consumer, final int count, final long block,
-      final bool noAck, final Entry!(String, StreamEntryID) streams...) {
+  List!(Entry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, int count, long block,
+      bool noAck, Entry!(string, StreamEntryID) streams...) {
     
-    String[] keys = new String[streams.length];
+    string[] keys = new string[streams.length];
     for(int i=0; i<streams.length; ++i) {
       keys[i] = streams[i].getKey();
     }
     
-    return new RedisClusterCommand<List!(Entry!(String, List!(StreamEntry)))>(connectionHandler, maxAttempts) {
+    return new RedisClusterCommand<List!(Entry!(string, List!(StreamEntry)))>(connectionHandler, maxAttempts) {
       override
-      List!(Entry!(String, List!(StreamEntry))) execute(Redis connection) {
+      List!(Entry!(string, List!(StreamEntry))) execute(Redis connection) {
         return connection.xreadGroup(groupname, consumer, count, block, noAck, streams);
       }
     }.run(keys.length, keys);
   }
 
   override
-  List!(StreamPendingEntry) xpending(final String key, final String groupname, final StreamEntryID start, final StreamEntryID end, final int count,
-      final String consumername) {
+  List!(StreamPendingEntry) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count,
+      string consumername) {
     return new RedisClusterCommand!(List!(StreamPendingEntry))(connectionHandler, maxAttempts) {
       override
       List!(StreamPendingEntry) execute(Redis connection) {
@@ -2191,7 +2191,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long xdel(final String key, final StreamEntryID ids...) {
+  Long xdel(string key, StreamEntryID ids...) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2201,7 +2201,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Long xtrim(final  String key, final long maxLen, final bool approximateLength) {
+  Long xtrim( string key, long maxLen, bool approximateLength) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2211,8 +2211,8 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  List!(StreamEntry) xclaim(final String key, final String group, final String consumername, final long minIdleTime, final long newIdleTime,
-      final int retries, final bool force, final StreamEntryID ids...) {
+  List!(StreamEntry) xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime,
+      int retries, bool force, StreamEntryID ids...) {
     return new RedisClusterCommand!(List!(StreamEntry))(connectionHandler, maxAttempts) {
       override
       List!(StreamEntry) execute(Redis connection) {
@@ -2221,7 +2221,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
     }.run(key);
   }
 
-  Long waitReplicas(final String key, final int replicas, final long timeout) {
+  Long waitReplicas(string key, int replicas, long timeout) {
     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
       override
       Long execute(Redis connection) {
@@ -2231,7 +2231,7 @@ class RedisCluster : BinaryRedisCluster implements RedisClusterCommands,
   }
 
   override
-  Object sendCommand(final String sampleKey, final ProtocolCommand cmd, final String args...) {
+  Object sendCommand(string sampleKey, ProtocolCommand cmd, string args...) {
     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
       override
       Object execute(Redis connection){

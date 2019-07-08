@@ -21,54 +21,54 @@ abstract class RedisPubSub {
   private int subscribedChannels = 0;
   private volatile Client client;
 
-  void onMessage(String channel, String message) {
+  void onMessage(string channel, string message) {
   }
 
-  void onPMessage(String pattern, String channel, String message) {
+  void onPMessage(string pattern, string channel, string message) {
   }
 
-  void onSubscribe(String channel, int subscribedChannels) {
+  void onSubscribe(string channel, int subscribedChannels) {
   }
 
-  void onUnsubscribe(String channel, int subscribedChannels) {
+  void onUnsubscribe(string channel, int subscribedChannels) {
   }
 
-  void onPUnsubscribe(String pattern, int subscribedChannels) {
+  void onPUnsubscribe(string pattern, int subscribedChannels) {
   }
 
-  void onPSubscribe(String pattern, int subscribedChannels) {
+  void onPSubscribe(string pattern, int subscribedChannels) {
   }
 
-  void onPong(String pattern) {
+  void onPong(string pattern) {
 
   }
 
   void unsubscribe() {
-    if (client == null) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.unsubscribe();
     client.flush();
   }
 
-  void unsubscribe(String channels...) {
-    if (client == null) {
+  void unsubscribe(string channels...) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.unsubscribe(channels);
     client.flush();
   }
 
-  void subscribe(String channels...) {
-    if (client == null) {
+  void subscribe(string channels...) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.subscribe(channels);
     client.flush();
   }
 
-  void psubscribe(String patterns...) {
-    if (client == null) {
+  void psubscribe(string patterns...) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.psubscribe(patterns);
@@ -76,15 +76,15 @@ abstract class RedisPubSub {
   }
 
   void punsubscribe() {
-    if (client == null) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.punsubscribe();
     client.flush();
   }
 
-  void punsubscribe(String patterns...) {
-    if (client == null) {
+  void punsubscribe(string patterns...) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.punsubscribe(patterns);
@@ -92,7 +92,7 @@ abstract class RedisPubSub {
   }
 
   void ping() {
-    if (client == null) {
+    if (client is null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
     client.ping();
@@ -103,14 +103,14 @@ abstract class RedisPubSub {
     return subscribedChannels > 0;
   }
 
-  void proceedWithPatterns(Client client, String patterns...) {
+  void proceedWithPatterns(Client client, string patterns...) {
     this.client = client;
     client.psubscribe(patterns);
     client.flush();
     process(client);
   }
 
-  void proceed(Client client, String channels...) {
+  void proceed(Client client, string channels...) {
     this.client = client;
     client.subscribe(channels);
     client.flush();
@@ -121,51 +121,51 @@ abstract class RedisPubSub {
 
     do {
       List!(Object) reply = client.getUnflushedObjectMultiBulkReply();
-      final Object firstObj = reply.get(0);
+      Object firstObj = reply.get(0);
       if (!(firstObj instanceof byte[])) {
-        throw new RedisException("Unknown message type: " + firstObj);
+        throw new RedisException("Unknown message type: " ~ firstObj);
       }
-      final byte[] resp = (byte[]) firstObj;
+      byte[] resp = (byte[]) firstObj;
       if (Arrays.equals(SUBSCRIBE.raw, resp)) {
         subscribedChannels = ((Long) reply.get(2)).intValue();
-        final byte[] bchannel = (byte[]) reply.get(1);
-        final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
+        byte[] bchannel = (byte[]) reply.get(1);
+        string strchannel = (bchannel is null) ? null : SafeEncoder.encode(bchannel);
         onSubscribe(strchannel, subscribedChannels);
       } else if (Arrays.equals(UNSUBSCRIBE.raw, resp)) {
         subscribedChannels = ((Long) reply.get(2)).intValue();
-        final byte[] bchannel = (byte[]) reply.get(1);
-        final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
+        byte[] bchannel = (byte[]) reply.get(1);
+        string strchannel = (bchannel is null) ? null : SafeEncoder.encode(bchannel);
         onUnsubscribe(strchannel, subscribedChannels);
       } else if (Arrays.equals(MESSAGE.raw, resp)) {
-        final byte[] bchannel = (byte[]) reply.get(1);
-        final byte[] bmesg = (byte[]) reply.get(2);
-        final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
-        final String strmesg = (bmesg == null) ? null : SafeEncoder.encode(bmesg);
+        byte[] bchannel = (byte[]) reply.get(1);
+        byte[] bmesg = (byte[]) reply.get(2);
+        string strchannel = (bchannel is null) ? null : SafeEncoder.encode(bchannel);
+        string strmesg = (bmesg is null) ? null : SafeEncoder.encode(bmesg);
         onMessage(strchannel, strmesg);
       } else if (Arrays.equals(PMESSAGE.raw, resp)) {
-        final byte[] bpattern = (byte[]) reply.get(1);
-        final byte[] bchannel = (byte[]) reply.get(2);
-        final byte[] bmesg = (byte[]) reply.get(3);
-        final String strpattern = (bpattern == null) ? null : SafeEncoder.encode(bpattern);
-        final String strchannel = (bchannel == null) ? null : SafeEncoder.encode(bchannel);
-        final String strmesg = (bmesg == null) ? null : SafeEncoder.encode(bmesg);
+        byte[] bpattern = (byte[]) reply.get(1);
+        byte[] bchannel = (byte[]) reply.get(2);
+        byte[] bmesg = (byte[]) reply.get(3);
+        string strpattern = (bpattern is null) ? null : SafeEncoder.encode(bpattern);
+        string strchannel = (bchannel is null) ? null : SafeEncoder.encode(bchannel);
+        string strmesg = (bmesg is null) ? null : SafeEncoder.encode(bmesg);
         onPMessage(strpattern, strchannel, strmesg);
       } else if (Arrays.equals(PSUBSCRIBE.raw, resp)) {
         subscribedChannels = ((Long) reply.get(2)).intValue();
-        final byte[] bpattern = (byte[]) reply.get(1);
-        final String strpattern = (bpattern == null) ? null : SafeEncoder.encode(bpattern);
+        byte[] bpattern = (byte[]) reply.get(1);
+        string strpattern = (bpattern is null) ? null : SafeEncoder.encode(bpattern);
         onPSubscribe(strpattern, subscribedChannels);
       } else if (Arrays.equals(PUNSUBSCRIBE.raw, resp)) {
         subscribedChannels = ((Long) reply.get(2)).intValue();
-        final byte[] bpattern = (byte[]) reply.get(1);
-        final String strpattern = (bpattern == null) ? null : SafeEncoder.encode(bpattern);
+        byte[] bpattern = (byte[]) reply.get(1);
+        string strpattern = (bpattern is null) ? null : SafeEncoder.encode(bpattern);
         onPUnsubscribe(strpattern, subscribedChannels);
       } else if (Arrays.equals(PONG.raw, resp)) {
-        final byte[] bpattern = (byte[]) reply.get(1);
-        final String strpattern = (bpattern == null) ? null : SafeEncoder.encode(bpattern);
+        byte[] bpattern = (byte[]) reply.get(1);
+        string strpattern = (bpattern is null) ? null : SafeEncoder.encode(bpattern);
         onPong(strpattern);
       } else {
-        throw new RedisException("Unknown message type: " + firstObj);
+        throw new RedisException("Unknown message type: " ~ firstObj);
       }
     } while (isSubscribed());
 

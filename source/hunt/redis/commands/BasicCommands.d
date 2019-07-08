@@ -9,20 +9,20 @@ public interface BasicCommands {
    *
    * @return PONG
    */
-  String ping();
+  string ping();
 
   /**
    * Ask the server to close the connection. The connection is closed as soon as all pending replies have been written to the client.
    * @return OK
    */
-  String quit();
+  string quit();
 
   /**
    * Delete all the keys of the currently selected DB. This command never fails.
    The time-complexity for this operation is O(N), N being the number of keys in the database.
    * @return OK
    */
-  String flushDB();
+  string flushDB();
 
   /**
    * Return the number of keys in the currently-selected database.
@@ -35,7 +35,7 @@ public interface BasicCommands {
    * @param index the index
    * @return a simple string reply OK
    */
-  String select(int index);
+  string select(int index);
 
   /**
    * This command swaps two Redis databases, so that immediately all the clients connected to a
@@ -44,13 +44,13 @@ public interface BasicCommands {
    * @param index2
    * @return Simple string reply: OK if SWAPDB was executed correctly.
    */
-  String swapDB(int index1, int index2);
+  string swapDB(int index1, int index2);
 
   /**
    * Delete all the keys of all the existing databases, not just the currently selected one.
    * @return a simple string reply (OK)
    */
-  String flushAll();
+  string flushAll();
 
   /**
    * Request for authentication in a password-protected Redis server. Redis can be instructed to require a password before allowing clients to execute commands. This is done using the requirepass directive in the configuration file.
@@ -58,20 +58,20 @@ public interface BasicCommands {
    * @param password
    * @return the result of the auth
    */
-  String auth(String password);
+  string auth(string password);
 
   /**
    * The SAVE commands performs a synchronous save of the dataset producing a point in time snapshot of all the data inside the Redis instance, in the form of an RDB file.
    You almost never want to call SAVE in production environments where it will block all the other clients. Instead usually BGSAVE is used. However in case of issues preventing Redis to create the background saving child (for instance errors in the fork(2) system call), the SAVE command can be a good last resort to perform the dump of the latest dataset.
    * @return result of the save
    */
-  String save();
+  string save();
 
   /**
    * Save the DB in background. The OK code is immediately returned. Redis forks, the parent continues to serve the clients, the child saves the DB on disk then exits. A client may be able to check if the operation succeeded using the LASTSAVE command.
    * @return ok
    */
-  String bgsave();
+  string bgsave();
 
   /**
    * Instruct Redis to start an Append Only File rewrite process. The rewrite will create a small optimized version of the current Append Only File
@@ -82,7 +82,7 @@ public interface BasicCommands {
    Since Redis 2.4 the AOF rewrite is automatically triggered by Redis, however the BGREWRITEAOF command can be used to trigger a rewrite at any time.
    * @return the response of the command
    */
-  String bgrewriteaof();
+  string bgrewriteaof();
 
   /**
    * Return the UNIX TIME of the last DB save executed with success.
@@ -96,20 +96,20 @@ public interface BasicCommands {
    * quit the server
    * @return only in case of error.
    */
-  String shutdown();
+  string shutdown();
 
   /**
    * The INFO command returns information and statistics about the server in a format that is simple to parse by computers and easy to read by humans.
    * @return information on the server
    */
-  String info();
+  string info();
 
   /**
    * The INFO command returns information and statistics about the server in a format that is simple to parse by computers and easy to read by humans.
    * @param section (all: Return all sections, default: Return only the default set of sections, server: General information about the Redis server, clients: Client connections section, memory: Memory consumption related information, persistence: RDB and AOF related information, stats: General statistics, replication: Master/slave replication information, cpu: CPU consumption statistics, commandstats: Redis command statistics, cluster: Redis Cluster section, keyspace: Database related statistics)
    * @return
    */
-  String info(String section);
+  string info(string section);
 
   /**
    * The SLAVEOF command can change the replication settings of a slave on the fly. In the proper form SLAVEOF hostname port will make the server a slave of another server listening at the specified hostname and port.
@@ -118,13 +118,13 @@ public interface BasicCommands {
    * @param port, server listening at the specified port
    * @return result of the command.
    */
-  String slaveof(String host, int port);
+  string slaveof(string host, int port);
 
   /**
    *  SLAVEOF NO ONE will stop replication, turning the server into a MASTER, but will not discard the replication. So, if the old master stops working, it is possible to turn the slave into a master and set the application to use this new master in read/write. Later when the other Redis server is fixed, it can be reconfigured to work as a slave.
    * @return result of the command
    */
-  String slaveofNoOne();
+  string slaveofNoOne();
 
   /**
    * Return the index of the current database
@@ -132,11 +132,11 @@ public interface BasicCommands {
    */
   int getDB();
 
-  String debug(DebugParams params);
+  string debug(DebugParams params);
 
-  String configResetStat();
+  string configResetStat();
 
-  String configRewrite();
+  string configRewrite();
 
   /**
    * Blocks until all the previous write commands are successfully transferred and acknowledged by 

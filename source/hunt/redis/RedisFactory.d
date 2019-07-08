@@ -1,9 +1,9 @@
 module hunt.redis.RedisFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.PooledObjectFactory;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
+import hunt.pool.PooledObject;
+import hunt.pool.PooledObjectFactory;
+import hunt.pool.impl.DefaultPooledObject;
 
 import hunt.redis.exceptions.InvalidURIException;
 import hunt.redis.exceptions.RedisException;
@@ -13,27 +13,27 @@ import hunt.redis.util.RedisURIHelper;
  * PoolableObjectFactory custom impl.
  */
 class RedisFactory : PooledObjectFactory!(Redis) {
-  private final AtomicReference!(HostAndPort) hostAndPort = new AtomicReference!(HostAndPort)();
-  private final int connectionTimeout;
-  private final int soTimeout;
-  private final String password;
-  private final int database;
-  private final String clientName;
-  private final bool ssl;
-  private final SSLSocketFactory sslSocketFactory;
-  private final SSLParameters sslParameters;
-  private final HostnameVerifier hostnameVerifier;
+  private AtomicReference!(HostAndPort) hostAndPort = new AtomicReference!(HostAndPort)();
+  private int connectionTimeout;
+  private int soTimeout;
+  private string password;
+  private int database;
+  private string clientName;
+  private bool ssl;
+  private SSLSocketFactory sslSocketFactory;
+  private SSLParameters sslParameters;
+  private HostnameVerifier hostnameVerifier;
 
-  RedisFactory(final String host, final int port, final int connectionTimeout,
-      final int soTimeout, final String password, final int database, final String clientName) {
+  RedisFactory(string host, int port, int connectionTimeout,
+      int soTimeout, string password, int database, string clientName) {
     this(host, port, connectionTimeout, soTimeout, password, database, clientName,
         false, null, null, null);
   }
 
-  RedisFactory(final String host, final int port, final int connectionTimeout,
-      final int soTimeout, final String password, final int database, final String clientName,
-      final bool ssl, final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisFactory(string host, int port, int connectionTimeout,
+      int soTimeout, string password, int database, string clientName,
+      bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this.hostAndPort.set(new HostAndPort(host, port));
     this.connectionTimeout = connectionTimeout;
     this.soTimeout = soTimeout;
@@ -46,16 +46,16 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  RedisFactory(final URI uri, final int connectionTimeout, final int soTimeout,
-      final String clientName) {
+  RedisFactory(URI uri, int connectionTimeout, int soTimeout,
+      string clientName) {
     this(uri, connectionTimeout, soTimeout, clientName, null, null, null);
   }
 
-  RedisFactory(final URI uri, final int connectionTimeout, final int soTimeout,
-      final String clientName, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisFactory(URI uri, int connectionTimeout, int soTimeout,
+      string clientName, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     if (!RedisURIHelper.isValid(uri)) {
-      throw new InvalidURIException(String.format(
+      throw new InvalidURIException(string.format(
         "Cannot open Redis connection due invalid URI. %s", uri.toString()));
     }
 
@@ -71,13 +71,13 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  void setHostAndPort(final HostAndPort hostAndPort) {
+  void setHostAndPort(HostAndPort hostAndPort) {
     this.hostAndPort.set(hostAndPort);
   }
 
   override
   void activateObject(PooledObject!(Redis) pooledRedis) throws Exception {
-    final BinaryRedis jedis = pooledRedis.getObject();
+    BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.getDB() != database) {
       jedis.select(database);
     }
@@ -86,7 +86,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
   override
   void destroyObject(PooledObject!(Redis) pooledRedis) throws Exception {
-    final BinaryRedis jedis = pooledRedis.getObject();
+    BinaryRedis jedis = pooledRedis.getObject();
     if (jedis.isConnected()) {
       try {
         try {
@@ -103,19 +103,19 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
   override
   PooledObject!(Redis) makeObject() throws Exception {
-    final HostAndPort hostAndPort = this.hostAndPort.get();
-    final Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout,
+    HostAndPort hostAndPort = this.hostAndPort.get();
+    Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout,
         soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
 
     try {
       jedis.connect();
-      if (password != null) {
+      if (password !is null) {
         jedis.auth(password);
       }
       if (database != 0) {
         jedis.select(database);
       }
-      if (clientName != null) {
+      if (clientName !is null) {
         jedis.clientSetname(clientName);
       }
     } catch (RedisException je) {
@@ -134,17 +134,17 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
   override
   bool validateObject(PooledObject!(Redis) pooledRedis) {
-    final BinaryRedis jedis = pooledRedis.getObject();
+    BinaryRedis jedis = pooledRedis.getObject();
     try {
       HostAndPort hostAndPort = this.hostAndPort.get();
 
-      String connectionHost = jedis.getClient().getHost();
+      string connectionHost = jedis.getClient().getHost();
       int connectionPort = jedis.getClient().getPort();
 
       return hostAndPort.getHost() == connectionHost
           && hostAndPort.getPort() == connectionPort && jedis.isConnected()
           && jedis.ping().equals("PONG");
-    } catch (final Exception e) {
+    } catch (Exception e) {
       return false;
     }
   }

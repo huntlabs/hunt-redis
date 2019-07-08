@@ -2,18 +2,11 @@ module hunt.redis.BinaryRedis;
 
 import hunt.redis.Protocol.toByteArray;
 
-import java.io.Closeable;
-import java.net.URI;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import hunt.collection.ArraryList;
-import hunt.collection.Collection;
-import hunt.collection.Collections;
-import hunt.collection.Iterator;
-import java.util.LinkedHashSet;
-import hunt.collection.List;
-import hunt.collection.Map;
-import hunt.collection.Set;
+// import java.net.URI;
+import hunt.net.util.HttpURI;
+import hunt.collection;
+import hunt.Exceptions;
+import hunt.util.Common;
 
 import hunt.redis.commands.AdvancedBinaryRedisCommands;
 import hunt.redis.commands.BasicCommands;
@@ -43,7 +36,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client = new Client();
   }
 
-  this(String host) {
+  this(string host) {
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
       initializeClientFromURI(uri);
@@ -56,49 +49,49 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     this(hp.getHost(), hp.getPort());
   }
 
-  this(String host, int port) {
+  this(string host, int port) {
     client = new Client(host, port);
   }
 
-  this(String host, int port, bool ssl) {
+  this(string host, int port, bool ssl) {
     client = new Client(host, port, ssl);
   }
 
-  this(String host, int port, bool ssl,
+  this(string host, int port, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  this(String host, int port, int timeout) {
+  this(string host, int port, int timeout) {
     this(host, port, timeout, timeout);
   }
 
-  this(String host, int port, int timeout, bool ssl) {
+  this(string host, int port, int timeout, bool ssl) {
     this(host, port, timeout, timeout, ssl);
   }
 
-  this(String host, int port, int timeout, bool ssl,
+  this(string host, int port, int timeout, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(host, port, timeout, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  this(String host, int port, int connectionTimeout,
+  this(string host, int port, int connectionTimeout,
       int soTimeout) {
     client = new Client(host, port);
     client.setConnectionTimeout(connectionTimeout);
     client.setSoTimeout(soTimeout);
   }
 
-  this(String host, int port, int connectionTimeout,
+  this(string host, int port, int connectionTimeout,
       int soTimeout, bool ssl) {
     client = new Client(host, port, ssl);
     client.setConnectionTimeout(connectionTimeout);
     client.setSoTimeout(soTimeout);
   }
 
-  this(String host, int port, int connectionTimeout,
+  this(string host, int port, int connectionTimeout,
       int soTimeout, bool ssl, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -155,15 +148,15 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   private void initializeClientFromURI(URI uri, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     if (!RedisURIHelper.isValid(uri)) {
-      throw new InvalidURIException(String.format(
+      throw new InvalidURIException(string.format(
         "Cannot open Redis connection due invalid URI. %s", uri.toString()));
     }
 
     client = new Client(uri.getHost(), uri.getPort(), RedisURIHelper.isRedisSSLScheme(uri),
       sslSocketFactory, sslParameters, hostnameVerifier);
 
-    String password = RedisURIHelper.getPassword(uri);
-    if (password != null) {
+    string password = RedisURIHelper.getPassword(uri);
+    if (password !is null) {
       client.auth(password);
       client.getStatusCodeReply();
     }
@@ -177,7 +170,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String ping() {
+  string ping() {
     checkIsInMultiOrPipeline();
     client.ping();
     return client.getStatusCodeReply();
@@ -204,7 +197,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String set(byte[] key, byte[] value) {
+  string set(byte[] key, byte[] value) {
     checkIsInMultiOrPipeline();
     client.set(key, value);
     return client.getStatusCodeReply();
@@ -219,7 +212,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String set(byte[] key, byte[] value, SetParams params) {
+  string set(byte[] key, byte[] value, SetParams params) {
     checkIsInMultiOrPipeline();
     client.set(key, value, params);
     return client.getStatusCodeReply();
@@ -245,10 +238,10 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * Ask the server to silently close the connection.
    */
   override
-  String quit() {
+  string quit() {
     checkIsInMultiOrPipeline();
     client.quit();
-    String quitReturn = client.getStatusCodeReply();
+    string quitReturn = client.getStatusCodeReply();
     client.disconnect();
     return quitReturn;
   }
@@ -334,12 +327,12 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * "string", "list", "set". "none" is returned if the key does not exist. Time complexity: O(1)
    * @param key
    * @return Status code reply, specifically: "none" if the key does not exist "string" if the key
-   *         contains a String value "list" if the key contains a List value "set" if the key
+   *         contains a string value "list" if the key contains a List value "set" if the key
    *         contains a Set value "zset" if the key contains a Sorted Set value "hash" if the key
    *         contains a Hash value
    */
   override
-  String type(byte[] key) {
+  string type(byte[] key) {
     checkIsInMultiOrPipeline();
     client.type(key);
     return client.getStatusCodeReply();
@@ -350,7 +343,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String flushDB() {
+  string flushDB() {
     checkIsInMultiOrPipeline();
     client.flushDB();
     return client.getStatusCodeReply();
@@ -415,7 +408,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code repy
    */
   override
-  String rename(byte[] oldkey, byte[] newkey) {
+  string rename(byte[] oldkey, byte[] newkey) {
     checkIsInMultiOrPipeline();
     client.rename(oldkey, newkey);
     return client.getStatusCodeReply();
@@ -548,17 +541,17 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String select(int index) {
+  string select(int index) {
     checkIsInMultiOrPipeline();
     client.select(index);
-    String statusCodeReply = client.getStatusCodeReply();
+    string statusCodeReply = client.getStatusCodeReply();
     client.setDb(index);
 
     return statusCodeReply;
   }
 
   override
-  String swapDB(int index1, int index2) {
+  string swapDB(int index1, int index2) {
     checkIsInMultiOrPipeline();
     client.swapDB(index1, index2);
     return client.getStatusCodeReply();
@@ -587,7 +580,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String flushAll() {
+  string flushAll() {
     checkIsInMultiOrPipeline();
     client.flushAll();
     return client.getStatusCodeReply();
@@ -612,7 +605,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
 
   /**
    * Get the values of all the specified keys. If one or more keys don't exist or is not of type
-   * String, a 'nil' value is returned instead of the value of the specified key, but the operation
+   * string, a 'nil' value is returned instead of the value of the specified key, but the operation
    * never fails.
    * <p>
    * Time complexity: O(1) for every key
@@ -654,7 +647,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String setex(byte[] key, int seconds, byte[] value) {
+  string setex(byte[] key, int seconds, byte[] value) {
     checkIsInMultiOrPipeline();
     client.setex(key, seconds, value);
     return client.getStatusCodeReply();
@@ -677,7 +670,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply Basically +OK as MSET can't fail
    */
   override
-  String mset(byte[] keysvalues...) {
+  string mset(byte[] keysvalues...) {
     checkIsInMultiOrPipeline();
     client.mset(keysvalues);
     return client.getStatusCodeReply();
@@ -804,8 +797,8 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Double incrByFloat(byte[] key, double increment) {
     checkIsInMultiOrPipeline();
     client.incrByFloat(key, increment);
-    String dval = client.getBulkReply();
-    return (dval != null ? new Double(dval) : null);
+    string dval = client.getBulkReply();
+    return (dval !is null ? new Double(dval) : null);
   }
 
   /**
@@ -944,7 +937,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Always OK because HMSET can't fail
    */
   override
-  String hmset(byte[] key, Map!(byte[], byte[]) hash) {
+  string hmset(byte[] key, Map!(byte[], byte[]) hash) {
     checkIsInMultiOrPipeline();
     client.hmset(key, hash);
     return client.getStatusCodeReply();
@@ -1010,8 +1003,8 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Double hincrByFloat(byte[] key, byte[] field, double value) {
     checkIsInMultiOrPipeline();
     client.hincrByFloat(key, field, value);
-    String dval = client.getBulkReply();
-    return (dval != null ? new Double(dval) : null);
+    string dval = client.getBulkReply();
+    return (dval !is null ? new Double(dval) : null);
   }
 
   /**
@@ -1232,7 +1225,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String ltrim(byte[] key, long start, long stop) {
+  string ltrim(byte[] key, long start, long stop) {
     checkIsInMultiOrPipeline();
     client.ltrim(key, start, stop);
     return client.getStatusCodeReply();
@@ -1281,7 +1274,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String lset(byte[] key, long index, byte[] value) {
+  string lset(byte[] key, long index, byte[] value) {
     checkIsInMultiOrPipeline();
     client.lset(key, index, value);
     return client.getStatusCodeReply();
@@ -1438,7 +1431,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     checkIsInMultiOrPipeline();
     client.spop(key, count);
     List!(byte[]) members = client.getBinaryMultiBulkReply();
-    if (members == null) return null;
+    if (members is null) return null;
     return SetFromList.of(members);
   }
 
@@ -1835,8 +1828,8 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Double zscore(byte[] key, byte[] member) {
     checkIsInMultiOrPipeline();
     client.zscore(key, member);
-    String score = client.getBulkReply();
-    return (score != null ? new Double(score) : null);
+    string score = client.getBulkReply();
+    return (score !is null ? new Double(score) : null);
   }
 
   Transaction multi() {
@@ -1850,7 +1843,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     if (client.isInMulti()) {
       throw new RedisDataException(
           "Cannot use Redis when in Multi. Please use Transaction or reset jedis state.");
-    } else if (pipeline != null && pipeline.hasPipelinedResponse()) {
+    } else if (pipeline !is null && pipeline.hasPipelinedResponse()) {
       throw new RedisDataException(
           "Cannot use Redis when in Pipeline. Please use Pipeline or reset jedis state .");
     }
@@ -1866,11 +1859,11 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
 
   void resetState() {
     if (client.isConnected()) {
-      if (transaction != null) {
+      if (transaction !is null) {
         transaction.close();
       }
 
-      if (pipeline != null) {
+      if (pipeline !is null) {
         pipeline.close();
       }
 
@@ -1882,13 +1875,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String watch(byte[] keys...) {
+  string watch(byte[] keys...) {
     client.watch(keys);
     return client.getStatusCodeReply();
   }
 
   override
-  String unwatch() {
+  string unwatch() {
     client.unwatch();
     return client.getStatusCodeReply();
   }
@@ -2217,7 +2210,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String auth(String password) {
+  string auth(string password) {
     checkIsInMultiOrPipeline();
     client.auth(password);
     return client.getStatusCodeReply();
@@ -2819,7 +2812,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String save() {
+  string save() {
     client.save();
     return client.getStatusCodeReply();
   }
@@ -2833,7 +2826,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String bgsave() {
+  string bgsave() {
     client.bgsave();
     return client.getStatusCodeReply();
   }
@@ -2853,7 +2846,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String bgrewriteaof() {
+  string bgrewriteaof() {
     client.bgrewriteaof();
     return client.getStatusCodeReply();
   }
@@ -2883,9 +2876,9 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    *         the connection is closed.
    */
   override
-  String shutdown() {
+  string shutdown() {
     client.shutdown();
-    String status;
+    string status;
     try {
       status = client.getStatusCodeReply();
     } catch (RedisException ex) {
@@ -2900,7 +2893,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * The info command returns different information and statistics about the server in an format
    * that's simple to parse by computers and easy to read by humans.
    * <p>
-   * <b>Format of the returned String:</b>
+   * <b>Format of the returned string:</b>
    * <p>
    * All the fields are in the form field:value
    * 
@@ -2931,13 +2924,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Bulk reply
    */
   override
-  String info() {
+  string info() {
     client.info();
     return client.getBulkReply();
   }
 
   override
-  String info(String section) {
+  string info(string section) {
     client.info(section);
     return client.getBulkReply();
   }
@@ -2978,13 +2971,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String slaveof(String host, int port) {
+  string slaveof(string host, int port) {
     client.slaveof(host, port);
     return client.getStatusCodeReply();
   }
 
   override
-  String slaveofNoOne() {
+  string slaveofNoOne() {
     client.slaveofNoOne();
     return client.getStatusCodeReply();
   }
@@ -3035,7 +3028,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return
    */
   override
-  String configResetStat() {
+  string configResetStat() {
     checkIsInMultiOrPipeline();
     client.configResetStat();
     return client.getStatusCodeReply();
@@ -3062,7 +3055,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return OK when the configuration was rewritten properly. Otherwise an error is returned.
    */
   override
-  String configRewrite() {
+  string configRewrite() {
     checkIsInMultiOrPipeline();
     client.configRewrite();
     return client.getStatusCodeReply();
@@ -3163,7 +3156,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   // override
-  // String debug(DebugParams params) {
+  // string debug(DebugParams params) {
   //   client.debug(params);
   //   return client.getStatusCodeReply();
   // }
@@ -3350,7 +3343,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String scriptFlush() {
+  string scriptFlush() {
     client.scriptFlush();
     return client.getStatusCodeReply();
   }
@@ -3374,13 +3367,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String scriptKill() {
+  string scriptKill() {
     client.scriptKill();
     return client.getStatusCodeReply();
   }
 
   override
-  String slowlogReset() {
+  string slowlogReset() {
     client.slowlogReset();
     return client.getBulkReply();
   }
@@ -3450,14 +3443,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String restore(byte[] key, int ttl, byte[] serializedValue) {
+  string restore(byte[] key, int ttl, byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restore(key, ttl, serializedValue);
     return client.getStatusCodeReply();
   }
 
   override
-  String restoreReplace(byte[] key, int ttl, byte[] serializedValue) {
+  string restoreReplace(byte[] key, int ttl, byte[] serializedValue) {
     checkIsInMultiOrPipeline();
     client.restoreReplace(key, ttl, serializedValue);
     return client.getStatusCodeReply();
@@ -3514,7 +3507,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return Status code reply
    */
   override
-  String psetex(byte[] key, long milliseconds, byte[] value) {
+  string psetex(byte[] key, long milliseconds, byte[] value) {
     checkIsInMultiOrPipeline();
     client.psetex(key, milliseconds, value);
     return client.getStatusCodeReply();
@@ -3528,14 +3521,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String clientKill(byte[] ipPort) {
+  string clientKill(byte[] ipPort) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(ipPort);
     return this.client.getStatusCodeReply();
   }
 
   override
-  String clientKill(String ip, int port) {
+  string clientKill(string ip, int port) {
     checkIsInMultiOrPipeline();
     this.client.clientKill(ip, port);
     return this.client.getStatusCodeReply();
@@ -3563,26 +3556,26 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String clientSetname(byte[] name) {
+  string clientSetname(byte[] name) {
     checkIsInMultiOrPipeline();
     client.clientSetname(name);
     return client.getBulkReply();
   }
 
-  String clientPause(long timeout) {
+  string clientPause(long timeout) {
     checkIsInMultiOrPipeline();
     client.clientPause(timeout);
     return client.getBulkReply();
   }
 
-  List!(String) time() {
+  List!(string) time() {
     checkIsInMultiOrPipeline();
     client.time();
     return client.getMultiBulkReply();
   }
 
   override
-  String migrate(String host, int port, byte[] key,
+  string migrate(string host, int port, byte[] key,
       int destinationDb, int timeout) {
     checkIsInMultiOrPipeline();
     client.migrate(host, port, key, destinationDb, timeout);
@@ -3590,7 +3583,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String migrate(String host, int port, int destinationDB,
+  string migrate(string host, int port, int destinationDB,
       int timeout, MigrateParams params, byte[] keys...) {
     checkIsInMultiOrPipeline();
     client.migrate(host, port, destinationDB, timeout, params, keys);
@@ -3624,7 +3617,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String pfmerge(byte[] destkey, byte[] sourcekeys...) {
+  string pfmerge(byte[] destkey, byte[] sourcekeys...) {
     checkIsInMultiOrPipeline();
     client.pfmerge(destkey, sourcekeys);
     return client.getStatusCodeReply();
@@ -3645,30 +3638,35 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     checkIsInMultiOrPipeline();
     client.scan(cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    byte[] newcursor = (byte[]) result.get(0);
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    return new ScanResult!(byte[])(newcursor, rawResults);
+    // byte[] newcursor = (byte[]) result.get(0);
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // return new ScanResult!(byte[])(newcursor, rawResults);
+    implementationMissing();
+    return null;
   }
 
   override
-  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor) {
+  ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor) {
     return hscan(key, cursor, new ScanParams());
   }
 
   override
-  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor,
+  ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor,
       ScanParams params) {
     checkIsInMultiOrPipeline();
     client.hscan(key, cursor, params);
-    List!(Object) result = client.getObjectMultiBulkReply();
-    byte[] newcursor = (byte[]) result.get(0);
-    List<Map.Entry!(byte[], byte[])> results = new ArrayList<Map.Entry!(byte[], byte[])>();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    Iterator!(byte[]) iterator = rawResults.iterator();
-    while (iterator.hasNext()) {
-      results.add(new AbstractMap.SimpleEntry!(byte[], byte[])(iterator.next(), iterator.next()));
-    }
-    return new ScanResult<>(newcursor, results);
+    // List!(Object) result = client.getObjectMultiBulkReply();
+    // byte[] newcursor = cast(byte[]) result.get(0);
+    // List!(MapEntry!(byte[], byte[])) results = new ArrayList!(MapEntry!(byte[], byte[]))();
+    // List!(byte[]) rawResults = cast(List!(byte[])) result.get(1);
+    // Iterator!(byte[]) iterator = rawResults.iterator();
+    // while (iterator.hasNext()) {
+    //   results.add(new AbstractMap.SimpleEntry!(byte[], byte[])(iterator.next(), iterator.next()));
+    // }
+    // return new ScanResult!(MapEntry!(byte[], byte[]))(newcursor, results);
+
+    implementationMissing();
+    return null;
   }
 
   override
@@ -3680,10 +3678,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   ScanResult!(byte[]) sscan(byte[] key, byte[] cursor, ScanParams params) {
     checkIsInMultiOrPipeline();
     client.sscan(key, cursor, params);
-    List!(Object) result = client.getObjectMultiBulkReply();
-    byte[] newcursor = (byte[]) result.get(0);
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    return new ScanResult<>(newcursor, rawResults);
+    // List!(Object) result = client.getObjectMultiBulkReply();
+    // byte[] newcursor = (byte[]) result.get(0);
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // return new ScanResult<>(newcursor, rawResults);
+
+    implementationMissing();
+    return null;    
   }
 
   override
@@ -3696,14 +3697,17 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     checkIsInMultiOrPipeline();
     client.zscan(key, cursor, params);
     List!(Object) result = client.getObjectMultiBulkReply();
-    byte[] newcursor = (byte[]) result.get(0);
-    List!(Tuple) results = new ArrayList<>();
-    List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-    Iterator!(byte[]) iterator = rawResults.iterator();
-    while (iterator.hasNext()) {
-      results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
-    }
-    return new ScanResult<>(newcursor, results);
+    // byte[] newcursor = (byte[]) result.get(0);
+    // List!(Tuple) results = new ArrayList<>();
+    // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+    // Iterator!(byte[]) iterator = rawResults.iterator();
+    // while (iterator.hasNext()) {
+    //   results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
+    // }
+    // return new ScanResult<>(newcursor, results);
+
+    implementationMissing();
+    return null;
   }
 
   override
@@ -3724,16 +3728,16 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Double geodist(byte[] key, byte[] member1, byte[] member2) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2);
-    String dval = client.getBulkReply();
-    return (dval != null ? new Double(dval) : null);
+    string dval = client.getBulkReply();
+    return (dval !is null ? new Double(dval) : null);
   }
 
   override
   Double geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.geodist(key, member1, member2, unit);
-    String dval = client.getBulkReply();
-    return (dval != null ? new Double(dval) : null);
+    string dval = client.getBulkReply();
+    return (dval !is null ? new Double(dval) : null);
   }
 
   override
@@ -3814,111 +3818,6 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
   }
 
-  /**
-   * A decorator to implement Set from List. Assume that given List do not contains duplicated
-   * values. The resulting set displays the same ordering, concurrency, and performance
-   * characteristics as the backing list. This class should be used only for Redis commands which
-   * return Set result.
-   * @param <E>
-   */
-  protected static class SetFromList!(E) extends AbstractSet!(E) implements Serializable {
-    private transient List!(E) list;
-
-    private SetFromList(List!(E) list) {
-      if (list == null) {
-        throw new NullPointerException("list");
-      }
-      this.list = list;
-    }
-
-    override
-    void clear() {
-      list.clear();
-    }
-
-    override
-    int size() {
-      return list.size();
-    }
-
-    override
-    bool isEmpty() {
-      return list.isEmpty();
-    }
-
-    override
-    bool contains(Object o) {
-      return list.contains(o);
-    }
-
-    override
-    bool remove(Object o) {
-      return list.remove(o);
-    }
-
-    override
-    bool add(E e) {
-      return !contains(e) && list.add(e);
-    }
-
-    override
-    Iterator!(E) iterator() {
-      return list.iterator();
-    }
-
-    override
-    Object[] toArray() {
-      return list.toArray();
-    }
-
-    override
-    <T> T[] toArray(T[] a) {
-      return list.toArray(a);
-    }
-
-    override
-    String toString() {
-      return list.toString();
-    }
-
-    override
-    size_t toHash() @trusted nothrow() {
-      return list.hashCode();
-    }
-
-    override
-    bool equals(Object o) {
-      if (o == null) return false;
-      if (o == this) return true;
-      if (!(o instanceof Set)) return false;
-
-      Collection<?> c = (Collection<?>) o;
-      if (c.size() != size()) {
-        return false;
-      }
-
-      return containsAll(c);
-    }
-
-    override
-    bool containsAll(Collection<?> c) {
-      return list.containsAll(c);
-    }
-
-    override
-    bool removeAll(Collection<?> c) {
-      return list.removeAll(c);
-    }
-
-    override
-    bool retainAll(Collection<?> c) {
-      return list.retainAll(c);
-    }
-
-    protected static <E> SetFromList!(E) of(List!(E) list) {
-      return new SetFromList<>(list);
-    }
-  }
 
   override
   List!(Long) bitfield(byte[] key, byte[] arguments...) {
@@ -3985,14 +3884,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String xgroupCreate(byte[] key, byte[] consumer, byte[] id, bool makeStream) {
+  string xgroupCreate(byte[] key, byte[] consumer, byte[] id, bool makeStream) {
     checkIsInMultiOrPipeline();
     client.xgroupCreate(key, consumer, id, makeStream);
     return client.getStatusCodeReply();
   }
 
   override
-  String xgroupSetID(byte[] key, byte[] consumer, byte[] id) {
+  string xgroupSetID(byte[] key, byte[] consumer, byte[] id) {
     checkIsInMultiOrPipeline();
     client.xgroupSetID(key, consumer, id);
     return client.getStatusCodeReply();
@@ -4006,7 +3905,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  String xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName) {
+  string xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName) {
     checkIsInMultiOrPipeline();
     client.xgroupDelConsumer(key, consumer, consumerName);
     return client.getStatusCodeReply();  
@@ -4033,7 +3932,9 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     return client.getBinaryMultiBulkReply();  }
 
   override
-    List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, bool force, byte[][] ids){
+    List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, 
+                         long minIdleTime, long newIdleTime, int retries, 
+                         bool force, byte[][] ids) {
     checkIsInMultiOrPipeline();
     client.xclaim(key, groupname, consumername, minIdleTime, newIdleTime, retries, force, ids);
     return client.getBinaryMultiBulkReply();  
@@ -4045,3 +3946,111 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     return client.getOne();
   }
 }
+
+
+
+
+  /**
+   * A decorator to implement Set from List. Assume that given List do not contains duplicated
+   * values. The resulting set displays the same ordering, concurrency, and performance
+   * characteristics as the backing list. This class should be used only for Redis commands which
+   * return Set result.
+   * @param <E>
+   */
+  protected class SetFromList(E) : AbstractSet!(E), Serializable {
+    private List!(E) list;
+
+    private this(List!(E) list) {
+      if (list is null) {
+        throw new NullPointerException("list");
+      }
+      this.list = list;
+    }
+
+    override
+    void clear() {
+      list.clear();
+    }
+
+    override
+    int size() {
+      return list.size();
+    }
+
+    override
+    bool isEmpty() {
+      return list.isEmpty();
+    }
+
+    override
+    bool contains(Object o) {
+      return list.contains(o);
+    }
+
+    override
+    bool remove(Object o) {
+      return list.remove(o);
+    }
+
+    override
+    bool add(E e) {
+      return !contains(e) && list.add(e);
+    }
+
+    // override
+    // Iterator!(E) iterator() {
+    //   return list.iterator();
+    // }
+
+    override
+    Object[] toArray() {
+      return list.toArray();
+    }
+
+    // override
+    // <T> T[] toArray(T[] a) {
+    //   return list.toArray(a);
+    // }
+
+    override
+    string toString() {
+      return list.toString();
+    }
+
+    override
+    size_t toHash() @trusted nothrow {
+      return list.hashCode();
+    }
+
+    override bool opEquals(Object o) {
+      if (o is null) return false;
+      if (o is this) return true;
+      Set!E c = cast(Set!E) o;
+        if(c is null) return false;
+
+      if (c.size() != size()) {
+        return false;
+      }
+
+      return containsAll(c);
+    }
+
+    override
+    bool containsAll(Collection!E c) {
+      return list.containsAll(c);
+    }
+
+    override
+    bool removeAll(Collection!E c) {
+      return list.removeAll(c);
+    }
+
+    override
+    bool retainAll(Collection!E c) {
+      return list.retainAll(c);
+    }
+
+    protected static SetFromList!(E) of(E)(List!(E) list) {
+      return new SetFromList!E(list);
+    }
+  }

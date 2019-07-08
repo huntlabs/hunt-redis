@@ -5,45 +5,45 @@ import hunt.collection.List;
 import hunt.redis.ClusterReset;
 
 public interface ClusterCommands {
-  String clusterNodes();
+  string clusterNodes();
 
-  String clusterMeet(String ip, int port);
+  string clusterMeet(string ip, int port);
 
-  String clusterAddSlots(int slots...);
+  string clusterAddSlots(int slots...);
 
-  String clusterDelSlots(int slots...);
+  string clusterDelSlots(int slots...);
 
-  String clusterInfo();
+  string clusterInfo();
 
-  List!(String) clusterGetKeysInSlot(int slot, int count);
+  List!(string) clusterGetKeysInSlot(int slot, int count);
 
-  String clusterSetSlotNode(int slot, String nodeId);
+  string clusterSetSlotNode(int slot, string nodeId);
 
-  String clusterSetSlotMigrating(int slot, String nodeId);
+  string clusterSetSlotMigrating(int slot, string nodeId);
 
-  String clusterSetSlotImporting(int slot, String nodeId);
+  string clusterSetSlotImporting(int slot, string nodeId);
 
-  String clusterSetSlotStable(int slot);
+  string clusterSetSlotStable(int slot);
 
-  String clusterForget(String nodeId);
+  string clusterForget(string nodeId);
 
-  String clusterFlushSlots();
+  string clusterFlushSlots();
 
-  Long clusterKeySlot(String key);
+  Long clusterKeySlot(string key);
 
   Long clusterCountKeysInSlot(int slot);
 
-  String clusterSaveConfig();
+  string clusterSaveConfig();
 
-  String clusterReplicate(String nodeId);
+  string clusterReplicate(string nodeId);
 
-  List!(String) clusterSlaves(String nodeId);
+  List!(string) clusterSlaves(string nodeId);
 
-  String clusterFailover();
+  string clusterFailover();
 
   List!(Object) clusterSlots();
 
-  String clusterReset(ClusterReset resetType);
+  string clusterReset(ClusterReset resetType);
 
-  String readonly();
+  string readonly();
 }

@@ -5,21 +5,21 @@ import hunt.redis.Response;
 import hunt.collection.List;
 
 public interface ClusterPipeline {
-  Response!(String) clusterNodes();
+  Response!(string) clusterNodes();
 
-  Response!(String) clusterMeet(String ip, int port);
+  Response!(string) clusterMeet(string ip, int port);
 
-  Response!(String) clusterAddSlots(int slots...);
+  Response!(string) clusterAddSlots(int slots...);
 
-  Response!(String) clusterDelSlots(int slots...);
+  Response!(string) clusterDelSlots(int slots...);
 
-  Response!(String) clusterInfo();
+  Response!(string) clusterInfo();
 
-  Response!(List!(String)) clusterGetKeysInSlot(int slot, int count);
+  Response!(List!(string)) clusterGetKeysInSlot(int slot, int count);
 
-  Response!(String) clusterSetSlotNode(int slot, String nodeId);
+  Response!(string) clusterSetSlotNode(int slot, string nodeId);
 
-  Response!(String) clusterSetSlotMigrating(int slot, String nodeId);
+  Response!(string) clusterSetSlotMigrating(int slot, string nodeId);
 
-  Response!(String) clusterSetSlotImporting(int slot, String nodeId);
+  Response!(string) clusterSetSlotImporting(int slot, string nodeId);
 }

@@ -1,6 +1,6 @@
 module hunt.redis.Pipeline;
 
-import java.io.Closeable;
+import hunt.util.Common;
 import hunt.collection.ArraryList;
 import hunt.collection.List;
 
@@ -15,12 +15,12 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
 
     override
     List!(Object) build(Object data) {
-      @SuppressWarnings("unchecked")
+      
       List!(Object) list = (List!(Object)) data;
       List!(Object) values = new ArrayList!(Object)();
 
       if (list.size() != responses.size()) {
-        throw new RedisDataException("Expected data size " + responses.size() + " but was "
+        throw new RedisDataException("Expected data size " ~ responses.size() ~ " but was "
             + list.size());
       }
 
@@ -51,7 +51,7 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
 
   override
   protected <T> Response!(T) getResponse(Builder!(T) builder) {
-    if (currentMulti != null) {
+    if (currentMulti !is null) {
       super.getResponse(BuilderFactory.STRING); // Expected QUEUED
 
       Response!(T) lr = new Response!(T)(builder);
@@ -72,7 +72,7 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
   }
 
   override
-  protected Client getClient(String key) {
+  protected Client getClient(string key) {
     return client;
   }
 
@@ -85,7 +85,7 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
   }
 
   bool isInMulti() {
-    return currentMulti != null;
+    return currentMulti !is null;
   }
 
   /**
@@ -125,15 +125,15 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  Response!(String) discard() {
-    if (currentMulti == null) throw new RedisDataException("DISCARD without MULTI");
+  Response!(string) discard() {
+    if (currentMulti is null) throw new RedisDataException("DISCARD without MULTI");
     client.discard();
     currentMulti = null;
     return getResponse(BuilderFactory.STRING);
   }
 
   Response!(List!(Object)) exec() {
-    if (currentMulti == null) throw new RedisDataException("EXEC without MULTI");
+    if (currentMulti is null) throw new RedisDataException("EXEC without MULTI");
 
     client.exec();
     Response!(List!(Object)) response = super.getResponse(currentMulti);
@@ -142,11 +142,11 @@ class Pipeline : MultiKeyPipelineBase implements Closeable {
     return response;
   }
 
-  Response!(String) multi() {
-    if (currentMulti != null) throw new RedisDataException("MULTI calls can not be nested");
+  Response!(string) multi() {
+    if (currentMulti !is null) throw new RedisDataException("MULTI calls can not be nested");
 
     client.multi();
-    Response!(String) response = getResponse(BuilderFactory.STRING); // Expecting
+    Response!(string) response = getResponse(BuilderFactory.STRING); // Expecting
     // OK
     currentMulti = new MultiResponseBuilder();
     return response;

@@ -22,7 +22,7 @@ class ClientKillParams : Params {
     return new ClientKillParams();
   }
 
-  ClientKillParams id(String clientId) {
+  ClientKillParams id(string clientId) {
     addParam(ID, clientId);
     return this;
   }
@@ -37,7 +37,7 @@ class ClientKillParams : Params {
     return this;
   }
 
-  ClientKillParams addr(String ipPort) {
+  ClientKillParams addr(string ipPort) {
     addParam(ADDR, ipPort);
     return this;
   }
@@ -47,7 +47,7 @@ class ClientKillParams : Params {
     return this;
   }
 
-  ClientKillParams addr(String ip, int port) {
+  ClientKillParams addr(string ip, int port) {
     addParam(ADDR, ip + ':' + port);
     return this;
   }

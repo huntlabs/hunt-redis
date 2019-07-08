@@ -1,6 +1,6 @@
 module hunt.redis.Connection;
 
-import java.io.Closeable;
+import hunt.util.Common;
 import hunt.Exceptions;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -25,7 +25,7 @@ class Connection : Closeable {
 
   private enum byte[][] EMPTY_ARGS = new byte[0][];
 
-  private String host = Protocol.DEFAULT_HOST;
+  private string host = Protocol.DEFAULT_HOST;
   private int port = Protocol.DEFAULT_PORT;
   private Socket socket;
   private RedisOutputStream outputStream;
@@ -38,25 +38,25 @@ class Connection : Closeable {
   private SSLParameters sslParameters;
   private HostnameVerifier hostnameVerifier;
 
-  Connection() {
+  this() {
   }
 
-  Connection(final String host) {
+  this(string host) {
     this.host = host;
   }
 
-  Connection(final String host, final int port) {
+  this(string host, int port) {
     this.host = host;
     this.port = port;
   }
 
-  Connection(final String host, final int port, final bool ssl) {
+  this(string host, int port, bool ssl) {
     this.host = host;
     this.port = port;
     this.ssl = ssl;
   }
 
-  Connection(final String host, final int port, final bool ssl,
+  this(string host, int port, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this.host = host;
@@ -108,19 +108,19 @@ class Connection : Closeable {
     }
   }
 
-  void sendCommand(final ProtocolCommand cmd, final String args...) {
-    final byte[][] bargs = new byte[args.length][];
+  void sendCommand(ProtocolCommand cmd, string args...) {
+    byte[][] bargs = new byte[args.length][];
     for (int i = 0; i < args.length; i++) {
       bargs[i] = SafeEncoder.encode(args[i]);
     }
     sendCommand(cmd, bargs);
   }
 
-  void sendCommand(final ProtocolCommand cmd) {
+  void sendCommand(ProtocolCommand cmd) {
     sendCommand(cmd, EMPTY_ARGS);
   }
 
-  void sendCommand(final ProtocolCommand cmd, final byte[] args...) {
+  void sendCommand(ProtocolCommand cmd, byte[] args...) {
     try {
       connect();
       Protocol.sendCommand(outputStream, cmd, args);
@@ -130,8 +130,8 @@ class Connection : Closeable {
        * before close connection. We try to read it to provide reason of failure.
        */
       try {
-        String errorMessage = Protocol.readErrorLineIfPossible(inputStream);
-        if (errorMessage != null && errorMessage.length() > 0) {
+        string errorMessage = Protocol.readErrorLineIfPossible(inputStream);
+        if (errorMessage !is null && errorMessage.length() > 0) {
           ex = new RedisConnectionException(errorMessage, ex.getCause());
         }
       } catch (Exception e) {
@@ -147,11 +147,11 @@ class Connection : Closeable {
     }
   }
 
-  String getHost() {
+  string getHost() {
     return host;
   }
 
-  void setHost(final String host) {
+  void setHost(string host) {
     this.host = host;
   }
 
@@ -159,7 +159,7 @@ class Connection : Closeable {
     return port;
   }
 
-  void setPort(final int port) {
+  void setPort(int port) {
     this.port = port;
   }
 
@@ -183,15 +183,15 @@ class Connection : Closeable {
 
         if (ssl) {
           if (null == sslSocketFactory) {
-            sslSocketFactory = (SSLSocketFactory)SSLSocketFactory.getDefault();
+            sslSocketFactory = cast(SSLSocketFactory)SSLSocketFactory.getDefault();
           }
           socket = sslSocketFactory.createSocket(socket, host, port, true);
           if (null != sslParameters) {
-            ((SSLSocket) socket).setSSLParameters(sslParameters);
+            (cast(SSLSocket) socket).setSSLParameters(sslParameters);
           }
           if ((null != hostnameVerifier) &&
-              (!hostnameVerifier.verify(host, ((SSLSocket) socket).getSession()))) {
-            String message = String.format(
+              (!hostnameVerifier.verify(host, (cast(SSLSocket) socket).getSession()))) {
+            string message = string.format(
                 "The connection to '%s' failed ssl/tls hostname verification.", host);
             throw new RedisConnectionException(message);
           }
@@ -202,7 +202,7 @@ class Connection : Closeable {
       } catch (IOException ex) {
         broken = true;
         throw new RedisConnectionException("Failed connecting to host " 
-            + host + ":" + port, ex);
+            + host ~ ":" ~ port, ex);
       }
     }
   }
@@ -227,13 +227,13 @@ class Connection : Closeable {
   }
 
   bool isConnected() {
-    return socket != null && socket.isBound() && !socket.isClosed() && socket.isConnected()
+    return socket !is null && socket.isBound() && !socket.isClosed() && socket.isConnected()
         && !socket.isInputShutdown() && !socket.isOutputShutdown();
   }
 
-  String getStatusCodeReply() {
+  string getStatusCodeReply() {
     flush();
-    final byte[] resp = (byte[]) readProtocolWithCheckingBroken();
+    byte[] resp = cast(byte[]) readProtocolWithCheckingBroken();
     if (null == resp) {
       return null;
     } else {
@@ -241,8 +241,8 @@ class Connection : Closeable {
     }
   }
 
-  String getBulkReply() {
-    final byte[] result = getBinaryBulkReply();
+  string getBulkReply() {
+    byte[] result = getBinaryBulkReply();
     if (null != result) {
       return SafeEncoder.encode(result);
     } else {
@@ -252,22 +252,21 @@ class Connection : Closeable {
 
   byte[] getBinaryBulkReply() {
     flush();
-    return (byte[]) readProtocolWithCheckingBroken();
+    return cast(byte[]) readProtocolWithCheckingBroken();
   }
 
   Long getIntegerReply() {
     flush();
-    return (Long) readProtocolWithCheckingBroken();
+    return cast(Long) readProtocolWithCheckingBroken();
   }
 
-  List!(String) getMultiBulkReply() {
+  List!(string) getMultiBulkReply() {
     return BuilderFactory.STRING_LIST.build(getBinaryMultiBulkReply());
   }
 
-  @SuppressWarnings("unchecked")
   List!(byte[]) getBinaryMultiBulkReply() {
     flush();
-    return (List!(byte[])) readProtocolWithCheckingBroken();
+    return cast(List!(byte[])) readProtocolWithCheckingBroken();
   }
 
   deprecated("")
@@ -275,9 +274,9 @@ class Connection : Closeable {
     return getUnflushedObjectMultiBulkReply();
   }
 
-  @SuppressWarnings("unchecked")
+  
   List!(Object) getUnflushedObjectMultiBulkReply() {
-    return (List!(Object)) readProtocolWithCheckingBroken();
+    return cast(List!(Object)) readProtocolWithCheckingBroken();
   }
 
   List!(Object) getObjectMultiBulkReply() {
@@ -285,10 +284,10 @@ class Connection : Closeable {
     return getUnflushedObjectMultiBulkReply();
   }
 
-  @SuppressWarnings("unchecked")
+  
   List!(Long) getIntegerMultiBulkReply() {
     flush();
-    return (List!(Long)) readProtocolWithCheckingBroken();
+    return cast(List!(Long)) readProtocolWithCheckingBroken();
   }
 
   Object getOne() {
@@ -322,9 +321,9 @@ class Connection : Closeable {
     }
   }
 
-  List!(Object) getMany(final int count) {
+  List!(Object) getMany(int count) {
     flush();
-    final List!(Object) responses = new ArrayList!(Object)(count);
+    List!(Object) responses = new ArrayList!(Object)(count);
     for (int i = 0; i < count; i++) {
       try {
         responses.add(readProtocolWithCheckingBroken());

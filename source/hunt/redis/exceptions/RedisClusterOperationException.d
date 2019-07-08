@@ -2,7 +2,7 @@ module hunt.redis.exceptions.RedisClusterOperationException;
 
 class RedisClusterOperationException : RedisException {
 
-  RedisClusterOperationException(String message) {
+  RedisClusterOperationException(string message) {
     super(message);
   }
 
@@ -10,7 +10,7 @@ class RedisClusterOperationException : RedisException {
     super(cause);
   }
 
-  RedisClusterOperationException(String message, Throwable cause) {
+  RedisClusterOperationException(string message, Throwable cause) {
     super(message, cause);
   }
 }

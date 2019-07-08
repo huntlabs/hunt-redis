@@ -2,30 +2,30 @@ module hunt.redis.ShardedRedisPool;
 
 import hunt.collection.List;
 
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.PooledObjectFactory;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.PooledObject;
+import hunt.pool.PooledObjectFactory;
+import hunt.pool.impl.DefaultPooledObject;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.redis.util.Hashing;
 import hunt.redis.util.Pool;
 
 class ShardedRedisPool : Pool!(ShardedRedis) {
-  ShardedRedisPool(final GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {
+  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {
     this(poolConfig, shards, Hashing.MURMUR_HASH);
   }
 
-  ShardedRedisPool(final GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Hashing algo) {
     this(poolConfig, shards, algo, null);
   }
 
-  ShardedRedisPool(final GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Pattern keyTagPattern) {
     this(poolConfig, shards, Hashing.MURMUR_HASH, keyTagPattern);
   }
 
-  ShardedRedisPool(final GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
+  ShardedRedisPool(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards,
       Hashing algo, Pattern keyTagPattern) {
     super(poolConfig, new ShardedRedisFactory(shards, algo, keyTagPattern));
   }
@@ -38,15 +38,15 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
   }
 
   override
-  protected void returnBrokenResource(final ShardedRedis resource) {
-    if (resource != null) {
+  protected void returnBrokenResource(ShardedRedis resource) {
+    if (resource !is null) {
       returnBrokenResourceObject(resource);
     }
   }
 
   override
-  protected void returnResource(final ShardedRedis resource) {
-    if (resource != null) {
+  protected void returnResource(ShardedRedis resource) {
+    if (resource !is null) {
       resource.resetState();
       returnResourceObject(resource);
     }
@@ -74,7 +74,7 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
 
     override
     void destroyObject(PooledObject!(ShardedRedis) pooledShardedRedis) throws Exception {
-      final ShardedRedis shardedRedis = pooledShardedRedis.getObject();
+      ShardedRedis shardedRedis = pooledShardedRedis.getObject();
       foreach(Redis jedis ; shardedRedis.getAllShards()) {
         if (jedis.isConnected()) {
           try {

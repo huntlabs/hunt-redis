@@ -14,19 +14,19 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 public interface MultiKeyCommands {
-  Long del(String keys...);
+  Long del(string keys...);
 
-  Long unlink(String keys...);
+  Long unlink(string keys...);
 
-  Long exists(String keys...);
+  Long exists(string keys...);
 
-  List!(String) blpop(int timeout, String keys...);
+  List!(string) blpop(int timeout, string keys...);
 
-  List!(String) brpop(int timeout, String keys...);
+  List!(string) brpop(int timeout, string keys...);
 
-  List!(String) blpop(String args...);
+  List!(string) blpop(string args...);
 
-  List!(String) brpop(String args...);
+  List!(string) brpop(string args...);
 
   /**
    * Returns all the keys matching the glob-style pattern. For example if
@@ -36,7 +36,7 @@ public interface MultiKeyCommands {
    * It may ruin performance when it is executed against large databases.
    * This command is intended for debugging and special operations, such as changing your keyspace layout.
    * <strong>Don't use it in your regular application code.</strong>
-   * If you're looking for a way to find keys in a subset of your keyspace, consider using {@link #scan(String, ScanParams)} or sets.
+   * If you're looking for a way to find keys in a subset of your keyspace, consider using {@link #scan(string, ScanParams)} or sets.
    * <p>
    * While the time complexity for this operation is O(N), the constant times are fairly low.
    * For example, Redis running on an entry level laptop can scan a 1 million key database in 40 milliseconds.
@@ -56,76 +56,76 @@ public interface MultiKeyCommands {
    * @return Multi bulk reply
    * @see <a href="https://redis.io/commands/keys">Redis KEYS documentation</a>
    */
-  Set!(String) keys(String pattern);
+  Set!(string) keys(string pattern);
 
-  List!(String) mget(String keys...);
+  List!(string) mget(string keys...);
 
-  String mset(String keysvalues...);
+  string mset(string keysvalues...);
 
-  Long msetnx(String keysvalues...);
+  Long msetnx(string keysvalues...);
 
-  String rename(String oldkey, String newkey);
+  string rename(string oldkey, string newkey);
 
-  Long renamenx(String oldkey, String newkey);
+  Long renamenx(string oldkey, string newkey);
 
-  String rpoplpush(String srckey, String dstkey);
+  string rpoplpush(string srckey, string dstkey);
 
-  Set!(String) sdiff(String keys...);
+  Set!(string) sdiff(string keys...);
 
-  Long sdiffstore(String dstkey, String keys...);
+  Long sdiffstore(string dstkey, string keys...);
 
-  Set!(String) sinter(String keys...);
+  Set!(string) sinter(string keys...);
 
-  Long sinterstore(String dstkey, String keys...);
+  Long sinterstore(string dstkey, string keys...);
 
-  Long smove(String srckey, String dstkey, String member);
+  Long smove(string srckey, string dstkey, string member);
 
-  Long sort(String key, SortingParams sortingParameters, String dstkey);
+  Long sort(string key, SortingParams sortingParameters, string dstkey);
 
-  Long sort(String key, String dstkey);
+  Long sort(string key, string dstkey);
 
-  Set!(String) sunion(String keys...);
+  Set!(string) sunion(string keys...);
 
-  Long sunionstore(String dstkey, String keys...);
+  Long sunionstore(string dstkey, string keys...);
 
-  String watch(String keys...);
+  string watch(string keys...);
 
-  String unwatch();
+  string unwatch();
 
-  Long zinterstore(String dstkey, String sets...);
+  Long zinterstore(string dstkey, string sets...);
 
-  Long zinterstore(String dstkey, ZParams params, String sets...);
+  Long zinterstore(string dstkey, ZParams params, string sets...);
 
-  Long zunionstore(String dstkey, String sets...);
+  Long zunionstore(string dstkey, string sets...);
 
-  Long zunionstore(String dstkey, ZParams params, String sets...);
+  Long zunionstore(string dstkey, ZParams params, string sets...);
 
-  String brpoplpush(String source, String destination, int timeout);
+  string brpoplpush(string source, string destination, int timeout);
 
-  Long publish(String channel, String message);
+  Long publish(string channel, string message);
 
-  void subscribe(RedisPubSub jedisPubSub, String channels...);
+  void subscribe(RedisPubSub jedisPubSub, string channels...);
 
-  void psubscribe(RedisPubSub jedisPubSub, String patterns...);
+  void psubscribe(RedisPubSub jedisPubSub, string patterns...);
 
-  String randomKey();
+  string randomKey();
 
-  Long bitop(BitOP op, String destKey, String srcKeys...);
+  Long bitop(BitOP op, string destKey, string srcKeys...);
 
   /**
-   * @see #scan(String, ScanParams)
+   * @see #scan(string, ScanParams)
    * 
    * @param cursor
    * @return 
    */
-  ScanResult!(String) scan(String cursor);
+  ScanResult!(string) scan(string cursor);
 
   /**
    * Iterates the set of keys in the currently selected Redis database.
    * <p>
    * Since this command allows for incremental iteration, returning only a small number of elements per call,
-   * it can be used in production without the downside of commands like {@link #keys(String)} or
-   * {@link RedisCommands#smembers(String)} )} that may block the server for a long time (even several seconds)
+   * it can be used in production without the downside of commands like {@link #keys(string)} or
+   * {@link RedisCommands#smembers(string)} )} that may block the server for a long time (even several seconds)
    * when called against big collections of keys or elements.
    * <p>
    * SCAN basic usage!(br)
@@ -161,13 +161,13 @@ public interface MultiKeyCommands {
    * @return the scan result with the results of this iteration and the new position of the cursor
    * @see <a href="https://redis.io/commands/scan">Redis SCAN documentation</a>
    */
-  ScanResult!(String) scan(String cursor, ScanParams params);
+  ScanResult!(string) scan(string cursor, ScanParams params);
 
-  String pfmerge(String destkey, String sourcekeys...);
+  string pfmerge(string destkey, string sourcekeys...);
 
-  long pfcount(String keys...);
+  long pfcount(string keys...);
 
-  Long touch(String keys...);
+  Long touch(string keys...);
   
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -178,7 +178,7 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry!(String, List!(StreamEntry))> xread(int count, long block, Map.Entry!(String, StreamEntryID) streams...);
+  List<MapEntry!(string, List!(StreamEntry))> xread(int count, long block, MapEntry!(string, StreamEntryID) streams...);
 
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]
@@ -191,5 +191,5 @@ public interface MultiKeyCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry!(String, List!(StreamEntry))> xreadGroup(String groupname, String consumer, int count, long block, final bool noAck, Map.Entry!(String, StreamEntryID) streams...);
+  List<MapEntry!(string, List!(StreamEntry))> xreadGroup(string groupname, string consumer, int count, long block, bool noAck, MapEntry!(string, StreamEntryID) streams...);
 }

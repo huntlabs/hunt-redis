@@ -3,15 +3,15 @@ module hunt.redis.exceptions.RedisBusyException;
 class RedisBusyException : RedisDataException {
 
 
-    RedisBusyException(final String message) {
+    RedisBusyException(string message) {
         super(message);
     }
 
-    RedisBusyException(final Throwable cause) {
+    RedisBusyException(Throwable cause) {
         super(cause);
     }
 
-    RedisBusyException(final String message, final Throwable cause) {
+    RedisBusyException(string message, Throwable cause) {
         super(message, cause);
     }
 

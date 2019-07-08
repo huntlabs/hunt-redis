@@ -26,7 +26,7 @@ class Response!(T) {
   T get() {
     // if response has dependency response and dependency is not built,
     // build it first and no more!!
-    if (dependency != null && dependency.set && !dependency.built) {
+    if (dependency !is null && dependency.set && !dependency.built) {
       dependency.build();
     }
     if (!set) {
@@ -36,7 +36,7 @@ class Response!(T) {
     if (!built) {
       build();
     }
-    if (exception != null) {
+    if (exception !is null) {
       throw exception;
     }
     return response;
@@ -54,7 +54,7 @@ class Response!(T) {
 
     building = true;
     try {
-      if (data != null) {
+      if (data !is null) {
         if (data instanceof RedisDataException) {
           exception = (RedisDataException) data;
         } else {
@@ -70,8 +70,8 @@ class Response!(T) {
   }
 
   override
-  String toString() {
-    return "Response " + builder.toString();
+  string toString() {
+    return "Response " ~ builder.toString();
   }
 
 }

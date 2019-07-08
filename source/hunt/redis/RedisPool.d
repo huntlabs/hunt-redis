@@ -1,7 +1,7 @@
 module hunt.redis.RedisPool;
 
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPool;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.util.RedisURIHelper;
@@ -12,15 +12,15 @@ class RedisPool : RedisPoolAbstract {
     this(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host) {
     this(poolConfig, host, Protocol.DEFAULT_PORT);
   }
 
-  RedisPool(String host, int port) {
+  RedisPool(string host, int port) {
     this(new GenericObjectPoolConfig(), host, port);
   }
 
-  RedisPool(final String host) {
+  RedisPool(string host) {
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
       this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(uri,
@@ -32,8 +32,8 @@ class RedisPool : RedisPoolAbstract {
     }
   }
 
-  RedisPool(final String host, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(string host, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
       this.internalPool = new GenericObjectPool!(Redis)(new RedisFactory(uri,
@@ -46,179 +46,179 @@ class RedisPool : RedisPoolAbstract {
     }
   }
 
-  RedisPool(final URI uri) {
+  RedisPool(URI uri) {
     this(new GenericObjectPoolConfig(), uri);
   }
 
-  RedisPool(final URI uri, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(URI uri, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(new GenericObjectPoolConfig(), uri, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  RedisPool(final URI uri, final int timeout) {
+  RedisPool(URI uri, int timeout) {
     this(new GenericObjectPoolConfig(), uri, timeout);
   }
 
-  RedisPool(final URI uri, final int timeout, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(URI uri, int timeout, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(new GenericObjectPoolConfig(), uri, timeout, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password) {
     this(poolConfig, host, port, timeout, password, Protocol.DEFAULT_DATABASE);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, bool ssl) {
     this(poolConfig, host, port, timeout, password, Protocol.DEFAULT_DATABASE, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final bool ssl,
-      final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, bool ssl,
+      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(poolConfig, host, port, timeout, password, Protocol.DEFAULT_DATABASE, ssl,
         sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port) {
     this(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      bool ssl) {
     this(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final bool ssl, final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(poolConfig, host, port, Protocol.DEFAULT_TIMEOUT, ssl, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final int timeout) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout) {
     this(poolConfig, host, port, timeout, null);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final int timeout, final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, bool ssl) {
     this(poolConfig, host, port, timeout, null, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final int timeout, final bool ssl, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, bool ssl, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(poolConfig, host, port, timeout, null, ssl, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database) {
     this(poolConfig, host, port, timeout, password, database, null);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database, final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database, bool ssl) {
     this(poolConfig, host, port, timeout, password, database, null, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database, final bool ssl,
-      final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database, bool ssl,
+      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(poolConfig, host, port, timeout, password, database, null, ssl, sslSocketFactory,
         sslParameters, hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database, final String clientName) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database, string clientName) {
     this(poolConfig, host, port, timeout, timeout, password, database, clientName);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database, final String clientName,
-      final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database, string clientName,
+      bool ssl) {
     this(poolConfig, host, port, timeout, timeout, password, database, clientName, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      int timeout, final String password, final int database, final String clientName,
-      final bool ssl, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int timeout, string password, int database, string clientName,
+      bool ssl, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(poolConfig, host, port, timeout, timeout, password, database, clientName, ssl,
         sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      final int connectionTimeout, final int soTimeout, final String password, final int database,
-      final String clientName, final bool ssl, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int connectionTimeout, int soTimeout, string password, int database,
+      string clientName, bool ssl, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     super(poolConfig, new RedisFactory(host, port, connectionTimeout, soTimeout, password,
         database, clientName, ssl, sslSocketFactory, sslParameters, hostnameVerifier));
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig) {
+  RedisPool(GenericObjectPoolConfig poolConfig) {
     this(poolConfig, Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
   }
 
-  RedisPool(final String host, final int port, final bool ssl) {
+  RedisPool(string host, int port, bool ssl) {
     this(new GenericObjectPoolConfig(), host, port, ssl);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, int port,
-      final int connectionTimeout, final int soTimeout, final String password, final int database,
-      final String clientName) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int connectionTimeout, int soTimeout, string password, int database,
+      string clientName) {
     super(poolConfig, new RedisFactory(host, port, connectionTimeout, soTimeout, password,
         database, clientName));
   }
 
-  RedisPool(final String host, final int port, final bool ssl,
-      final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(string host, int port, bool ssl,
+      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(new GenericObjectPoolConfig(), host, port, ssl, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final String host, final int port,
-      final int connectionTimeout, final int soTimeout, final String password, final int database,
-      final String clientName, final bool ssl) {
+  RedisPool(GenericObjectPoolConfig poolConfig, string host, int port,
+      int connectionTimeout, int soTimeout, string password, int database,
+      string clientName, bool ssl) {
     this(poolConfig, host, port, connectionTimeout, soTimeout, password, database, clientName, ssl,
         null, null, null);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri) {
     this(poolConfig, uri, Protocol.DEFAULT_TIMEOUT);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri,
-      final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri,
+      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(poolConfig, uri, Protocol.DEFAULT_TIMEOUT, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri, final int timeout) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri, int timeout) {
     this(poolConfig, uri, timeout, timeout);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri, final int timeout,
-      final SSLSocketFactory sslSocketFactory, final SSLParameters sslParameters,
-      final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri, int timeout,
+      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+      HostnameVerifier hostnameVerifier) {
     this(poolConfig, uri, timeout, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri,
-      final int connectionTimeout, final int soTimeout) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri,
+      int connectionTimeout, int soTimeout) {
     super(poolConfig, new RedisFactory(uri, connectionTimeout, soTimeout, null));
   }
 
-  RedisPool(final GenericObjectPoolConfig poolConfig, final URI uri,
-      final int connectionTimeout, final int soTimeout, final SSLSocketFactory sslSocketFactory,
-      final SSLParameters sslParameters, final HostnameVerifier hostnameVerifier) {
+  RedisPool(GenericObjectPoolConfig poolConfig, URI uri,
+      int connectionTimeout, int soTimeout, SSLSocketFactory sslSocketFactory,
+      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     super(poolConfig, new RedisFactory(uri, connectionTimeout, soTimeout, null, sslSocketFactory,
         sslParameters, hostnameVerifier));
   }
@@ -231,15 +231,15 @@ class RedisPool : RedisPoolAbstract {
   }
 
   override
-  protected void returnBrokenResource(final Redis resource) {
-    if (resource != null) {
+  protected void returnBrokenResource(Redis resource) {
+    if (resource !is null) {
       returnBrokenResourceObject(resource);
     }
   }
 
   override
-  protected void returnResource(final Redis resource) {
-    if (resource != null) {
+  protected void returnResource(Redis resource) {
+    if (resource !is null) {
       try {
         resource.resetState();
         returnResourceObject(resource);

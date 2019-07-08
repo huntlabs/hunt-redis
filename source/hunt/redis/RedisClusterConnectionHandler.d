@@ -1,27 +1,27 @@
 module hunt.redis.RedisClusterConnectionHandler;
 
-import java.io.Closeable;
+import hunt.util.Common;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.redis.exceptions.RedisConnectionException;
 
 abstract class RedisClusterConnectionHandler : Closeable {
-  protected final RedisClusterInfoCache cache;
+  protected RedisClusterInfoCache cache;
 
   RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
-      final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password) {
+      GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password) {
     this(nodes, poolConfig, connectionTimeout, soTimeout, password, null);
   }
 
   RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
-      final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName) {
+      GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password, string clientName) {
     this(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, false, null, null, null, null);
   }
 
   RedisClusterConnectionHandler(Set!(HostAndPort) nodes,
-      final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName,
+      GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password, string clientName,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
     this.cache = new RedisClusterInfoCache(poolConfig, connectionTimeout, soTimeout, password, clientName,
@@ -37,21 +37,21 @@ abstract class RedisClusterConnectionHandler : Closeable {
     return cache.setupNodeIfNotExist(node).getResource();
   }
   
-  Map!(String, RedisPool) getNodes() {
+  Map!(string, RedisPool) getNodes() {
     return cache.getNodes();
   }
 
   private void initializeSlotsCache(Set!(HostAndPort) startNodes, GenericObjectPoolConfig poolConfig,
-      int connectionTimeout, int soTimeout, String password, String clientName,
+      int connectionTimeout, int soTimeout, string password, string clientName,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     foreach(HostAndPort hostAndPort ; startNodes) {
       Redis jedis = null;
       try {
         jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-        if (password != null) {
+        if (password !is null) {
           jedis.auth(password);
         }
-        if (clientName != null) {
+        if (clientName !is null) {
           jedis.clientSetname(clientName);
         }
         cache.discoverClusterNodesAndSlots(jedis);
@@ -59,7 +59,7 @@ abstract class RedisClusterConnectionHandler : Closeable {
       } catch (RedisConnectionException e) {
         // try next nodes
       } finally {
-        if (jedis != null) {
+        if (jedis !is null) {
           jedis.close();
         }
       }

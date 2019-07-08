@@ -12,7 +12,7 @@ class Queable {
 
   protected Response<?> generateResponse(Object data) {
     Response<?> response = pipelinedResponses.poll();
-    if (response != null) {
+    if (response !is null) {
       response.set(data);
     }
     return response;

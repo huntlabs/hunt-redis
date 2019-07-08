@@ -4,19 +4,19 @@ import hunt.collection.List;
 import hunt.collection.Map;
 
 public interface SentinelCommands {
-  List!(Map!(String, String)) sentinelMasters();
+  List!(Map!(string, string)) sentinelMasters();
 
-  List!(String) sentinelGetMasterAddrByName(String masterName);
+  List!(string) sentinelGetMasterAddrByName(string masterName);
 
-  Long sentinelReset(String pattern);
+  Long sentinelReset(string pattern);
 
-  List!(Map!(String, String)) sentinelSlaves(String masterName);
+  List!(Map!(string, string)) sentinelSlaves(string masterName);
 
-  String sentinelFailover(String masterName);
+  string sentinelFailover(string masterName);
 
-  String sentinelMonitor(String masterName, String ip, int port, int quorum);
+  string sentinelMonitor(string masterName, string ip, int port, int quorum);
 
-  String sentinelRemove(String masterName);
+  string sentinelRemove(string masterName);
 
-  String sentinelSet(String masterName, Map!(String, String) parameterMap);
+  string sentinelSet(string masterName, Map!(string, string) parameterMap);
 }

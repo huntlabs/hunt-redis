@@ -13,71 +13,71 @@ import hunt.collection.Set;
  * Multikey related commands (these are split out because they are non-shardable)
  */
 public interface MultiKeyCommandsPipeline {
-  Response!(Long) del(String keys...);
+  Response!(Long) del(string keys...);
 
-  Response!(Long) unlink(String keys...);
+  Response!(Long) unlink(string keys...);
 
-  Response!(Long) exists(String keys...);
+  Response!(Long) exists(string keys...);
 
-  Response!(List!(String)) blpop(String args...);
+  Response!(List!(string)) blpop(string args...);
 
-  Response!(List!(String)) brpop(String args...);
+  Response!(List!(string)) brpop(string args...);
 
-  Response!(Set!(String)) keys(String pattern);
+  Response!(Set!(string)) keys(string pattern);
 
-  Response!(List!(String)) mget(String keys...);
+  Response!(List!(string)) mget(string keys...);
 
-  Response!(String) mset(String keysvalues...);
+  Response!(string) mset(string keysvalues...);
 
-  Response!(Long) msetnx(String keysvalues...);
+  Response!(Long) msetnx(string keysvalues...);
 
-  Response!(String) rename(String oldkey, String newkey);
+  Response!(string) rename(string oldkey, string newkey);
 
-  Response!(Long) renamenx(String oldkey, String newkey);
+  Response!(Long) renamenx(string oldkey, string newkey);
 
-  Response!(String) rpoplpush(String srckey, String dstkey);
+  Response!(string) rpoplpush(string srckey, string dstkey);
 
-  Response!(Set!(String)) sdiff(String keys...);
+  Response!(Set!(string)) sdiff(string keys...);
 
-  Response!(Long) sdiffstore(String dstkey, String keys...);
+  Response!(Long) sdiffstore(string dstkey, string keys...);
 
-  Response!(Set!(String)) sinter(String keys...);
+  Response!(Set!(string)) sinter(string keys...);
 
-  Response!(Long) sinterstore(String dstkey, String keys...);
+  Response!(Long) sinterstore(string dstkey, string keys...);
 
-  Response!(Long) smove(String srckey, String dstkey, String member);
+  Response!(Long) smove(string srckey, string dstkey, string member);
 
-  Response!(Long) sort(String key, SortingParams sortingParameters, String dstkey);
+  Response!(Long) sort(string key, SortingParams sortingParameters, string dstkey);
 
-  Response!(Long) sort(String key, String dstkey);
+  Response!(Long) sort(string key, string dstkey);
 
-  Response!(Set!(String)) sunion(String keys...);
+  Response!(Set!(string)) sunion(string keys...);
 
-  Response!(Long) sunionstore(String dstkey, String keys...);
+  Response!(Long) sunionstore(string dstkey, string keys...);
 
-  Response!(String) watch(String keys...);
+  Response!(string) watch(string keys...);
 
-  Response!(Long) zinterstore(String dstkey, String sets...);
+  Response!(Long) zinterstore(string dstkey, string sets...);
 
-  Response!(Long) zinterstore(String dstkey, ZParams params, String sets...);
+  Response!(Long) zinterstore(string dstkey, ZParams params, string sets...);
 
-  Response!(Long) zunionstore(String dstkey, String sets...);
+  Response!(Long) zunionstore(string dstkey, string sets...);
 
-  Response!(Long) zunionstore(String dstkey, ZParams params, String sets...);
+  Response!(Long) zunionstore(string dstkey, ZParams params, string sets...);
 
-  Response!(String) brpoplpush(String source, String destination, int timeout);
+  Response!(string) brpoplpush(string source, string destination, int timeout);
 
-  Response!(Long) publish(String channel, String message);
+  Response!(Long) publish(string channel, string message);
 
-  Response!(String) randomKey();
+  Response!(string) randomKey();
 
-  Response!(Long) bitop(BitOP op, String destKey, String srcKeys...);
+  Response!(Long) bitop(BitOP op, string destKey, string srcKeys...);
 
-  Response!(String) pfmerge(String destkey, String sourcekeys...);
+  Response!(string) pfmerge(string destkey, string sourcekeys...);
 
-  Response!(Long) pfcount(String keys...);
+  Response!(Long) pfcount(string keys...);
 
-  Response!(Long) touch(String keys...);
+  Response!(Long) touch(string keys...);
 
-  Response!(String) migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, String keys...);
+  Response!(string) migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string keys...);
 }

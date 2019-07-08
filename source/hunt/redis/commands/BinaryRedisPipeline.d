@@ -69,7 +69,7 @@ public interface BinaryRedisPipeline {
 
   Response!(List!(byte[])) hmget(byte[] key, byte[] fields...);
 
-  Response!(String) hmset(byte[] key, Map!(byte[], byte[]) hash);
+  Response!(string) hmset(byte[] key, Map!(byte[], byte[]) hash);
 
   Response!(Long) hset(byte[] key, byte[] field, byte[] value);
 
@@ -99,9 +99,9 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) lrem(byte[] key, long count, byte[] value);
 
-  Response!(String) lset(byte[] key, long index, byte[] value);
+  Response!(string) lset(byte[] key, long index, byte[] value);
 
-  Response!(String) ltrim(byte[] key, long start, long stop);
+  Response!(string) ltrim(byte[] key, long start, long stop);
 
   Response!(Long) move(byte[] key, int dbIndex);
 
@@ -117,17 +117,17 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) scard(byte[] key);
 
-  Response!(String) set(byte[] key, byte[] value);
+  Response!(string) set(byte[] key, byte[] value);
 
   Response!(Boolean) setbit(byte[] key, long offset, byte[] value);
 
   Response!(Long) setrange(byte[] key, long offset, byte[] value);
 
-  Response!(String) setex(byte[] key, int seconds, byte[] value);
+  Response!(string) setex(byte[] key, int seconds, byte[] value);
 
   Response!(Long) setnx(byte[] key, byte[] value);
 
-  Response!(Long) setrange(String key, long offset, String value);
+  Response!(Long) setrange(string key, long offset, string value);
 
   Response!(Set!(byte[])) smembers(byte[] key);
 
@@ -147,7 +147,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) strlen(byte[] key);
 
-  Response!(String) substr(byte[] key, int start, int end);
+  Response!(string) substr(byte[] key, int start, int end);
 
   Response!(Long) touch(byte[] keys);
 
@@ -155,7 +155,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) pttl(byte[] key);
 
-  Response!(String) type(byte[] key);
+  Response!(string) type(byte[] key);
 
   Response!(Long) zadd(byte[] key, double score, byte[] member);
 
@@ -257,11 +257,11 @@ public interface BinaryRedisPipeline {
 
   Response!(byte[]) dump(byte[] key);
 
-  Response!(String) restore(byte[] key, int ttl, byte[] serializedValue);
+  Response!(string) restore(byte[] key, int ttl, byte[] serializedValue);
 
-  Response!(String) restoreReplace(byte[] key, int ttl, byte[] serializedValue);
+  Response!(string) restoreReplace(byte[] key, int ttl, byte[] serializedValue);
 
-  Response!(String) migrate(String host, int port, byte[] key, int destinationDB, int timeout);
+  Response!(string) migrate(string host, int port, byte[] key, int destinationDB, int timeout);
 
   // Geo Commands
 
@@ -317,13 +317,13 @@ public interface BinaryRedisPipeline {
    
   Response!(Long) xack(byte[] key, byte[] group,  byte[] ids...);
   
-  Response!(String) xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream);
+  Response!(string) xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream);
   
-  Response!(String) xgroupSetID(byte[] key, byte[] groupname, byte[] id);
+  Response!(string) xgroupSetID(byte[] key, byte[] groupname, byte[] id);
   
   Response!(Long) xgroupDestroy(byte[] key, byte[] groupname);
   
-  Response!(String) xgroupDelConsumer(byte[] key, byte[] groupname, byte[] consumername);
+  Response!(string) xgroupDelConsumer(byte[] key, byte[] groupname, byte[] consumername);
 
   Response!(List!(StreamPendingEntry)) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername);
   
@@ -338,7 +338,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) bitpos(byte[] key, bool value, BitPosParams params);
 
-  Response!(String) set(byte[] key, byte[] value, SetParams params);
+  Response!(string) set(byte[] key, byte[] value, SetParams params);
 
   Response!(List!(byte[])) srandmember(byte[] key, int count);
 
@@ -350,7 +350,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Double) incrByFloat(byte[] key, double increment);
 
-  Response!(String) psetex(byte[] key, long milliseconds, byte[] value);
+  Response!(string) psetex(byte[] key, long milliseconds, byte[] value);
 
   Response!(Double) hincrByFloat(byte[] key, byte[] field, double increment);
 

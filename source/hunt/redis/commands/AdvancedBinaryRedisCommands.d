@@ -11,7 +11,7 @@ public interface AdvancedBinaryRedisCommands {
 
   byte[] configSet(byte[] parameter, byte[] value);
 
-  String slowlogReset();
+  string slowlogReset();
 
   Long slowlogLen();
 
@@ -25,13 +25,13 @@ public interface AdvancedBinaryRedisCommands {
 
   Long objectIdletime(byte[] key);
 
-  String migrate(String host, int port, byte[] key, int destinationDB, int timeout);
+  string migrate(string host, int port, byte[] key, int destinationDB, int timeout);
 
-  String migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, byte[] keys...);
+  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, byte[] keys...);
 
-  String clientKill(byte[] ipPort);
+  string clientKill(byte[] ipPort);
 
-  String clientKill(String ip, int port);
+  string clientKill(string ip, int port);
 
   Long clientKill(ClientKillParams params);
 
@@ -39,7 +39,7 @@ public interface AdvancedBinaryRedisCommands {
 
   byte[] clientListBinary();
 
-  String clientSetname(byte[] name);
+  string clientSetname(byte[] name);
 
   byte[] memoryDoctorBinary();
 }

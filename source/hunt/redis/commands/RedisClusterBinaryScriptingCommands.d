@@ -45,11 +45,11 @@ public interface RedisClusterBinaryScriptingCommands {
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  String scriptFlush(byte[] sampleKey);
+  string scriptFlush(byte[] sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  String scriptKill(byte[] sampleKey);
+  string scriptKill(byte[] sampleKey);
 }

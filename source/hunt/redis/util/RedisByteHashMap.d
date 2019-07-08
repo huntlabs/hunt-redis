@@ -9,7 +9,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
-  private transient Map!(ByteArrayWrapper, byte[]) internalMap = new HashMap!(ByteArrayWrapper, byte[])();
+  private Map!(ByteArrayWrapper, byte[]) internalMap = new HashMap!(ByteArrayWrapper, byte[])();
 
   override
   void clear() {
@@ -28,10 +28,10 @@ class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   }
 
   override
-  Set<hunt.collection.Map.Entry!(byte[], byte[])> entrySet() {
-    Iterator<hunt.collection.Map.Entry!(ByteArrayWrapper, byte[])> iterator = internalMap.entrySet()
+  Set<hunt.collection.MapEntry!(byte[], byte[])> entrySet() {
+    Iterator<hunt.collection.MapEntry!(ByteArrayWrapper, byte[])> iterator = internalMap.entrySet()
         .iterator();
-    HashSet!(Entry!(byte[], byte[])) hashSet = new HashSet<hunt.collection.Map.Entry!(byte[], byte[])>();
+    HashSet!(Entry!(byte[], byte[])) hashSet = new HashSet<hunt.collection.MapEntry!(byte[], byte[])>();
     while (iterator.hasNext()) {
       Entry!(ByteArrayWrapper, byte[]) entry = iterator.next();
       hashSet.add(new RedisByteEntry(entry.getKey().data, entry.getValue()));
@@ -66,7 +66,7 @@ class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   }
 
   override
-  @SuppressWarnings("unchecked")
+  
   void putAll(Map<? extends byte[], ? extends byte[]> m) {
     Iterator<?> iterator = m.entrySet().iterator();
     while (iterator.hasNext()) {
@@ -92,32 +92,32 @@ class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
     return internalMap.values();
   }
 
-  private static final class ByteArrayWrapper {
-    private final byte[] data;
+  private static class ByteArrayWrapper {
+    private byte[] data;
 
     ByteArrayWrapper(byte[] data) {
-      if (data == null) {
+      if (data is null) {
         throw new NullPointerException();
       }
       this.data = data;
     }
 
     override
-    bool equals(Object other) {
-      if (other == null) return false;
-      if (other == this) return true;
+    bool opEquals(Object other) {
+      if (other is null) return false;
+      if (other is this) return true;
       if (!(other instanceof ByteArrayWrapper)) return false;
 
       return Arrays.equals(data, ((ByteArrayWrapper) other).data);
     }
 
     override
-    size_t toHash() @trusted nothrow() {
+    size_t toHash() @trusted nothrow {
       return Arrays.hashCode(data);
     }
   }
 
-  private static final class RedisByteEntry : Entry!(byte[], byte[]) {
+  private static class RedisByteEntry : Entry!(byte[], byte[]) {
     private byte[] value;
     private byte[] key;
 

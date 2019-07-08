@@ -7,9 +7,9 @@ class StreamEntry : Serializable{
   
   
   private StreamEntryID id;
-  private Map!(String, String) fields;
+  private Map!(string, string) fields;
   
-  StreamEntry(StreamEntryID id, Map!(String, String) fields) {
+  StreamEntry(StreamEntryID id, Map!(string, string) fields) {
     this.id = id;
     this.fields = fields;
   }
@@ -18,13 +18,13 @@ class StreamEntry : Serializable{
     return id;
   }
   
-  Map!(String, String) getFields() {
+  Map!(string, string) getFields() {
     return fields;
   }
   
   override
-  String toString() {
-    return id + " " + fields;
+  string toString() {
+    return id ~ " " ~ fields;
   }
     
   private void writeObject(java.io.ObjectOutputStream out) throws IOException{
@@ -34,6 +34,6 @@ class StreamEntry : Serializable{
   
   private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException{
     this.id = (StreamEntryID) in.readUnshared();
-    this.fields = (Map!(String, String)) in.readUnshared();
+    this.fields = (Map!(string, string)) in.readUnshared();
   }
 }

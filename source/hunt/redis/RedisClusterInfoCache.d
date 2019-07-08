@@ -7,26 +7,26 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.util.SafeEncoder;
 
 class RedisClusterInfoCache {
-  private final Map!(String, RedisPool) nodes = new HashMap!(String, RedisPool)();
-  private final Map!(Integer, RedisPool) slots = new HashMap!(Integer, RedisPool)();
+  private Map!(string, RedisPool) nodes = new HashMap!(string, RedisPool)();
+  private Map!(Integer, RedisPool) slots = new HashMap!(Integer, RedisPool)();
 
-  private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
-  private final Lock r = rwl.readLock();
-  private final Lock w = rwl.writeLock();
+  private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+  private Lock r = rwl.readLock();
+  private Lock w = rwl.writeLock();
   private volatile bool rediscovering;
-  private final GenericObjectPoolConfig poolConfig;
+  private GenericObjectPoolConfig poolConfig;
 
   private int connectionTimeout;
   private int soTimeout;
-  private String password;
-  private String clientName;
+  private string password;
+  private string clientName;
 
   private bool ssl;
   private SSLSocketFactory sslSocketFactory;
@@ -36,17 +36,17 @@ class RedisClusterInfoCache {
 
   private enum int MASTER_NODE_INDEX = 2;
 
-  RedisClusterInfoCache(final GenericObjectPoolConfig poolConfig, int timeout) {
+  RedisClusterInfoCache(GenericObjectPoolConfig poolConfig, int timeout) {
     this(poolConfig, timeout, timeout, null, null);
   }
 
-  RedisClusterInfoCache(final GenericObjectPoolConfig poolConfig,
-      final int connectionTimeout, final int soTimeout, final String password, final String clientName) {
+  RedisClusterInfoCache(GenericObjectPoolConfig poolConfig,
+      int connectionTimeout, int soTimeout, string password, string clientName) {
     this(poolConfig, connectionTimeout, soTimeout, password, clientName, false, null, null, null, null);
   }
 
-  RedisClusterInfoCache(final GenericObjectPoolConfig poolConfig,
-      final int connectionTimeout, final int soTimeout, final String password, final String clientName,
+  RedisClusterInfoCache(GenericObjectPoolConfig poolConfig,
+      int connectionTimeout, int soTimeout, string password, string clientName,
       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
     this.poolConfig = poolConfig;
@@ -106,7 +106,7 @@ class RedisClusterInfoCache {
           rediscovering = true;
 
           try {
-            if (jedis != null) {
+            if (jedis !is null) {
               try {
                 discoverClusterSlots(jedis);
                 return;
@@ -124,7 +124,7 @@ class RedisClusterInfoCache {
               } catch (RedisConnectionException e) {
                 // try next nodes
               } finally {
-                if (j != null) {
+                if (j !is null) {
                   j.close();
                 }
               }
@@ -165,11 +165,11 @@ class RedisClusterInfoCache {
   }
 
   private HostAndPort generateHostAndPort(List!(Object) hostInfos) {
-    String host = SafeEncoder.encode((byte[]) hostInfos.get(0));
+    string host = SafeEncoder.encode((byte[]) hostInfos.get(0));
     int port = ((Long) hostInfos.get(1)).intValue();
-    if (ssl && hostAndPortMap != null) {
+    if (ssl && hostAndPortMap !is null) {
       HostAndPort hostAndPort = hostAndPortMap.getSSLHostAndPort(host, port);
-      if (hostAndPort != null) {
+      if (hostAndPort !is null) {
         return hostAndPort;
       }
     }
@@ -179,9 +179,9 @@ class RedisClusterInfoCache {
   RedisPool setupNodeIfNotExist(HostAndPort node) {
     w.lock();
     try {
-      String nodeKey = getNodeKey(node);
+      string nodeKey = getNodeKey(node);
       RedisPool existingPool = nodes.get(nodeKey);
-      if (existingPool != null) return existingPool;
+      if (existingPool !is null) return existingPool;
 
       RedisPool nodePool = new RedisPool(poolConfig, node.getHost(), node.getPort(),
           connectionTimeout, soTimeout, password, 0, clientName, 
@@ -215,7 +215,7 @@ class RedisClusterInfoCache {
     }
   }
 
-  RedisPool getNode(String nodeKey) {
+  RedisPool getNode(string nodeKey) {
     r.lock();
     try {
       return nodes.get(nodeKey);
@@ -233,10 +233,10 @@ class RedisClusterInfoCache {
     }
   }
 
-  Map!(String, RedisPool) getNodes() {
+  Map!(string, RedisPool) getNodes() {
     r.lock();
     try {
-      return new HashMap!(String, RedisPool)(nodes);
+      return new HashMap!(string, RedisPool)(nodes);
     } finally {
       r.unlock();
     }
@@ -261,7 +261,7 @@ class RedisClusterInfoCache {
     try {
       foreach(RedisPool pool ; nodes.values()) {
         try {
-          if (pool != null) {
+          if (pool !is null) {
             pool.destroy();
           }
         } catch (Exception e) {
@@ -275,15 +275,15 @@ class RedisClusterInfoCache {
     }
   }
 
-  static String getNodeKey(HostAndPort hnp) {
-    return hnp.getHost() + ":" + hnp.getPort();
+  static string getNodeKey(HostAndPort hnp) {
+    return hnp.getHost() ~ ":" ~ hnp.getPort();
   }
 
-  static String getNodeKey(Client client) {
-    return client.getHost() + ":" + client.getPort();
+  static string getNodeKey(Client client) {
+    return client.getHost() ~ ":" ~ client.getPort();
   }
 
-  static String getNodeKey(Redis jedis) {
+  static string getNodeKey(Redis jedis) {
     return getNodeKey(jedis.getClient());
   }
 

@@ -1,6 +1,6 @@
 module hunt.redis.util.RedisURIHelper;
 
-final class RedisURIHelper {
+class RedisURIHelper {
 
   private enum int DEFAULT_DB = 0;
 
@@ -11,18 +11,18 @@ final class RedisURIHelper {
     throw new InstantiationError( "Must not instantiate this class" );
   }
 
-  static String getPassword(URI uri) {
-    String userInfo = uri.getUserInfo();
-    if (userInfo != null) {
+  static string getPassword(URI uri) {
+    string userInfo = uri.getUserInfo();
+    if (userInfo !is null) {
       return userInfo.split(":", 2)[1];
     }
     return null;
   }
 
   static int getDBIndex(URI uri) {
-    String[] pathSplit = uri.getPath().split("/", 2);
+    string[] pathSplit = uri.getPath().split("/", 2);
     if (pathSplit.length > 1) {
-      String dbIndexStr = pathSplit[1];
+      string dbIndexStr = pathSplit[1];
       if (dbIndexStr.isEmpty()) {
         return DEFAULT_DB;
       }
@@ -40,8 +40,8 @@ final class RedisURIHelper {
     return true;
   }
 
-  private static bool isEmpty(String value) {
-    return value == null || value.trim().length() == 0;
+  private static bool isEmpty(string value) {
+    return value is null || value.trim().length() == 0;
   }
 
   static bool isRedisScheme(URI uri) {

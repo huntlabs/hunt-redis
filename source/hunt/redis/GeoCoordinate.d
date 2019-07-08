@@ -4,7 +4,7 @@ class GeoCoordinate {
   private double longitude;
   private double latitude;
 
-  GeoCoordinate(double longitude, double latitude) {
+  this(double longitude, double latitude) {
     this.longitude = longitude;
     this.latitude = latitude;
   }
@@ -18,31 +18,32 @@ class GeoCoordinate {
   }
 
   override
-  bool equals(Object o) {
-    if (o == null) return false;
-    if (o == this) return true;
-    if (!(o instanceof GeoCoordinate)) return false;
+  bool opEquals(Object o) {
+    if (o is null) return false;
+    if (o is this) return true;
 
-    GeoCoordinate that = (GeoCoordinate) o;
+    GeoCoordinate that = cast(GeoCoordinate) o;
+    if(that is null)
+      return false;
 
     if (Double.compare(that.longitude, longitude) != 0) return false;
     return Double.compare(that.latitude, latitude) == 0;
   }
 
   override
-  size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow {
     // follows IntelliJ default hashCode implementation
     int result;
     long temp;
     temp = Double.doubleToLongBits(longitude);
-    result = (int) (temp ^ (temp >>> 32));
+    result = cast(int) (temp ^ (temp >>> 32));
     temp = Double.doubleToLongBits(latitude);
-    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result + cast(int) (temp ^ (temp >>> 32));
     return result;
   }
 
   override
-  String toString() {
-    return "(" + longitude + "," + latitude + ")";
+  string toString() {
+    return "(" ~ longitude ~ "," ~ latitude ~ ")";
   }
 }

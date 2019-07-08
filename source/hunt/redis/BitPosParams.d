@@ -6,22 +6,25 @@ import hunt.collection.Collections;
 import hunt.collection.List;
 
 class BitPosParams {
-  private List!(byte[]) params = new ArrayList!(byte[])();
+  private List!(byte[]) params;
 
-  protected BitPosParams() {
+  protected this() {
+    params = new ArrayList!(byte[])();
   }
 
-  BitPosParams(long start) {
+  this(long start) {
+    this();
     params.add(Protocol.toByteArray(start));
   }
 
-  BitPosParams(long start, long end) {
+  this(long start, long end) {
     this(start);
 
     params.add(Protocol.toByteArray(end));
   }
 
   Collection!(byte[]) getParams() {
-    return Collections.unmodifiableCollection(params);
+    // return Collections.unmodifiableCollection(params);
+    return params;
   }
 }

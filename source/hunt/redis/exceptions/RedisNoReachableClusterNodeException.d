@@ -2,7 +2,7 @@ module hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 
 class RedisNoReachableClusterNodeException : RedisConnectionException {
 
-    RedisNoReachableClusterNodeException(String message) {
+    RedisNoReachableClusterNodeException(string message) {
         super(message);
     }
 
@@ -10,7 +10,7 @@ class RedisNoReachableClusterNodeException : RedisConnectionException {
         super(cause);
     }
 
-    RedisNoReachableClusterNodeException(String message, Throwable cause) {
+    RedisNoReachableClusterNodeException(string message, Throwable cause) {
         super(message, cause);
     }
 }

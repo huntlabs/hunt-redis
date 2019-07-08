@@ -60,7 +60,7 @@ class ShardedRedisPipeline : PipelineBase {
   }
 
   override
-  protected Client getClient(String key) {
+  protected Client getClient(string key) {
     Client client = jedis.getShard(key).getClient();
     clients.add(client);
     results.add(new FutureResult(client));

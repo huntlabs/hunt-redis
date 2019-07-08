@@ -6,7 +6,7 @@ import hunt.collection.List;
 import hunt.collection.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +20,11 @@ class RedisSentinelPool : RedisPoolAbstract {
   protected int connectionTimeout = Protocol.DEFAULT_TIMEOUT;
   protected int soTimeout = Protocol.DEFAULT_TIMEOUT;
 
-  protected String password;
+  protected string password;
 
   protected int database = Protocol.DEFAULT_DATABASE;
 
-  protected String clientName;
+  protected string clientName;
 
   protected Set!(MasterListener) masterListeners = new HashSet!(MasterListener)();
 
@@ -33,59 +33,59 @@ class RedisSentinelPool : RedisPoolAbstract {
   private volatile RedisFactory factory;
   private volatile HostAndPort currentHostMaster;
   
-  private final Object initPoolLock = new Object();
+  private Object initPoolLock = new Object();
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels, String password) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels, string password) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, int timeout, final String password) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int timeout, string password) {
     this(masterName, sentinels, poolConfig, timeout, password, Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, final int timeout) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int timeout) {
     this(masterName, sentinels, poolConfig, timeout, null, Protocol.DEFAULT_DATABASE);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, final String password) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, string password) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, int timeout, final String password,
-      final int database) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int timeout, string password,
+      int database) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, int timeout, final String password,
-      final int database, final String clientName) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int timeout, string password,
+      int database, string clientName) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database, clientName);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, final int timeout, final int soTimeout,
-      final String password, final int database) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int timeout, int soTimeout,
+      string password, int database) {
     this(masterName, sentinels, poolConfig, timeout, soTimeout, password, database, null);
   }
 
-  RedisSentinelPool(String masterName, Set!(String) sentinels,
-      final GenericObjectPoolConfig poolConfig, final int connectionTimeout, final int soTimeout,
-      final String password, final int database, final String clientName) {
+  RedisSentinelPool(string masterName, Set!(string) sentinels,
+      GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout,
+      string password, int database, string clientName) {
     this.poolConfig = poolConfig;
     this.connectionTimeout = connectionTimeout;
     this.soTimeout = soTimeout;
@@ -114,7 +114,7 @@ class RedisSentinelPool : RedisPoolAbstract {
     synchronized(initPoolLock){
       if (!master == currentHostMaster) {
         currentHostMaster = master;
-        if (factory == null) {
+        if (factory is null) {
           factory = new RedisFactory(master.getHost(), master.getPort(), connectionTimeout,
               soTimeout, password, database, clientName);
           initPool(poolConfig, factory);
@@ -127,20 +127,20 @@ class RedisSentinelPool : RedisPoolAbstract {
           internalPool.clear();
         }
 
-        log.info("Created RedisPool to master at " + master);
+        log.info("Created RedisPool to master at " ~ master);
       }
     }
   }
 
-  private HostAndPort initSentinels(Set!(String) sentinels, final String masterName) {
+  private HostAndPort initSentinels(Set!(string) sentinels, string masterName) {
 
     HostAndPort master = null;
     bool sentinelAvailable = false;
 
     log.info("Trying to find master from available Sentinels...");
 
-    foreach(String sentinel ; sentinels) {
-      final HostAndPort hap = HostAndPort.parseString(sentinel);
+    foreach(string sentinel ; sentinels) {
+      HostAndPort hap = HostAndPort.parseString(sentinel);
 
       log.debug("Connecting to Sentinel {}", hap);
 
@@ -148,12 +148,12 @@ class RedisSentinelPool : RedisPoolAbstract {
       try {
         jedis = new Redis(hap);
 
-        List!(String) masterAddr = jedis.sentinelGetMasterAddrByName(masterName);
+        List!(string) masterAddr = jedis.sentinelGetMasterAddrByName(masterName);
 
         // connected to sentinel...
         sentinelAvailable = true;
 
-        if (masterAddr == null || masterAddr.size() != 2) {
+        if (masterAddr is null || masterAddr.size() != 2) {
           log.warn("Can not get master addr, master name: {}. Sentinel: {}", masterName, hap);
           continue;
         }
@@ -168,28 +168,28 @@ class RedisSentinelPool : RedisPoolAbstract {
           "Cannot get master address from sentinel running @ {}. Reason: {}. Trying next one.", hap,
           e.toString());
       } finally {
-        if (jedis != null) {
+        if (jedis !is null) {
           jedis.close();
         }
       }
     }
 
-    if (master == null) {
+    if (master is null) {
       if (sentinelAvailable) {
         // can connect to sentinel, but master name seems to not
         // monitored
-        throw new RedisException("Can connect to sentinel, but " + masterName
-            + " seems to be not monitored...");
+        throw new RedisException("Can connect to sentinel, but " ~ masterName
+            ~ " seems to be not monitored...");
       } else {
         throw new RedisConnectionException("All sentinels down, cannot determine where is "
-            + masterName + " master is running...");
+            + masterName ~ " master is running...");
       }
     }
 
-    log.info("Redis master running at " + master + ", starting Sentinel listeners...");
+    log.info("Redis master running at " ~ master ~ ", starting Sentinel listeners...");
 
-    foreach(String sentinel ; sentinels) {
-      final HostAndPort hap = HostAndPort.parseString(sentinel);
+    foreach(string sentinel ; sentinels) {
+      HostAndPort hap = HostAndPort.parseString(sentinel);
       MasterListener masterListener = new MasterListener(masterName, hap.getHost(), hap.getPort());
       // whether MasterListener threads are alive or not, process can be stopped
       masterListener.setDaemon(true);
@@ -200,8 +200,8 @@ class RedisSentinelPool : RedisPoolAbstract {
     return master;
   }
 
-  private HostAndPort toHostAndPort(List!(String) getMasterAddrByNameResult) {
-    String host = getMasterAddrByNameResult.get(0);
+  private HostAndPort toHostAndPort(List!(string) getMasterAddrByNameResult) {
+    string host = getMasterAddrByNameResult.get(0);
     int port = Integer.parseInt(getMasterAddrByNameResult.get(1));
 
     return new HostAndPort(host, port);
@@ -214,8 +214,8 @@ class RedisSentinelPool : RedisPoolAbstract {
       jedis.setDataSource(this);
 
       // get a reference because it can change concurrently
-      final HostAndPort master = currentHostMaster;
-      final HostAndPort connection = new HostAndPort(jedis.getClient().getHost(), jedis.getClient()
+      HostAndPort master = currentHostMaster;
+      HostAndPort connection = new HostAndPort(jedis.getClient().getHost(), jedis.getClient()
           .getPort());
 
       if (master == connection) {
@@ -228,15 +228,15 @@ class RedisSentinelPool : RedisPoolAbstract {
   }
 
   override
-  protected void returnBrokenResource(final Redis resource) {
-    if (resource != null) {
+  protected void returnBrokenResource(Redis resource) {
+    if (resource !is null) {
       returnBrokenResourceObject(resource);
     }
   }
 
   override
-  protected void returnResource(final Redis resource) {
-    if (resource != null) {
+  protected void returnResource(Redis resource) {
+    if (resource !is null) {
       resource.resetState();
       returnResourceObject(resource);
     }
@@ -244,8 +244,8 @@ class RedisSentinelPool : RedisPoolAbstract {
 
   protected class MasterListener : Thread {
 
-    protected String masterName;
-    protected String host;
+    protected string masterName;
+    protected string host;
     protected int port;
     protected long subscribeRetryWaitTimeMillis = 5000;
     protected volatile Redis j;
@@ -254,14 +254,14 @@ class RedisSentinelPool : RedisPoolAbstract {
     protected MasterListener() {
     }
 
-    MasterListener(String masterName, String host, int port) {
-      super(String.format("MasterListener-%s-[%s:%d]", masterName, host, port));
+    MasterListener(string masterName, string host, int port) {
+      super(string.format("MasterListener-%s-[%s:%d]", masterName, host, port));
       this.masterName = masterName;
       this.host = host;
       this.port = port;
     }
 
-    MasterListener(String masterName, String host, int port,
+    MasterListener(string masterName, string host, int port,
         long subscribeRetryWaitTimeMillis) {
       this(masterName, host, port);
       this.subscribeRetryWaitTimeMillis = subscribeRetryWaitTimeMillis;
@@ -285,8 +285,8 @@ class RedisSentinelPool : RedisPoolAbstract {
           /*
            * Added code for active refresh
            */
-          List!(String) masterAddr = j.sentinelGetMasterAddrByName(masterName);  
-          if (masterAddr == null || masterAddr.size() != 2) {
+          List!(string) masterAddr = j.sentinelGetMasterAddrByName(masterName);  
+          if (masterAddr is null || masterAddr.size() != 2) {
             log.warn("Can not get master addr, master name: {}. Sentinel: {}：{}.",masterName,host,port);
           }else{
               initPool(toHostAndPort(masterAddr)); 
@@ -294,10 +294,10 @@ class RedisSentinelPool : RedisPoolAbstract {
 
           j.subscribe(new RedisPubSub() {
             override
-            void onMessage(String channel, String message) {
+            void onMessage(string channel, string message) {
               log.debug("Sentinel {}:{} published: {}.", host, port, message);
 
-              String[] switchMasterMsg = message.split(" ");
+              string[] switchMasterMsg = message.split(" ");
 
               if (switchMasterMsg.length > 3) {
 
@@ -341,7 +341,7 @@ class RedisSentinelPool : RedisPoolAbstract {
         log.debug("Shutting down listener on {}:{}", host, port);
         running.set(false);
         // This isn't good, the Redis object is not thread safe
-        if (j != null) {
+        if (j !is null) {
           j.disconnect();
         }
       } catch (Exception e) {

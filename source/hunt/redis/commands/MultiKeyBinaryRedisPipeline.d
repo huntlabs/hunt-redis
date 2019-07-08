@@ -28,11 +28,11 @@ public interface MultiKeyBinaryRedisPipeline {
 
   Response!(List!(byte[])) mget(byte[] keys...);
 
-  Response!(String) mset(byte[] keysvalues...);
+  Response!(string) mset(byte[] keysvalues...);
 
   Response!(Long) msetnx(byte[] keysvalues...);
 
-  Response!(String) rename(byte[] oldkey, byte[] newkey);
+  Response!(string) rename(byte[] oldkey, byte[] newkey);
 
   Response!(Long) renamenx(byte[] oldkey, byte[] newkey);
 
@@ -56,7 +56,7 @@ public interface MultiKeyBinaryRedisPipeline {
 
   Response!(Long) sunionstore(byte[] dstkey, byte[] keys...);
 
-  Response!(String) watch(byte[] keys...);
+  Response!(string) watch(byte[] keys...);
 
   Response!(Long) zinterstore(byte[] dstkey, byte[] sets...);
 
@@ -74,11 +74,11 @@ public interface MultiKeyBinaryRedisPipeline {
 
   Response!(Long) bitop(BitOP op, byte[] destKey, byte[] srcKeys...);
 
-  Response!(String) pfmerge(byte[] destkey, byte[] sourcekeys...);
+  Response!(string) pfmerge(byte[] destkey, byte[] sourcekeys...);
 
   Response!(Long) pfcount(byte[] keys...);
 
   Response!(Long) touch(byte[] keys...);
 
-  Response!(String) migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, byte[] keys...);
+  Response!(string) migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, byte[] keys...);
 }

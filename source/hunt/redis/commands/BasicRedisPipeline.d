@@ -10,44 +10,44 @@ import hunt.collection.List;
  */
 public interface BasicRedisPipeline {
 
-  Response!(String) bgrewriteaof();
+  Response!(string) bgrewriteaof();
 
-  Response!(String) bgsave();
+  Response!(string) bgsave();
 
-  Response!(List!(String)) configGet(String pattern);
+  Response!(List!(string)) configGet(string pattern);
 
-  Response!(String) configSet(String parameter, String value);
+  Response!(string) configSet(string parameter, string value);
 
-  Response!(String) configResetStat();
+  Response!(string) configResetStat();
 
-  Response!(String) save();
+  Response!(string) save();
 
   Response!(Long) lastsave();
 
-  Response!(String) flushDB();
+  Response!(string) flushDB();
 
-  Response!(String) flushAll();
+  Response!(string) flushAll();
 
-  Response!(String) info();
+  Response!(string) info();
 
-  Response!(List!(String)) time();
+  Response!(List!(string)) time();
 
   Response!(Long) dbSize();
 
-  Response!(String) shutdown();
+  Response!(string) shutdown();
 
-  Response!(String) ping();
+  Response!(string) ping();
 
-  Response!(String) select(int index);
+  Response!(string) select(int index);
 
-  Response!(String) swapDB(int index1, int index2);
+  Response!(string) swapDB(int index1, int index2);
 
-  Response!(String) migrate(String host, int port, String key, int destinationDB, int timeout);
+  Response!(string) migrate(string host, int port, string key, int destinationDB, int timeout);
 
-  Response!(String) moduleLoad(String path);
+  Response!(string) moduleLoad(string path);
 
   Response!(List!(Module)) moduleList();
 
-  Response!(String) moduleUnload(String name);
+  Response!(string) moduleUnload(string name);
 
 }

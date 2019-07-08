@@ -8,11 +8,11 @@ class RedisAskDataException : RedisRedirectionException {
     super(cause, targetHost, slot);
   }
 
-  RedisAskDataException(String message, Throwable cause, HostAndPort targetHost, int slot) {
+  RedisAskDataException(string message, Throwable cause, HostAndPort targetHost, int slot) {
     super(message, cause, targetHost, slot);
   }
 
-  RedisAskDataException(String message, HostAndPort targetHost, int slot) {
+  RedisAskDataException(string message, HostAndPort targetHost, int slot) {
     super(message, targetHost, slot);
   }
 

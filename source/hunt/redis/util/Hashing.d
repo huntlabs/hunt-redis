@@ -9,14 +9,14 @@ public interface Hashing {
 
   Hashing MD5 = new Hashing() {
     override
-    long hash(String key) {
+    long hash(string key) {
       return hash(SafeEncoder.encode(key));
     }
 
     override
     long hash(byte[] key) {
       try {
-        if (md5Holder.get() == null) {
+        if (md5Holder.get() is null) {
           md5Holder.set(MessageDigest.getInstance("MD5"));
         }
       } catch (NoSuchAlgorithmException e) {
@@ -33,7 +33,7 @@ public interface Hashing {
     }
   };
 
-  long hash(String key);
+  long hash(string key);
 
   long hash(byte[] key);
 }

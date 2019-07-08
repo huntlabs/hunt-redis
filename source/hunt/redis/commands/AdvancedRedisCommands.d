@@ -7,11 +7,11 @@ import hunt.redis.params.ClientKillParams;
 import hunt.redis.util.Slowlog;
 
 public interface AdvancedRedisCommands {
-  List!(String) configGet(String pattern);
+  List!(string) configGet(string pattern);
 
-  String configSet(String parameter, String value);
+  string configSet(string parameter, string value);
 
-  String slowlogReset();
+  string slowlogReset();
 
   Long slowlogLen();
 
@@ -19,27 +19,27 @@ public interface AdvancedRedisCommands {
 
   List!(Slowlog) slowlogGet(long entries);
 
-  Long objectRefcount(String key);
+  Long objectRefcount(string key);
 
-  String objectEncoding(String key);
+  string objectEncoding(string key);
 
-  Long objectIdletime(String key);
+  Long objectIdletime(string key);
 
-  String migrate(String host, int port, String key, int destinationDB, int timeout);
+  string migrate(string host, int port, string key, int destinationDB, int timeout);
 
-  String migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, String keys...);
+  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, string keys...);
 
-  String clientKill(String ipPort);
+  string clientKill(string ipPort);
 
-  String clientKill(String ip, int port);
+  string clientKill(string ip, int port);
 
   Long clientKill(ClientKillParams params);
 
-  String clientGetname();
+  string clientGetname();
 
-  String clientList();
+  string clientList();
 
-  String clientSetname(String name);
+  string clientSetname(string name);
 
-  String memoryDoctor();
+  string memoryDoctor();
 }

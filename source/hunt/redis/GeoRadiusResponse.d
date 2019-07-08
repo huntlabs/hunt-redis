@@ -7,7 +7,7 @@ class GeoRadiusResponse {
   private double distance;
   private GeoCoordinate coordinate;
 
-  GeoRadiusResponse(byte[] member) {
+  this(byte[] member) {
     this.member = member;
   }
 
@@ -23,7 +23,7 @@ class GeoRadiusResponse {
     return member;
   }
 
-  String getMemberByString() {
+  string getMemberByString() {
     return SafeEncoder.encode(member);
   }
 

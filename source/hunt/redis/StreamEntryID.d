@@ -12,11 +12,11 @@ class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   * XADD mystream * field1 value1 
   * </code>
   */
-  static final StreamEntryID NEW_ENTRY = new StreamEntryID() {
+  static StreamEntryID NEW_ENTRY = new StreamEntryID() {
     
     
     override
-    String toString(){
+    string toString(){
       return "*";
     }
   };
@@ -29,11 +29,11 @@ class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   * XGROUP CREATE mystream consumer-group-name $
   * </code>
   */
-  static final StreamEntryID LAST_ENTRY = new StreamEntryID() {
+  static StreamEntryID LAST_ENTRY = new StreamEntryID() {
     
     
     override
-    String toString(){
+    string toString(){
       return "$";
     }
   };
@@ -44,11 +44,11 @@ class StreamEntryID : Comparable!(StreamEntryID), Serializable{
    * XREADGROUP $GroupName $ConsumerName BLOCK 2000 COUNT 10 STREAMS mystream >
    * </code>
    */
-  static final StreamEntryID UNRECEIVED_ENTRY = new StreamEntryID() {
+  static StreamEntryID UNRECEIVED_ENTRY = new StreamEntryID() {
     
     
     override
-    String toString(){
+    string toString(){
       return ">";
     }
   };
@@ -60,8 +60,8 @@ class StreamEntryID : Comparable!(StreamEntryID), Serializable{
     this(0, 0L);
   }
   
-  StreamEntryID(String id) {
-    String[] split = id.split("-");    
+  StreamEntryID(string id) {
+    string[] split = id.split("-");    
     this.time = Long.parseLong(split[0]);
     this.sequence = Long.parseLong(split[1]);
   }
@@ -72,21 +72,21 @@ class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   }
 
   override
-  String toString() {
-    return time + "-" + sequence;
+  string toString() {
+    return time ~ "-" ~ sequence;
   }
 
   override
-  bool equals(Object obj) {
+  bool opEquals(Object obj) {
     if (this == obj) return true;
-    if (obj == null) return false;
+    if (obj is null) return false;
     if (getClass() != obj.getClass()) return false;
     StreamEntryID other = (StreamEntryID) obj;
     return this.time == other.time && this.sequence == other.sequence;
   }
   
   override
-  size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow {
     return this.toString().hashCode();
   }
 

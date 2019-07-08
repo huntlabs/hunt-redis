@@ -4,13 +4,13 @@ import hunt.collection.ArraryList;
 import hunt.collection.List;
 
 class Slowlog {
-  private final long id;
-  private final long timeStamp;
-  private final long executionTime;
-  private final List!(String) args;
+  private long id;
+  private long timeStamp;
+  private long executionTime;
+  private List!(string) args;
   private enum string COMMA = ",";
 
-  @SuppressWarnings("unchecked")
+  
   private Slowlog(List!(Object) properties) {
     super();
     this.id = (Long) properties.get(0);
@@ -18,14 +18,14 @@ class Slowlog {
     this.executionTime = (Long) properties.get(2);
 
     List!(byte[]) bargs = (List!(byte[])) properties.get(3);
-    this.args = new ArrayList!(String)(bargs.size());
+    this.args = new ArrayList!(string)(bargs.size());
 
     foreach(byte[] barg ; bargs) {
       this.args.add(SafeEncoder.encode(barg));
     }
   }
 
-  @SuppressWarnings("unchecked")
+  
   static List!(Slowlog) from(List!(Object) nestedMultiBulkReply) {
     List!(Slowlog) logs = new ArrayList!(Slowlog)(nestedMultiBulkReply.size());
     foreach(Object obj ; nestedMultiBulkReply) {
@@ -48,12 +48,12 @@ class Slowlog {
     return executionTime;
   }
 
-  List!(String) getArgs() {
+  List!(string) getArgs() {
     return args;
   }
 
   override
-  String toString() {
+  string toString() {
     return new StringBuilder().append(id).append(COMMA).append(timeStamp).append(COMMA)
         .append(executionTime).append(COMMA).append(args).toString();
   }

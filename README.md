@@ -27,7 +27,7 @@ To use it just:
 ```java
 Redis jedis = new Redis("localhost");
 jedis.set("foo", "bar");
-String value = jedis.get("foo");
+string value = jedis.get("foo");
 ```
 
 ## Redis Cluster
@@ -40,5 +40,5 @@ Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
 jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7379));
 RedisCluster jc = new RedisCluster(jedisClusterNodes);
 jc.set("foo", "bar");
-String value = jc.get("foo");
+string value = jc.get("foo");
 ```

@@ -17,7 +17,7 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
-final class Protocol {
+class Protocol {
 
   private enum string ASK_PREFIX = "ASK ";
   private enum string MOVED_PREFIX = "MOVED ";
@@ -111,15 +111,15 @@ final class Protocol {
   }
 
   private static void processError(RedisInputStream is) {
-    String message = is.readLine();
+    string message = is.readLine();
     // TODO: I'm not sure if this is the best way to do this.
     // Maybe Read only first 5 bytes instead?
     if (message.startsWith(MOVED_PREFIX)) {
-      String[] movedInfo = parseTargetHostAndSlot(message);
+      string[] movedInfo = parseTargetHostAndSlot(message);
       throw new RedisMovedDataException(message, new HostAndPort(movedInfo[1],
           Integer.parseInt(movedInfo[2])), Integer.parseInt(movedInfo[0]));
     } else if (message.startsWith(ASK_PREFIX)) {
-      String[] askInfo = parseTargetHostAndSlot(message);
+      string[] askInfo = parseTargetHostAndSlot(message);
       throw new RedisAskDataException(message, new HostAndPort(askInfo[1],
           Integer.parseInt(askInfo[2])), Integer.parseInt(askInfo[0]));
     } else if (message.startsWith(CLUSTERDOWN_PREFIX)) {
@@ -132,7 +132,7 @@ final class Protocol {
     throw new RedisDataException(message);
   }
 
-  static String readErrorLineIfPossible(RedisInputStream is) {
+  static string readErrorLineIfPossible(RedisInputStream is) {
     byte b = is.readByte();
     // if buffer contains other type of response, just ignore.
     if (b != MINUS_BYTE) {
@@ -141,10 +141,10 @@ final class Protocol {
     return is.readLine();
   }
 
-  private static String[] parseTargetHostAndSlot(String clusterRedirectResponse) {
-    String[] response = new String[3];
-    String[] messageInfo = clusterRedirectResponse.split(" ");
-    String[] targetHostAndPort = HostAndPort.extractParts(messageInfo[2]);
+  private static string[] parseTargetHostAndSlot(string clusterRedirectResponse) {
+    string[] response = new string[3];
+    string[] messageInfo = clusterRedirectResponse.split(" ");
+    string[] targetHostAndPort = HostAndPort.extractParts(messageInfo[2]);
     response[0] = messageInfo[1];
     response[1] = targetHostAndPort[0];
     response[2] = targetHostAndPort[1];
@@ -166,7 +166,7 @@ final class Protocol {
       processError(is);
       return null;
     default:
-      throw new RedisConnectionException("Unknown reply: " + (char) b);
+      throw new RedisConnectionException("Unknown reply: " ~ (char) b);
     }
   }
 
@@ -225,11 +225,11 @@ final class Protocol {
   }
 
   enum byte[] toByteArray(int value) {
-    return SafeEncoder.encode(String.valueOf(value));
+    return SafeEncoder.encode(string.valueOf(value));
   }
 
   enum byte[] toByteArray(long value) {
-    return SafeEncoder.encode(String.valueOf(value));
+    return SafeEncoder.encode(string.valueOf(value));
   }
 
   enum byte[] toByteArray(double value) {
@@ -238,7 +238,7 @@ final class Protocol {
     } else if (value == Double.NEGATIVE_INFINITY) {
       return NEGATIVE_INFINITY_BYTES;
     } else {
-      return SafeEncoder.encode(String.valueOf(value));
+      return SafeEncoder.encode(string.valueOf(value));
     }
   }
 

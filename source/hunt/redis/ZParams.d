@@ -14,7 +14,7 @@ class ZParams {
   enum Aggregate {
     SUM, MIN, MAX;
 
-    final byte[] raw;
+    byte[] raw;
 
     Aggregate() {
       raw = SafeEncoder.encode(name());
@@ -28,9 +28,9 @@ class ZParams {
    * @param weights weights.
    * @return 
    */
-  ZParams weights(final double weights...) {
+  ZParams weights(double weights...) {
     params.add(WEIGHTS.raw);
-    foreach(final double weight ; weights) {
+    foreach(double weight ; weights) {
       params.add(Protocol.toByteArray(weight));
     }
 
@@ -41,7 +41,7 @@ class ZParams {
     return Collections.unmodifiableCollection(params);
   }
 
-  ZParams aggregate(final Aggregate aggregate) {
+  ZParams aggregate(Aggregate aggregate) {
     params.add(AGGREGATE.raw);
     params.add(aggregate.raw);
     return this;

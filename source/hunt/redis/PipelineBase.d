@@ -14,40 +14,40 @@ import hunt.redis.params.ZIncrByParams;
 
 abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipeline {
 
-  protected abstract Client getClient(String key);
+  protected abstract Client getClient(string key);
 
   protected abstract Client getClient(byte[] key);
 
   override
-  Response!(Long) append(final String key, final String value) {
+  Response!(Long) append(string key, string value) {
     getClient(key).append(key, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) append(final byte[] key, final byte[] value) {
+  Response!(Long) append(byte[] key, byte[] value) {
     getClient(key).append(key, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(List!(String)) blpop(final String key) {
-    String[] temp = new String[1];
+  Response!(List!(string)) blpop(string key) {
+    string[] temp = new string[1];
     temp[0] = key;
     getClient(key).blpop(temp);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(String)) brpop(final String key) {
-    String[] temp = new String[1];
+  Response!(List!(string)) brpop(string key) {
+    string[] temp = new string[1];
     temp[0] = key;
     getClient(key).brpop(temp);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) blpop(final byte[] key) {
+  Response!(List!(byte[])) blpop(byte[] key) {
     byte[][] temp = new byte[1][];
     temp[0] = key;
     getClient(key).blpop(temp);
@@ -55,7 +55,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(byte[])) brpop(final byte[] key) {
+  Response!(List!(byte[])) brpop(byte[] key) {
     byte[][] temp = new byte[1][];
     temp[0] = key;
     getClient(key).brpop(temp);
@@ -63,1735 +63,1735 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Long) decr(final String key) {
+  Response!(Long) decr(string key) {
     getClient(key).decr(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) decr(final byte[] key) {
+  Response!(Long) decr(byte[] key) {
     getClient(key).decr(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) decrBy(final String key, final long decrement) {
+  Response!(Long) decrBy(string key, long decrement) {
     getClient(key).decrBy(key, decrement);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) decrBy(final byte[] key, final long decrement) {
+  Response!(Long) decrBy(byte[] key, long decrement) {
     getClient(key).decrBy(key, decrement);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) del(final String key) {
+  Response!(Long) del(string key) {
     getClient(key).del(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) del(final byte[] key) {
+  Response!(Long) del(byte[] key) {
     getClient(key).del(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) unlink(final String key) {
+  Response!(Long) unlink(string key) {
     getClient(key).unlink(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) unlink(final byte[] key) {
+  Response!(Long) unlink(byte[] key) {
     getClient(key).unlink(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) echo(final String string) {
+  Response!(string) echo(string string) {
     getClient(string).echo(string);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) echo(final byte[] string) {
+  Response!(byte[]) echo(byte[] string) {
     getClient(string).echo(string);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Boolean) exists(final String key) {
+  Response!(Boolean) exists(string key) {
     getClient(key).exists(key);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Boolean) exists(final byte[] key) {
+  Response!(Boolean) exists(byte[] key) {
     getClient(key).exists(key);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Long) expire(final String key, final int seconds) {
+  Response!(Long) expire(string key, int seconds) {
     getClient(key).expire(key, seconds);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) expire(final byte[] key, final int seconds) {
+  Response!(Long) expire(byte[] key, int seconds) {
     getClient(key).expire(key, seconds);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) expireAt(final String key, final long unixTime) {
+  Response!(Long) expireAt(string key, long unixTime) {
     getClient(key).expireAt(key, unixTime);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) expireAt(final byte[] key, final long unixTime) {
+  Response!(Long) expireAt(byte[] key, long unixTime) {
     getClient(key).expireAt(key, unixTime);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) get(final String key) {
+  Response!(string) get(string key) {
     getClient(key).get(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) get(final byte[] key) {
+  Response!(byte[]) get(byte[] key) {
     getClient(key).get(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Boolean) getbit(final String key, final long offset) {
+  Response!(Boolean) getbit(string key, long offset) {
     getClient(key).getbit(key, offset);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Boolean) getbit(final byte[] key, final long offset) {
+  Response!(Boolean) getbit(byte[] key, long offset) {
     getClient(key).getbit(key, offset);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Long) bitpos(final String key, final bool value) {
+  Response!(Long) bitpos(string key, bool value) {
     return bitpos(key, value, new BitPosParams());
   }
 
   override
-  Response!(Long) bitpos(final String key, final bool value, final BitPosParams params) {
+  Response!(Long) bitpos(string key, bool value, BitPosParams params) {
     getClient(key).bitpos(key, value, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) bitpos(final byte[] key, final bool value) {
+  Response!(Long) bitpos(byte[] key, bool value) {
     return bitpos(key, value, new BitPosParams());
   }
 
   override
-  Response!(Long) bitpos(final byte[] key, final bool value, final BitPosParams params) {
+  Response!(Long) bitpos(byte[] key, bool value, BitPosParams params) {
     getClient(key).bitpos(key, value, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) getrange(final String key, final long startOffset, final long endOffset) {
+  Response!(string) getrange(string key, long startOffset, long endOffset) {
     getClient(key).getrange(key, startOffset, endOffset);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) getSet(final String key, final String value) {
+  Response!(string) getSet(string key, string value) {
     getClient(key).getSet(key, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) getSet(final byte[] key, final byte[] value) {
+  Response!(byte[]) getSet(byte[] key, byte[] value) {
     getClient(key).getSet(key, value);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(byte[]) getrange(final byte[] key, final long startOffset, final long endOffset) {
+  Response!(byte[]) getrange(byte[] key, long startOffset, long endOffset) {
     getClient(key).getrange(key, startOffset, endOffset);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Long) hdel(final String key, final String field...) {
+  Response!(Long) hdel(string key, string field...) {
     getClient(key).hdel(key, field);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hdel(final byte[] key, final byte[] field...) {
+  Response!(Long) hdel(byte[] key, byte[] field...) {
     getClient(key).hdel(key, field);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Boolean) hexists(final String key, final String field) {
+  Response!(Boolean) hexists(string key, string field) {
     getClient(key).hexists(key, field);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Boolean) hexists(final byte[] key, final byte[] field) {
+  Response!(Boolean) hexists(byte[] key, byte[] field) {
     getClient(key).hexists(key, field);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(String) hget(final String key, final String field) {
+  Response!(string) hget(string key, string field) {
     getClient(key).hget(key, field);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) hget(final byte[] key, final byte[] field) {
+  Response!(byte[]) hget(byte[] key, byte[] field) {
     getClient(key).hget(key, field);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Map!(String, String)) hgetAll(final String key) {
+  Response!(Map!(string, string)) hgetAll(string key) {
     getClient(key).hgetAll(key);
     return getResponse(BuilderFactory.STRING_MAP);
   }
 
   override
-  Response!(Map!(byte[], byte[])) hgetAll(final byte[] key) {
+  Response!(Map!(byte[], byte[])) hgetAll(byte[] key) {
     getClient(key).hgetAll(key);
     return getResponse(BuilderFactory.BYTE_ARRAY_MAP);
   }
 
   override
-  Response!(Long) hincrBy(final String key, final String field, final long value) {
+  Response!(Long) hincrBy(string key, string field, long value) {
     getClient(key).hincrBy(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hincrBy(final byte[] key, final byte[] field, final long value) {
+  Response!(Long) hincrBy(byte[] key, byte[] field, long value) {
     getClient(key).hincrBy(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Set!(String)) hkeys(final String key) {
+  Response!(Set!(string)) hkeys(string key) {
     getClient(key).hkeys(key);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  Response!(Set!(byte[])) hkeys(final byte[] key) {
+  Response!(Set!(byte[])) hkeys(byte[] key) {
     getClient(key).hkeys(key);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Long) hlen(final String key) {
+  Response!(Long) hlen(string key) {
     getClient(key).hlen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hlen(final byte[] key) {
+  Response!(Long) hlen(byte[] key) {
     getClient(key).hlen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(List!(String)) hmget(final String key, final String fields...) {
+  Response!(List!(string)) hmget(string key, string fields...) {
     getClient(key).hmget(key, fields);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) hmget(final byte[] key, final byte[] fields...) {
+  Response!(List!(byte[])) hmget(byte[] key, byte[] fields...) {
     getClient(key).hmget(key, fields);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(String) hmset(final String key, final Map!(String, String) hash) {
+  Response!(string) hmset(string key, Map!(string, string) hash) {
     getClient(key).hmset(key, hash);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) hmset(final byte[] key, final Map!(byte[], byte[]) hash) {
+  Response!(string) hmset(byte[] key, Map!(byte[], byte[]) hash) {
     getClient(key).hmset(key, hash);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) hset(final String key, final String field, final String value) {
+  Response!(Long) hset(string key, string field, string value) {
     getClient(key).hset(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hset(final byte[] key, final byte[] field, final byte[] value) {
+  Response!(Long) hset(byte[] key, byte[] field, byte[] value) {
     getClient(key).hset(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hset(final String key, final Map!(String, String) hash) {
+  Response!(Long) hset(string key, Map!(string, string) hash) {
     getClient(key).hset(key, hash);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hset(final byte[] key, final Map!(byte[], byte[]) hash) {
+  Response!(Long) hset(byte[] key, Map!(byte[], byte[]) hash) {
     getClient(key).hset(key, hash);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hsetnx(final String key, final String field, final String value) {
+  Response!(Long) hsetnx(string key, string field, string value) {
     getClient(key).hsetnx(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hsetnx(final byte[] key, final byte[] field, final byte[] value) {
+  Response!(Long) hsetnx(byte[] key, byte[] field, byte[] value) {
     getClient(key).hsetnx(key, field, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(List!(String)) hvals(final String key) {
+  Response!(List!(string)) hvals(string key) {
     getClient(key).hvals(key);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) hvals(final byte[] key) {
+  Response!(List!(byte[])) hvals(byte[] key) {
     getClient(key).hvals(key);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(Long) incr(final String key) {
+  Response!(Long) incr(string key) {
     getClient(key).incr(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) incr(final byte[] key) {
+  Response!(Long) incr(byte[] key) {
     getClient(key).incr(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) incrBy(final String key, final long increment) {
+  Response!(Long) incrBy(string key, long increment) {
     getClient(key).incrBy(key, increment);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) incrBy(final byte[] key, final long increment) {
+  Response!(Long) incrBy(byte[] key, long increment) {
     getClient(key).incrBy(key, increment);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) lindex(final String key, final long index) {
+  Response!(string) lindex(string key, long index) {
     getClient(key).lindex(key, index);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) lindex(final byte[] key, final long index) {
+  Response!(byte[]) lindex(byte[] key, long index) {
     getClient(key).lindex(key, index);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Long) linsert(final String key, final ListPosition where, final String pivot, final String value) {
+  Response!(Long) linsert(string key, ListPosition where, string pivot, string value) {
     getClient(key).linsert(key, where, pivot, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) linsert(final byte[] key, final ListPosition where, final byte[] pivot, final byte[] value) {
+  Response!(Long) linsert(byte[] key, ListPosition where, byte[] pivot, byte[] value) {
     getClient(key).linsert(key, where, pivot, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) llen(final String key) {
+  Response!(Long) llen(string key) {
     getClient(key).llen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) llen(final byte[] key) {
+  Response!(Long) llen(byte[] key) {
     getClient(key).llen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) lpop(final String key) {
+  Response!(string) lpop(string key) {
     getClient(key).lpop(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) lpop(final byte[] key) {
+  Response!(byte[]) lpop(byte[] key) {
     getClient(key).lpop(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Long) lpush(final String key, final String string...) {
+  Response!(Long) lpush(string key, string string...) {
     getClient(key).lpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) lpush(final byte[] key, final byte[] string...) {
+  Response!(Long) lpush(byte[] key, byte[] string...) {
     getClient(key).lpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) lpushx(final String key, final String string...) {
+  Response!(Long) lpushx(string key, string string...) {
     getClient(key).lpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) lpushx(final byte[] key, final byte[] bytes...) {
+  Response!(Long) lpushx(byte[] key, byte[] bytes...) {
     getClient(key).lpushx(key, bytes);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(List!(String)) lrange(final String key, final long start, final long stop) {
+  Response!(List!(string)) lrange(string key, long start, long stop) {
     getClient(key).lrange(key, start, stop);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) lrange(final byte[] key, final long start, final long stop) {
+  Response!(List!(byte[])) lrange(byte[] key, long start, long stop) {
     getClient(key).lrange(key, start, stop);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(Long) lrem(final String key, final long count, final String value) {
+  Response!(Long) lrem(string key, long count, string value) {
     getClient(key).lrem(key, count, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) lrem(final byte[] key, final long count, final byte[] value) {
+  Response!(Long) lrem(byte[] key, long count, byte[] value) {
     getClient(key).lrem(key, count, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) lset(final String key, final long index, final String value) {
+  Response!(string) lset(string key, long index, string value) {
     getClient(key).lset(key, index, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) lset(final byte[] key, final long index, final byte[] value) {
+  Response!(string) lset(byte[] key, long index, byte[] value) {
     getClient(key).lset(key, index, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) ltrim(final String key, final long start, final long stop) {
+  Response!(string) ltrim(string key, long start, long stop) {
     getClient(key).ltrim(key, start, stop);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) ltrim(final byte[] key, final long start, final long stop) {
+  Response!(string) ltrim(byte[] key, long start, long stop) {
     getClient(key).ltrim(key, start, stop);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) move(final String key, final int dbIndex) {
+  Response!(Long) move(string key, int dbIndex) {
     getClient(key).move(key, dbIndex);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) move(final byte[] key, final int dbIndex) {
+  Response!(Long) move(byte[] key, int dbIndex) {
     getClient(key).move(key, dbIndex);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) persist(final String key) {
+  Response!(Long) persist(string key) {
     getClient(key).persist(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) persist(final byte[] key) {
+  Response!(Long) persist(byte[] key) {
     getClient(key).persist(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) rpop(final String key) {
+  Response!(string) rpop(string key) {
     getClient(key).rpop(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) rpop(final byte[] key) {
+  Response!(byte[]) rpop(byte[] key) {
     getClient(key).rpop(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Long) rpush(final String key, final String string...) {
+  Response!(Long) rpush(string key, string string...) {
     getClient(key).rpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) rpush(final byte[] key, final byte[] string...) {
+  Response!(Long) rpush(byte[] key, byte[] string...) {
     getClient(key).rpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) rpushx(final String key, final String string...) {
+  Response!(Long) rpushx(string key, string string...) {
     getClient(key).rpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) rpushx(final byte[] key, final byte[] string...) {
+  Response!(Long) rpushx(byte[] key, byte[] string...) {
     getClient(key).rpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) sadd(final String key, final String member...) {
+  Response!(Long) sadd(string key, string member...) {
     getClient(key).sadd(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) sadd(final byte[] key, final byte[] member...) {
+  Response!(Long) sadd(byte[] key, byte[] member...) {
     getClient(key).sadd(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) scard(final String key) {
+  Response!(Long) scard(string key) {
     getClient(key).scard(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) scard(final byte[] key) {
+  Response!(Long) scard(byte[] key) {
     getClient(key).scard(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) set(final String key, final String value) {
+  Response!(string) set(string key, string value) {
     getClient(key).set(key, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) set(final byte[] key, final byte[] value) {
+  Response!(string) set(byte[] key, byte[] value) {
     getClient(key).set(key, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) set(final String key, final String value, SetParams params) {
+  Response!(string) set(string key, string value, SetParams params) {
     getClient(key).set(key, value, params);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) set(final byte[] key, final byte[] value, SetParams params) {
+  Response!(string) set(byte[] key, byte[] value, SetParams params) {
     getClient(key).set(key, value, params);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Boolean) setbit(final String key, final long offset, bool value) {
+  Response!(Boolean) setbit(string key, long offset, bool value) {
     getClient(key).setbit(key, offset, value);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Boolean) setbit(final byte[] key, final long offset, final byte[] value) {
+  Response!(Boolean) setbit(byte[] key, long offset, byte[] value) {
     getClient(key).setbit(key, offset, value);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(String) setex(final String key, final int seconds, final String value) {
+  Response!(string) setex(string key, int seconds, string value) {
     getClient(key).setex(key, seconds, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) setex(final byte[] key, final int seconds, final byte[] value) {
+  Response!(string) setex(byte[] key, int seconds, byte[] value) {
     getClient(key).setex(key, seconds, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) setnx(final String key, final String value) {
+  Response!(Long) setnx(string key, string value) {
     getClient(key).setnx(key, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) setnx(final byte[] key, final byte[] value) {
+  Response!(Long) setnx(byte[] key, byte[] value) {
     getClient(key).setnx(key, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) setrange(final String key, final long offset, final String value) {
+  Response!(Long) setrange(string key, long offset, string value) {
     getClient(key).setrange(key, offset, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) setrange(final byte[] key, final long offset, final byte[] value) {
+  Response!(Long) setrange(byte[] key, long offset, byte[] value) {
     getClient(key).setrange(key, offset, value);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Boolean) sismember(final String key, final String member) {
+  Response!(Boolean) sismember(string key, string member) {
     getClient(key).sismember(key, member);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Boolean) sismember(final byte[] key, final byte[] member) {
+  Response!(Boolean) sismember(byte[] key, byte[] member) {
     getClient(key).sismember(key, member);
     return getResponse(BuilderFactory.BOOLEAN);
   }
 
   override
-  Response!(Set!(String)) smembers(final String key) {
+  Response!(Set!(string)) smembers(string key) {
     getClient(key).smembers(key);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  Response!(Set!(byte[])) smembers(final byte[] key) {
+  Response!(Set!(byte[])) smembers(byte[] key) {
     getClient(key).smembers(key);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(List!(String)) sort(final String key) {
+  Response!(List!(string)) sort(string key) {
     getClient(key).sort(key);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) sort(final byte[] key) {
+  Response!(List!(byte[])) sort(byte[] key) {
     getClient(key).sort(key);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(List!(String)) sort(final String key, final SortingParams sortingParameters) {
+  Response!(List!(string)) sort(string key, SortingParams sortingParameters) {
     getClient(key).sort(key, sortingParameters);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(byte[])) sort(final byte[] key, final SortingParams sortingParameters) {
+  Response!(List!(byte[])) sort(byte[] key, SortingParams sortingParameters) {
     getClient(key).sort(key, sortingParameters);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(String) spop(final String key) {
+  Response!(string) spop(string key) {
     getClient(key).spop(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Set!(String)) spop(final String key, final long count) {
+  Response!(Set!(string)) spop(string key, long count) {
     getClient(key).spop(key, count);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  Response!(byte[]) spop(final byte[] key) {
+  Response!(byte[]) spop(byte[] key) {
     getClient(key).spop(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Set!(byte[])) spop(final byte[] key, final long count) {
+  Response!(Set!(byte[])) spop(byte[] key, long count) {
     getClient(key).spop(key, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(String) srandmember(final String key) {
+  Response!(string) srandmember(string key) {
     getClient(key).srandmember(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(List!(String)) srandmember(final String key, final int count) {
+  Response!(List!(string)) srandmember(string key, int count) {
     getClient(key).srandmember(key, count);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(byte[]) srandmember(final byte[] key) {
+  Response!(byte[]) srandmember(byte[] key) {
     getClient(key).srandmember(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(List!(byte[])) srandmember(final byte[] key, final int count) {
+  Response!(List!(byte[])) srandmember(byte[] key, int count) {
     getClient(key).srandmember(key, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(Long) srem(final String key, final String member...) {
+  Response!(Long) srem(string key, string member...) {
     getClient(key).srem(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) srem(final byte[] key, final byte[] member...) {
+  Response!(Long) srem(byte[] key, byte[] member...) {
     getClient(key).srem(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) strlen(final String key) {
+  Response!(Long) strlen(string key) {
     getClient(key).strlen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) strlen(final byte[] key) {
+  Response!(Long) strlen(byte[] key) {
     getClient(key).strlen(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) substr(final String key, final int start, final int end) {
+  Response!(string) substr(string key, int start, int end) {
     getClient(key).substr(key, start, end);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) substr(final byte[] key, final int start, final int end) {
+  Response!(string) substr(byte[] key, int start, int end) {
     getClient(key).substr(key, start, end);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) touch(final String key) {
+  Response!(Long) touch(string key) {
     getClient(key).touch(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) touch(final byte[] key) {
+  Response!(Long) touch(byte[] key) {
     getClient(key).touch(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) ttl(final String key) {
+  Response!(Long) ttl(string key) {
     getClient(key).ttl(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) ttl(final byte[] key) {
+  Response!(Long) ttl(byte[] key) {
     getClient(key).ttl(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) type(final String key) {
+  Response!(string) type(string key) {
     getClient(key).type(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) type(final byte[] key) {
+  Response!(string) type(byte[] key) {
     getClient(key).type(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) zadd(final String key, final double score, final String member) {
+  Response!(Long) zadd(string key, double score, string member) {
     getClient(key).zadd(key, score, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final String key, final double score, final String member, final ZAddParams params) {
+  Response!(Long) zadd(string key, double score, string member, ZAddParams params) {
     getClient(key).zadd(key, score, member, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final String key, final Map!(String, Double) scoreMembers) {
+  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers) {
     getClient(key).zadd(key, scoreMembers);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final String key, final Map!(String, Double) scoreMembers, final ZAddParams params) {
+  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
     getClient(key).zadd(key, scoreMembers, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final byte[] key, final double score, final byte[] member) {
+  Response!(Long) zadd(byte[] key, double score, byte[] member) {
     getClient(key).zadd(key, score, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final byte[] key, final double score, final byte[] member, final ZAddParams params) {
+  Response!(Long) zadd(byte[] key, double score, byte[] member, ZAddParams params) {
     getClient(key).zadd(key, score, member, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final byte[] key, final Map!(byte[], Double) scoreMembers) {
+  Response!(Long) zadd(byte[] key, Map!(byte[], Double) scoreMembers) {
     getClient(key).zadd(key, scoreMembers);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zadd(final byte[] key, final Map!(byte[], Double) scoreMembers, final ZAddParams params) {
+  Response!(Long) zadd(byte[] key, Map!(byte[], Double) scoreMembers, ZAddParams params) {
     getClient(key).zadd(key, scoreMembers, params);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcard(final String key) {
+  Response!(Long) zcard(string key) {
     getClient(key).zcard(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcard(final byte[] key) {
+  Response!(Long) zcard(byte[] key) {
     getClient(key).zcard(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcount(final String key, final double min, final double max) {
+  Response!(Long) zcount(string key, double min, double max) {
     getClient(key).zcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcount(final String key, final String min, final String max) {
+  Response!(Long) zcount(string key, string min, string max) {
     getClient(key).zcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcount(final byte[] key, final double min, final double max) {
+  Response!(Long) zcount(byte[] key, double min, double max) {
     getClient(key).zcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zcount(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Long) zcount(byte[] key, byte[] min, byte[] max) {
     getClient(key).zcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Double) zincrby(final String key, final double increment, final String member) {
+  Response!(Double) zincrby(string key, double increment, string member) {
     getClient(key).zincrby(key, increment, member);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) zincrby(final String key, final double increment, final String member, ZIncrByParams params) {
+  Response!(Double) zincrby(string key, double increment, string member, ZIncrByParams params) {
     getClient(key).zincrby(key, increment, member, params);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) zincrby(final byte[] key, final double increment, final byte[] member) {
+  Response!(Double) zincrby(byte[] key, double increment, byte[] member) {
     getClient(key).zincrby(key, increment, member);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) zincrby(final byte[] key, final double increment, final byte[] member, ZIncrByParams params) {
+  Response!(Double) zincrby(byte[] key, double increment, byte[] member, ZIncrByParams params) {
     getClient(key).zincrby(key, increment, member);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Set!(String)) zrange(final String key, final long start, final long stop) {
+  Response!(Set!(string)) zrange(string key, long start, long stop) {
     getClient(key).zrange(key, start, stop);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrange(final byte[] key, final long start, final long stop) {
+  Response!(Set!(byte[])) zrange(byte[] key, long start, long stop) {
     getClient(key).zrange(key, start, stop);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByScore(final String key, final double min, final double max) {
+  Response!(Set!(string)) zrangeByScore(string key, double min, double max) {
     getClient(key).zrangeByScore(key, min, max);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByScore(final byte[] key, final double min, final double max) {
+  Response!(Set!(byte[])) zrangeByScore(byte[] key, double min, double max) {
     getClient(key).zrangeByScore(key, min, max);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByScore(final String key, final String min, final String max) {
+  Response!(Set!(string)) zrangeByScore(string key, string min, string max) {
     getClient(key).zrangeByScore(key, min, max);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByScore(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Set!(byte[])) zrangeByScore(byte[] key, byte[] min, byte[] max) {
     getClient(key).zrangeByScore(key, min, max);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByScore(final String key, final double min, final double max, final int offset,
-      final int count) {
+  Response!(Set!(string)) zrangeByScore(string key, double min, double max, int offset,
+      int count) {
     getClient(key).zrangeByScore(key, min, max, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByScore(final String key, final String min, final String max, final int offset,
-      final int count) {
+  Response!(Set!(string)) zrangeByScore(string key, string min, string max, int offset,
+      int count) {
     getClient(key).zrangeByScore(key, min, max, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByScore(final byte[] key, final double min, final double max, final int offset,
-      final int count) {
+  Response!(Set!(byte[])) zrangeByScore(byte[] key, double min, double max, int offset,
+      int count) {
     getClient(key).zrangeByScore(key, min, max, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByScore(final byte[] key, final byte[] min, final byte[] max, final int offset,
-      final int count) {
+  Response!(Set!(byte[])) zrangeByScore(byte[] key, byte[] min, byte[] max, int offset,
+      int count) {
     getClient(key).zrangeByScore(key, min, max, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final String key, final double min, final double max) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, double min, double max) {
     getClient(key).zrangeByScoreWithScores(key, min, max);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final String key, final String min, final String max) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, string min, string max) {
     getClient(key).zrangeByScoreWithScores(key, min, max);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final byte[] key, final double min, final double max) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(byte[] key, double min, double max) {
     getClient(key).zrangeByScoreWithScores(key, min, max);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max) {
     getClient(key).zrangeByScoreWithScores(key, min, max);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final String key, final double min, final double max,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, double min, double max,
+      int offset, int count) {
     getClient(key).zrangeByScoreWithScores(key, min, max, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final String key, final String min, final String max,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, string min, string max,
+      int offset, int count) {
     getClient(key).zrangeByScoreWithScores(key, min, max, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final byte[] key, final double min, final double max,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(byte[] key, double min, double max,
+      int offset, int count) {
     getClient(key).zrangeByScoreWithScores(key, min, max, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(final byte[] key, final byte[] min, final byte[] max,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max,
+      int offset, int count) {
     getClient(key).zrangeByScoreWithScores(key, min, max, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByScore(final String key, final double max, final double min) {
+  Response!(Set!(string)) zrevrangeByScore(string key, double max, double min) {
     getClient(key).zrevrangeByScore(key, max, min);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByScore(final byte[] key, final double max, final double min) {
+  Response!(Set!(byte[])) zrevrangeByScore(byte[] key, double max, double min) {
     getClient(key).zrevrangeByScore(key, max, min);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByScore(final String key, final String max, final String min) {
+  Response!(Set!(string)) zrevrangeByScore(string key, string max, string min) {
     getClient(key).zrevrangeByScore(key, max, min);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min) {
+  Response!(Set!(byte[])) zrevrangeByScore(byte[] key, byte[] max, byte[] min) {
     getClient(key).zrevrangeByScore(key, max, min);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByScore(final String key, final double max, final double min, final int offset,
-      final int count) {
+  Response!(Set!(string)) zrevrangeByScore(string key, double max, double min, int offset,
+      int count) {
     getClient(key).zrevrangeByScore(key, max, min, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByScore(final String key, final String max, final String min, final int offset,
-      final int count) {
+  Response!(Set!(string)) zrevrangeByScore(string key, string max, string min, int offset,
+      int count) {
     getClient(key).zrevrangeByScore(key, max, min, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByScore(final byte[] key, final double max, final double min, final int offset,
-      final int count) {
+  Response!(Set!(byte[])) zrevrangeByScore(byte[] key, double max, double min, int offset,
+      int count) {
     getClient(key).zrevrangeByScore(key, max, min, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByScore(final byte[] key, final byte[] max, final byte[] min, final int offset,
-      final int count) {
+  Response!(Set!(byte[])) zrevrangeByScore(byte[] key, byte[] max, byte[] min, int offset,
+      int count) {
     getClient(key).zrevrangeByScore(key, max, min, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final String key, final double max, final double min) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, double max, double min) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final String key, final String max, final String min) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, string max, string min) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final byte[] key, final double max, final double min) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(byte[] key, double max, double min) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final byte[] key, final byte[] max, final byte[] min) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final String key, final double max, final double min,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, double max, double min,
+      int offset, int count) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final String key, final String max, final String min,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, string max, string min,
+      int offset, int count) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final byte[] key, final double max, final double min,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(byte[] key, double max, double min,
+      int offset, int count) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(final byte[] key, final byte[] max, final byte[] min,
-      final int offset, final int count) {
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min,
+      int offset, int count) {
     getClient(key).zrevrangeByScoreWithScores(key, max, min, offset, count);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeWithScores(final String key, final long start, final long stop) {
+  Response!(Set!(Tuple)) zrangeWithScores(string key, long start, long stop) {
     getClient(key).zrangeWithScores(key, start, stop);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrangeWithScores(final byte[] key, final long start, final long stop) {
+  Response!(Set!(Tuple)) zrangeWithScores(byte[] key, long start, long stop) {
     getClient(key).zrangeWithScores(key, start, stop);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Long) zrank(final String key, final String member) {
+  Response!(Long) zrank(string key, string member) {
     getClient(key).zrank(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zrank(final byte[] key, final byte[] member) {
+  Response!(Long) zrank(byte[] key, byte[] member) {
     getClient(key).zrank(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zrem(final String key, final String members...) {
+  Response!(Long) zrem(string key, string members...) {
     getClient(key).zrem(key, members);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zrem(final byte[] key, final byte[] members...) {
+  Response!(Long) zrem(byte[] key, byte[] members...) {
     getClient(key).zrem(key, members);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByRank(final String key, final long start, final long stop) {
+  Response!(Long) zremrangeByRank(string key, long start, long stop) {
     getClient(key).zremrangeByRank(key, start, stop);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByRank(final byte[] key, final long start, final long stop) {
+  Response!(Long) zremrangeByRank(byte[] key, long start, long stop) {
     getClient(key).zremrangeByRank(key, start, stop);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByScore(final String key, final double min, final double max) {
+  Response!(Long) zremrangeByScore(string key, double min, double max) {
     getClient(key).zremrangeByScore(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByScore(final String key, final String min, final String max) {
+  Response!(Long) zremrangeByScore(string key, string min, string max) {
     getClient(key).zremrangeByScore(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByScore(final byte[] key, final double min, final double max) {
+  Response!(Long) zremrangeByScore(byte[] key, double min, double max) {
     getClient(key).zremrangeByScore(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByScore(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Long) zremrangeByScore(byte[] key, byte[] min, byte[] max) {
     getClient(key).zremrangeByScore(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Set!(String)) zrevrange(final String key, final long start, final long stop) {
+  Response!(Set!(string)) zrevrange(string key, long start, long stop) {
     getClient(key).zrevrange(key, start, stop);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrange(final byte[] key, final long start, final long stop) {
+  Response!(Set!(byte[])) zrevrange(byte[] key, long start, long stop) {
     getClient(key).zrevrange(key, start, stop);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeWithScores(final String key, final long start, final long stop) {
+  Response!(Set!(Tuple)) zrevrangeWithScores(string key, long start, long stop) {
     getClient(key).zrevrangeWithScores(key, start, stop);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Set!(Tuple)) zrevrangeWithScores(final byte[] key, final long start, final long stop) {
+  Response!(Set!(Tuple)) zrevrangeWithScores(byte[] key, long start, long stop) {
     getClient(key).zrevrangeWithScores(key, start, stop);
     return getResponse(BuilderFactory.TUPLE_ZSET);
   }
 
   override
-  Response!(Long) zrevrank(final String key, final String member) {
+  Response!(Long) zrevrank(string key, string member) {
     getClient(key).zrevrank(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zrevrank(final byte[] key, final byte[] member) {
+  Response!(Long) zrevrank(byte[] key, byte[] member) {
     getClient(key).zrevrank(key, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Double) zscore(final String key, final String member) {
+  Response!(Double) zscore(string key, string member) {
     getClient(key).zscore(key, member);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) zscore(final byte[] key, final byte[] member) {
+  Response!(Double) zscore(byte[] key, byte[] member) {
     getClient(key).zscore(key, member);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Long) zlexcount(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Long) zlexcount(byte[] key, byte[] min, byte[] max) {
     getClient(key).zlexcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zlexcount(final String key, final String min, final String max) {
+  Response!(Long) zlexcount(string key, string min, string max) {
     getClient(key).zlexcount(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByLex(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Set!(byte[])) zrangeByLex(byte[] key, byte[] min, byte[] max) {
     getClient(key).zrangeByLex(key, min, max);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByLex(final String key, final String min, final String max) {
+  Response!(Set!(string)) zrangeByLex(string key, string min, string max) {
     getClient(key).zrangeByLex(key, min, max);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrangeByLex(final byte[] key, final byte[] min, final byte[] max,
-      final int offset, final int count) {
+  Response!(Set!(byte[])) zrangeByLex(byte[] key, byte[] min, byte[] max,
+      int offset, int count) {
     getClient(key).zrangeByLex(key, min, max, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrangeByLex(final String key, final String min, final String max,
-      final int offset, final int count) {
+  Response!(Set!(string)) zrangeByLex(string key, string min, string max,
+      int offset, int count) {
     getClient(key).zrangeByLex(key, min, max, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min) {
+  Response!(Set!(byte[])) zrevrangeByLex(byte[] key, byte[] max, byte[] min) {
     getClient(key).zrevrangeByLex(key, max, min);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByLex(final String key, final String max, final String min) {
+  Response!(Set!(string)) zrevrangeByLex(string key, string max, string min) {
     getClient(key).zrevrangeByLex(key, max, min);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Set!(byte[])) zrevrangeByLex(final byte[] key, final byte[] max, final byte[] min,
-      final int offset, final int count) {
+  Response!(Set!(byte[])) zrevrangeByLex(byte[] key, byte[] max, byte[] min,
+      int offset, int count) {
     getClient(key).zrevrangeByLex(key, max, min, offset, count);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  Response!(Set!(String)) zrevrangeByLex(final String key, final String max, final String min,
-      final int offset, final int count) {
+  Response!(Set!(string)) zrevrangeByLex(string key, string max, string min,
+      int offset, int count) {
     getClient(key).zrevrangeByLex(key, max, min, offset, count);
     return getResponse(BuilderFactory.STRING_ZSET);
   }
 
   override
-  Response!(Long) zremrangeByLex(final byte[] key, final byte[] min, final byte[] max) {
+  Response!(Long) zremrangeByLex(byte[] key, byte[] min, byte[] max) {
     getClient(key).zremrangeByLex(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) zremrangeByLex(final String key, final String min, final String max) {
+  Response!(Long) zremrangeByLex(string key, string min, string max) {
     getClient(key).zremrangeByLex(key, min, max);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) bitcount(final String key) {
+  Response!(Long) bitcount(string key) {
     getClient(key).bitcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) bitcount(final String key, final long start, final long end) {
+  Response!(Long) bitcount(string key, long start, long end) {
     getClient(key).bitcount(key, start, end);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) bitcount(final byte[] key) {
+  Response!(Long) bitcount(byte[] key) {
     getClient(key).bitcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) bitcount(final byte[] key, final long start, final long end) {
+  Response!(Long) bitcount(byte[] key, long start, long end) {
     getClient(key).bitcount(key, start, end);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(byte[]) dump(final String key) {
+  Response!(byte[]) dump(string key) {
     getClient(key).dump(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(byte[]) dump(final byte[] key) {
+  Response!(byte[]) dump(byte[] key) {
     getClient(key).dump(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(String) migrate(final String host, final int port,
-      final String key, final int destinationDb, final int timeout) {
+  Response!(string) migrate(string host, int port,
+      string key, int destinationDb, int timeout) {
     getClient(key).migrate(host, port, key, destinationDb, timeout);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) migrate(final String host, final int port,
-      final byte[] key, final int destinationDb, final int timeout) {
+  Response!(string) migrate(string host, int port,
+      byte[] key, int destinationDb, int timeout) {
     getClient(key).migrate(host, port, key, destinationDb, timeout);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Long) objectRefcount(final String key) {
+  Response!(Long) objectRefcount(string key) {
     getClient(key).objectRefcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) objectRefcount(final byte[] key) {
+  Response!(Long) objectRefcount(byte[] key) {
     getClient(key).objectRefcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) objectEncoding(final String key) {
+  Response!(string) objectEncoding(string key) {
     getClient(key).objectEncoding(key);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(byte[]) objectEncoding(final byte[] key) {
+  Response!(byte[]) objectEncoding(byte[] key) {
     getClient(key).objectEncoding(key);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  Response!(Long) objectIdletime(final String key) {
+  Response!(Long) objectIdletime(string key) {
     getClient(key).objectIdletime(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) objectIdletime(final byte[] key) {
+  Response!(Long) objectIdletime(byte[] key) {
     getClient(key).objectIdletime(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pexpire(final String key, final long milliseconds) {
+  Response!(Long) pexpire(string key, long milliseconds) {
     getClient(key).pexpire(key, milliseconds);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pexpire(final byte[] key, final long milliseconds) {
+  Response!(Long) pexpire(byte[] key, long milliseconds) {
     getClient(key).pexpire(key, milliseconds);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pexpireAt(final String key, final long millisecondsTimestamp) {
+  Response!(Long) pexpireAt(string key, long millisecondsTimestamp) {
     getClient(key).pexpireAt(key, millisecondsTimestamp);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pexpireAt(final byte[] key, final long millisecondsTimestamp) {
+  Response!(Long) pexpireAt(byte[] key, long millisecondsTimestamp) {
     getClient(key).pexpireAt(key, millisecondsTimestamp);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pttl(final String key) {
+  Response!(Long) pttl(string key) {
     getClient(key).pttl(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pttl(final byte[] key) {
+  Response!(Long) pttl(byte[] key) {
     getClient(key).pttl(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(String) restore(final String key, final int ttl, final byte[] serializedValue) {
+  Response!(string) restore(string key, int ttl, byte[] serializedValue) {
     getClient(key).restore(key, ttl, serializedValue);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) restore(final byte[] key, final int ttl, final byte[] serializedValue) {
+  Response!(string) restore(byte[] key, int ttl, byte[] serializedValue) {
     getClient(key).restore(key, ttl, serializedValue);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) restoreReplace(final String key, final int ttl, final byte[] serializedValue) {
+  Response!(string) restoreReplace(string key, int ttl, byte[] serializedValue) {
     getClient(key).restoreReplace(key, ttl, serializedValue);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) restoreReplace(final byte[] key, final int ttl, final byte[] serializedValue) {
+  Response!(string) restoreReplace(byte[] key, int ttl, byte[] serializedValue) {
     getClient(key).restoreReplace(key, ttl, serializedValue);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Double) incrByFloat(final String key, final double increment) {
+  Response!(Double) incrByFloat(string key, double increment) {
     getClient(key).incrByFloat(key, increment);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) incrByFloat(final byte[] key, final double increment) {
+  Response!(Double) incrByFloat(byte[] key, double increment) {
     getClient(key).incrByFloat(key, increment);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(String) psetex(final String key, final long milliseconds, final String value) {
+  Response!(string) psetex(string key, long milliseconds, string value) {
     getClient(key).psetex(key, milliseconds, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(String) psetex(final byte[] key, final long milliseconds, final byte[] value) {
+  Response!(string) psetex(byte[] key, long milliseconds, byte[] value) {
     getClient(key).psetex(key, milliseconds, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  Response!(Double) hincrByFloat(final String key, final String field, final double increment) {
+  Response!(Double) hincrByFloat(string key, string field, double increment) {
     getClient(key).hincrByFloat(key, field, increment);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) hincrByFloat(final byte[] key, final byte[] field, final double increment) {
+  Response!(Double) hincrByFloat(byte[] key, byte[] field, double increment) {
     getClient(key).hincrByFloat(key, field, increment);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Long) pfadd(final byte[] key, final byte[] elements...) {
+  Response!(Long) pfadd(byte[] key, byte[] elements...) {
     getClient(key).pfadd(key, elements);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pfcount(final byte[] key) {
+  Response!(Long) pfcount(byte[] key) {
     getClient(key).pfcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pfadd(final String key, final String elements...) {
+  Response!(Long) pfadd(string key, string elements...) {
     getClient(key).pfadd(key, elements);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) pfcount(final String key) {
+  Response!(Long) pfcount(string key) {
     getClient(key).pfcount(key);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) geoadd(final byte[] key, final double longitude, final double latitude, final byte[] member) {
+  Response!(Long) geoadd(byte[] key, double longitude, double latitude, byte[] member) {
     getClient(key).geoadd(key, longitude, latitude, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) geoadd(final byte[] key, final Map!(byte[], GeoCoordinate) memberCoordinateMap) {
+  Response!(Long) geoadd(byte[] key, Map!(byte[], GeoCoordinate) memberCoordinateMap) {
     getClient(key).geoadd(key, memberCoordinateMap);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) geoadd(final String key, final double longitude, final double latitude, final String member) {
+  Response!(Long) geoadd(string key, double longitude, double latitude, string member) {
     getClient(key).geoadd(key, longitude, latitude, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) geoadd(final String key, final Map!(String, GeoCoordinate) memberCoordinateMap) {
+  Response!(Long) geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
     getClient(key).geoadd(key, memberCoordinateMap);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Double) geodist(final byte[] key, final byte[] member1, final byte[] member2) {
+  Response!(Double) geodist(byte[] key, byte[] member1, byte[] member2) {
     getClient(key).geodist(key, member1, member2);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) geodist(final byte[] key, final byte[] member1, final byte[] member2, final GeoUnit unit) {
+  Response!(Double) geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit) {
     getClient(key).geodist(key, member1, member2, unit);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) geodist(final String key, final String member1, final String member2) {
+  Response!(Double) geodist(string key, string member1, string member2) {
     getClient(key).geodist(key, member1, member2);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(Double) geodist(final String key, final String member1, final String member2, final GeoUnit unit) {
+  Response!(Double) geodist(string key, string member1, string member2, GeoUnit unit) {
     getClient(key).geodist(key, member1, member2);
     return getResponse(BuilderFactory.DOUBLE);
   }
 
   override
-  Response!(List!(byte[])) geohash(final byte[] key, final byte[] members...) {
+  Response!(List!(byte[])) geohash(byte[] key, byte[] members...) {
     getClient(key).geohash(key, members);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  Response!(List!(String)) geohash(final String key, final String members...) {
+  Response!(List!(string)) geohash(string key, string members...) {
     getClient(key).geohash(key, members);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  Response!(List!(GeoCoordinate)) geopos(final byte[] key, final byte[] members...) {
+  Response!(List!(GeoCoordinate)) geopos(byte[] key, byte[] members...) {
     getClient(key).geopos(key, members);
     return getResponse(BuilderFactory.GEO_COORDINATE_LIST);
   }
 
   override
-  Response!(List!(GeoCoordinate)) geopos(final String key, final String members...) {
+  Response!(List!(GeoCoordinate)) geopos(string key, string members...) {
     getClient(key).geopos(key, members);
     return getResponse(BuilderFactory.GEO_COORDINATE_LIST);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadius(final byte[] key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadius(byte[] key, double longitude, double latitude,
+      double radius, GeoUnit unit) {
     getClient(key).georadius(key, longitude, latitude, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(final byte[] key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(byte[] key, double longitude, double latitude,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusReadonly(key, longitude, latitude, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadius(final byte[] key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadius(byte[] key, double longitude, double latitude,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadius(key, longitude, latitude, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(final byte[] key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(byte[] key, double longitude, double latitude,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusReadonly(key, longitude, latitude, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadius(final String key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadius(string key, double longitude, double latitude,
+      double radius, GeoUnit unit) {
     getClient(key).georadius(key, longitude, latitude, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(final String key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(string key, double longitude, double latitude,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusReadonly(key, longitude, latitude, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadius(final String key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadius(string key, double longitude, double latitude,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadius(key, longitude, latitude, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(final String key, final double longitude, final double latitude,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(string key, double longitude, double latitude,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusReadonly(key, longitude, latitude, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(final byte[] key, final byte[] member,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(byte[] key, byte[] member,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusByMember(key, member, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(final byte[] key, final byte[] member,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(byte[] key, byte[] member,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusByMemberReadonly(key, member, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(final byte[] key, final byte[] member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(byte[] key, byte[] member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusByMember(key, member, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(final byte[] key, final byte[] member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(byte[] key, byte[] member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusByMemberReadonly(key, member, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(final String key, final String member,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(string key, string member,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusByMember(key, member, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(final String key, final String member,
-      final double radius, final GeoUnit unit) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(string key, string member,
+      double radius, GeoUnit unit) {
     getClient(key).georadiusByMemberReadonly(key, member, radius, unit);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(final String key, final String member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(string key, string member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusByMember(key, member, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(final String key, final String member,
-      final double radius, final GeoUnit unit, final GeoRadiusParam param) {
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(string key, string member,
+      double radius, GeoUnit unit, GeoRadiusParam param) {
     getClient(key).georadiusByMemberReadonly(key, member, radius, unit, param);
     return getResponse(BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT);
   }
 
   override
-  Response!(List!(Long)) bitfield(final String key, final String elements...) {
+  Response!(List!(Long)) bitfield(string key, string elements...) {
     getClient(key).bitfield(key, elements);
     return getResponse(BuilderFactory.LONG_LIST);
   }
 
   override
-  Response!(List!(Long)) bitfield(final byte[] key, final byte[] elements...) {
+  Response!(List!(Long)) bitfield(byte[] key, byte[] elements...) {
     getClient(key).bitfield(key, elements);
     return getResponse(BuilderFactory.LONG_LIST);
   }
 
   override
-  Response!(Long) hstrlen(final String key, final String field) {
+  Response!(Long) hstrlen(string key, string field) {
     getClient(key).hstrlen(key, field);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  Response!(Long) hstrlen(final byte[] key, final byte[] field) {
+  Response!(Long) hstrlen(byte[] key, byte[] field) {
     getClient(key).hstrlen(key, field);
     return getResponse(BuilderFactory.LONG);
   }
   
   override
-  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash){
+  Response!(StreamEntryID) xadd(string key, StreamEntryID id, Map!(string, string) hash){
     return xadd(key, id, hash, Long.MAX_VALUE, true);    
   }
   
@@ -1802,7 +1802,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
 
   override
-  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength){
+  Response!(StreamEntryID) xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength){
     getClient(key).xadd(key, id, hash, maxLen, approximateLength);
     return getResponse(BuilderFactory.STREAM_ENTRY_ID);    
   }
@@ -1816,7 +1816,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
   
   override
-  Response!(Long) xlen(String key){
+  Response!(Long) xlen(string key){
     getClient(key).xlen(key);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1828,7 +1828,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(StreamEntry)) xrange(String key, StreamEntryID start, StreamEntryID end, int count){
+  Response!(List!(StreamEntry)) xrange(string key, StreamEntryID start, StreamEntryID end, int count){
     getClient(key).xrange(key, start, end, count);
     return getResponse(BuilderFactory.STREAM_ENTRY_LIST);        
   }
@@ -1840,7 +1840,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(List!(StreamEntry)) xrevrange(String key, StreamEntryID end, StreamEntryID start, int count){
+  Response!(List!(StreamEntry)) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count){
     getClient(key).xrevrange(key, start, end, count);
     return getResponse(BuilderFactory.STREAM_ENTRY_LIST);            
   }
@@ -1853,7 +1853,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
    
   override
-  Response!(Long) xack(String key, String group,  StreamEntryID ids...){
+  Response!(Long) xack(string key, string group,  StreamEntryID ids...){
     getClient(key).xack(key, group, ids);
     return getResponse(BuilderFactory.LONG);                
   }
@@ -1865,31 +1865,31 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
   
   override
-  Response!(String) xgroupCreate( String key, String groupname, StreamEntryID id, bool makeStream){
+  Response!(string) xgroupCreate( string key, string groupname, StreamEntryID id, bool makeStream){
     getClient(key).xgroupCreate(key, groupname, id, makeStream);
     return getResponse(BuilderFactory.STRING);
   }
   
   override
-  Response!(String) xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream){
+  Response!(string) xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream){
     getClient(key).xgroupCreate(key, groupname, id, makeStream);
     return getResponse(BuilderFactory.STRING);    
   }
   
   override
-  Response!(String) xgroupSetID( String key, String groupname, StreamEntryID id){
+  Response!(string) xgroupSetID( string key, string groupname, StreamEntryID id){
     getClient(key).xgroupSetID(key, groupname, id);
     return getResponse(BuilderFactory.STRING);
   }
   
   override
-  Response!(String) xgroupSetID(byte[] key, byte[] groupname, byte[] id){
+  Response!(string) xgroupSetID(byte[] key, byte[] groupname, byte[] id){
     getClient(key).xgroupSetID(key, groupname, id);
     return getResponse(BuilderFactory.STRING);    
   }
   
   override
-  Response!(Long) xgroupDestroy( String key, String groupname){
+  Response!(Long) xgroupDestroy( string key, string groupname){
     getClient(key).xgroupDestroy(key, groupname);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1901,19 +1901,19 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
   
   override
-  Response!(String) xgroupDelConsumer( String key, String groupname, String consumername){
+  Response!(string) xgroupDelConsumer( string key, string groupname, string consumername){
     getClient(key).xgroupDelConsumer(key, groupname, consumername);
     return getResponse(BuilderFactory.STRING);
   }
   
   override
-  Response!(String) xgroupDelConsumer(byte[] key, byte[] groupname, byte[] consumername){
+  Response!(string) xgroupDelConsumer(byte[] key, byte[] groupname, byte[] consumername){
     getClient(key).xgroupDelConsumer(key, groupname, consumername);
     return getResponse(BuilderFactory.STRING);    
   }
 
   override
-  Response!(List!(StreamPendingEntry)) xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername){
+  Response!(List!(StreamPendingEntry)) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername){
     getClient(key).xpending(key, groupname, start, end, count, consumername);
     return getResponse(BuilderFactory.STREAM_PENDING_ENTRY_LIST);        
   }
@@ -1926,7 +1926,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
 
   
   override
-  Response!(Long) xdel( String key, StreamEntryID ids...){
+  Response!(Long) xdel( string key, StreamEntryID ids...){
     getClient(key).xdel(key, ids);
     return getResponse(BuilderFactory.LONG);        
   }
@@ -1938,7 +1938,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
   
   override
-  Response!(Long) xtrim( String key, long maxLen, bool approximateLength){
+  Response!(Long) xtrim( string key, long maxLen, bool approximateLength){
     getClient(key).xtrim(key, maxLen, approximateLength);
     return getResponse(BuilderFactory.LONG);        
   }
@@ -1950,7 +1950,7 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
  
   override
-  Response!(List!(StreamEntry)) xclaim( String key, String group, String consumername, long minIdleTime, 
+  Response!(List!(StreamEntry)) xclaim( string key, string group, string consumername, long minIdleTime, 
       long newIdleTime, int retries, bool force, StreamEntryID ids...){
     getClient(key).xclaim(key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
     return getResponse(BuilderFactory.STREAM_ENTRY_LIST);        
@@ -1964,8 +1964,8 @@ abstract class PipelineBase : Queable implements BinaryRedisPipeline, RedisPipel
   }
 
   override
-  Response!(Object) sendCommand(ProtocolCommand cmd, String args...){
-    String key = args.length > 0 ? args[0] : cmd.toString();
+  Response!(Object) sendCommand(ProtocolCommand cmd, string args...){
+    string key = args.length > 0 ? args[0] : cmd.toString();
     getClient(key).sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);
   }

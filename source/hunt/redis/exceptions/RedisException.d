@@ -2,7 +2,7 @@ module hunt.redis.exceptions.RedisException;
 
 class RedisException : RuntimeException {
 
-  RedisException(String message) {
+  RedisException(string message) {
     super(message);
   }
 
@@ -10,7 +10,7 @@ class RedisException : RuntimeException {
     super(e);
   }
 
-  RedisException(String message, Throwable cause) {
+  RedisException(string message, Throwable cause) {
     super(message, cause);
   }
 }

@@ -2,7 +2,7 @@ module hunt.redis.exceptions.RedisClusterMaxAttemptsException;
 
 class RedisClusterMaxAttemptsException : RedisClusterOperationException {
 
-  RedisClusterMaxAttemptsException(String message) {
+  RedisClusterMaxAttemptsException(string message) {
     super(message);
   }
 
@@ -10,7 +10,7 @@ class RedisClusterMaxAttemptsException : RedisClusterOperationException {
     super(cause);
   }
 
-  RedisClusterMaxAttemptsException(String message, Throwable cause) {
+  RedisClusterMaxAttemptsException(string message, Throwable cause) {
     super(message, cause);
   }
 }

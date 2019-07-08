@@ -1,31 +1,31 @@
 module hunt.redis.DebugParams;
 
 class DebugParams {
-  private String[] command;
+  private string[] command;
 
-  private DebugParams() {
+  private this() {
 
   }
 
-  String[] getCommand() {
+  string[] getCommand() {
     return command;
   }
   
   static DebugParams SEGFAULT() {
     DebugParams debugParams = new DebugParams();
-    debugParams.command = new String[] { "SEGFAULT" };
+    debugParams.command = ["SEGFAULT"];
     return debugParams;
   }
 
-  static DebugParams OBJECT(String key) {
+  static DebugParams OBJECT(string key) {
     DebugParams debugParams = new DebugParams();
-    debugParams.command = new String[] { "OBJECT", key };
+    debugParams.command = ["OBJECT", key];
     return debugParams;
   }
 
   static DebugParams RELOAD() {
     DebugParams debugParams = new DebugParams();
-    debugParams.command = new String[] { "RELOAD" };
+    debugParams.command = ["RELOAD"];
     return debugParams;
   }
 }

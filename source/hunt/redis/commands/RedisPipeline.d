@@ -21,338 +21,338 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 public interface RedisPipeline {
-  Response!(Long) append(String key, String value);
+  Response!(Long) append(string key, string value);
 
-  Response!(List!(String)) blpop(String arg);
+  Response!(List!(string)) blpop(string arg);
 
-  Response!(List!(String)) brpop(String arg);
+  Response!(List!(string)) brpop(string arg);
 
-  Response!(Long) decr(String key);
+  Response!(Long) decr(string key);
 
-  Response!(Long) decrBy(String key, long decrement);
+  Response!(Long) decrBy(string key, long decrement);
 
-  Response!(Long) del(String key);
+  Response!(Long) del(string key);
 
-  Response!(Long) unlink(String key);
+  Response!(Long) unlink(string key);
 
-  Response!(String) echo(String string);
+  Response!(string) echo(string string);
 
-  Response!(Boolean) exists(String key);
+  Response!(Boolean) exists(string key);
 
-  Response!(Long) expire(String key, int seconds);
+  Response!(Long) expire(string key, int seconds);
 
-  Response!(Long) pexpire(String key, long milliseconds);
+  Response!(Long) pexpire(string key, long milliseconds);
 
-  Response!(Long) expireAt(String key, long unixTime);
+  Response!(Long) expireAt(string key, long unixTime);
 
-  Response!(Long) pexpireAt(String key, long millisecondsTimestamp);
+  Response!(Long) pexpireAt(string key, long millisecondsTimestamp);
 
-  Response!(String) get(String key);
+  Response!(string) get(string key);
 
-  Response!(Boolean) getbit(String key, long offset);
+  Response!(Boolean) getbit(string key, long offset);
 
-  Response!(String) getrange(String key, long startOffset, long endOffset);
+  Response!(string) getrange(string key, long startOffset, long endOffset);
 
-  Response!(String) getSet(String key, String value);
+  Response!(string) getSet(string key, string value);
 
-  Response!(Long) hdel(String key, String field...);
+  Response!(Long) hdel(string key, string field...);
 
-  Response!(Boolean) hexists(String key, String field);
+  Response!(Boolean) hexists(string key, string field);
 
-  Response!(String) hget(String key, String field);
+  Response!(string) hget(string key, string field);
 
-  Response!(Map!(String, String)) hgetAll(String key);
+  Response!(Map!(string, string)) hgetAll(string key);
 
-  Response!(Long) hincrBy(String key, String field, long value);
+  Response!(Long) hincrBy(string key, string field, long value);
 
-  Response!(Set!(String)) hkeys(String key);
+  Response!(Set!(string)) hkeys(string key);
 
-  Response!(Long) hlen(String key);
+  Response!(Long) hlen(string key);
 
-  Response!(List!(String)) hmget(String key, String fields...);
+  Response!(List!(string)) hmget(string key, string fields...);
 
-  Response!(String) hmset(String key, Map!(String, String) hash);
+  Response!(string) hmset(string key, Map!(string, string) hash);
 
-  Response!(Long) hset(String key, String field, String value);
+  Response!(Long) hset(string key, string field, string value);
 
-  Response!(Long) hset(String key, Map!(String, String) hash);
+  Response!(Long) hset(string key, Map!(string, string) hash);
 
-  Response!(Long) hsetnx(String key, String field, String value);
+  Response!(Long) hsetnx(string key, string field, string value);
 
-  Response!(List!(String)) hvals(String key);
+  Response!(List!(string)) hvals(string key);
 
-  Response!(Long) incr(String key);
+  Response!(Long) incr(string key);
 
-  Response!(Long) incrBy(String key, long increment);
+  Response!(Long) incrBy(string key, long increment);
 
-  Response!(String) lindex(String key, long index);
+  Response!(string) lindex(string key, long index);
 
-  Response!(Long) linsert(String key, ListPosition where, String pivot, String value);
+  Response!(Long) linsert(string key, ListPosition where, string pivot, string value);
 
-  Response!(Long) llen(String key);
+  Response!(Long) llen(string key);
 
-  Response!(String) lpop(String key);
+  Response!(string) lpop(string key);
 
-  Response!(Long) lpush(String key, String string...);
+  Response!(Long) lpush(string key, string string...);
 
-  Response!(Long) lpushx(String key, String string...);
+  Response!(Long) lpushx(string key, string string...);
 
-  Response!(List!(String)) lrange(String key, long start, long stop);
+  Response!(List!(string)) lrange(string key, long start, long stop);
 
-  Response!(Long) lrem(String key, long count, String value);
+  Response!(Long) lrem(string key, long count, string value);
 
-  Response!(String) lset(String key, long index, String value);
+  Response!(string) lset(string key, long index, string value);
 
-  Response!(String) ltrim(String key, long start, long stop);
+  Response!(string) ltrim(string key, long start, long stop);
 
-  Response!(Long) move(String key, int dbIndex);
+  Response!(Long) move(string key, int dbIndex);
 
-  Response!(Long) persist(String key);
+  Response!(Long) persist(string key);
 
-  Response!(String) rpop(String key);
+  Response!(string) rpop(string key);
 
-  Response!(Long) rpush(String key, String string...);
+  Response!(Long) rpush(string key, string string...);
 
-  Response!(Long) rpushx(String key, String string...);
+  Response!(Long) rpushx(string key, string string...);
 
-  Response!(Long) sadd(String key, String member...);
+  Response!(Long) sadd(string key, string member...);
 
-  Response!(Long) scard(String key);
+  Response!(Long) scard(string key);
 
-  Response!(Boolean) sismember(String key, String member);
+  Response!(Boolean) sismember(string key, string member);
 
-  Response!(String) set(String key, String value);
+  Response!(string) set(string key, string value);
 
-  Response!(Boolean) setbit(String key, long offset, bool value);
+  Response!(Boolean) setbit(string key, long offset, bool value);
 
-  Response!(String) setex(String key, int seconds, String value);
+  Response!(string) setex(string key, int seconds, string value);
 
-  Response!(Long) setnx(String key, String value);
+  Response!(Long) setnx(string key, string value);
 
-  Response!(Long) setrange(String key, long offset, String value);
+  Response!(Long) setrange(string key, long offset, string value);
 
-  Response!(Set!(String)) smembers(String key);
+  Response!(Set!(string)) smembers(string key);
 
-  Response!(List!(String)) sort(String key);
+  Response!(List!(string)) sort(string key);
 
-  Response!(List!(String)) sort(String key, SortingParams sortingParameters);
+  Response!(List!(string)) sort(string key, SortingParams sortingParameters);
 
-  Response!(String) spop(String key);
+  Response!(string) spop(string key);
 
-  Response!(Set!(String)) spop(String key, long count);
+  Response!(Set!(string)) spop(string key, long count);
 
-  Response!(String) srandmember(String key);
+  Response!(string) srandmember(string key);
 
-  Response!(Long) srem(String key, String member...);
+  Response!(Long) srem(string key, string member...);
 
-  Response!(Long) strlen(String key);
+  Response!(Long) strlen(string key);
 
-  Response!(String) substr(String key, int start, int end);
+  Response!(string) substr(string key, int start, int end);
 
-  Response!(Long) touch(String key);
+  Response!(Long) touch(string key);
 
-  Response!(Long) ttl(String key);
+  Response!(Long) ttl(string key);
 
-  Response!(Long) pttl(String key);
+  Response!(Long) pttl(string key);
 
-  Response!(String) type(String key);
+  Response!(string) type(string key);
 
-  Response!(Long) zadd(String key, double score, String member);
+  Response!(Long) zadd(string key, double score, string member);
 
-  Response!(Long) zadd(String key, double score, String member, ZAddParams params);
+  Response!(Long) zadd(string key, double score, string member, ZAddParams params);
 
-  Response!(Long) zadd(String key, Map!(String, Double) scoreMembers);
+  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers);
 
-  Response!(Long) zadd(String key, Map!(String, Double) scoreMembers, ZAddParams params);
+  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params);
 
-  Response!(Long) zcard(String key);
+  Response!(Long) zcard(string key);
 
-  Response!(Long) zcount(String key, double min, double max);
+  Response!(Long) zcount(string key, double min, double max);
 
-  Response!(Long) zcount(String key, String min, String max);
+  Response!(Long) zcount(string key, string min, string max);
 
-  Response!(Double) zincrby(String key, double increment, String member);
+  Response!(Double) zincrby(string key, double increment, string member);
 
-  Response!(Double) zincrby(String key, double increment, String member, ZIncrByParams params);
+  Response!(Double) zincrby(string key, double increment, string member, ZIncrByParams params);
 
-  Response!(Set!(String)) zrange(String key, long start, long stop);
+  Response!(Set!(string)) zrange(string key, long start, long stop);
 
-  Response!(Set!(String)) zrangeByScore(String key, double min, double max);
+  Response!(Set!(string)) zrangeByScore(string key, double min, double max);
 
-  Response!(Set!(String)) zrangeByScore(String key, String min, String max);
+  Response!(Set!(string)) zrangeByScore(string key, string min, string max);
 
-  Response!(Set!(String)) zrangeByScore(String key, double min, double max, int offset, int count);
+  Response!(Set!(string)) zrangeByScore(string key, double min, double max, int offset, int count);
 
-  Response!(Set!(String)) zrangeByScore(String key, String min, String max, int offset, int count);
+  Response!(Set!(string)) zrangeByScore(string key, string min, string max, int offset, int count);
 
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(String key, double min, double max);
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, double min, double max);
 
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(String key, double min, double max, int offset,
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, double min, double max, int offset,
       int count);
 
-  Response!(Set!(String)) zrevrangeByScore(String key, double max, double min);
+  Response!(Set!(string)) zrevrangeByScore(string key, double max, double min);
 
-  Response!(Set!(String)) zrevrangeByScore(String key, String max, String min);
+  Response!(Set!(string)) zrevrangeByScore(string key, string max, string min);
 
-  Response!(Set!(String)) zrevrangeByScore(String key, double max, double min, int offset, int count);
+  Response!(Set!(string)) zrevrangeByScore(string key, double max, double min, int offset, int count);
 
-  Response!(Set!(String)) zrevrangeByScore(String key, String max, String min, int offset, int count);
+  Response!(Set!(string)) zrevrangeByScore(string key, string max, string min, int offset, int count);
 
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(String key, double max, double min);
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, double max, double min);
 
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(String key, String max, String min);
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, string max, string min);
 
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(String key, double max, double min, int offset,
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, double max, double min, int offset,
       int count);
 
-  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(String key, String max, String min, int offset,
+  Response!(Set!(Tuple)) zrevrangeByScoreWithScores(string key, string max, string min, int offset,
       int count);
 
-  Response!(Set!(Tuple)) zrangeWithScores(String key, long start, long stop);
+  Response!(Set!(Tuple)) zrangeWithScores(string key, long start, long stop);
 
-  Response!(Long) zrank(String key, String member);
+  Response!(Long) zrank(string key, string member);
 
-  Response!(Long) zrem(String key, String members...);
+  Response!(Long) zrem(string key, string members...);
 
-  Response!(Long) zremrangeByRank(String key, long start, long stop);
+  Response!(Long) zremrangeByRank(string key, long start, long stop);
 
-  Response!(Long) zremrangeByScore(String key, double min, double max);
+  Response!(Long) zremrangeByScore(string key, double min, double max);
 
-  Response!(Long) zremrangeByScore(String key, String min, String max);
+  Response!(Long) zremrangeByScore(string key, string min, string max);
 
-  Response!(Set!(String)) zrevrange(String key, long start, long stop);
+  Response!(Set!(string)) zrevrange(string key, long start, long stop);
 
-  Response!(Set!(Tuple)) zrevrangeWithScores(String key, long start, long stop);
+  Response!(Set!(Tuple)) zrevrangeWithScores(string key, long start, long stop);
 
-  Response!(Long) zrevrank(String key, String member);
+  Response!(Long) zrevrank(string key, string member);
 
-  Response!(Double) zscore(String key, String member);
+  Response!(Double) zscore(string key, string member);
 
-  Response!(Long) zlexcount(String key, String min, String max);
+  Response!(Long) zlexcount(string key, string min, string max);
 
-  Response!(Set!(String)) zrangeByLex(String key, String min, String max);
+  Response!(Set!(string)) zrangeByLex(string key, string min, string max);
 
-  Response!(Set!(String)) zrangeByLex(String key, String min, String max,
+  Response!(Set!(string)) zrangeByLex(string key, string min, string max,
       int offset, int count);
 
-  Response!(Set!(String)) zrevrangeByLex(String key, String max, String min);
+  Response!(Set!(string)) zrevrangeByLex(string key, string max, string min);
 
-  Response!(Set!(String)) zrevrangeByLex(String key, String max, String min,
+  Response!(Set!(string)) zrevrangeByLex(string key, string max, string min,
       int offset, int count);
 
-  Response!(Long) zremrangeByLex(String key, String min, String max);
+  Response!(Long) zremrangeByLex(string key, string min, string max);
 
-  Response!(Long) bitcount(String key);
+  Response!(Long) bitcount(string key);
 
-  Response!(Long) bitcount(String key, long start, long end);
+  Response!(Long) bitcount(string key, long start, long end);
 
-  Response!(Long) pfadd(String key, String elements...);
+  Response!(Long) pfadd(string key, string elements...);
 
-  Response!(Long) pfcount(String key);
+  Response!(Long) pfcount(string key);
   
-  Response!(List!(Long)) bitfield(String key, String arguments...);
+  Response!(List!(Long)) bitfield(string key, string arguments...);
   
-  Response!(Long) hstrlen(String key, String field);
+  Response!(Long) hstrlen(string key, string field);
 
-  Response!(byte[]) dump(String key);
+  Response!(byte[]) dump(string key);
 
-  Response!(String) restore(String key, int ttl, byte[] serializedValue);
+  Response!(string) restore(string key, int ttl, byte[] serializedValue);
 
-  Response!(String) restoreReplace(String key, int ttl, byte[] serializedValue);
+  Response!(string) restoreReplace(string key, int ttl, byte[] serializedValue);
 
-  Response!(String) migrate(String host, int port, String key, int destinationDB, int timeout);
+  Response!(string) migrate(string host, int port, string key, int destinationDB, int timeout);
 
   // Geo Commands
 
-  Response!(Long) geoadd(String key, double longitude, double latitude, String member);
+  Response!(Long) geoadd(string key, double longitude, double latitude, string member);
 
-  Response!(Long) geoadd(String key, Map!(String, GeoCoordinate) memberCoordinateMap);
+  Response!(Long) geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap);
 
-  Response!(Double) geodist(String key, String member1, String member2);
+  Response!(Double) geodist(string key, string member1, string member2);
 
-  Response!(Double) geodist(String key, String member1, String member2, GeoUnit unit);
+  Response!(Double) geodist(string key, string member1, string member2, GeoUnit unit);
 
-  Response!(List!(String)) geohash(String key, String members...);
+  Response!(List!(string)) geohash(string key, string members...);
 
-  Response!(List!(GeoCoordinate)) geopos(String key, String members...);
+  Response!(List!(GeoCoordinate)) geopos(string key, string members...);
 
-  Response!(List!(GeoRadiusResponse)) georadius(String key, double longitude, double latitude,
+  Response!(List!(GeoRadiusResponse)) georadius(string key, double longitude, double latitude,
       double radius, GeoUnit unit);
 
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(String key, double longitude, double latitude,
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(string key, double longitude, double latitude,
       double radius, GeoUnit unit);
 
-  Response!(List!(GeoRadiusResponse)) georadius(String key, double longitude, double latitude,
+  Response!(List!(GeoRadiusResponse)) georadius(string key, double longitude, double latitude,
       double radius, GeoUnit unit, GeoRadiusParam param);
 
-  Response!(List!(GeoRadiusResponse)) georadiusReadonly(String key, double longitude, double latitude,
+  Response!(List!(GeoRadiusResponse)) georadiusReadonly(string key, double longitude, double latitude,
       double radius, GeoUnit unit, GeoRadiusParam param);
 
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(String key, String member, double radius,
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(string key, string member, double radius,
       GeoUnit unit);
 
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(String key, String member, double radius,
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(string key, string member, double radius,
       GeoUnit unit);
 
-  Response!(List!(GeoRadiusResponse)) georadiusByMember(String key, String member, double radius,
+  Response!(List!(GeoRadiusResponse)) georadiusByMember(string key, string member, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(String key, String member, double radius,
+  Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(string key, string member, double radius,
       GeoUnit unit, GeoRadiusParam param);
   
-  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash);
+  Response!(StreamEntryID) xadd(string key, StreamEntryID id, Map!(string, string) hash);
 
-  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength);
+  Response!(StreamEntryID) xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength);
   
-  Response!(Long) xlen(String key);
+  Response!(Long) xlen(string key);
 
-  Response!(List!(StreamEntry)) xrange(String key, StreamEntryID start, StreamEntryID end, int count);
+  Response!(List!(StreamEntry)) xrange(string key, StreamEntryID start, StreamEntryID end, int count);
 
-  Response!(List!(StreamEntry)) xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
+  Response!(List!(StreamEntry)) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count);
    
-  Response!(Long) xack(String key, String group,  StreamEntryID ids...);
+  Response!(Long) xack(string key, string group,  StreamEntryID ids...);
   
-  Response!(String) xgroupCreate( String key, String groupname, StreamEntryID id, bool makeStream);
+  Response!(string) xgroupCreate( string key, string groupname, StreamEntryID id, bool makeStream);
   
-  Response!(String) xgroupSetID( String key, String groupname, StreamEntryID id);
+  Response!(string) xgroupSetID( string key, string groupname, StreamEntryID id);
   
-  Response!(Long) xgroupDestroy( String key, String groupname);
+  Response!(Long) xgroupDestroy( string key, string groupname);
   
-  Response!(String) xgroupDelConsumer( String key, String groupname, String consumername);
+  Response!(string) xgroupDelConsumer( string key, string groupname, string consumername);
 
-  Response!(List!(StreamPendingEntry)) xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
+  Response!(List!(StreamPendingEntry)) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername);
   
-  Response!(Long) xdel( String key, StreamEntryID ids...);
+  Response!(Long) xdel( string key, StreamEntryID ids...);
   
-  Response!(Long) xtrim( String key, long maxLen, bool approximateLength);
+  Response!(Long) xtrim( string key, long maxLen, bool approximateLength);
  
-  Response!(List!(StreamEntry)) xclaim( String key, String group, String consumername, long minIdleTime, 
+  Response!(List!(StreamEntry)) xclaim( string key, string group, string consumername, long minIdleTime, 
       long newIdleTime, int retries, bool force, StreamEntryID ids...);
 
-  Response!(Long) bitpos(String key, bool value);
+  Response!(Long) bitpos(string key, bool value);
 
-  Response!(Long) bitpos(String key, bool value, BitPosParams params);
+  Response!(Long) bitpos(string key, bool value, BitPosParams params);
 
-  Response!(String) set(String key, String value, SetParams params);
+  Response!(string) set(string key, string value, SetParams params);
 
-  Response!(List!(String)) srandmember(String key, int count);
+  Response!(List!(string)) srandmember(string key, int count);
 
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(String key, String min, String max);
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, string min, string max);
 
-  Response!(Set!(Tuple)) zrangeByScoreWithScores(String key, String min, String max, int offset,
+  Response!(Set!(Tuple)) zrangeByScoreWithScores(string key, string min, string max, int offset,
       int count);
 
-  Response!(Long) objectRefcount(String key);
+  Response!(Long) objectRefcount(string key);
 
-  Response!(String) objectEncoding(String key);
+  Response!(string) objectEncoding(string key);
 
-  Response!(Long) objectIdletime(String key);
+  Response!(Long) objectIdletime(string key);
 
-  Response!(Double) incrByFloat(String key, double increment);
+  Response!(Double) incrByFloat(string key, double increment);
 
-  Response!(String) psetex(String key, long milliseconds, String value);
+  Response!(string) psetex(string key, long milliseconds, string value);
 
-  Response!(Double) hincrByFloat(String key, String field, double increment);
+  Response!(Double) hincrByFloat(string key, string field, double increment);
 
-  Response!(Object) sendCommand(ProtocolCommand cmd, String args...);
+  Response!(Object) sendCommand(ProtocolCommand cmd, string args...);
 }

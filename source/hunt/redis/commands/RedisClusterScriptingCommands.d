@@ -3,58 +3,58 @@ module hunt.redis.commands.RedisClusterScriptingCommands;
 import hunt.collection.List;
 
 public interface RedisClusterScriptingCommands {
-  Object eval(String script, int keyCount, String params...);
+  Object eval(string script, int keyCount, string params...);
 
-  Object eval(String script, List!(String) keys, List!(String) args);
-
-  /**
-   * @param script
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Object eval(String script, String sampleKey);
-
-  /**
-   * @param sha1
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Object evalsha(String sha1, String sampleKey);
-
-  Object evalsha(String sha1, List!(String) keys, List!(String) args);
-
-  Object evalsha(String sha1, int keyCount, String params...);
-
-  /**
-   * @param sha1
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Boolean scriptExists(String sha1, String sampleKey);
-
-  /**
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @param sha1
-   * @return 
-   */
-  List!(Boolean) scriptExists(String sampleKey, String sha1...);
+  Object eval(string script, List!(string) keys, List!(string) args);
 
   /**
    * @param script
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  String scriptLoad(String script, String sampleKey);
+  Object eval(string script, string sampleKey);
+
+  /**
+   * @param sha1
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @return 
+   */
+  Object evalsha(string sha1, string sampleKey);
+
+  Object evalsha(string sha1, List!(string) keys, List!(string) args);
+
+  Object evalsha(string sha1, int keyCount, string params...);
+
+  /**
+   * @param sha1
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @return 
+   */
+  Boolean scriptExists(string sha1, string sampleKey);
+
+  /**
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @param sha1
+   * @return 
+   */
+  List!(Boolean) scriptExists(string sampleKey, string sha1...);
+
+  /**
+   * @param script
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @return 
+   */
+  string scriptLoad(string script, string sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  String scriptFlush(String sampleKey);
+  string scriptFlush(string sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  String scriptKill(String sampleKey);
+  string scriptKill(string sampleKey);
 }

@@ -6,7 +6,7 @@ module hunt.redis.exceptions.RedisExhaustedPoolException;
  */
 class RedisExhaustedPoolException : RedisException {
 
-  RedisExhaustedPoolException(String message) {
+  RedisExhaustedPoolException(string message) {
     super(message);
   }
 
@@ -14,7 +14,7 @@ class RedisExhaustedPoolException : RedisException {
     super(e);
   }
 
-  RedisExhaustedPoolException(String message, Throwable cause) {
+  RedisExhaustedPoolException(string message, Throwable cause) {
     super(message, cause);
   }
 }

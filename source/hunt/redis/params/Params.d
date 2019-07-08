@@ -8,28 +8,28 @@ import hunt.redis.util.SafeEncoder;
 
 abstract class Params {
 
-  private Map!(String, Object) params;
+  private Map!(string, Object) params;
 
-  @SuppressWarnings("unchecked")
-  <T> T getParam(String name) {
-    if (params == null) return null;
+  
+  <T> T getParam(string name) {
+    if (params is null) return null;
 
     return (T) params.get(name);
   }
 
   byte[][] getByteParams() {
-    if (params == null) return new byte[0][];
+    if (params is null) return new byte[0][];
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
 
-    foreach(Entry!(String, Object) param ; params.entrySet()) {
+    foreach(Entry!(string, Object) param ; params.entrySet()) {
       byteParams.add(SafeEncoder.encode(param.getKey()));
 
       Object value = param.getValue();
-      if (value != null) {
+      if (value !is null) {
         if (value instanceof byte[]) {
           byteParams.add((byte[]) value);
         } else {
-          byteParams.add(SafeEncoder.encode(String.valueOf(value)));
+          byteParams.add(SafeEncoder.encode(string.valueOf(value)));
         }
       }
     }
@@ -37,22 +37,22 @@ abstract class Params {
     return byteParams.toArray(new byte[byteParams.size()][]);
   }
 
-  protected bool contains(String name) {
-    if (params == null) return false;
+  protected bool contains(string name) {
+    if (params is null) return false;
 
     return params.containsKey(name);
   }
 
-  protected void addParam(String name, Object value) {
-    if (params == null) {
-      params = new HashMap!(String, Object)();
+  protected void addParam(string name, Object value) {
+    if (params is null) {
+      params = new HashMap!(string, Object)();
     }
     params.put(name, value);
   }
 
-  protected void addParam(String name) {
-    if (params == null) {
-      params = new HashMap!(String, Object)();
+  protected void addParam(string name) {
+    if (params is null) {
+      params = new HashMap!(string, Object)();
     }
     params.put(name, null);
   }

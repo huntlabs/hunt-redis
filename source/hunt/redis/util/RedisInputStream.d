@@ -23,7 +23,7 @@ import hunt.redis.exceptions.RedisConnectionException;
  */
 class RedisInputStream : FilterInputStream {
 
-  protected final byte[] buf;
+  protected byte[] buf;
 
   protected int count, limit;
 
@@ -44,8 +44,8 @@ class RedisInputStream : FilterInputStream {
     return buf[count++];
   }
 
-  String readLine() {
-    final StringBuilder sb = new StringBuilder();
+  string readLine() {
+    StringBuilder sb = new StringBuilder();
     while (true) {
       ensureFill();
 
@@ -64,7 +64,7 @@ class RedisInputStream : FilterInputStream {
       }
     }
 
-    final String reply = sb.toString();
+    string reply = sb.toString();
     if (reply.length() == 0) {
       throw new RedisConnectionException("It seems like server has closed the connection.");
     }
@@ -83,7 +83,7 @@ class RedisInputStream : FilterInputStream {
     ensureFill();
 
     int pos = count;
-    final byte[] buf = this.buf;
+    byte[] buf = this.buf;
     while (true) {
       if (pos == limit) {
         return readLineBytesSlowly();
@@ -100,8 +100,8 @@ class RedisInputStream : FilterInputStream {
       }
     }
 
-    final int N = (pos - count) - 2;
-    final byte[] line = new byte[N];
+    int N = (pos - count) - 2;
+    byte[] line = new byte[N];
     System.arraycopy(buf, count, line, 0, N);
     count = pos;
     return line;
@@ -109,8 +109,8 @@ class RedisInputStream : FilterInputStream {
 
   /**
    * Slow path in case a line of bytes cannot be read in one #fill() operation. This is still faster
-   * than creating the StrinbBuilder, String, then encoding as byte[] in Protocol, then decoding
-   * back into a String.
+   * than creating the StrinbBuilder, string, then encoding as byte[] in Protocol, then decoding
+   * back into a string.
    */
   private byte[] readLineBytesSlowly() {
     ByteArrayOutputStream bout = null;
@@ -126,14 +126,14 @@ class RedisInputStream : FilterInputStream {
           break;
         }
 
-        if (bout == null) {
+        if (bout is null) {
           bout = new ByteArrayOutputStream(16);
         }
 
         bout.write(b);
         bout.write(c);
       } else {
-        if (bout == null) {
+        if (bout is null) {
           bout = new ByteArrayOutputStream(16);
         }
 
@@ -141,7 +141,7 @@ class RedisInputStream : FilterInputStream {
       }
     }
 
-    return bout == null ? new byte[0] : bout.toByteArray();
+    return bout is null ? new byte[0] : bout.toByteArray();
   }
 
   int readIntCrLf() {
@@ -149,11 +149,11 @@ class RedisInputStream : FilterInputStream {
   }
 
   long readLongCrLf() {
-    final byte[] buf = this.buf;
+    byte[] buf = this.buf;
 
     ensureFill();
 
-    final bool isNeg = buf[count] == '-';
+    bool isNeg = buf[count] == '-';
     if (isNeg) {
       ++count;
     }
@@ -162,7 +162,7 @@ class RedisInputStream : FilterInputStream {
     while (true) {
       ensureFill();
 
-      final int b = buf[count++];
+      int b = buf[count++];
       if (b == '\r') {
         ensureFill();
 
@@ -183,7 +183,7 @@ class RedisInputStream : FilterInputStream {
   int read(byte[] b, int off, int len) throws RedisConnectionException {
     ensureFill();
 
-    final int length = Math.min(limit - count, len);
+    int length = Math.min(limit - count, len);
     System.arraycopy(buf, count, b, off, length);
     count += length;
     return length;

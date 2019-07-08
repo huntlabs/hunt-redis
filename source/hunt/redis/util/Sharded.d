@@ -14,8 +14,8 @@ class Sharded!(R, S extends ShardInfo!(R)) {
 
   enum int DEFAULT_WEIGHT = 1;
   private TreeMap!(Long, S) nodes;
-  private final Hashing algo;
-  private final Map!(ShardInfo!(R), R) resources = new LinkedHashMap!(ShardInfo!(R), R)();
+  private Hashing algo;
+  private Map!(ShardInfo!(R), R) resources = new LinkedHashMap!(ShardInfo!(R), R)();
 
   /**
    * The default pattern used for extracting a key tag. The pattern must have a group (between
@@ -24,7 +24,7 @@ class Sharded!(R, S extends ShardInfo!(R)) {
    */
   private Pattern tagPattern = null;
   // the tag is anything between {}
-  static final Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");
+  static Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");
 
   Sharded(List!(S) shards) {
     this(shards, Hashing.MURMUR_HASH); // MD5 is really not good as we works
@@ -52,12 +52,12 @@ class Sharded!(R, S extends ShardInfo!(R)) {
     nodes = new TreeMap!(Long, S)();
 
     for (int i = 0; i != shards.size(); ++i) {
-      final S shardInfo = shards.get(i);
-      if (shardInfo.getName() == null) for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
-        nodes.put(this.algo.hash("SHARD-" + i + "-NODE-" + n), shardInfo);
+      S shardInfo = shards.get(i);
+      if (shardInfo.getName() is null) for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
+        nodes.put(this.algo.hash("SHARD-" ~ i ~ "-NODE-" ~ n), shardInfo);
       }
       else for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
-        nodes.put(this.algo.hash(shardInfo.getName() + "*" + n), shardInfo);
+        nodes.put(this.algo.hash(shardInfo.getName() ~ "*" ~ n), shardInfo);
       }
       resources.put(shardInfo, shardInfo.createResource());
     }
@@ -67,7 +67,7 @@ class Sharded!(R, S extends ShardInfo!(R)) {
     return resources.get(getShardInfo(key));
   }
 
-  R getShard(String key) {
+  R getShard(string key) {
     return resources.get(getShardInfo(key));
   }
 
@@ -79,7 +79,7 @@ class Sharded!(R, S extends ShardInfo!(R)) {
     return tail.get(tail.firstKey());
   }
 
-  S getShardInfo(String key) {
+  S getShardInfo(string key) {
     return getShardInfo(SafeEncoder.encode(getKeyTag(key)));
   }
 
@@ -90,8 +90,8 @@ class Sharded!(R, S extends ShardInfo!(R)) {
    * @param key
    * @return The tag if it exists, or the original key
    */
-  String getKeyTag(String key) {
-    if (tagPattern != null) {
+  string getKeyTag(string key) {
+    if (tagPattern !is null) {
       Matcher m = tagPattern.matcher(key);
       if (m.find()) return m.group(1);
     }

@@ -24,11 +24,11 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   List!(byte[]) mget(byte[] keys...);
 
-  String mset(byte[] keysvalues...);
+  string mset(byte[] keysvalues...);
 
   Long msetnx(byte[] keysvalues...);
 
-  String rename(byte[] oldkey, byte[] newkey);
+  string rename(byte[] oldkey, byte[] newkey);
 
   Long renamenx(byte[] oldkey, byte[] newkey);
 
@@ -70,7 +70,7 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   Long bitop(BitOP op, byte[] destKey, byte[] srcKeys...);
 
-  String pfmerge(byte[] destkey, byte[] sourcekeys...);
+  string pfmerge(byte[] destkey, byte[] sourcekeys...);
 
   Long pfcount(byte[] keys...);
 
@@ -80,7 +80,7 @@ public interface MultiKeyBinaryRedisClusterCommands {
 
   Set!(byte[]) keys(byte[] pattern);
   
-  List!(byte[]) xread(final int count, final long block, final Map!(byte[], byte[]) streams);
+  List!(byte[]) xread(int count, long block, Map!(byte[], byte[]) streams);
   
   List!(byte[]) xreadGroup(byte[] groupname, byte[] consumer, int count, long block, bool noAck, Map!(byte[], byte[]) streams);
 }

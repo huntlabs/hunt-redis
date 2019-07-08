@@ -16,7 +16,7 @@ import hunt.collection.List;
 import hunt.redis.util.SafeEncoder;
 
 /**
- * Builder Class for {@link Redis#sort(String, SortingParams) SORT} Parameters.
+ * Builder Class for {@link Redis#sort(string, SortingParams) SORT} Parameters.
  */
 class SortingParams {
   private List!(byte[]) params = new ArrayList!(byte[])();
@@ -33,7 +33,7 @@ class SortingParams {
    * @param pattern
    * @return the SortingParams Object
    */
-  SortingParams by(final String pattern) {
+  SortingParams by(string pattern) {
     return by(SafeEncoder.encode(pattern));
   }
 
@@ -49,7 +49,7 @@ class SortingParams {
    * @param pattern
    * @return the SortingParams Object
    */
-  SortingParams by(final byte[] pattern) {
+  SortingParams by(byte[] pattern) {
     params.add(BY.raw);
     params.add(pattern);
     return this;
@@ -58,7 +58,7 @@ class SortingParams {
   /**
    * No sorting.
    * <p>
-   * This is useful if you want to retrieve a external key (using {@link #get(String...) GET}) but
+   * This is useful if you want to retrieve a external key (using {@link #get(string...) GET}) but
    * you don't want the sorting overhead.
    * @return the SortingParams Object
    */
@@ -96,7 +96,7 @@ class SortingParams {
    * @param count
    * @return the SortingParams Object
    */
-  SortingParams limit(final int start, final int count) {
+  SortingParams limit(int start, int count) {
     params.add(LIMIT.raw);
     params.add(Protocol.toByteArray(start));
     params.add(Protocol.toByteArray(count));
@@ -127,8 +127,8 @@ class SortingParams {
    * @param patterns
    * @return the SortingParams Object
    */
-  SortingParams get(String patterns...) {
-    foreach(final String pattern ; patterns) {
+  SortingParams get(string patterns...) {
+    foreach(string pattern ; patterns) {
       params.add(GET.raw);
       params.add(SafeEncoder.encode(pattern));
     }
@@ -150,7 +150,7 @@ class SortingParams {
    * @return the SortingParams Object
    */
   SortingParams get(byte[] patterns...) {
-    foreach(final byte[] pattern ; patterns) {
+    foreach(byte[] pattern ; patterns) {
       params.add(GET.raw);
       params.add(pattern);
     }

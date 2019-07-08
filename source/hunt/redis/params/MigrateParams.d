@@ -23,7 +23,7 @@ class MigrateParams : Params {
     return this;
   }
   
-  MigrateParams auth(String password) {
+  MigrateParams auth(string password) {
     addParam(AUTH, password);
     return this;
   }

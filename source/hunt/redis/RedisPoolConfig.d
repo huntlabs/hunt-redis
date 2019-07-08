@@ -1,6 +1,6 @@
 module hunt.redis.RedisPoolConfig;
 
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 class RedisPoolConfig : GenericObjectPoolConfig {
   RedisPoolConfig() {

@@ -23,7 +23,7 @@ public interface BinaryScriptingCommands {
 
   byte[] scriptLoad(byte[] script);
 
-  String scriptFlush();
+  string scriptFlush();
 
-  String scriptKill();
+  string scriptKill();
 }

@@ -4,7 +4,7 @@ import hunt.redis.HostAndPort;
 
 class RedisMovedDataException : RedisRedirectionException {
 
-  RedisMovedDataException(String message, HostAndPort targetNode, int slot) {
+  RedisMovedDataException(string message, HostAndPort targetNode, int slot) {
     super(message, targetNode, slot);
   }
 
@@ -12,7 +12,7 @@ class RedisMovedDataException : RedisRedirectionException {
     super(cause, targetNode, slot);
   }
 
-  RedisMovedDataException(String message, Throwable cause, HostAndPort targetNode, int slot) {
+  RedisMovedDataException(string message, Throwable cause, HostAndPort targetNode, int slot) {
     super(message, cause, targetNode, slot);
   }
 }

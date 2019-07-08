@@ -22,9 +22,9 @@ import hunt.redis.params.ZIncrByParams;
  * Common interface for sharded and non-sharded BinaryRedis
  */
 public interface BinaryRedisCommands {
-  String set(byte[] key, byte[] value);
+  string set(byte[] key, byte[] value);
 
-  String set(byte[] key, byte[] value, SetParams params);
+  string set(byte[] key, byte[] value, SetParams params);
 
   byte[] get(byte[] key);
 
@@ -32,13 +32,13 @@ public interface BinaryRedisCommands {
 
   Long persist(byte[] key);
 
-  String type(byte[] key);
+  string type(byte[] key);
 
   byte[] dump(byte[] key);
 
-  String restore(byte[] key, int ttl, byte[] serializedValue);
+  string restore(byte[] key, int ttl, byte[] serializedValue);
 
-  String restoreReplace(byte[] key, int ttl, byte[] serializedValue);
+  string restoreReplace(byte[] key, int ttl, byte[] serializedValue);
 
   Long expire(byte[] key, int seconds);
 
@@ -68,9 +68,9 @@ public interface BinaryRedisCommands {
 
   Long setnx(byte[] key, byte[] value);
 
-  String setex(byte[] key, int seconds, byte[] value);
+  string setex(byte[] key, int seconds, byte[] value);
 
-  String psetex(byte[] key, long milliseconds, byte[] value);
+  string psetex(byte[] key, long milliseconds, byte[] value);
 
   Long decrBy(byte[] key, long decrement);
 
@@ -94,7 +94,7 @@ public interface BinaryRedisCommands {
 
   Long hsetnx(byte[] key, byte[] field, byte[] value);
 
-  String hmset(byte[] key, Map!(byte[], byte[]) hash);
+  string hmset(byte[] key, Map!(byte[], byte[]) hash);
 
   List!(byte[]) hmget(byte[] key, byte[] fields...);
 
@@ -122,11 +122,11 @@ public interface BinaryRedisCommands {
 
   List!(byte[]) lrange(byte[] key, long start, long stop);
 
-  String ltrim(byte[] key, long start, long stop);
+  string ltrim(byte[] key, long start, long stop);
 
   byte[] lindex(byte[] key, long index);
 
-  String lset(byte[] key, long index, byte[] value);
+  string lset(byte[] key, long index, byte[] value);
 
   Long lrem(byte[] key, long count, byte[] value);
 
@@ -302,9 +302,9 @@ public interface BinaryRedisCommands {
   List!(GeoRadiusResponse) georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit,
       GeoRadiusParam param);
 
-  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor);
+  ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor);
 
-  ScanResult<Map.Entry!(byte[], byte[])> hscan(byte[] key, byte[] cursor, ScanParams params);
+  ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor, ScanParams params);
 
   ScanResult!(byte[]) sscan(byte[] key, byte[] cursor);
 
@@ -331,25 +331,25 @@ public interface BinaryRedisCommands {
   Long hstrlen(byte[] key, byte[] field);
   
   
-  byte[] xadd(final byte[] key, final byte[] id, final Map!(byte[], byte[]) hash, long maxLen, bool approximateLength);
+  byte[] xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, bool approximateLength);
 
-  Long xlen(final byte[] key);
+  Long xlen(byte[] key);
  
-  List!(byte[]) xrange(final byte[] key, final byte[] start, final byte[] end, final long count);
+  List!(byte[]) xrange(byte[] key, byte[] start, byte[] end, long count);
 
-  List!(byte[]) xrevrange(final byte[] key, final byte[] end, final byte[] start, final int count);
+  List!(byte[]) xrevrange(byte[] key, byte[] end, byte[] start, int count);
 
-  Long xack(final byte[] key, final byte[] group, final byte[] ids...);
+  Long xack(byte[] key, byte[] group, byte[] ids...);
  
-  String xgroupCreate(final byte[] key, final byte[] consumer, final byte[] id, bool makeStream);
+  string xgroupCreate(byte[] key, byte[] consumer, byte[] id, bool makeStream);
 
-  String xgroupSetID(final byte[] key, final byte[] consumer, final byte[] id);
+  string xgroupSetID(byte[] key, byte[] consumer, byte[] id);
 
-  Long xgroupDestroy(final byte[] key, final byte[] consumer);
+  Long xgroupDestroy(byte[] key, byte[] consumer);
 
-  String xgroupDelConsumer(final byte[] key, final byte[] consumer, final byte[] consumerName);
+  string xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName);
  
-  Long xdel(final byte[] key, final byte[] ids...);
+  Long xdel(byte[] key, byte[] ids...);
 
   Long xtrim(byte[] key, long maxLen, bool approximateLength);
 

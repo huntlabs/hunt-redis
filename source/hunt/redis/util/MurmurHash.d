@@ -142,7 +142,7 @@ class MurmurHash : Hashing {
   }
 
   override
-  long hash(String key) {
+  long hash(string key) {
     return hash(SafeEncoder.encode(key));
   }
 }

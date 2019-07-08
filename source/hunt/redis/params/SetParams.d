@@ -71,11 +71,11 @@ class SetParams : Params {
 
     if (contains(EX)) {
       byteParams.add(SafeEncoder.encode(EX));
-      byteParams.add(SafeEncoder.encode(String.valueOf(getParam(EX))));
+      byteParams.add(SafeEncoder.encode(string.valueOf(getParam(EX))));
     }
     if (contains(PX)) {
       byteParams.add(SafeEncoder.encode(PX));
-      byteParams.add(SafeEncoder.encode(String.valueOf(getParam(PX))));
+      byteParams.add(SafeEncoder.encode(string.valueOf(getParam(PX))));
     }
 
     return byteParams.toArray(new byte[byteParams.size()][]);

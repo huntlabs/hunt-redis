@@ -5,7 +5,7 @@ import hunt.redis.Module;
 import hunt.collection.List;
 
 public interface ModuleCommands {
-  String moduleLoad(String path);
-  String moduleUnload(String name);
+  string moduleLoad(string path);
+  string moduleUnload(string name);
   List!(Module) moduleList();
 }

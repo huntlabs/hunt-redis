@@ -1,5 +1,5 @@
 module hunt.redis.ClusterReset;
 
-public enum ClusterReset {
+enum ClusterReset {
   SOFT, HARD
 }

@@ -3,21 +3,21 @@ module hunt.redis.commands.ScriptingCommands;
 import hunt.collection.List;
 
 public interface ScriptingCommands {
-  Object eval(String script, int keyCount, String params...);
+  Object eval(string script, int keyCount, string params...);
 
-  Object eval(String script, List!(String) keys, List!(String) args);
+  Object eval(string script, List!(string) keys, List!(string) args);
 
-  Object eval(String script);
+  Object eval(string script);
 
-  Object evalsha(String sha1);
+  Object evalsha(string sha1);
 
-  Object evalsha(String sha1, List!(String) keys, List!(String) args);
+  Object evalsha(string sha1, List!(string) keys, List!(string) args);
 
-  Object evalsha(String sha1, int keyCount, String params...);
+  Object evalsha(string sha1, int keyCount, string params...);
 
-  Boolean scriptExists(String sha1);
+  Boolean scriptExists(string sha1);
 
-  List!(Boolean) scriptExists(String sha1...);
+  List!(Boolean) scriptExists(string sha1...);
 
-  String scriptLoad(String script);
+  string scriptLoad(string script);
 }

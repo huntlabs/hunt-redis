@@ -10,7 +10,7 @@ class Tuple : Comparable!(Tuple) {
   private byte[] element;
   private Double score;
 
-  Tuple(String element, Double score) {
+  Tuple(string element, Double score) {
     this(SafeEncoder.encode(element), score);
   }
 
@@ -21,12 +21,12 @@ class Tuple : Comparable!(Tuple) {
   }
 
   override
-  size_t toHash() @trusted nothrow() {
-    final int prime = 31;
+  size_t toHash() @trusted nothrow {
+    int prime = 31;
     int result = 1;
     result = prime * result;
     if (null != element) {
-      foreach(final byte b ; element) {
+      foreach(byte b ; element) {
         result = prime * result + b;
       }
     }
@@ -36,9 +36,9 @@ class Tuple : Comparable!(Tuple) {
   }
 
   override
-  bool equals(Object obj) {
-    if (obj == null) return false;
-    if (obj == this) return true;
+  bool opEquals(Object obj) {
+    if (obj is null) return false;
+    if (obj is this) return true;
     if (!(obj instanceof Tuple)) return false;
 
     Tuple other = (Tuple) obj;
@@ -58,7 +58,7 @@ class Tuple : Comparable!(Tuple) {
     return ByteArrayComparator.compare(t1.element, t2.element);
   }
 
-  String getElement() {
+  string getElement() {
     if (null != element) {
       return SafeEncoder.encode(element);
     } else {
@@ -75,7 +75,7 @@ class Tuple : Comparable!(Tuple) {
   }
 
   override
-  String toString() {
+  string toString() {
     return '[' + SafeEncoder.encode(element) + ',' + score + ']';
   }
 }

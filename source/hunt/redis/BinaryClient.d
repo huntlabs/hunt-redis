@@ -32,7 +32,7 @@ class BinaryClient : Connection {
 
   private bool isInMulti;
 
-  private String password;
+  private string password;
 
   private int db;
 
@@ -42,19 +42,19 @@ class BinaryClient : Connection {
     super();
   }
 
-  this(String host) {
+  this(string host) {
     super(host);
   }
 
-  this(String host, int port) {
+  this(string host, int port) {
     super(host, port);
   }
 
-  this(String host, int port, bool ssl) {
+  this(string host, int port, bool ssl) {
     super(host, port, ssl);
   }
 
-  this(String host, int port, bool ssl,
+  this(string host, int port, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -83,7 +83,7 @@ class BinaryClient : Connection {
     return result;
   }
 
-  void setPassword(String password) {
+  void setPassword(string password) {
     this.password = password;
   }
 
@@ -95,7 +95,7 @@ class BinaryClient : Connection {
   void connect() {
     if (!isConnected()) {
       super.connect();
-      if (password != null) {
+      if (password !is null) {
         auth(password);
         getStatusCodeReply();
       }
@@ -577,7 +577,7 @@ class BinaryClient : Connection {
     brpop(args.toArray(new byte[args.size()][]));
   }
 
-  void auth(String password) {
+  void auth(string password) {
     setPassword(password);
     sendCommand(AUTH, password);
   }
@@ -792,7 +792,7 @@ class BinaryClient : Connection {
     sendCommand(INFO);
   }
 
-  void info(String section) {
+  void info(string section) {
     sendCommand(INFO, section);
   }
 
@@ -800,8 +800,8 @@ class BinaryClient : Connection {
     sendCommand(MONITOR);
   }
 
-  void slaveof(String host, int port) {
-    sendCommand(SLAVEOF, host, String.valueOf(port));
+  void slaveof(string host, int port) {
+    sendCommand(SLAVEOF, host, string.valueOf(port));
   }
 
   void slaveofNoOne() {
@@ -1028,7 +1028,7 @@ class BinaryClient : Connection {
     sendCommand(CLIENT, Keyword.KILL.raw, ipPort);
   }
 
-  void clientKill(String ip, int port) {
+  void clientKill(string ip, int port) {
     sendCommand(CLIENT, Keyword.KILL.name(), ip + ':' + port);
   }
 
@@ -1056,13 +1056,13 @@ class BinaryClient : Connection {
     sendCommand(TIME);
   }
 
-  void migrate(String host, int port, byte[] key, int destinationDb,
+  void migrate(string host, int port, byte[] key, int destinationDb,
       int timeout) {
     sendCommand(MIGRATE, SafeEncoder.encode(host), toByteArray(port), key,
         toByteArray(destinationDb), toByteArray(timeout));
   }
 
-  void migrate(String host, int port, int destinationDB,
+  void migrate(string host, int port, int destinationDB,
       int timeout, MigrateParams params, byte[] keys...) {
     byte[][] bparams = params.getByteParams();
     int len = 5 + bparams.length + 1 + keys.length;
@@ -1233,7 +1233,7 @@ class BinaryClient : Connection {
   private ArrayList!(byte[]) convertScoreMembersToByteArrays(Map!(byte[], Double) scoreMembers) {
     ArrayList!(byte[]) args = new ArrayList!(byte[])(scoreMembers.size() * 2);
 
-    foreach(Map.Entry!(byte[], Double) entry ; scoreMembers.entrySet()) {
+    foreach(MapEntry!(byte[], Double) entry ; scoreMembers.entrySet()) {
       args.add(toByteArray(entry.getValue()));
       args.add(entry.getKey());
     }
@@ -1420,7 +1420,7 @@ class BinaryClient : Connection {
   
   void xpending(byte[] key, byte[] groupname, byte[] start, 
                 byte[] end, int count, byte[] consumername) {
-    if(consumername == null) {
+    if(consumername is null) {
       sendCommand(XPENDING, key, groupname, start, end, toByteArray(count));
     } else {
       sendCommand(XPENDING, key, groupname, start, end, toByteArray(count), consumername);

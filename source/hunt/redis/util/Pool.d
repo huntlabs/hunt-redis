@@ -1,11 +1,11 @@
 module hunt.redis.util.Pool;
 
-import java.io.Closeable;
+import hunt.util.Common;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.pool2.PooledObjectFactory;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import hunt.pool.PooledObjectFactory;
+import hunt.pool.impl.GenericObjectPool;
+import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
@@ -20,7 +20,7 @@ abstract class Pool!(T) implements Closeable {
   Pool() {
   }
 
-  Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
+  Pool(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
     initPool(poolConfig, factory);
   }
 
@@ -33,9 +33,9 @@ abstract class Pool!(T) implements Closeable {
     return this.internalPool.isClosed();
   }
 
-  void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
+  void initPool(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
 
-    if (this.internalPool != null) {
+    if (this.internalPool !is null) {
       try {
         closeInternalPool();
       } catch (Exception e) {
@@ -60,8 +60,8 @@ abstract class Pool!(T) implements Closeable {
     }
   }
 
-  protected void returnResourceObject(final T resource) {
-    if (resource == null) {
+  protected void returnResourceObject(T resource) {
+    if (resource is null) {
       return;
     }
     try {
@@ -71,14 +71,14 @@ abstract class Pool!(T) implements Closeable {
     }
   }
 
-  protected void returnBrokenResource(final T resource) {
-    if (resource != null) {
+  protected void returnBrokenResource(T resource) {
+    if (resource !is null) {
       returnBrokenResourceObject(resource);
     }
   }
 
-  protected void returnResource(final T resource) {
-    if (resource != null) {
+  protected void returnResource(T resource) {
+    if (resource !is null) {
       returnResourceObject(resource);
     }
   }
@@ -87,7 +87,7 @@ abstract class Pool!(T) implements Closeable {
     closeInternalPool();
   }
 
-  protected void returnBrokenResourceObject(final T resource) {
+  protected void returnBrokenResourceObject(T resource) {
     try {
       internalPool.invalidateObject(resource);
     } catch (Exception e) {
@@ -176,7 +176,7 @@ abstract class Pool!(T) implements Closeable {
   }
 
   private bool poolInactive() {
-    return this.internalPool == null || this.internalPool.isClosed();
+    return this.internalPool is null || this.internalPool.isClosed();
   }
 
   void addObjects(int count) {

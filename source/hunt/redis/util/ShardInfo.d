@@ -16,5 +16,5 @@ abstract class ShardInfo!(T) {
 
   protected abstract T createResource();
 
-  abstract String getName();
+  abstract string getName();
 }

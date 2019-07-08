@@ -6,11 +6,11 @@ class RedisClusterException : RedisDataException {
     super(cause);
   }
 
-  RedisClusterException(String message, Throwable cause) {
+  RedisClusterException(string message, Throwable cause) {
     super(message, cause);
   }
 
-  RedisClusterException(String message) {
+  RedisClusterException(string message) {
     super(message);
   }
 }

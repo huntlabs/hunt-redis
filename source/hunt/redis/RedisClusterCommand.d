@@ -11,8 +11,8 @@ import hunt.redis.util.RedisClusterCRC16;
 
 abstract class RedisClusterCommand!(T) {
 
-  private final RedisClusterConnectionHandler connectionHandler;
-  private final int maxAttempts;
+  private RedisClusterConnectionHandler connectionHandler;
+  private int maxAttempts;
 
   RedisClusterCommand(RedisClusterConnectionHandler connectionHandler, int maxAttempts) {
     this.connectionHandler = connectionHandler;
@@ -21,12 +21,12 @@ abstract class RedisClusterCommand!(T) {
 
   abstract T execute(Redis connection);
 
-  T run(String key) {
+  T run(string key) {
     return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
   }
 
-  T run(int keyCount, String keys...) {
-    if (keys == null || keys.length == 0) {
+  T run(int keyCount, string keys...) {
+    if (keys is null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
 
@@ -37,7 +37,7 @@ abstract class RedisClusterCommand!(T) {
         int nextSlot = RedisClusterCRC16.getSlot(keys[i]);
         if (slot != nextSlot) {
           throw new RedisClusterOperationException("No way to dispatch this command to Redis "
-              + "Cluster because keys have different slots.");
+              ~ "Cluster because keys have different slots.");
         }
       }
     }
@@ -50,7 +50,7 @@ abstract class RedisClusterCommand!(T) {
   }
 
   T runBinary(int keyCount, byte[] keys...) {
-    if (keys == null || keys.length == 0) {
+    if (keys is null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
 
@@ -61,7 +61,7 @@ abstract class RedisClusterCommand!(T) {
         int nextSlot = RedisClusterCRC16.getSlot(keys[i]);
         if (slot != nextSlot) {
           throw new RedisClusterOperationException("No way to dispatch this command to Redis "
-              + "Cluster because keys have different slots.");
+              ~ "Cluster because keys have different slots.");
         }
       }
     }
@@ -81,7 +81,7 @@ abstract class RedisClusterCommand!(T) {
     }
   }
 
-  private T runWithRetries(final int slot, int attempts, bool tryRandomNode, RedisRedirectionException redirect) {
+  private T runWithRetries(int slot, int attempts, bool tryRandomNode, RedisRedirectionException redirect) {
     if (attempts <= 0) {
       throw new RedisClusterMaxAttemptsException("No more cluster attempts left.");
     }
@@ -89,7 +89,7 @@ abstract class RedisClusterCommand!(T) {
     Redis connection = null;
     try {
 
-      if (redirect != null) {
+      if (redirect !is null) {
         connection = this.connectionHandler.getConnectionFromNode(redirect.getTargetNode());
         if (redirect instanceof RedisAskDataException) {
           // TODO: Pipeline asking with the original command to make it faster....
@@ -140,7 +140,7 @@ abstract class RedisClusterCommand!(T) {
   }
 
   private void releaseConnection(Redis connection) {
-    if (connection != null) {
+    if (connection !is null) {
       connection.close();
     }
   }

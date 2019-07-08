@@ -7,7 +7,7 @@ import hunt.redis.exceptions.RedisClusterOperationException;
  * href="http://redis.io/topics/cluster-spec">Appendix A. CRC16 reference implementation in ANSI
  * C</a>
  */
-final class RedisClusterCRC16 {
+class RedisClusterCRC16 {
   private enum int[] LOOKUP_TABLE = {0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5,
           0x60C6, 0x70E7, 0x8108, 0x9129, 0xA14A, 0xB16B, 0xC18C, 0xD1AD, 0xE1CE, 0xF1EF, 0x1231,
           0x0210, 0x3273, 0x2252, 0x52B5, 0x4294, 0x72F7, 0x62D6, 0x9339, 0x8318, 0xB37B, 0xA35A,
@@ -37,8 +37,8 @@ final class RedisClusterCRC16 {
     throw new InstantiationError( "Must not instantiate this class" );
   }
 
-  static int getSlot(String key) {
-    if (key == null) {
+  static int getSlot(string key) {
+    if (key is null) {
       throw new RedisClusterOperationException("Slot calculation of null is impossible");
     }
 
@@ -48,7 +48,7 @@ final class RedisClusterCRC16 {
   }
 
   static int getSlot(byte[] key) {
-    if (key == null) {
+    if (key is null) {
       throw new RedisClusterOperationException("Slot calculation of null is impossible");
     }
 
@@ -93,7 +93,7 @@ final class RedisClusterCRC16 {
     return getCRC16(bytes, 0, bytes.length);
   }
 
-  static int getCRC16(String key) {
+  static int getCRC16(string key) {
     byte[] bytesKey = SafeEncoder.encode(key);
     return getCRC16(bytesKey, 0, bytesKey.length);
   }

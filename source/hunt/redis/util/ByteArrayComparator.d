@@ -1,11 +1,11 @@
 module hunt.redis.util.ByteArrayComparator;
 
-final class ByteArrayComparator {
+class ByteArrayComparator {
   private ByteArrayComparator() {
     throw new InstantiationError( "Must not instantiate this class" );
   }
 
-  static int compare(final byte[] val1, final byte[] val2) {
+  static int compare(byte[] val1, byte[] val2) {
     int len1 = val1.length;
     int len2 = val2.length;
     int lmin = Math.min(len1, len2);
