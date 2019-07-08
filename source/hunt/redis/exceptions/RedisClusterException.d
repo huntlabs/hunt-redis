@@ -1,16 +1,16 @@
 module hunt.redis.exceptions.RedisClusterException;
 
-public class RedisClusterException : RedisDataException {
+class RedisClusterException : RedisDataException {
 
-  public RedisClusterException(Throwable cause) {
+  RedisClusterException(Throwable cause) {
     super(cause);
   }
 
-  public RedisClusterException(String message, Throwable cause) {
+  RedisClusterException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public RedisClusterException(String message) {
+  RedisClusterException(String message) {
     super(message);
   }
 }

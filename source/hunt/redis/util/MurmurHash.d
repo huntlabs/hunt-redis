@@ -22,14 +22,14 @@ import java.nio.ByteOrder;
  * getopt org).
  * </p>
  */
-public class MurmurHash : Hashing {
+class MurmurHash : Hashing {
   /**
    * Hashes bytes in an array.
    * @param data The bytes to hash.
    * @param seed The seed for the hash.
    * @return The 32 bit hash of the bytes in question.
    */
-  public static int hash(byte[] data, int seed) {
+  static int hash(byte[] data, int seed) {
     return hash(ByteBuffer.wrap(data), seed);
   }
 
@@ -41,7 +41,7 @@ public class MurmurHash : Hashing {
    * @param seed The seed to start with.
    * @return The 32-bit hash of the data in question.
    */
-  public static int hash(byte[] data, int offset, int length, int seed) {
+  static int hash(byte[] data, int offset, int length, int seed) {
     return hash(ByteBuffer.wrap(data, offset, length), seed);
   }
 
@@ -51,7 +51,7 @@ public class MurmurHash : Hashing {
    * @param seed The seed for the hash.
    * @return The 32 bit murmur hash of the bytes in the buffer.
    */
-  public static int hash(ByteBuffer buf, int seed) {
+  static int hash(ByteBuffer buf, int seed) {
     // save byte order for later restoration
     ByteOrder byteOrder = buf.order();
     buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -90,15 +90,15 @@ public class MurmurHash : Hashing {
     return h;
   }
 
-  public static long hash64A(byte[] data, int seed) {
+  static long hash64A(byte[] data, int seed) {
     return hash64A(ByteBuffer.wrap(data), seed);
   }
 
-  public static long hash64A(byte[] data, int offset, int length, int seed) {
+  static long hash64A(byte[] data, int offset, int length, int seed) {
     return hash64A(ByteBuffer.wrap(data, offset, length), seed);
   }
 
-  public static long hash64A(ByteBuffer buf, int seed) {
+  static long hash64A(ByteBuffer buf, int seed) {
     ByteOrder byteOrder = buf.order();
     buf.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -137,12 +137,12 @@ public class MurmurHash : Hashing {
   }
 
   override
-  public long hash(byte[] key) {
+  long hash(byte[] key) {
     return hash64A(key, 0x1234ABCD);
   }
 
   override
-  public long hash(String key) {
+  long hash(String key) {
     return hash(SafeEncoder.encode(key));
   }
 }

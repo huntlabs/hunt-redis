@@ -12,70 +12,70 @@ import hunt.collection.List;
 
 import hunt.redis.exceptions.RedisException;
 
-public abstract class BinaryRedisPubSub {
+abstract class BinaryRedisPubSub {
   private int subscribedChannels = 0;
   private Client client;
 
-  public void onMessage(byte[] channel, byte[] message) {
+  void onMessage(byte[] channel, byte[] message) {
   }
 
-  public void onPMessage(byte[] pattern, byte[] channel, byte[] message) {
+  void onPMessage(byte[] pattern, byte[] channel, byte[] message) {
   }
 
-  public void onSubscribe(byte[] channel, int subscribedChannels) {
+  void onSubscribe(byte[] channel, int subscribedChannels) {
   }
 
-  public void onUnsubscribe(byte[] channel, int subscribedChannels) {
+  void onUnsubscribe(byte[] channel, int subscribedChannels) {
   }
 
-  public void onPUnsubscribe(byte[] pattern, int subscribedChannels) {
+  void onPUnsubscribe(byte[] pattern, int subscribedChannels) {
   }
 
-  public void onPSubscribe(byte[] pattern, int subscribedChannels) {
+  void onPSubscribe(byte[] pattern, int subscribedChannels) {
   }
 
-  public void unsubscribe() {
+  void unsubscribe() {
     client.unsubscribe();
     client.flush();
   }
 
-  public void unsubscribe(byte[]... channels) {
+  void unsubscribe(byte[] channels...) {
     client.unsubscribe(channels);
     client.flush();
   }
 
-  public void subscribe(byte[]... channels) {
+  void subscribe(byte[] channels...) {
     client.subscribe(channels);
     client.flush();
   }
 
-  public void psubscribe(byte[]... patterns) {
+  void psubscribe(byte[] patterns...) {
     client.psubscribe(patterns);
     client.flush();
   }
 
-  public void punsubscribe() {
+  void punsubscribe() {
     client.punsubscribe();
     client.flush();
   }
 
-  public void punsubscribe(byte[]... patterns) {
+  void punsubscribe(byte[] patterns...) {
     client.punsubscribe(patterns);
     client.flush();
   }
 
-  public boolean isSubscribed() {
+  bool isSubscribed() {
     return subscribedChannels > 0;
   }
 
-  public void proceedWithPatterns(Client client, byte[]... patterns) {
+  void proceedWithPatterns(Client client, byte[] patterns...) {
     this.client = client;
     client.psubscribe(patterns);
     client.flush();
     process(client);
   }
 
-  public void proceed(Client client, byte[]... channels) {
+  void proceed(Client client, byte[] channels...) {
     this.client = client;
     client.subscribe(channels);
     client.flush();
@@ -121,7 +121,7 @@ public abstract class BinaryRedisPubSub {
     } while (isSubscribed());
   }
 
-  public int getSubscribedChannels() {
+  int getSubscribedChannels() {
     return subscribedChannels;
   }
 }

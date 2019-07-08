@@ -1,8 +1,8 @@
 module hunt.redis.StreamEntryID;
 
-import java.io.IOException;
+import hunt.Exceptions;
 
-public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
+class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   
 
   /**
@@ -12,11 +12,11 @@ public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   * XADD mystream * field1 value1 
   * </code>
   */
-  public static final StreamEntryID NEW_ENTRY = new StreamEntryID() {
+  static final StreamEntryID NEW_ENTRY = new StreamEntryID() {
     
     
     override
-    public String toString(){
+    String toString(){
       return "*";
     }
   };
@@ -29,11 +29,11 @@ public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   * XGROUP CREATE mystream consumer-group-name $
   * </code>
   */
-  public static final StreamEntryID LAST_ENTRY = new StreamEntryID() {
+  static final StreamEntryID LAST_ENTRY = new StreamEntryID() {
     
     
     override
-    public String toString(){
+    String toString(){
       return "$";
     }
   };
@@ -44,11 +44,11 @@ public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
    * XREADGROUP $GroupName $ConsumerName BLOCK 2000 COUNT 10 STREAMS mystream >
    * </code>
    */
-  public static final StreamEntryID UNRECEIVED_ENTRY = new StreamEntryID() {
+  static final StreamEntryID UNRECEIVED_ENTRY = new StreamEntryID() {
     
     
     override
-    public String toString(){
+    String toString(){
       return ">";
     }
   };
@@ -56,28 +56,28 @@ public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   private long time;
   private long sequence;
 
-  public StreamEntryID() {
+  StreamEntryID() {
     this(0, 0L);
   }
   
-  public StreamEntryID(String id) {
+  StreamEntryID(String id) {
     String[] split = id.split("-");    
     this.time = Long.parseLong(split[0]);
     this.sequence = Long.parseLong(split[1]);
   }
   
-  public StreamEntryID(long time, long sequence) {
+  StreamEntryID(long time, long sequence) {
     this.time = time;
     this.sequence = sequence;
   }
 
   override
-  public String toString() {
+  String toString() {
     return time + "-" + sequence;
   }
 
   override
-  public boolean equals(Object obj) {
+  bool equals(Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
@@ -86,21 +86,21 @@ public class StreamEntryID : Comparable!(StreamEntryID), Serializable{
   }
   
   override
-  public size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow() {
     return this.toString().hashCode();
   }
 
   override
-  public int compareTo(StreamEntryID other) {
+  int compareTo(StreamEntryID other) {
     int timeComapre = Long.compare(this.time, other.time);
     return timeComapre != 0 ? timeComapre : Long.compare(this.sequence, other.sequence);
   }
 
-  public long getTime() {
+  long getTime() {
     return time;
   }
 
-  public long getSequence() {
+  long getSequence() {
     return sequence;
   }
   

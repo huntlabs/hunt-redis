@@ -9,12 +9,12 @@ import hunt.redis.exceptions.RedisException;
 /**
  * The only reason to have this is to be able to compatible with java 1.5 :(
  */
-public final class SafeEncoder {
+final class SafeEncoder {
   private SafeEncoder(){
     throw new InstantiationError( "Must not instantiate this class" );
   }
 
-  public static byte[][] encodeMany(final String... strs) {
+  static byte[][] encodeMany(final String strs...) {
     byte[][] many = new byte[strs.length][];
     for (int i = 0; i < strs.length; i++) {
       many[i] = encode(strs[i]);
@@ -22,7 +22,7 @@ public final class SafeEncoder {
     return many;
   }
 
-  public static byte[] encode(final String str) {
+  static byte[] encode(final String str) {
     try {
       if (str == null) {
         throw new RedisDataException("value sent to redis cannot be null");
@@ -33,7 +33,7 @@ public final class SafeEncoder {
     }
   }
 
-  public static String encode(final byte[] data) {
+  static String encode(final byte[] data) {
     try {
       return new String(data, Protocol.CHARSET);
     } catch (UnsupportedEncodingException e) {

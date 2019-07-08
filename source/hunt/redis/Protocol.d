@@ -1,9 +1,9 @@
 module hunt.redis.Protocol;
 
-import java.io.IOException;
+import hunt.Exceptions;
 import hunt.collection.ArraryList;
 import hunt.collection.List;
-import java.util.Locale;
+// import java.util.Locale;
 
 import hunt.redis.commands.ProtocolCommand;
 import hunt.redis.exceptions.RedisAskDataException;
@@ -17,7 +17,7 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
-public final class Protocol {
+final class Protocol {
 
   private enum string ASK_PREFIX = "ASK ";
   private enum string MOVED_PREFIX = "MOVED ";
@@ -25,72 +25,72 @@ public final class Protocol {
   private enum string BUSY_PREFIX = "BUSY ";
   private enum string NOSCRIPT_PREFIX = "NOSCRIPT ";
 
-  public enum string DEFAULT_HOST = "localhost";
-  public enum int DEFAULT_PORT = 6379;
-  public enum int DEFAULT_SENTINEL_PORT = 26379;
-  public enum int DEFAULT_TIMEOUT = 2000;
-  public enum int DEFAULT_DATABASE = 0;
+  enum string DEFAULT_HOST = "localhost";
+  enum int DEFAULT_PORT = 6379;
+  enum int DEFAULT_SENTINEL_PORT = 26379;
+  enum int DEFAULT_TIMEOUT = 2000;
+  enum int DEFAULT_DATABASE = 0;
 
-  public enum string CHARSET = "UTF-8";
+  enum string CHARSET = "UTF-8";
 
-  public static final byte DOLLAR_BYTE = '$';
-  public static final byte ASTERISK_BYTE = '*';
-  public static final byte PLUS_BYTE = '+';
-  public static final byte MINUS_BYTE = '-';
-  public static final byte COLON_BYTE = ':';
+  enum byte DOLLAR_BYTE = '$';
+  enum byte ASTERISK_BYTE = '*';
+  enum byte PLUS_BYTE = '+';
+  enum byte MINUS_BYTE = '-';
+  enum byte COLON_BYTE = ':';
 
-  public enum string SENTINEL_MASTERS = "masters";
-  public enum string SENTINEL_GET_MASTER_ADDR_BY_NAME = "get-master-addr-by-name";
-  public enum string SENTINEL_RESET = "reset";
-  public enum string SENTINEL_SLAVES = "slaves";
-  public enum string SENTINEL_FAILOVER = "failover";
-  public enum string SENTINEL_MONITOR = "monitor";
-  public enum string SENTINEL_REMOVE = "remove";
-  public enum string SENTINEL_SET = "set";
+  enum string SENTINEL_MASTERS = "masters";
+  enum string SENTINEL_GET_MASTER_ADDR_BY_NAME = "get-master-addr-by-name";
+  enum string SENTINEL_RESET = "reset";
+  enum string SENTINEL_SLAVES = "slaves";
+  enum string SENTINEL_FAILOVER = "failover";
+  enum string SENTINEL_MONITOR = "monitor";
+  enum string SENTINEL_REMOVE = "remove";
+  enum string SENTINEL_SET = "set";
 
-  public enum string CLUSTER_NODES = "nodes";
-  public enum string CLUSTER_MEET = "meet";
-  public enum string CLUSTER_RESET = "reset";
-  public enum string CLUSTER_ADDSLOTS = "addslots";
-  public enum string CLUSTER_DELSLOTS = "delslots";
-  public enum string CLUSTER_INFO = "info";
-  public enum string CLUSTER_GETKEYSINSLOT = "getkeysinslot";
-  public enum string CLUSTER_SETSLOT = "setslot";
-  public enum string CLUSTER_SETSLOT_NODE = "node";
-  public enum string CLUSTER_SETSLOT_MIGRATING = "migrating";
-  public enum string CLUSTER_SETSLOT_IMPORTING = "importing";
-  public enum string CLUSTER_SETSLOT_STABLE = "stable";
-  public enum string CLUSTER_FORGET = "forget";
-  public enum string CLUSTER_FLUSHSLOT = "flushslots";
-  public enum string CLUSTER_KEYSLOT = "keyslot";
-  public enum string CLUSTER_COUNTKEYINSLOT = "countkeysinslot";
-  public enum string CLUSTER_SAVECONFIG = "saveconfig";
-  public enum string CLUSTER_REPLICATE = "replicate";
-  public enum string CLUSTER_SLAVES = "slaves";
-  public enum string CLUSTER_FAILOVER = "failover";
-  public enum string CLUSTER_SLOTS = "slots";
-  public enum string PUBSUB_CHANNELS = "channels";
-  public enum string PUBSUB_NUMSUB = "numsub";
-  public enum string PUBSUB_NUM_PAT = "numpat";
+  enum string CLUSTER_NODES = "nodes";
+  enum string CLUSTER_MEET = "meet";
+  enum string CLUSTER_RESET = "reset";
+  enum string CLUSTER_ADDSLOTS = "addslots";
+  enum string CLUSTER_DELSLOTS = "delslots";
+  enum string CLUSTER_INFO = "info";
+  enum string CLUSTER_GETKEYSINSLOT = "getkeysinslot";
+  enum string CLUSTER_SETSLOT = "setslot";
+  enum string CLUSTER_SETSLOT_NODE = "node";
+  enum string CLUSTER_SETSLOT_MIGRATING = "migrating";
+  enum string CLUSTER_SETSLOT_IMPORTING = "importing";
+  enum string CLUSTER_SETSLOT_STABLE = "stable";
+  enum string CLUSTER_FORGET = "forget";
+  enum string CLUSTER_FLUSHSLOT = "flushslots";
+  enum string CLUSTER_KEYSLOT = "keyslot";
+  enum string CLUSTER_COUNTKEYINSLOT = "countkeysinslot";
+  enum string CLUSTER_SAVECONFIG = "saveconfig";
+  enum string CLUSTER_REPLICATE = "replicate";
+  enum string CLUSTER_SLAVES = "slaves";
+  enum string CLUSTER_FAILOVER = "failover";
+  enum string CLUSTER_SLOTS = "slots";
+  enum string PUBSUB_CHANNELS = "channels";
+  enum string PUBSUB_NUMSUB = "numsub";
+  enum string PUBSUB_NUM_PAT = "numpat";
 
-  public static final byte[] BYTES_TRUE = toByteArray(1);
-  public static final byte[] BYTES_FALSE = toByteArray(0);
-  public static final byte[] BYTES_TILDE = SafeEncoder.encode("~");
+  enum byte[] BYTES_TRUE = toByteArray(1);
+  enum byte[] BYTES_FALSE = toByteArray(0);
+  enum byte[] BYTES_TILDE = SafeEncoder.encode("~");
 
-  public static final byte[] POSITIVE_INFINITY_BYTES = "+inf".getBytes();
-  public static final byte[] NEGATIVE_INFINITY_BYTES = "-inf".getBytes();
+  enum byte[] POSITIVE_INFINITY_BYTES = "+inf".getBytes();
+  enum byte[] NEGATIVE_INFINITY_BYTES = "-inf".getBytes();
 
   private Protocol() {
     // this prevent the class from instantiation
   }
 
-  public static void sendCommand(final RedisOutputStream os, final ProtocolCommand command,
-      final byte[]... args) {
+  static void sendCommand(RedisOutputStream os, ProtocolCommand command,
+      byte[] args...) {
     sendCommand(os, command.getRaw(), args);
   }
 
-  private static void sendCommand(final RedisOutputStream os, final byte[] command,
-      final byte[]... args) {
+  private static void sendCommand(RedisOutputStream os, byte[] command,
+      byte[] args...) {
     try {
       os.write(ASTERISK_BYTE);
       os.writeIntCrLf(args.length + 1);
@@ -99,7 +99,7 @@ public final class Protocol {
       os.write(command);
       os.writeCrLf();
 
-      for (final byte[] arg : args) {
+      foreach (byte[] arg ; args) {
         os.write(DOLLAR_BYTE);
         os.writeIntCrLf(arg.length);
         os.write(arg);
@@ -110,7 +110,7 @@ public final class Protocol {
     }
   }
 
-  private static void processError(final RedisInputStream is) {
+  private static void processError(RedisInputStream is) {
     String message = is.readLine();
     // TODO: I'm not sure if this is the best way to do this.
     // Maybe Read only first 5 bytes instead?
@@ -132,8 +132,8 @@ public final class Protocol {
     throw new RedisDataException(message);
   }
 
-  public static String readErrorLineIfPossible(RedisInputStream is) {
-    final byte b = is.readByte();
+  static String readErrorLineIfPossible(RedisInputStream is) {
+    byte b = is.readByte();
     // if buffer contains other type of response, just ignore.
     if (b != MINUS_BYTE) {
       return null;
@@ -151,8 +151,8 @@ public final class Protocol {
     return response;
   }
 
-  private static Object process(final RedisInputStream is) {
-    final byte b = is.readByte();
+  private static Object process(RedisInputStream is) {
+    byte b = is.readByte();
     switch(b) {
     case PLUS_BYTE:
       return processStatusCodeReply(is);
@@ -170,20 +170,20 @@ public final class Protocol {
     }
   }
 
-  private static byte[] processStatusCodeReply(final RedisInputStream is) {
+  private static byte[] processStatusCodeReply(RedisInputStream is) {
     return is.readLineBytes();
   }
 
-  private static byte[] processBulkReply(final RedisInputStream is) {
-    final int len = is.readIntCrLf();
+  private static byte[] processBulkReply(RedisInputStream is) {
+    int len = is.readIntCrLf();
     if (len == -1) {
       return null;
     }
 
-    final byte[] read = new byte[len];
+    byte[] read = new byte[len];
     int offset = 0;
     while (offset < len) {
-      final int size = is.read(read, offset, (len - offset));
+      int size = is.read(read, offset, (len - offset));
       if (size == -1) throw new RedisConnectionException(
           "It seems like server has closed the connection.");
       offset += size;
@@ -196,16 +196,16 @@ public final class Protocol {
     return read;
   }
 
-  private static Long processInteger(final RedisInputStream is) {
+  private static Long processInteger(RedisInputStream is) {
     return is.readLongCrLf();
   }
 
-  private static List!(Object) processMultiBulkReply(final RedisInputStream is) {
-    final int num = is.readIntCrLf();
+  private static List!(Object) processMultiBulkReply(RedisInputStream is) {
+    int num = is.readIntCrLf();
     if (num == -1) {
       return null;
     }
-    final List!(Object) ret = new ArrayList!(Object)(num);
+    List!(Object) ret = new ArrayList!(Object)(num);
     for (int i = 0; i < num; i++) {
       try {
         ret.add(process(is));
@@ -216,23 +216,23 @@ public final class Protocol {
     return ret;
   }
 
-  public static Object read(final RedisInputStream is) {
+  static Object read(RedisInputStream is) {
     return process(is);
   }
 
-  public static final byte[] toByteArray(final boolean value) {
+  enum byte[] toByteArray(bool value) {
     return value ? BYTES_TRUE : BYTES_FALSE;
   }
 
-  public static final byte[] toByteArray(final int value) {
+  enum byte[] toByteArray(int value) {
     return SafeEncoder.encode(String.valueOf(value));
   }
 
-  public static final byte[] toByteArray(final long value) {
+  enum byte[] toByteArray(long value) {
     return SafeEncoder.encode(String.valueOf(value));
   }
 
-  public static final byte[] toByteArray(final double value) {
+  enum byte[] toByteArray(double value) {
     if (value == Double.POSITIVE_INFINITY) {
       return POSITIVE_INFINITY_BYTES;
     } else if (value == Double.NEGATIVE_INFINITY) {
@@ -242,7 +242,7 @@ public final class Protocol {
     }
   }
 
-  public static enum Command implements ProtocolCommand {
+  static enum Command implements ProtocolCommand {
     PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,
     RENAMEX, DBSIZE, EXPIRE, EXPIREAT, TTL, SELECT, MOVE, FLUSHALL, GETSET, MGET, SETNX, SETEX,
     MSET, MSETNX, DECRBY, DECR, INCRBY, INCR, APPEND, SUBSTR, HSET, HGET, HSETNX, HMSET, HMGET,
@@ -261,19 +261,19 @@ public final class Protocol {
     GEORADIUSBYMEMBER, GEORADIUSBYMEMBER_RO, MODULE, BITFIELD, HSTRLEN, TOUCH, SWAPDB, MEMORY,
     XADD, XLEN, XDEL, XTRIM, XRANGE, XREVRANGE, XREAD, XACK, XGROUP, XREADGROUP, XPENDING, XCLAIM;
 
-    private final byte[] raw;
+    private byte[] raw;
 
     Command() {
       raw = SafeEncoder.encode(this.name());
     }
 
     override
-    public byte[] getRaw() {
+    byte[] getRaw() {
       return raw;
     }
   }
 
-  public static enum Keyword {
+  static enum Keyword {
     AGGREGATE, ALPHA, ASC, BY, DESC, GET, LIMIT, MESSAGE, NO, NOSORT, PMESSAGE, PSUBSCRIBE,
     PUNSUBSCRIBE, OK, ONE, QUEUED, SET, STORE, SUBSCRIBE, UNSUBSCRIBE, WEIGHTS, WITHSCORES,
     RESETSTAT, REWRITE, RESET, FLUSH, EXISTS, LOAD, KILL, LEN, REFCOUNT, ENCODING, IDLETIME,
@@ -281,7 +281,7 @@ public final class Protocol {
     BLOCK, NOACK, STREAMS, KEY, CREATE, MKSTREAM, SETID, DESTROY, DELCONSUMER, MAXLEN, GROUP, 
     IDLE, TIME, RETRYCOUNT, FORCE;
 
-    public final byte[] raw;
+    byte[] raw;
 
     Keyword() {
       raw = SafeEncoder.encode(this.name().toLowerCase(Locale.ENGLISH));

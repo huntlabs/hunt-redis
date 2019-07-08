@@ -1,25 +1,25 @@
 module hunt.redis.Module;
 
-public class Module {
+class Module {
   private String name;
   private int version;
 
-  public Module(String name, int version) {
+  Module(String name, int version) {
     this.name = name;
     this.version = version;
   }
 
 
-  public String getName() {
+  String getName() {
     return name;
   }
 
-  public int getVersion() {
+  int getVersion() {
     return version;
   }
 
   override
-  public boolean equals(Object o) {
+  bool equals(Object o) {
     if (o == null) return false;
     if (o == this) return true;
     if (!(o instanceof Module)) return false;
@@ -32,7 +32,7 @@ public class Module {
   }
 
   override
-  public size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow() {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + version;
     return result;

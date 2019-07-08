@@ -53,7 +53,7 @@ public interface BinaryRedisPipeline {
 
   Response!(byte[]) getrange(byte[] key, long startOffset, long endOffset);
 
-  Response!(Long) hdel(byte[] key, byte[]... field);
+  Response!(Long) hdel(byte[] key, byte[] field...);
 
   Response!(Boolean) hexists(byte[] key, byte[] field);
 
@@ -67,7 +67,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) hlen(byte[] key);
 
-  Response!(List!(byte[])) hmget(byte[] key, byte[]... fields);
+  Response!(List!(byte[])) hmget(byte[] key, byte[] fields...);
 
   Response!(String) hmset(byte[] key, Map!(byte[], byte[]) hash);
 
@@ -91,9 +91,9 @@ public interface BinaryRedisPipeline {
 
   Response!(byte[]) lpop(byte[] key);
 
-  Response!(Long) lpush(byte[] key, byte[]... string);
+  Response!(Long) lpush(byte[] key, byte[] string...);
 
-  Response!(Long) lpushx(byte[] key, byte[]... bytes);
+  Response!(Long) lpushx(byte[] key, byte[] bytes...);
 
   Response!(List!(byte[])) lrange(byte[] key, long start, long stop);
 
@@ -109,11 +109,11 @@ public interface BinaryRedisPipeline {
 
   Response!(byte[]) rpop(byte[] key);
 
-  Response!(Long) rpush(byte[] key, byte[]... string);
+  Response!(Long) rpush(byte[] key, byte[] string...);
 
-  Response!(Long) rpushx(byte[] key, byte[]... string);
+  Response!(Long) rpushx(byte[] key, byte[] string...);
 
-  Response!(Long) sadd(byte[] key, byte[]... member);
+  Response!(Long) sadd(byte[] key, byte[] member...);
 
   Response!(Long) scard(byte[] key);
 
@@ -143,7 +143,7 @@ public interface BinaryRedisPipeline {
 
   Response!(byte[]) srandmember(byte[] key);
 
-  Response!(Long) srem(byte[] key, byte[]... member);
+  Response!(Long) srem(byte[] key, byte[] member...);
 
   Response!(Long) strlen(byte[] key);
 
@@ -217,7 +217,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) zrank(byte[] key, byte[] member);
 
-  Response!(Long) zrem(byte[] key, byte[]... members);
+  Response!(Long) zrem(byte[] key, byte[] members...);
 
   Response!(Long) zremrangeByRank(byte[] key, long start, long stop);
 
@@ -251,7 +251,7 @@ public interface BinaryRedisPipeline {
 
   Response!(Long) bitcount(byte[] key, long start, long end);
 
-  Response!(Long) pfadd(byte[] key, byte[]... elements);
+  Response!(Long) pfadd(byte[] key, byte[] elements...);
 
   Response!(Long) pfcount(byte[] key);
 
@@ -273,9 +273,9 @@ public interface BinaryRedisPipeline {
 
   Response!(Double) geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit);
 
-  Response!(List!(byte[])) geohash(byte[] key, byte[]... members);
+  Response!(List!(byte[])) geohash(byte[] key, byte[] members...);
 
-  Response!(List!(GeoCoordinate)) geopos(byte[] key, byte[]... members);
+  Response!(List!(GeoCoordinate)) geopos(byte[] key, byte[] members...);
 
   Response!(List!(GeoRadiusResponse)) georadius(byte[] key, double longitude, double latitude,
       double radius, GeoUnit unit);
@@ -301,13 +301,13 @@ public interface BinaryRedisPipeline {
   Response!(List!(GeoRadiusResponse)) georadiusByMemberReadonly(byte[] key, byte[] member, double radius,
       GeoUnit unit, GeoRadiusParam param);
 
-  Response!(List!(Long)) bitfield(byte[] key, byte[]... elements);
+  Response!(List!(Long)) bitfield(byte[] key, byte[] elements...);
 
   Response!(Long) hstrlen(byte[] key, byte[] field);
   
   Response!(byte[]) xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash);
 
-  Response!(byte[]) xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, boolean approximateLength);
+  Response!(byte[]) xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, bool approximateLength);
   
   Response!(Long) xlen(byte[] key);
 
@@ -315,9 +315,9 @@ public interface BinaryRedisPipeline {
 
   Response!(List!(byte[])) xrevrange(byte[] key, byte[] end, byte[] start, int count);
    
-  Response!(Long) xack(byte[] key, byte[] group,  byte[]... ids);
+  Response!(Long) xack(byte[] key, byte[] group,  byte[] ids...);
   
-  Response!(String) xgroupCreate(byte[] key, byte[] groupname, byte[] id, boolean makeStream);
+  Response!(String) xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream);
   
   Response!(String) xgroupSetID(byte[] key, byte[] groupname, byte[] id);
   
@@ -327,16 +327,16 @@ public interface BinaryRedisPipeline {
 
   Response!(List!(StreamPendingEntry)) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername);
   
-  Response!(Long) xdel(byte[] key, byte[]... ids);
+  Response!(Long) xdel(byte[] key, byte[] ids...);
   
-  Response!(Long) xtrim(byte[] key, long maxLen, boolean approximateLength);
+  Response!(Long) xtrim(byte[] key, long maxLen, bool approximateLength);
  
   Response!(List!(byte[])) xclaim(byte[] key, byte[] group, byte[] consumername, long minIdleTime, 
-      long newIdleTime, int retries, boolean force, byte[]... ids);
+      long newIdleTime, int retries, bool force, byte[] ids...);
 
-  Response!(Long) bitpos(byte[] key, boolean value);
+  Response!(Long) bitpos(byte[] key, bool value);
 
-  Response!(Long) bitpos(byte[] key, boolean value, BitPosParams params);
+  Response!(Long) bitpos(byte[] key, bool value, BitPosParams params);
 
   Response!(String) set(byte[] key, byte[] value, SetParams params);
 
@@ -354,5 +354,5 @@ public interface BinaryRedisPipeline {
 
   Response!(Double) hincrByFloat(byte[] key, byte[] field, double increment);
 
-  Response!(Object) sendCommand(ProtocolCommand cmd, byte[]... args);
+  Response!(Object) sendCommand(ProtocolCommand cmd, byte[] args...);
 }

@@ -18,7 +18,7 @@ import hunt.redis.util.SafeEncoder;
 /**
  * Builder Class for {@link Redis#sort(String, SortingParams) SORT} Parameters.
  */
-public class SortingParams {
+class SortingParams {
   private List!(byte[]) params = new ArrayList!(byte[])();
 
   /**
@@ -33,7 +33,7 @@ public class SortingParams {
    * @param pattern
    * @return the SortingParams Object
    */
-  public SortingParams by(final String pattern) {
+  SortingParams by(final String pattern) {
     return by(SafeEncoder.encode(pattern));
   }
 
@@ -49,7 +49,7 @@ public class SortingParams {
    * @param pattern
    * @return the SortingParams Object
    */
-  public SortingParams by(final byte[] pattern) {
+  SortingParams by(final byte[] pattern) {
     params.add(BY.raw);
     params.add(pattern);
     return this;
@@ -62,13 +62,13 @@ public class SortingParams {
    * you don't want the sorting overhead.
    * @return the SortingParams Object
    */
-  public SortingParams nosort() {
+  SortingParams nosort() {
     params.add(BY.raw);
     params.add(NOSORT.raw);
     return this;
   }
 
-  public Collection!(byte[]) getParams() {
+  Collection!(byte[]) getParams() {
     return Collections.unmodifiableCollection(params);
   }
 
@@ -76,7 +76,7 @@ public class SortingParams {
    * Get the Sorting in Descending Order.
    * @return the sortingParams Object
    */
-  public SortingParams desc() {
+  SortingParams desc() {
     params.add(DESC.raw);
     return this;
   }
@@ -85,7 +85,7 @@ public class SortingParams {
    * Get the Sorting in Ascending Order. This is the default order.
    * @return the SortingParams Object
    */
-  public SortingParams asc() {
+  SortingParams asc() {
     params.add(ASC.raw);
     return this;
   }
@@ -96,7 +96,7 @@ public class SortingParams {
    * @param count
    * @return the SortingParams Object
    */
-  public SortingParams limit(final int start, final int count) {
+  SortingParams limit(final int start, final int count) {
     params.add(LIMIT.raw);
     params.add(Protocol.toByteArray(start));
     params.add(Protocol.toByteArray(count));
@@ -108,7 +108,7 @@ public class SortingParams {
    * LC_COLLATE environment variable.
    * @return the SortingParams Object
    */
-  public SortingParams alpha() {
+  SortingParams alpha() {
     params.add(ALPHA.raw);
     return this;
   }
@@ -127,7 +127,7 @@ public class SortingParams {
    * @param patterns
    * @return the SortingParams Object
    */
-  public SortingParams get(String... patterns) {
+  SortingParams get(String patterns...) {
     foreach(final String pattern ; patterns) {
       params.add(GET.raw);
       params.add(SafeEncoder.encode(pattern));
@@ -149,8 +149,8 @@ public class SortingParams {
    * @param patterns
    * @return the SortingParams Object
    */
-  public SortingParams get(byte[]... patterns) {
-    for (final byte[] pattern : patterns) {
+  SortingParams get(byte[] patterns...) {
+    foreach(final byte[] pattern ; patterns) {
       params.add(GET.raw);
       params.add(pattern);
     }

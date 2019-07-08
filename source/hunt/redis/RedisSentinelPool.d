@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 
-public class RedisSentinelPool : RedisPoolAbstract {
+class RedisSentinelPool : RedisPoolAbstract {
 
   protected GenericObjectPoolConfig poolConfig;
 
@@ -35,55 +35,55 @@ public class RedisSentinelPool : RedisPoolAbstract {
   
   private final Object initPoolLock = new Object();
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels) {
+  RedisSentinelPool(String masterName, Set!(String) sentinels) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, null,
         Protocol.DEFAULT_DATABASE);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels, String password) {
+  RedisSentinelPool(String masterName, Set!(String) sentinels, String password) {
     this(masterName, sentinels, new GenericObjectPoolConfig(), Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, int timeout, final String password) {
     this(masterName, sentinels, poolConfig, timeout, password, Protocol.DEFAULT_DATABASE);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, final int timeout) {
     this(masterName, sentinels, poolConfig, timeout, null, Protocol.DEFAULT_DATABASE);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, final String password) {
     this(masterName, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, password);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, int timeout, final String password,
       final int database) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, int timeout, final String password,
       final int database, final String clientName) {
     this(masterName, sentinels, poolConfig, timeout, timeout, password, database, clientName);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, final int timeout, final int soTimeout,
       final String password, final int database) {
     this(masterName, sentinels, poolConfig, timeout, soTimeout, password, database, null);
   }
 
-  public RedisSentinelPool(String masterName, Set!(String) sentinels,
+  RedisSentinelPool(String masterName, Set!(String) sentinels,
       final GenericObjectPoolConfig poolConfig, final int connectionTimeout, final int soTimeout,
       final String password, final int database, final String clientName) {
     this.poolConfig = poolConfig;
@@ -98,7 +98,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
   }
 
   override
-  public void destroy() {
+  void destroy() {
     foreach(MasterListener m ; masterListeners) {
       m.shutdown();
     }
@@ -106,7 +106,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
     super.destroy();
   }
 
-  public HostAndPort getCurrentHostMaster() {
+  HostAndPort getCurrentHostMaster() {
     return currentHostMaster;
   }
 
@@ -135,7 +135,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
   private HostAndPort initSentinels(Set!(String) sentinels, final String masterName) {
 
     HostAndPort master = null;
-    boolean sentinelAvailable = false;
+    bool sentinelAvailable = false;
 
     log.info("Trying to find master from available Sentinels...");
 
@@ -208,7 +208,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
   }
 
   override
-  public Redis getResource() {
+  Redis getResource() {
     while (true) {
       Redis jedis = super.getResource();
       jedis.setDataSource(this);
@@ -254,21 +254,21 @@ public class RedisSentinelPool : RedisPoolAbstract {
     protected MasterListener() {
     }
 
-    public MasterListener(String masterName, String host, int port) {
+    MasterListener(String masterName, String host, int port) {
       super(String.format("MasterListener-%s-[%s:%d]", masterName, host, port));
       this.masterName = masterName;
       this.host = host;
       this.port = port;
     }
 
-    public MasterListener(String masterName, String host, int port,
+    MasterListener(String masterName, String host, int port,
         long subscribeRetryWaitTimeMillis) {
       this(masterName, host, port);
       this.subscribeRetryWaitTimeMillis = subscribeRetryWaitTimeMillis;
     }
 
     override
-    public void run() {
+    void run() {
 
       running.set(true);
 
@@ -294,7 +294,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
 
           j.subscribe(new RedisPubSub() {
             override
-            public void onMessage(String channel, String message) {
+            void onMessage(String channel, String message) {
               log.debug("Sentinel {}:{} published: {}.", host, port, message);
 
               String[] switchMasterMsg = message.split(" ");
@@ -336,7 +336,7 @@ public class RedisSentinelPool : RedisPoolAbstract {
       }
     }
 
-    public void shutdown() {
+    void shutdown() {
       try {
         log.debug("Shutting down listener on {}:{}", host, port);
         running.set(false);

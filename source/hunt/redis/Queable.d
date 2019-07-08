@@ -3,7 +3,7 @@ module hunt.redis.Queable;
 import hunt.collection.Linkedlist;
 import hunt.collection.Queue;
 
-public class Queable {
+class Queable {
   private Queue<Response<?>> pipelinedResponses = new LinkedList<Response<?>>();
 
   protected void clean() {
@@ -24,7 +24,7 @@ public class Queable {
     return lr;
   }
 
-  protected boolean hasPipelinedResponse() {
+  protected bool hasPipelinedResponse() {
     return !pipelinedResponses.isEmpty();
   }
 

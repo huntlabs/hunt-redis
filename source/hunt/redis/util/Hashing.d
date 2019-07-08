@@ -9,12 +9,12 @@ public interface Hashing {
 
   Hashing MD5 = new Hashing() {
     override
-    public long hash(String key) {
+    long hash(String key) {
       return hash(SafeEncoder.encode(key));
     }
 
     override
-    public long hash(byte[] key) {
+    long hash(byte[] key) {
       try {
         if (md5Holder.get() == null) {
           md5Holder.set(MessageDigest.getInstance("MD5"));

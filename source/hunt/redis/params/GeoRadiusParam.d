@@ -5,7 +5,7 @@ import hunt.redis.util.SafeEncoder;
 
 import hunt.collection.ArraryList;
 
-public class GeoRadiusParam : Params {
+class GeoRadiusParam : Params {
   private enum string WITHCOORD = "withcoord";
   private enum string WITHDIST = "withdist";
 
@@ -16,43 +16,43 @@ public class GeoRadiusParam : Params {
   private enum string DESC = "desc";
   private enum string COUNT = "count";
 
-  public GeoRadiusParam() {
+  GeoRadiusParam() {
   }
 
-  public static GeoRadiusParam geoRadiusParam() {
+  static GeoRadiusParam geoRadiusParam() {
     return new GeoRadiusParam();
   }
 
-  public GeoRadiusParam withCoord() {
+  GeoRadiusParam withCoord() {
     addParam(WITHCOORD);
     return this;
   }
 
-  public GeoRadiusParam withDist() {
+  GeoRadiusParam withDist() {
     addParam(WITHDIST);
     return this;
   }
 
-  public GeoRadiusParam sortAscending() {
+  GeoRadiusParam sortAscending() {
     addParam(ASC);
     return this;
   }
 
-  public GeoRadiusParam sortDescending() {
+  GeoRadiusParam sortDescending() {
     addParam(DESC);
     return this;
   }
 
-  public GeoRadiusParam count(int count) {
+  GeoRadiusParam count(int count) {
     if (count > 0) {
       addParam(COUNT, count);
     }
     return this;
   }
 
-  public byte[][] getByteParams(byte[]... args) {
+  byte[][] getByteParams(byte[] args...) {
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
-    for (byte[] arg : args) {
+    foreach(byte[] arg ; args) {
       byteParams.add(arg);
     }
 

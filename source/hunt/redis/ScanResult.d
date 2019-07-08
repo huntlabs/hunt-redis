@@ -4,15 +4,15 @@ import hunt.collection.List;
 
 import hunt.redis.util.SafeEncoder;
 
-public class ScanResult!(T) {
+class ScanResult!(T) {
   private byte[] cursor;
   private List!(T) results;
 
-  public ScanResult(String cursor, List!(T) results) {
+  ScanResult(String cursor, List!(T) results) {
     this(SafeEncoder.encode(cursor), results);
   }
 
-  public ScanResult(byte[] cursor, List!(T) results) {
+  ScanResult(byte[] cursor, List!(T) results) {
     this.cursor = cursor;
     this.results = results;
   }
@@ -21,7 +21,7 @@ public class ScanResult!(T) {
    * Returns the new value of the cursor
    * @return the new cursor value. {@link ScanParams#SCAN_POINTER_START} when a complete iteration has finished
    */
-  public String getCursor() {
+  String getCursor() {
     return SafeEncoder.encode(cursor);
   }
 
@@ -30,11 +30,11 @@ public class ScanResult!(T) {
    *
    * @return true if the iteration is complete
    */
-  public boolean isCompleteIteration() {
+  bool isCompleteIteration() {
     return ScanParams.SCAN_POINTER_START == getCursor();
   }
 
-  public byte[] getCursorAsBytes() {
+  byte[] getCursorAsBytes() {
     return cursor;
   }
 
@@ -42,7 +42,7 @@ public class ScanResult!(T) {
    * The scan results from the current call.
    * @return the scan results
    */
-  public List!(T) getResult() {
+  List!(T) getResult() {
     return results;
   }
 }

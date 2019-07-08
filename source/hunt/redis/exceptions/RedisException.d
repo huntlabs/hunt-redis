@@ -1,16 +1,16 @@
 module hunt.redis.exceptions.RedisException;
 
-public class RedisException : RuntimeException {
+class RedisException : RuntimeException {
 
-  public RedisException(String message) {
+  RedisException(String message) {
     super(message);
   }
 
-  public RedisException(Throwable e) {
+  RedisException(Throwable e) {
     super(e);
   }
 
-  public RedisException(String message, Throwable cause) {
+  RedisException(String message, Throwable cause) {
     super(message, cause);
   }
 }

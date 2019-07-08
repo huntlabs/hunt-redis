@@ -1,7 +1,7 @@
 module hunt.redis.util.RedisOutputStream;
 
 import java.io.FilterOutputStream;
-import java.io.IOException;
+import hunt.Exceptions;
 import java.io.OutputStream;
 
 /**
@@ -9,7 +9,7 @@ import java.io.OutputStream;
  * operations like in-place string encoding. This stream fully ignore mark/reset and should not be
  * used outside Redis
  */
-public final class RedisOutputStream : FilterOutputStream {
+final class RedisOutputStream : FilterOutputStream {
   protected final byte[] buf;
 
   protected int count;
@@ -35,11 +35,11 @@ public final class RedisOutputStream : FilterOutputStream {
           'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
           't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-  public RedisOutputStream(final OutputStream out) {
+  RedisOutputStream(final OutputStream out) {
     this(out, 8192);
   }
 
-  public RedisOutputStream(final OutputStream out, final int size) {
+  RedisOutputStream(final OutputStream out, final int size) {
     super(out);
     if (size <= 0) {
       throw new IllegalArgumentException("Buffer size <= 0");
@@ -54,7 +54,7 @@ public final class RedisOutputStream : FilterOutputStream {
     }
   }
 
-  public void write(final byte b) throws IOException {
+  void write(final byte b) throws IOException {
     if (count == buf.length) {
       flushBuffer();
     }
@@ -62,12 +62,12 @@ public final class RedisOutputStream : FilterOutputStream {
   }
 
   override
-  public void write(final byte[] b) throws IOException {
+  void write(final byte[] b) throws IOException {
     write(b, 0, b.length);
   }
 
   override
-  public void write(final byte[] b, final int off, final int len) throws IOException {
+  void write(final byte[] b, final int off, final int len) throws IOException {
     if (len >= buf.length) {
       flushBuffer();
       out.write(b, off, len);
@@ -81,7 +81,7 @@ public final class RedisOutputStream : FilterOutputStream {
     }
   }
 
-  public void writeCrLf() throws IOException {
+  void writeCrLf() throws IOException {
     if (2 >= buf.length - count) {
       flushBuffer();
     }
@@ -90,7 +90,7 @@ public final class RedisOutputStream : FilterOutputStream {
     buf[count++] = '\n';
   }
 
-  public void writeIntCrLf(int value) throws IOException {
+  void writeIntCrLf(int value) throws IOException {
     if (value < 0) {
       write((byte) '-');
       value = -value;
@@ -129,7 +129,7 @@ public final class RedisOutputStream : FilterOutputStream {
   }
 
   override
-  public void flush() throws IOException {
+  void flush() throws IOException {
     flushBuffer();
     out.flush();
   }

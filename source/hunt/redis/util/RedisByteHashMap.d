@@ -8,27 +8,27 @@ import hunt.collection.Iterator;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
+class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   private transient Map!(ByteArrayWrapper, byte[]) internalMap = new HashMap!(ByteArrayWrapper, byte[])();
 
   override
-  public void clear() {
+  void clear() {
     internalMap.clear();
   }
 
   override
-  public boolean containsKey(Object key) {
+  bool containsKey(Object key) {
     if (key instanceof byte[]) return internalMap.containsKey(new ByteArrayWrapper((byte[]) key));
     return internalMap.containsKey(key);
   }
 
   override
-  public boolean containsValue(Object value) {
+  bool containsValue(Object value) {
     return internalMap.containsValue(value);
   }
 
   override
-  public Set<hunt.collection.Map.Entry!(byte[], byte[])> entrySet() {
+  Set<hunt.collection.Map.Entry!(byte[], byte[])> entrySet() {
     Iterator<hunt.collection.Map.Entry!(ByteArrayWrapper, byte[])> iterator = internalMap.entrySet()
         .iterator();
     HashSet!(Entry!(byte[], byte[])) hashSet = new HashSet<hunt.collection.Map.Entry!(byte[], byte[])>();
@@ -40,18 +40,18 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   }
 
   override
-  public byte[] get(Object key) {
+  byte[] get(Object key) {
     if (key instanceof byte[]) return internalMap.get(new ByteArrayWrapper((byte[]) key));
     return internalMap.get(key);
   }
 
   override
-  public boolean isEmpty() {
+  bool isEmpty() {
     return internalMap.isEmpty();
   }
 
   override
-  public Set!(byte[]) keySet() {
+  Set!(byte[]) keySet() {
     Set!(byte[]) keySet = new HashSet!(byte[])();
     Iterator!(ByteArrayWrapper) iterator = internalMap.keySet().iterator();
     while (iterator.hasNext()) {
@@ -61,13 +61,13 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   }
 
   override
-  public byte[] put(byte[] key, byte[] value) {
+  byte[] put(byte[] key, byte[] value) {
     return internalMap.put(new ByteArrayWrapper(key), value);
   }
 
   override
   @SuppressWarnings("unchecked")
-  public void putAll(Map<? extends byte[], ? extends byte[]> m) {
+  void putAll(Map<? extends byte[], ? extends byte[]> m) {
     Iterator<?> iterator = m.entrySet().iterator();
     while (iterator.hasNext()) {
       Entry<? extends byte[], ? extends byte[]> next = (Entry<? extends byte[], ? extends byte[]>) iterator
@@ -77,25 +77,25 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
   }
 
   override
-  public byte[] remove(Object key) {
+  byte[] remove(Object key) {
     if (key instanceof byte[]) return internalMap.remove(new ByteArrayWrapper((byte[]) key));
     return internalMap.remove(key);
   }
 
   override
-  public int size() {
+  int size() {
     return internalMap.size();
   }
 
   override
-  public Collection!(byte[]) values() {
+  Collection!(byte[]) values() {
     return internalMap.values();
   }
 
   private static final class ByteArrayWrapper {
     private final byte[] data;
 
-    public ByteArrayWrapper(byte[] data) {
+    ByteArrayWrapper(byte[] data) {
       if (data == null) {
         throw new NullPointerException();
       }
@@ -103,7 +103,7 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
     }
 
     override
-    public boolean equals(Object other) {
+    bool equals(Object other) {
       if (other == null) return false;
       if (other == this) return true;
       if (!(other instanceof ByteArrayWrapper)) return false;
@@ -112,7 +112,7 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
     }
 
     override
-    public size_t toHash() @trusted nothrow() {
+    size_t toHash() @trusted nothrow() {
       return Arrays.hashCode(data);
     }
   }
@@ -121,23 +121,23 @@ public class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
     private byte[] value;
     private byte[] key;
 
-    public RedisByteEntry(byte[] key, byte[] value) {
+    RedisByteEntry(byte[] key, byte[] value) {
       this.key = key;
       this.value = value;
     }
 
     override
-    public byte[] getKey() {
+    byte[] getKey() {
       return this.key;
     }
 
     override
-    public byte[] getValue() {
+    byte[] getValue() {
       return this.value;
     }
 
     override
-    public byte[] setValue(byte[] value) {
+    byte[] setValue(byte[] value) {
       this.value = value;
       return value;
     }

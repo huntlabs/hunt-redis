@@ -1,13 +1,13 @@
 module hunt.redis.util.IOUtils;
 
-import java.io.IOException;
+import hunt.Exceptions;
 import java.net.Socket;
 
-public class IOUtils {
+class IOUtils {
   private IOUtils() {
   }
 
-  public static void closeQuietly(Socket sock) {
+  static void closeQuietly(Socket sock) {
     // It's same thing as Apache Commons - IOUtils.closeQuietly()
     if (sock != null) {
       try {

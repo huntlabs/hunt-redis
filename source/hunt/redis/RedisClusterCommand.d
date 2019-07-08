@@ -9,23 +9,23 @@ import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 import hunt.redis.exceptions.RedisRedirectionException;
 import hunt.redis.util.RedisClusterCRC16;
 
-public abstract class RedisClusterCommand!(T) {
+abstract class RedisClusterCommand!(T) {
 
   private final RedisClusterConnectionHandler connectionHandler;
   private final int maxAttempts;
 
-  public RedisClusterCommand(RedisClusterConnectionHandler connectionHandler, int maxAttempts) {
+  RedisClusterCommand(RedisClusterConnectionHandler connectionHandler, int maxAttempts) {
     this.connectionHandler = connectionHandler;
     this.maxAttempts = maxAttempts;
   }
 
-  public abstract T execute(Redis connection);
+  abstract T execute(Redis connection);
 
-  public T run(String key) {
+  T run(String key) {
     return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
   }
 
-  public T run(int keyCount, String... keys) {
+  T run(int keyCount, String keys...) {
     if (keys == null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
@@ -45,11 +45,11 @@ public abstract class RedisClusterCommand!(T) {
     return runWithRetries(slot, this.maxAttempts, false, null);
   }
 
-  public T runBinary(byte[] key) {
+  T runBinary(byte[] key) {
     return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
   }
 
-  public T runBinary(int keyCount, byte[]... keys) {
+  T runBinary(int keyCount, byte[] keys...) {
     if (keys == null || keys.length == 0) {
       throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
     }
@@ -69,7 +69,7 @@ public abstract class RedisClusterCommand!(T) {
     return runWithRetries(slot, this.maxAttempts, false, null);
   }
 
-  public T runWithAnyNode() {
+  T runWithAnyNode() {
     Redis connection = null;
     try {
       connection = connectionHandler.getConnection();
@@ -81,7 +81,7 @@ public abstract class RedisClusterCommand!(T) {
     }
   }
 
-  private T runWithRetries(final int slot, int attempts, boolean tryRandomNode, RedisRedirectionException redirect) {
+  private T runWithRetries(final int slot, int attempts, bool tryRandomNode, RedisRedirectionException redirect) {
     if (attempts <= 0) {
       throw new RedisClusterMaxAttemptsException("No more cluster attempts left.");
     }

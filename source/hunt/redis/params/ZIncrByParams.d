@@ -18,16 +18,16 @@ import hunt.collection.ArraryList;
  * <br/>
  * Works with Redis 3.0.2 and onwards.
  */
-public class ZIncrByParams : Params {
+class ZIncrByParams : Params {
 
   private enum string XX = "xx";
   private enum string NX = "nx";
   private enum string INCR = "incr";
 
-  public ZIncrByParams() {
+  ZIncrByParams() {
   }
 
-  public static ZIncrByParams zIncrByParams() {
+  static ZIncrByParams zIncrByParams() {
     return new ZIncrByParams();
   }
 
@@ -35,7 +35,7 @@ public class ZIncrByParams : Params {
    * Only set the key if it does not already exist.
    * @return ZIncrByParams
    */
-  public ZIncrByParams nx() {
+  ZIncrByParams nx() {
     addParam(NX);
     return this;
   }
@@ -44,12 +44,12 @@ public class ZIncrByParams : Params {
    * Only set the key if it already exist.
    * @return ZIncrByParams
    */
-  public ZIncrByParams xx() {
+  ZIncrByParams xx() {
     addParam(XX);
     return this;
   }
 
-  public byte[][] getByteParams(byte[] key, byte[]... args) {
+  byte[][] getByteParams(byte[] key, byte[] args...) {
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     byteParams.add(key);
 
@@ -62,7 +62,7 @@ public class ZIncrByParams : Params {
 
     byteParams.add(SafeEncoder.encode(INCR));
 
-    for (byte[] arg : args) {
+    foreach(byte[] arg ; args) {
       byteParams.add(arg);
     }
 

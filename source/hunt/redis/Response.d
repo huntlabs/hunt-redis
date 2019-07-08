@@ -2,28 +2,28 @@ module hunt.redis.Response;
 
 import hunt.redis.exceptions.RedisDataException;
 
-public class Response!(T) {
+class Response!(T) {
   protected T response = null;
   protected RedisDataException exception = null;
 
-  private boolean building = false;
-  private boolean built = false;
-  private boolean set = false;
+  private bool building = false;
+  private bool built = false;
+  private bool set = false;
 
   private Builder!(T) builder;
   private Object data;
   private Response<?> dependency = null;
 
-  public Response(Builder!(T) b) {
+  Response(Builder!(T) b) {
     this.builder = b;
   }
 
-  public void set(Object data) {
+  void set(Object data) {
     this.data = data;
     set = true;
   }
 
-  public T get() {
+  T get() {
     // if response has dependency response and dependency is not built,
     // build it first and no more!!
     if (dependency != null && dependency.set && !dependency.built) {
@@ -42,7 +42,7 @@ public class Response!(T) {
     return response;
   }
 
-  public void setDependency(Response<?> dependency) {
+  void setDependency(Response<?> dependency) {
     this.dependency = dependency;
   }
 
@@ -70,7 +70,7 @@ public class Response!(T) {
   }
 
   override
-  public String toString() {
+  String toString() {
     return "Response " + builder.toString();
   }
 

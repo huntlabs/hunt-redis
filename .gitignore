@@ -17,6 +17,7 @@
 # DUB
 .dub
 docs.json
+dub.*.json
 __dummy.html
 docs/
 
@@ -25,4 +26,3 @@ docs/
 
 # Others
 /java/
-dub.local.json

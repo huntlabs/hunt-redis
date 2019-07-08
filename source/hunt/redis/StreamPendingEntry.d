@@ -1,8 +1,8 @@
 module hunt.redis.StreamPendingEntry;
 
-import java.io.IOException;
+import hunt.Exceptions;
 
-public class StreamPendingEntry : Serializable{
+class StreamPendingEntry : Serializable{
   
   
   private StreamEntryID id;
@@ -10,31 +10,31 @@ public class StreamPendingEntry : Serializable{
   private long idleTime;
   private long deliveredTimes;
   
-  public StreamPendingEntry(StreamEntryID id, String consumerName, long idleTime, long deliveredTimes) {
+  StreamPendingEntry(StreamEntryID id, String consumerName, long idleTime, long deliveredTimes) {
     this.id = id;
     this.consumerName = consumerName;
     this.idleTime = idleTime;
     this.deliveredTimes = deliveredTimes;
   }
   
-  public StreamEntryID getID() {
+  StreamEntryID getID() {
     return id;
   }
 
-  public long getIdleTime() {
+  long getIdleTime() {
     return idleTime;
   }
 
-  public long getDeliveredTimes() {
+  long getDeliveredTimes() {
     return deliveredTimes;
   }
 
-  public String getConsumerName() {
+  String getConsumerName() {
     return consumerName;
   }
   
   override
-  public String toString() {
+  String toString() {
     return this.id + " " + this.consumerName + " idle:" + this.idleTime + " times:" + this.deliveredTimes;
   }
   

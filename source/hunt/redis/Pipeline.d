@@ -6,7 +6,7 @@ import hunt.collection.List;
 
 import hunt.redis.exceptions.RedisDataException;
 
-public class Pipeline : MultiKeyPipelineBase implements Closeable {
+class Pipeline : MultiKeyPipelineBase implements Closeable {
 
   private MultiResponseBuilder currentMulti;
 
@@ -14,7 +14,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     private List<Response<?>> responses = new ArrayList<Response<?>>();
 
     override
-    public List!(Object) build(Object data) {
+    List!(Object) build(Object data) {
       @SuppressWarnings("unchecked")
       List!(Object) list = (List!(Object)) data;
       List!(Object) values = new ArrayList!(Object)();
@@ -38,13 +38,13 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
       return values;
     }
 
-    public void setResponseDependency(Response<?> dependency) {
-      for (Response<?> response : responses) {
+    void setResponseDependency(Response<?> dependency) {
+      foreach(Response<?> response ; responses) {
         response.setDependency(dependency);
       }
     }
 
-    public void addResponse(Response<?> response) {
+    void addResponse(Response<?> response) {
       responses.add(response);
     }
   }
@@ -62,7 +62,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  public void setClient(Client client) {
+  void setClient(Client client) {
     this.client = client;
   }
 
@@ -76,7 +76,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     return client;
   }
 
-  public void clear() {
+  void clear() {
     if (isInMulti()) {
       discard();
     }
@@ -84,7 +84,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     sync();
   }
 
-  public boolean isInMulti() {
+  bool isInMulti() {
     return currentMulti != null;
   }
 
@@ -93,7 +93,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
    * get return values from pipelined commands, capture the different Response&lt;?&gt; of the
    * commands you execute.
    */
-  public void sync() {
+  void sync() {
     if (getPipelinedResponseLength() > 0) {
       List!(Object) unformatted = client.getMany(getPipelinedResponseLength());
       foreach(Object o ; unformatted) {
@@ -108,7 +108,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
    * responses and generate the right response type (usually it is a waste of time).
    * @return A list of all the responses in the order you executed them.
    */
-  public List!(Object) syncAndReturnAll() {
+  List!(Object) syncAndReturnAll() {
     if (getPipelinedResponseLength() > 0) {
       List!(Object) unformatted = client.getMany(getPipelinedResponseLength());
       List!(Object) formatted = new ArrayList!(Object)();
@@ -125,14 +125,14 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     }
   }
 
-  public Response!(String) discard() {
+  Response!(String) discard() {
     if (currentMulti == null) throw new RedisDataException("DISCARD without MULTI");
     client.discard();
     currentMulti = null;
     return getResponse(BuilderFactory.STRING);
   }
 
-  public Response!(List!(Object)) exec() {
+  Response!(List!(Object)) exec() {
     if (currentMulti == null) throw new RedisDataException("EXEC without MULTI");
 
     client.exec();
@@ -142,7 +142,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
     return response;
   }
 
-  public Response!(String) multi() {
+  Response!(String) multi() {
     if (currentMulti != null) throw new RedisDataException("MULTI calls can not be nested");
 
     client.multi();
@@ -153,7 +153,7 @@ public class Pipeline : MultiKeyPipelineBase implements Closeable {
   }
 
   override
-  public void close() {
+  void close() {
     clear();
   }
 

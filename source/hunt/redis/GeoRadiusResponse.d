@@ -2,36 +2,36 @@ module hunt.redis.GeoRadiusResponse;
 
 import hunt.redis.util.SafeEncoder;
 
-public class GeoRadiusResponse {
+class GeoRadiusResponse {
   private byte[] member;
   private double distance;
   private GeoCoordinate coordinate;
 
-  public GeoRadiusResponse(byte[] member) {
+  GeoRadiusResponse(byte[] member) {
     this.member = member;
   }
 
-  public void setDistance(double distance) {
+  void setDistance(double distance) {
     this.distance = distance;
   }
 
-  public void setCoordinate(GeoCoordinate coordinate) {
+  void setCoordinate(GeoCoordinate coordinate) {
     this.coordinate = coordinate;
   }
 
-  public byte[] getMember() {
+  byte[] getMember() {
     return member;
   }
 
-  public String getMemberByString() {
+  String getMemberByString() {
     return SafeEncoder.encode(member);
   }
 
-  public double getDistance() {
+  double getDistance() {
     return distance;
   }
 
-  public GeoCoordinate getCoordinate() {
+  GeoCoordinate getCoordinate() {
     return coordinate;
   }
 }

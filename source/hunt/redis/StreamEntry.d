@@ -1,29 +1,29 @@
 module hunt.redis.StreamEntry;
 
-import java.io.IOException;
+import hunt.Exceptions;
 import hunt.collection.Map;
 
-public class StreamEntry : Serializable{
+class StreamEntry : Serializable{
   
   
   private StreamEntryID id;
   private Map!(String, String) fields;
   
-  public StreamEntry(StreamEntryID id, Map!(String, String) fields) {
+  StreamEntry(StreamEntryID id, Map!(String, String) fields) {
     this.id = id;
     this.fields = fields;
   }
   
-  public StreamEntryID getID() {
+  StreamEntryID getID() {
     return id;
   }
   
-  public Map!(String, String) getFields() {
+  Map!(String, String) getFields() {
     return fields;
   }
   
   override
-  public String toString() {
+  String toString() {
     return id + " " + fields;
   }
     

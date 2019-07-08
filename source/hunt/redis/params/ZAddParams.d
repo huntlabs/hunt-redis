@@ -4,16 +4,16 @@ import hunt.redis.util.SafeEncoder;
 
 import hunt.collection.ArraryList;
 
-public class ZAddParams : Params {
+class ZAddParams : Params {
 
   private enum string XX = "xx";
   private enum string NX = "nx";
   private enum string CH = "ch";
 
-  public ZAddParams() {
+  ZAddParams() {
   }
 
-  public static ZAddParams zAddParams() {
+  static ZAddParams zAddParams() {
     return new ZAddParams();
   }
 
@@ -21,7 +21,7 @@ public class ZAddParams : Params {
    * Only set the key if it does not already exist.
    * @return ZAddParams
    */
-  public ZAddParams nx() {
+  ZAddParams nx() {
     addParam(NX);
     return this;
   }
@@ -30,7 +30,7 @@ public class ZAddParams : Params {
    * Only set the key if it already exist.
    * @return ZAddParams
    */
-  public ZAddParams xx() {
+  ZAddParams xx() {
     addParam(XX);
     return this;
   }
@@ -40,12 +40,12 @@ public class ZAddParams : Params {
    * changed
    * @return ZAddParams
    */
-  public ZAddParams ch() {
+  ZAddParams ch() {
     addParam(CH);
     return this;
   }
 
-  public byte[][] getByteParams(byte[] key, byte[]... args) {
+  byte[][] getByteParams(byte[] key, byte[] args...) {
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     byteParams.add(key);
 
@@ -59,7 +59,7 @@ public class ZAddParams : Params {
       byteParams.add(SafeEncoder.encode(CH));
     }
 
-    for (byte[] arg : args) {
+    foreach(byte[] arg ; args) {
       byteParams.add(arg);
     }
 

@@ -4,17 +4,17 @@ import hunt.collection.ArraryList;
 
 import hunt.redis.util.SafeEncoder;
 
-public class SetParams : Params {
+class SetParams : Params {
 
   private enum string XX = "xx";
   private enum string NX = "nx";
   private enum string PX = "px";
   private enum string EX = "ex";
 
-  public SetParams() {
+  SetParams() {
   }
 
-  public static SetParams setParams() {
+  static SetParams setParams() {
     return new SetParams();
   }
 
@@ -23,7 +23,7 @@ public class SetParams : Params {
    * @param secondsToExpire
    * @return SetParams
    */
-  public SetParams ex(int secondsToExpire) {
+  SetParams ex(int secondsToExpire) {
     addParam(EX, secondsToExpire);
     return this;
   }
@@ -33,7 +33,7 @@ public class SetParams : Params {
    * @param millisecondsToExpire
    * @return SetParams
    */
-  public SetParams px(long millisecondsToExpire) {
+  SetParams px(long millisecondsToExpire) {
     addParam(PX, millisecondsToExpire);
     return this;
   }
@@ -42,7 +42,7 @@ public class SetParams : Params {
    * Only set the key if it does not already exist.
    * @return SetParams
    */
-  public SetParams nx() {
+  SetParams nx() {
     addParam(NX);
     return this;
   }
@@ -51,14 +51,14 @@ public class SetParams : Params {
    * Only set the key if it already exist.
    * @return SetParams
    */
-  public SetParams xx() {
+  SetParams xx() {
     addParam(XX);
     return this;
   }
 
-  public byte[][] getByteParams(byte[]... args) {
+  byte[][] getByteParams(byte[] args...) {
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
-    for (byte[] arg : args) {
+    foreach(byte[] arg ; args) {
       byteParams.add(arg);
     }
 

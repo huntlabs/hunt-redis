@@ -1,7 +1,7 @@
 module hunt.redis.Connection;
 
 import java.io.Closeable;
-import java.io.IOException;
+import hunt.Exceptions;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -21,9 +21,9 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
-public class Connection : Closeable {
+class Connection : Closeable {
 
-  private static final byte[][] EMPTY_ARGS = new byte[0][];
+  private enum byte[][] EMPTY_ARGS = new byte[0][];
 
   private String host = Protocol.DEFAULT_HOST;
   private int port = Protocol.DEFAULT_PORT;
@@ -32,31 +32,31 @@ public class Connection : Closeable {
   private RedisInputStream inputStream;
   private int connectionTimeout = Protocol.DEFAULT_TIMEOUT;
   private int soTimeout = Protocol.DEFAULT_TIMEOUT;
-  private boolean broken = false;
-  private boolean ssl;
+  private bool broken = false;
+  private bool ssl;
   private SSLSocketFactory sslSocketFactory;
   private SSLParameters sslParameters;
   private HostnameVerifier hostnameVerifier;
 
-  public Connection() {
+  Connection() {
   }
 
-  public Connection(final String host) {
+  Connection(final String host) {
     this.host = host;
   }
 
-  public Connection(final String host, final int port) {
+  Connection(final String host, final int port) {
     this.host = host;
     this.port = port;
   }
 
-  public Connection(final String host, final int port, final boolean ssl) {
+  Connection(final String host, final int port, final bool ssl) {
     this.host = host;
     this.port = port;
     this.ssl = ssl;
   }
 
-  public Connection(final String host, final int port, final boolean ssl,
+  Connection(final String host, final int port, final bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this.host = host;
@@ -67,27 +67,27 @@ public class Connection : Closeable {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  public Socket getSocket() {
+  Socket getSocket() {
     return socket;
   }
 
-  public int getConnectionTimeout() {
+  int getConnectionTimeout() {
     return connectionTimeout;
   }
 
-  public int getSoTimeout() {
+  int getSoTimeout() {
     return soTimeout;
   }
 
-  public void setConnectionTimeout(int connectionTimeout) {
+  void setConnectionTimeout(int connectionTimeout) {
     this.connectionTimeout = connectionTimeout;
   }
 
-  public void setSoTimeout(int soTimeout) {
+  void setSoTimeout(int soTimeout) {
     this.soTimeout = soTimeout;
   }
 
-  public void setTimeoutInfinite() {
+  void setTimeoutInfinite() {
     try {
       if (!isConnected()) {
         connect();
@@ -99,7 +99,7 @@ public class Connection : Closeable {
     }
   }
 
-  public void rollbackTimeout() {
+  void rollbackTimeout() {
     try {
       socket.setSoTimeout(soTimeout);
     } catch (SocketException ex) {
@@ -108,7 +108,7 @@ public class Connection : Closeable {
     }
   }
 
-  public void sendCommand(final ProtocolCommand cmd, final String... args) {
+  void sendCommand(final ProtocolCommand cmd, final String args...) {
     final byte[][] bargs = new byte[args.length][];
     for (int i = 0; i < args.length; i++) {
       bargs[i] = SafeEncoder.encode(args[i]);
@@ -116,11 +116,11 @@ public class Connection : Closeable {
     sendCommand(cmd, bargs);
   }
 
-  public void sendCommand(final ProtocolCommand cmd) {
+  void sendCommand(final ProtocolCommand cmd) {
     sendCommand(cmd, EMPTY_ARGS);
   }
 
-  public void sendCommand(final ProtocolCommand cmd, final byte[]... args) {
+  void sendCommand(final ProtocolCommand cmd, final byte[] args...) {
     try {
       connect();
       Protocol.sendCommand(outputStream, cmd, args);
@@ -147,23 +147,23 @@ public class Connection : Closeable {
     }
   }
 
-  public String getHost() {
+  String getHost() {
     return host;
   }
 
-  public void setHost(final String host) {
+  void setHost(final String host) {
     this.host = host;
   }
 
-  public int getPort() {
+  int getPort() {
     return port;
   }
 
-  public void setPort(final int port) {
+  void setPort(final int port) {
     this.port = port;
   }
 
-  public void connect() {
+  void connect() {
     if (!isConnected()) {
       try {
         socket = new Socket();
@@ -208,11 +208,11 @@ public class Connection : Closeable {
   }
 
   override
-  public void close() {
+  void close() {
     disconnect();
   }
 
-  public void disconnect() {
+  void disconnect() {
     if (isConnected()) {
       try {
         outputStream.flush();
@@ -226,12 +226,12 @@ public class Connection : Closeable {
     }
   }
 
-  public boolean isConnected() {
+  bool isConnected() {
     return socket != null && socket.isBound() && !socket.isClosed() && socket.isConnected()
         && !socket.isInputShutdown() && !socket.isOutputShutdown();
   }
 
-  public String getStatusCodeReply() {
+  String getStatusCodeReply() {
     flush();
     final byte[] resp = (byte[]) readProtocolWithCheckingBroken();
     if (null == resp) {
@@ -241,7 +241,7 @@ public class Connection : Closeable {
     }
   }
 
-  public String getBulkReply() {
+  String getBulkReply() {
     final byte[] result = getBinaryBulkReply();
     if (null != result) {
       return SafeEncoder.encode(result);
@@ -250,53 +250,53 @@ public class Connection : Closeable {
     }
   }
 
-  public byte[] getBinaryBulkReply() {
+  byte[] getBinaryBulkReply() {
     flush();
     return (byte[]) readProtocolWithCheckingBroken();
   }
 
-  public Long getIntegerReply() {
+  Long getIntegerReply() {
     flush();
     return (Long) readProtocolWithCheckingBroken();
   }
 
-  public List!(String) getMultiBulkReply() {
+  List!(String) getMultiBulkReply() {
     return BuilderFactory.STRING_LIST.build(getBinaryMultiBulkReply());
   }
 
   @SuppressWarnings("unchecked")
-  public List!(byte[]) getBinaryMultiBulkReply() {
+  List!(byte[]) getBinaryMultiBulkReply() {
     flush();
     return (List!(byte[])) readProtocolWithCheckingBroken();
   }
 
   deprecated("")
-  public List!(Object) getRawObjectMultiBulkReply() {
+  List!(Object) getRawObjectMultiBulkReply() {
     return getUnflushedObjectMultiBulkReply();
   }
 
   @SuppressWarnings("unchecked")
-  public List!(Object) getUnflushedObjectMultiBulkReply() {
+  List!(Object) getUnflushedObjectMultiBulkReply() {
     return (List!(Object)) readProtocolWithCheckingBroken();
   }
 
-  public List!(Object) getObjectMultiBulkReply() {
+  List!(Object) getObjectMultiBulkReply() {
     flush();
     return getUnflushedObjectMultiBulkReply();
   }
 
   @SuppressWarnings("unchecked")
-  public List!(Long) getIntegerMultiBulkReply() {
+  List!(Long) getIntegerMultiBulkReply() {
     flush();
     return (List!(Long)) readProtocolWithCheckingBroken();
   }
 
-  public Object getOne() {
+  Object getOne() {
     flush();
     return readProtocolWithCheckingBroken();
   }
 
-  public boolean isBroken() {
+  bool isBroken() {
     return broken;
   }
 
@@ -322,7 +322,7 @@ public class Connection : Closeable {
     }
   }
 
-  public List!(Object) getMany(final int count) {
+  List!(Object) getMany(final int count) {
     flush();
     final List!(Object) responses = new ArrayList!(Object)(count);
     for (int i = 0; i < count; i++) {

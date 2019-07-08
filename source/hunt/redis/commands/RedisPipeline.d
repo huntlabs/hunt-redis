@@ -55,7 +55,7 @@ public interface RedisPipeline {
 
   Response!(String) getSet(String key, String value);
 
-  Response!(Long) hdel(String key, String... field);
+  Response!(Long) hdel(String key, String field...);
 
   Response!(Boolean) hexists(String key, String field);
 
@@ -69,7 +69,7 @@ public interface RedisPipeline {
 
   Response!(Long) hlen(String key);
 
-  Response!(List!(String)) hmget(String key, String... fields);
+  Response!(List!(String)) hmget(String key, String fields...);
 
   Response!(String) hmset(String key, Map!(String, String) hash);
 
@@ -93,9 +93,9 @@ public interface RedisPipeline {
 
   Response!(String) lpop(String key);
 
-  Response!(Long) lpush(String key, String... string);
+  Response!(Long) lpush(String key, String string...);
 
-  Response!(Long) lpushx(String key, String... string);
+  Response!(Long) lpushx(String key, String string...);
 
   Response!(List!(String)) lrange(String key, long start, long stop);
 
@@ -111,11 +111,11 @@ public interface RedisPipeline {
 
   Response!(String) rpop(String key);
 
-  Response!(Long) rpush(String key, String... string);
+  Response!(Long) rpush(String key, String string...);
 
-  Response!(Long) rpushx(String key, String... string);
+  Response!(Long) rpushx(String key, String string...);
 
-  Response!(Long) sadd(String key, String... member);
+  Response!(Long) sadd(String key, String member...);
 
   Response!(Long) scard(String key);
 
@@ -123,7 +123,7 @@ public interface RedisPipeline {
 
   Response!(String) set(String key, String value);
 
-  Response!(Boolean) setbit(String key, long offset, boolean value);
+  Response!(Boolean) setbit(String key, long offset, bool value);
 
   Response!(String) setex(String key, int seconds, String value);
 
@@ -143,7 +143,7 @@ public interface RedisPipeline {
 
   Response!(String) srandmember(String key);
 
-  Response!(Long) srem(String key, String... member);
+  Response!(Long) srem(String key, String member...);
 
   Response!(Long) strlen(String key);
 
@@ -212,7 +212,7 @@ public interface RedisPipeline {
 
   Response!(Long) zrank(String key, String member);
 
-  Response!(Long) zrem(String key, String... members);
+  Response!(Long) zrem(String key, String members...);
 
   Response!(Long) zremrangeByRank(String key, long start, long stop);
 
@@ -246,11 +246,11 @@ public interface RedisPipeline {
 
   Response!(Long) bitcount(String key, long start, long end);
 
-  Response!(Long) pfadd(String key, String... elements);
+  Response!(Long) pfadd(String key, String elements...);
 
   Response!(Long) pfcount(String key);
   
-  Response!(List!(Long)) bitfield(String key, String... arguments);
+  Response!(List!(Long)) bitfield(String key, String arguments...);
   
   Response!(Long) hstrlen(String key, String field);
 
@@ -272,9 +272,9 @@ public interface RedisPipeline {
 
   Response!(Double) geodist(String key, String member1, String member2, GeoUnit unit);
 
-  Response!(List!(String)) geohash(String key, String... members);
+  Response!(List!(String)) geohash(String key, String members...);
 
-  Response!(List!(GeoCoordinate)) geopos(String key, String... members);
+  Response!(List!(GeoCoordinate)) geopos(String key, String members...);
 
   Response!(List!(GeoRadiusResponse)) georadius(String key, double longitude, double latitude,
       double radius, GeoUnit unit);
@@ -302,7 +302,7 @@ public interface RedisPipeline {
   
   Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash);
 
-  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
+  Response!(StreamEntryID) xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength);
   
   Response!(Long) xlen(String key);
 
@@ -310,9 +310,9 @@ public interface RedisPipeline {
 
   Response!(List!(StreamEntry)) xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
    
-  Response!(Long) xack(String key, String group,  StreamEntryID... ids);
+  Response!(Long) xack(String key, String group,  StreamEntryID ids...);
   
-  Response!(String) xgroupCreate( String key, String groupname, StreamEntryID id, boolean makeStream);
+  Response!(String) xgroupCreate( String key, String groupname, StreamEntryID id, bool makeStream);
   
   Response!(String) xgroupSetID( String key, String groupname, StreamEntryID id);
   
@@ -322,16 +322,16 @@ public interface RedisPipeline {
 
   Response!(List!(StreamPendingEntry)) xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
   
-  Response!(Long) xdel( String key, StreamEntryID... ids);
+  Response!(Long) xdel( String key, StreamEntryID ids...);
   
-  Response!(Long) xtrim( String key, long maxLen, boolean approximateLength);
+  Response!(Long) xtrim( String key, long maxLen, bool approximateLength);
  
   Response!(List!(StreamEntry)) xclaim( String key, String group, String consumername, long minIdleTime, 
-      long newIdleTime, int retries, boolean force, StreamEntryID... ids);
+      long newIdleTime, int retries, bool force, StreamEntryID ids...);
 
-  Response!(Long) bitpos(String key, boolean value);
+  Response!(Long) bitpos(String key, bool value);
 
-  Response!(Long) bitpos(String key, boolean value, BitPosParams params);
+  Response!(Long) bitpos(String key, bool value, BitPosParams params);
 
   Response!(String) set(String key, String value, SetParams params);
 
@@ -354,5 +354,5 @@ public interface RedisPipeline {
 
   Response!(Double) hincrByFloat(String key, String field, double increment);
 
-  Response!(Object) sendCommand(ProtocolCommand cmd, String... args);
+  Response!(Object) sendCommand(ProtocolCommand cmd, String args...);
 }

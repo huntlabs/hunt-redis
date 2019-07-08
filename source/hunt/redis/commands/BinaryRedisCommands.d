@@ -54,7 +54,7 @@ public interface BinaryRedisCommands {
 
   Long touch(byte[] key);
 
-  Boolean setbit(byte[] key, long offset, boolean value);
+  Boolean setbit(byte[] key, long offset, bool value);
 
   Boolean setbit(byte[] key, long offset, byte[] value);
 
@@ -96,7 +96,7 @@ public interface BinaryRedisCommands {
 
   String hmset(byte[] key, Map!(byte[], byte[]) hash);
 
-  List!(byte[]) hmget(byte[] key, byte[]... fields);
+  List!(byte[]) hmget(byte[] key, byte[] fields...);
 
   Long hincrBy(byte[] key, byte[] field, long value);
 
@@ -104,7 +104,7 @@ public interface BinaryRedisCommands {
 
   Boolean hexists(byte[] key, byte[] field);
 
-  Long hdel(byte[] key, byte[]... field);
+  Long hdel(byte[] key, byte[] field...);
 
   Long hlen(byte[] key);
 
@@ -114,9 +114,9 @@ public interface BinaryRedisCommands {
 
   Map!(byte[], byte[]) hgetAll(byte[] key);
 
-  Long rpush(byte[] key, byte[]... args);
+  Long rpush(byte[] key, byte[] args...);
 
-  Long lpush(byte[] key, byte[]... args);
+  Long lpush(byte[] key, byte[] args...);
 
   Long llen(byte[] key);
 
@@ -134,11 +134,11 @@ public interface BinaryRedisCommands {
 
   byte[] rpop(byte[] key);
 
-  Long sadd(byte[] key, byte[]... member);
+  Long sadd(byte[] key, byte[] member...);
 
   Set!(byte[]) smembers(byte[] key);
 
-  Long srem(byte[] key, byte[]... member);
+  Long srem(byte[] key, byte[] member...);
 
   byte[] spop(byte[] key);
 
@@ -164,7 +164,7 @@ public interface BinaryRedisCommands {
 
   Set!(byte[]) zrange(byte[] key, long start, long stop);
 
-  Long zrem(byte[] key, byte[]... members);
+  Long zrem(byte[] key, byte[] members...);
 
   Double zincrby(byte[] key, double increment, byte[] member);
 
@@ -246,9 +246,9 @@ public interface BinaryRedisCommands {
 
   Long linsert(byte[] key, ListPosition where, byte[] pivot, byte[] value);
 
-  Long lpushx(byte[] key, byte[]... arg);
+  Long lpushx(byte[] key, byte[] arg...);
 
-  Long rpushx(byte[] key, byte[]... arg);
+  Long rpushx(byte[] key, byte[] arg...);
 
   Long del(byte[] key);
 
@@ -262,7 +262,7 @@ public interface BinaryRedisCommands {
 
   Long bitcount(byte[] key, long start, long end);
 
-  Long pfadd(byte[] key, byte[]... elements);
+  Long pfadd(byte[] key, byte[] elements...);
 
   long pfcount(byte[] key);
 
@@ -276,9 +276,9 @@ public interface BinaryRedisCommands {
 
   Double geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit);
 
-  List!(byte[]) geohash(byte[] key, byte[]... members);
+  List!(byte[]) geohash(byte[] key, byte[] members...);
 
-  List!(GeoCoordinate) geopos(byte[] key, byte[]... members);
+  List!(GeoCoordinate) geopos(byte[] key, byte[] members...);
 
   List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -320,7 +320,7 @@ public interface BinaryRedisCommands {
    * @param arguments
    * @return 
    */
-  List!(Long) bitfield(byte[] key, byte[]... arguments);
+  List!(Long) bitfield(byte[] key, byte[] arguments...);
   
   /**
    * Used for HSTRLEN Redis command
@@ -331,7 +331,7 @@ public interface BinaryRedisCommands {
   Long hstrlen(byte[] key, byte[] field);
   
   
-  byte[] xadd(final byte[] key, final byte[] id, final Map!(byte[], byte[]) hash, long maxLen, boolean approximateLength);
+  byte[] xadd(final byte[] key, final byte[] id, final Map!(byte[], byte[]) hash, long maxLen, bool approximateLength);
 
   Long xlen(final byte[] key);
  
@@ -339,9 +339,9 @@ public interface BinaryRedisCommands {
 
   List!(byte[]) xrevrange(final byte[] key, final byte[] end, final byte[] start, final int count);
 
-  Long xack(final byte[] key, final byte[] group, final byte[]... ids);
+  Long xack(final byte[] key, final byte[] group, final byte[] ids...);
  
-  String xgroupCreate(final byte[] key, final byte[] consumer, final byte[] id, boolean makeStream);
+  String xgroupCreate(final byte[] key, final byte[] consumer, final byte[] id, bool makeStream);
 
   String xgroupSetID(final byte[] key, final byte[] consumer, final byte[] id);
 
@@ -349,13 +349,13 @@ public interface BinaryRedisCommands {
 
   String xgroupDelConsumer(final byte[] key, final byte[] consumer, final byte[] consumerName);
  
-  Long xdel(final byte[] key, final byte[]... ids);
+  Long xdel(final byte[] key, final byte[] ids...);
 
-  Long xtrim(byte[] key, long maxLen, boolean approximateLength);
+  Long xtrim(byte[] key, long maxLen, bool approximateLength);
 
   List!(byte[]) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername);
 
-  List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, boolean force, byte[][] ids);
+  List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, long newIdleTime, int retries, bool force, byte[][] ids);
 
-  Object sendCommand(ProtocolCommand cmd, byte[]... args);
+  Object sendCommand(ProtocolCommand cmd, byte[] args...);
 }

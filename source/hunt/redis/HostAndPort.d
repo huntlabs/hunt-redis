@@ -5,30 +5,30 @@ import java.net.InetAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HostAndPort : Serializable {
+class HostAndPort : Serializable {
 
   protected static Logger log = LoggerFactory.getLogger(HostAndPort.class.getName());
-  public static volatile String localhost;
+  static volatile String localhost;
 
 
   private String host;
   private int port;
 
-  public HostAndPort(String host, int port) {
+  HostAndPort(String host, int port) {
     this.host = host;
     this.port = port;
   }
 
-  public String getHost() {
+  String getHost() {
     return host;
   }
 
-  public int getPort() {
+  int getPort() {
     return port;
   }
 
   override
-  public boolean equals(Object obj) {
+  bool equals(Object obj) {
     if (obj == null) return false;
     if (obj == this) return true;
     if (!(obj instanceof HostAndPort)) return false;
@@ -41,12 +41,12 @@ public class HostAndPort : Serializable {
   }
 
   override
-  public size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow() {
     return 31 * convertHost(host).hashCode() + port;
   }
 
   override
-  public String toString() {
+  String toString() {
     return host + ":" + port;
   }
 
@@ -57,7 +57,7 @@ public class HostAndPort : Serializable {
    * @param from String to parse
    * @return array of host and port strings
      */
-  public static String[] extractParts(String from){
+  static String[] extractParts(String from){
     int idx     = from.lastIndexOf(":");
     String host = idx != -1 ? from.substring(0, idx)  : from;
     String port = idx != -1 ? from.substring(idx + 1) : "";
@@ -72,7 +72,7 @@ public class HostAndPort : Serializable {
    * @param from String to parse
    * @return HostAndPort instance
      */
-  public static HostAndPort parseString(String from){
+  static HostAndPort parseString(String from){
     // NOTE: redis answers with
     // '99aa9999aa9a99aa099aaa990aa99a09aa9a9999 9a09:9a9:a090:9a::99a slave 8c88888888cc08088cc8c8c888c88c8888c88cc8 0 1468251272993 37 connected'
     // for CLUSTER NODES, ASK and MOVED scenarios. That's why there is no possibility to parse address in 'correct' way.
@@ -87,7 +87,7 @@ public class HostAndPort : Serializable {
     }
   }
 
-  public static String convertHost(String host) {
+  static String convertHost(String host) {
     try {
         /*
          * Validate the host name as an IPV4/IPV6 address.
@@ -114,7 +114,7 @@ public class HostAndPort : Serializable {
     }
   }
 
-  public static void setLocalhost(String localhost) {
+  static void setLocalhost(String localhost) {
     synchronized (HostAndPort.class) {
       HostAndPort.localhost = localhost;
     }
@@ -125,7 +125,7 @@ public class HostAndPort : Serializable {
    *
    * @return localhost
    */
-  public static String getLocalhost() {
+  static String getLocalhost() {
     if (localhost == null) {
       synchronized (HostAndPort.class) {
         if (localhost == null) {
@@ -136,7 +136,7 @@ public class HostAndPort : Serializable {
     return localhost;
   }
 
-  public static String getLocalHostQuietly() {
+  static String getLocalHostQuietly() {
     String localAddress;
     try {
       localAddress = InetAddress.getLocalHost().getHostAddress();

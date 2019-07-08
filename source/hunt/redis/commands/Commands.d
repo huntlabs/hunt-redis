@@ -24,11 +24,11 @@ public interface Commands {
 
   void get(String key);
 
-  void exists(String... keys);
+  void exists(String keys...);
 
-  void del(String... keys);
+  void del(String keys...);
 
-  void unlink(String... keys);
+  void unlink(String keys...);
 
   void type(String key);
 
@@ -46,9 +46,9 @@ public interface Commands {
 
   void pttl(String key);
 
-  void touch(String... keys);
+  void touch(String keys...);
 
-  void setbit(String key, long offset, boolean value);
+  void setbit(String key, long offset, bool value);
 
   void setbit(String key, long offset, String value);
 
@@ -62,15 +62,15 @@ public interface Commands {
 
   void getSet(String key, String value);
 
-  void mget(String... keys);
+  void mget(String keys...);
 
   void setnx(String key, String value);
 
   void setex(String key, int seconds, String value);
 
-  void mset(String... keysvalues);
+  void mset(String keysvalues...);
 
-  void msetnx(String... keysvalues);
+  void msetnx(String keysvalues...);
 
   void decrBy(String key, long decrement);
 
@@ -96,7 +96,7 @@ public interface Commands {
 
   void hmset(String key, Map!(String, String) hash);
 
-  void hmget(String key, String... fields);
+  void hmget(String key, String fields...);
 
   void hincrBy(String key, String field, long value);
 
@@ -104,7 +104,7 @@ public interface Commands {
 
   void hexists(String key, String field);
 
-  void hdel(String key, String... fields);
+  void hdel(String key, String fields...);
 
   void hlen(String key);
 
@@ -114,9 +114,9 @@ public interface Commands {
 
   void hgetAll(String key);
 
-  void rpush(String key, String... strings);
+  void rpush(String key, String strings...);
 
-  void lpush(String key, String... strings);
+  void lpush(String key, String strings...);
 
   void llen(String key);
 
@@ -136,11 +136,11 @@ public interface Commands {
 
   void rpoplpush(String srckey, String dstkey);
 
-  void sadd(String key, String... members);
+  void sadd(String key, String members...);
 
   void smembers(String key);
 
-  void srem(String key, String... member);
+  void srem(String key, String member...);
 
   void spop(String key);
 
@@ -152,17 +152,17 @@ public interface Commands {
 
   void sismember(String key, String member);
 
-  void sinter(String... keys);
+  void sinter(String keys...);
 
-  void sinterstore(String dstkey, String... keys);
+  void sinterstore(String dstkey, String keys...);
 
-  void sunion(String... keys);
+  void sunion(String keys...);
 
-  void sunionstore(String dstkey, String... keys);
+  void sunionstore(String dstkey, String keys...);
 
-  void sdiff(String... keys);
+  void sdiff(String keys...);
 
-  void sdiffstore(String dstkey, String... keys);
+  void sdiffstore(String dstkey, String keys...);
 
   void srandmember(String key);
 
@@ -176,7 +176,7 @@ public interface Commands {
 
   void zrange(String key, long start, long stop);
 
-  void zrem(String key, String... members);
+  void zrem(String key, String members...);
 
   void zincrby(String key, double increment, String member);
 
@@ -196,7 +196,7 @@ public interface Commands {
 
   void zscore(String key, String member);
 
-  void watch(String... keys);
+  void watch(String keys...);
 
   void sort(String key);
 
@@ -260,21 +260,21 @@ public interface Commands {
 
   void zremrangeByScore(String key, String min, String max);
 
-  void zunionstore(String dstkey, String... sets);
+  void zunionstore(String dstkey, String sets...);
 
-  void zunionstore(String dstkey, ZParams params, String... sets);
+  void zunionstore(String dstkey, ZParams params, String sets...);
 
-  void zinterstore(String dstkey, String... sets);
+  void zinterstore(String dstkey, String sets...);
 
-  void zinterstore(String dstkey, ZParams params, String... sets);
+  void zinterstore(String dstkey, ZParams params, String sets...);
 
   void strlen(String key);
 
-  void lpushx(String key, String... string);
+  void lpushx(String key, String string...);
 
   void persist(String key);
 
-  void rpushx(String key, String... string);
+  void rpushx(String key, String string...);
 
   void echo(String string);
 
@@ -310,7 +310,7 @@ public interface Commands {
 
   void bitcount(String key, long start, long end);
 
-  void bitop(BitOP op, String destKey, String... srcKeys);
+  void bitop(BitOP op, String destKey, String srcKeys...);
 
   void dump(String key);
 
@@ -333,7 +333,7 @@ public interface Commands {
    * @param key
    * @param arguments
    */
-  void bitfield(String key, String... arguments);
+  void bitfield(String key, String arguments...);
 
   /**
    * Used for HSTRLEN Redis command
@@ -344,7 +344,7 @@ public interface Commands {
 
   void migrate(String host, int port, String key, int destinationDB, int timeout);
 
-  void migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, String... keys);
+  void migrate(String host, int port, int destinationDB, int timeout, MigrateParams params, String keys...);
 
   void clientKill(String ipPort);
 
@@ -360,7 +360,7 @@ public interface Commands {
 
   void memoryDoctor();
 
-  void xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
+  void xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength);
   
   void xlen(String key);
 
@@ -368,11 +368,11 @@ public interface Commands {
   
   void xrevrange(String key, StreamEntryID end, StreamEntryID start, int count);
   
-  void xread(int count, long block, Entry!(String, StreamEntryID)... streams);
+  void xread(int count, long block, Entry!(String, StreamEntryID) streams...);
   
-  void xack(String key, String group, StreamEntryID... ids);
+  void xack(String key, String group, StreamEntryID ids...);
   
-  void xgroupCreate(String key, String consumer, StreamEntryID id, boolean makeStream);
+  void xgroupCreate(String key, String consumer, StreamEntryID id, bool makeStream);
 
   void xgroupSetID(String key, String consumer, StreamEntryID id);
 
@@ -380,14 +380,14 @@ public interface Commands {
 
   void xgroupDelConsumer(String key, String consumer, String consumerName);
 
-  void xdel(String key, StreamEntryID... ids);
+  void xdel(String key, StreamEntryID ids...);
 
-  void xtrim(String key, long maxLen, boolean approximateLength);
+  void xtrim(String key, long maxLen, bool approximateLength);
 
-  void xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Entry!(String, StreamEntryID)... streams);
+  void xreadGroup(String groupname, String consumer, int count, long block, bool noAck, Entry!(String, StreamEntryID) streams...);
 
   void xpending(String key, String groupname, StreamEntryID start, StreamEntryID end, int count, String consumername);
 
   void xclaim(String key, String group, String consumername, long minIdleTime, long newIdleTime, int retries,
-      boolean force, StreamEntryID... ids);
+      bool force, StreamEntryID ids...);
 }

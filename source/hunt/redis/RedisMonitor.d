@@ -1,9 +1,9 @@
 module hunt.redis.RedisMonitor;
 
-public abstract class RedisMonitor {
+abstract class RedisMonitor {
   protected Client client;
 
-  public void proceed(Client client) {
+  void proceed(Client client) {
     this.client = client;
     this.client.setTimeoutInfinite();
     do {
@@ -12,5 +12,5 @@ public abstract class RedisMonitor {
     } while (client.isConnected());
   }
 
-  public abstract void onCommand(String command);
+  abstract void onCommand(String command);
 }

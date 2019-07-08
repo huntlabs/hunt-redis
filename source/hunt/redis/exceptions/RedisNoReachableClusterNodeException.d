@@ -1,16 +1,16 @@
 module hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 
-public class RedisNoReachableClusterNodeException : RedisConnectionException {
+class RedisNoReachableClusterNodeException : RedisConnectionException {
 
-    public RedisNoReachableClusterNodeException(String message) {
+    RedisNoReachableClusterNodeException(String message) {
         super(message);
     }
 
-    public RedisNoReachableClusterNodeException(Throwable cause) {
+    RedisNoReachableClusterNodeException(Throwable cause) {
         super(cause);
     }
 
-    public RedisNoReachableClusterNodeException(String message, Throwable cause) {
+    RedisNoReachableClusterNodeException(String message, Throwable cause) {
         super(message, cause);
     }
 }

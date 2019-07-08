@@ -9,9 +9,9 @@ public interface ClusterPipeline {
 
   Response!(String) clusterMeet(String ip, int port);
 
-  Response!(String) clusterAddSlots(int... slots);
+  Response!(String) clusterAddSlots(int slots...);
 
-  Response!(String) clusterDelSlots(int... slots);
+  Response!(String) clusterDelSlots(int slots...);
 
   Response!(String) clusterInfo();
 

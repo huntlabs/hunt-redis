@@ -5,13 +5,13 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import hunt.redis.util.Pool;
 
-public class RedisPoolAbstract : Pool!(Redis) {
+class RedisPoolAbstract : Pool!(Redis) {
 
-  public RedisPoolAbstract() {
+  RedisPoolAbstract() {
     super();
   }
 
-  public RedisPoolAbstract(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(Redis) factory) {
+  RedisPoolAbstract(GenericObjectPoolConfig poolConfig, PooledObjectFactory!(Redis) factory) {
     super(poolConfig, factory);
   }
 

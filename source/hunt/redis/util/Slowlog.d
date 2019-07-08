@@ -3,7 +3,7 @@ module hunt.redis.util.Slowlog;
 import hunt.collection.ArraryList;
 import hunt.collection.List;
 
-public class Slowlog {
+class Slowlog {
   private final long id;
   private final long timeStamp;
   private final long executionTime;
@@ -20,13 +20,13 @@ public class Slowlog {
     List!(byte[]) bargs = (List!(byte[])) properties.get(3);
     this.args = new ArrayList!(String)(bargs.size());
 
-    for (byte[] barg : bargs) {
+    foreach(byte[] barg ; bargs) {
       this.args.add(SafeEncoder.encode(barg));
     }
   }
 
   @SuppressWarnings("unchecked")
-  public static List!(Slowlog) from(List!(Object) nestedMultiBulkReply) {
+  static List!(Slowlog) from(List!(Object) nestedMultiBulkReply) {
     List!(Slowlog) logs = new ArrayList!(Slowlog)(nestedMultiBulkReply.size());
     foreach(Object obj ; nestedMultiBulkReply) {
       List!(Object) properties = (List!(Object)) obj;
@@ -36,24 +36,24 @@ public class Slowlog {
     return logs;
   }
   
-  public long getId() {
+  long getId() {
     return id;
   }
 
-  public long getTimeStamp() {
+  long getTimeStamp() {
     return timeStamp;
   }
 
-  public long getExecutionTime() {
+  long getExecutionTime() {
     return executionTime;
   }
 
-  public List!(String) getArgs() {
+  List!(String) getArgs() {
     return args;
   }
 
   override
-  public String toString() {
+  String toString() {
     return new StringBuilder().append(id).append(COMMA).append(timeStamp).append(COMMA)
         .append(executionTime).append(COMMA).append(args).toString();
   }

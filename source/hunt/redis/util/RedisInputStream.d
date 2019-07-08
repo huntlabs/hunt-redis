@@ -11,7 +11,7 @@ module hunt.redis.util.RedisInputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
-import java.io.IOException;
+import hunt.Exceptions;
 import java.io.InputStream;
 
 import hunt.redis.exceptions.RedisConnectionException;
@@ -21,13 +21,13 @@ import hunt.redis.exceptions.RedisConnectionException;
  * conventions regarding CRLF line termination. It also assumes that if the Protocol layer requires
  * a byte that if that byte is not there it is a stream error.
  */
-public class RedisInputStream : FilterInputStream {
+class RedisInputStream : FilterInputStream {
 
   protected final byte[] buf;
 
   protected int count, limit;
 
-  public RedisInputStream(InputStream in, int size) {
+  RedisInputStream(InputStream in, int size) {
     super(in);
     if (size <= 0) {
       throw new IllegalArgumentException("Buffer size <= 0");
@@ -35,16 +35,16 @@ public class RedisInputStream : FilterInputStream {
     buf = new byte[size];
   }
 
-  public RedisInputStream(InputStream in) {
+  RedisInputStream(InputStream in) {
     this(in, 8192);
   }
 
-  public byte readByte() throws RedisConnectionException {
+  byte readByte() throws RedisConnectionException {
     ensureFill();
     return buf[count++];
   }
 
-  public String readLine() {
+  String readLine() {
     final StringBuilder sb = new StringBuilder();
     while (true) {
       ensureFill();
@@ -72,7 +72,7 @@ public class RedisInputStream : FilterInputStream {
     return reply;
   }
 
-  public byte[] readLineBytes() {
+  byte[] readLineBytes() {
 
     /*
      * This operation should only require one fill. In that typical case we optimize allocation and
@@ -144,16 +144,16 @@ public class RedisInputStream : FilterInputStream {
     return bout == null ? new byte[0] : bout.toByteArray();
   }
 
-  public int readIntCrLf() {
+  int readIntCrLf() {
     return (int) readLongCrLf();
   }
 
-  public long readLongCrLf() {
+  long readLongCrLf() {
     final byte[] buf = this.buf;
 
     ensureFill();
 
-    final boolean isNeg = buf[count] == '-';
+    final bool isNeg = buf[count] == '-';
     if (isNeg) {
       ++count;
     }
@@ -180,7 +180,7 @@ public class RedisInputStream : FilterInputStream {
   }
 
   override
-  public int read(byte[] b, int off, int len) throws RedisConnectionException {
+  int read(byte[] b, int off, int len) throws RedisConnectionException {
     ensureFill();
 
     final int length = Math.min(limit - count, len);

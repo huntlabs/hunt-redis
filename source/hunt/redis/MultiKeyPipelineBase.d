@@ -7,475 +7,475 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-public abstract class MultiKeyPipelineBase : PipelineBase implements
+abstract class MultiKeyPipelineBase : PipelineBase implements
     MultiKeyBinaryRedisPipeline, MultiKeyCommandsPipeline, ClusterPipeline,
     BinaryScriptingCommandsPipeline, ScriptingCommandsPipeline, BasicRedisPipeline {
 
   protected Client client = null;
 
   override
-  public Response!(List!(String)) brpop(String... args) {
+  Response!(List!(String)) brpop(String args...) {
     client.brpop(args);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  public Response!(List!(String)) brpop(int timeout, String... keys) {
+  Response!(List!(String)) brpop(int timeout, String keys...) {
     client.brpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(List!(String)) blpop(String... args) {
+  Response!(List!(String)) blpop(String args...) {
     client.blpop(args);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  public Response!(List!(String)) blpop(int timeout, String... keys) {
+  Response!(List!(String)) blpop(int timeout, String keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  public Response!(Map!(String, String)) blpopMap(int timeout, String... keys) {
+  Response!(Map!(String, String)) blpopMap(int timeout, String keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_MAP);
   }
 
   override
-  public Response!(List!(byte[])) brpop(byte[]... args) {
+  Response!(List!(byte[])) brpop(byte[] args...) {
     client.brpop(args);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
-  public Response!(List!(String)) brpop(int timeout, byte[]... keys) {
+  Response!(List!(String)) brpop(int timeout, byte[] keys...) {
     client.brpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
-  public Response!(Map!(String, String)) brpopMap(int timeout, String... keys) {
+  Response!(Map!(String, String)) brpopMap(int timeout, String keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_MAP);
   }
 
   override
-  public Response!(List!(byte[])) blpop(byte[]... args) {
+  Response!(List!(byte[])) blpop(byte[] args...) {
     client.blpop(args);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
-  public Response!(List!(String)) blpop(int timeout, byte[]... keys) {
+  Response!(List!(String)) blpop(int timeout, byte[] keys...) {
     client.blpop(timeout, keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(Long) del(String... keys) {
+  Response!(Long) del(String keys...) {
     client.del(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) del(byte[]... keys) {
+  Response!(Long) del(byte[] keys...) {
     client.del(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) unlink(String... keys) {
+  Response!(Long) unlink(String keys...) {
     client.unlink(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) unlink(byte[]... keys) {
+  Response!(Long) unlink(byte[] keys...) {
     client.unlink(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) exists(String... keys) {
+  Response!(Long) exists(String keys...) {
     client.exists(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) exists(byte[]... keys) {
+  Response!(Long) exists(byte[] keys...) {
     client.exists(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Set!(String)) keys(String pattern) {
+  Response!(Set!(String)) keys(String pattern) {
     getClient(pattern).keys(pattern);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  public Response!(Set!(byte[])) keys(byte[] pattern) {
+  Response!(Set!(byte[])) keys(byte[] pattern) {
     getClient(pattern).keys(pattern);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  public Response!(List!(String)) mget(String... keys) {
+  Response!(List!(String)) mget(String keys...) {
     client.mget(keys);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(List!(byte[])) mget(byte[]... keys) {
+  Response!(List!(byte[])) mget(byte[] keys...) {
     client.mget(keys);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
 
   override
-  public Response!(String) mset(String... keysvalues) {
+  Response!(String) mset(String keysvalues...) {
     client.mset(keysvalues);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) mset(byte[]... keysvalues) {
+  Response!(String) mset(byte[] keysvalues...) {
     client.mset(keysvalues);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) msetnx(String... keysvalues) {
+  Response!(Long) msetnx(String keysvalues...) {
     client.msetnx(keysvalues);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) msetnx(byte[]... keysvalues) {
+  Response!(Long) msetnx(byte[] keysvalues...) {
     client.msetnx(keysvalues);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) rename(String oldkey, String newkey) {
+  Response!(String) rename(String oldkey, String newkey) {
     client.rename(oldkey, newkey);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) rename(byte[] oldkey, byte[] newkey) {
+  Response!(String) rename(byte[] oldkey, byte[] newkey) {
     client.rename(oldkey, newkey);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) renamenx(String oldkey, String newkey) {
+  Response!(Long) renamenx(String oldkey, String newkey) {
     client.renamenx(oldkey, newkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) renamenx(byte[] oldkey, byte[] newkey) {
+  Response!(Long) renamenx(byte[] oldkey, byte[] newkey) {
     client.renamenx(oldkey, newkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) rpoplpush(String srckey, String dstkey) {
+  Response!(String) rpoplpush(String srckey, String dstkey) {
     client.rpoplpush(srckey, dstkey);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(byte[]) rpoplpush(byte[] srckey, byte[] dstkey) {
+  Response!(byte[]) rpoplpush(byte[] srckey, byte[] dstkey) {
     client.rpoplpush(srckey, dstkey);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  public Response!(Set!(String)) sdiff(String... keys) {
+  Response!(Set!(String)) sdiff(String keys...) {
     client.sdiff(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  public Response!(Set!(byte[])) sdiff(byte[]... keys) {
+  Response!(Set!(byte[])) sdiff(byte[] keys...) {
     client.sdiff(keys);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  public Response!(Long) sdiffstore(String dstkey, String... keys) {
+  Response!(Long) sdiffstore(String dstkey, String keys...) {
     client.sdiffstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sdiffstore(byte[] dstkey, byte[]... keys) {
+  Response!(Long) sdiffstore(byte[] dstkey, byte[] keys...) {
     client.sdiffstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Set!(String)) sinter(String... keys) {
+  Response!(Set!(String)) sinter(String keys...) {
     client.sinter(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  public Response!(Set!(byte[])) sinter(byte[]... keys) {
+  Response!(Set!(byte[])) sinter(byte[] keys...) {
     client.sinter(keys);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  public Response!(Long) sinterstore(String dstkey, String... keys) {
+  Response!(Long) sinterstore(String dstkey, String keys...) {
     client.sinterstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sinterstore(byte[] dstkey, byte[]... keys) {
+  Response!(Long) sinterstore(byte[] dstkey, byte[] keys...) {
     client.sinterstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) smove(String srckey, String dstkey, String member) {
+  Response!(Long) smove(String srckey, String dstkey, String member) {
     client.smove(srckey, dstkey, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) smove(byte[] srckey, byte[] dstkey, byte[] member) {
+  Response!(Long) smove(byte[] srckey, byte[] dstkey, byte[] member) {
     client.smove(srckey, dstkey, member);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sort(String key, SortingParams sortingParameters, String dstkey) {
+  Response!(Long) sort(String key, SortingParams sortingParameters, String dstkey) {
     client.sort(key, sortingParameters, dstkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sort(byte[] key, SortingParams sortingParameters, byte[] dstkey) {
+  Response!(Long) sort(byte[] key, SortingParams sortingParameters, byte[] dstkey) {
     client.sort(key, sortingParameters, dstkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sort(String key, String dstkey) {
+  Response!(Long) sort(String key, String dstkey) {
     client.sort(key, dstkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sort(byte[] key, byte[] dstkey) {
+  Response!(Long) sort(byte[] key, byte[] dstkey) {
     client.sort(key, dstkey);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Set!(String)) sunion(String... keys) {
+  Response!(Set!(String)) sunion(String keys...) {
     client.sunion(keys);
     return getResponse(BuilderFactory.STRING_SET);
   }
 
   override
-  public Response!(Set!(byte[])) sunion(byte[]... keys) {
+  Response!(Set!(byte[])) sunion(byte[] keys...) {
     client.sunion(keys);
     return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
   }
 
   override
-  public Response!(Long) sunionstore(String dstkey, String... keys) {
+  Response!(Long) sunionstore(String dstkey, String keys...) {
     client.sunionstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) sunionstore(byte[] dstkey, byte[]... keys) {
+  Response!(Long) sunionstore(byte[] dstkey, byte[] keys...) {
     client.sunionstore(dstkey, keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) watch(String... keys) {
+  Response!(String) watch(String keys...) {
     client.watch(keys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) watch(byte[]... keys) {
+  Response!(String) watch(byte[] keys...) {
     client.watch(keys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) zinterstore(String dstkey, String... sets) {
+  Response!(Long) zinterstore(String dstkey, String sets...) {
     client.zinterstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zinterstore(byte[] dstkey, byte[]... sets) {
+  Response!(Long) zinterstore(byte[] dstkey, byte[] sets...) {
     client.zinterstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zinterstore(String dstkey, ZParams params, String... sets) {
+  Response!(Long) zinterstore(String dstkey, ZParams params, String sets...) {
     client.zinterstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zinterstore(byte[] dstkey, ZParams params, byte[]... sets) {
+  Response!(Long) zinterstore(byte[] dstkey, ZParams params, byte[] sets...) {
     client.zinterstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zunionstore(String dstkey, String... sets) {
+  Response!(Long) zunionstore(String dstkey, String sets...) {
     client.zunionstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zunionstore(byte[] dstkey, byte[]... sets) {
+  Response!(Long) zunionstore(byte[] dstkey, byte[] sets...) {
     client.zunionstore(dstkey, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zunionstore(String dstkey, ZParams params, String... sets) {
+  Response!(Long) zunionstore(String dstkey, ZParams params, String sets...) {
     client.zunionstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) zunionstore(byte[] dstkey, ZParams params, byte[]... sets) {
+  Response!(Long) zunionstore(byte[] dstkey, ZParams params, byte[] sets...) {
     client.zunionstore(dstkey, params, sets);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) bgrewriteaof() {
+  Response!(String) bgrewriteaof() {
     client.bgrewriteaof();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) bgsave() {
+  Response!(String) bgsave() {
     client.bgsave();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(List!(String)) configGet(String pattern) {
+  Response!(List!(String)) configGet(String pattern) {
     client.configGet(pattern);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(String) configSet(String parameter, String value) {
+  Response!(String) configSet(String parameter, String value) {
     client.configSet(parameter, value);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) brpoplpush(String source, String destination, int timeout) {
+  Response!(String) brpoplpush(String source, String destination, int timeout) {
     client.brpoplpush(source, destination, timeout);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(byte[]) brpoplpush(byte[] source, byte[] destination, int timeout) {
+  Response!(byte[]) brpoplpush(byte[] source, byte[] destination, int timeout) {
     client.brpoplpush(source, destination, timeout);
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  public Response!(String) configResetStat() {
+  Response!(String) configResetStat() {
     client.configResetStat();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) save() {
+  Response!(String) save() {
     client.save();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) lastsave() {
+  Response!(Long) lastsave() {
     client.lastsave();
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) publish(String channel, String message) {
+  Response!(Long) publish(String channel, String message) {
     client.publish(channel, message);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) publish(byte[] channel, byte[] message) {
+  Response!(Long) publish(byte[] channel, byte[] message) {
     client.publish(channel, message);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) randomKey() {
+  Response!(String) randomKey() {
     client.randomKey();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(byte[]) randomKeyBinary() {
+  Response!(byte[]) randomKeyBinary() {
     client.randomKey();
     return getResponse(BuilderFactory.BYTE_ARRAY);
   }
 
   override
-  public Response!(String) flushDB() {
+  Response!(String) flushDB() {
     client.flushDB();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) flushAll() {
+  Response!(String) flushAll() {
     client.flushAll();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) info() {
+  Response!(String) info() {
     client.info();
     return getResponse(BuilderFactory.STRING);
   }
 
-  public Response!(String) info(final String section) {
+  Response!(String) info(final String section) {
     client.info(section);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) dbSize() {
+  Response!(Long) dbSize() {
     client.dbSize();
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) shutdown() {
+  Response!(String) shutdown() {
     client.shutdown();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) ping() {
+  Response!(String) ping() {
     client.ping();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) select(int index) {
+  Response!(String) select(int index) {
     client.select(index);
     Response!(String) response = getResponse(BuilderFactory.STRING);
     client.setDb(index);
@@ -484,227 +484,227 @@ public abstract class MultiKeyPipelineBase : PipelineBase implements
   }
 
   override
-  public Response!(String) swapDB(int index1, int index2) {
+  Response!(String) swapDB(int index1, int index2) {
     client.swapDB(index1, index2);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Long) bitop(BitOP op, byte[] destKey, byte[]... srcKeys) {
+  Response!(Long) bitop(BitOP op, byte[] destKey, byte[] srcKeys...) {
     client.bitop(op, destKey, srcKeys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) bitop(BitOP op, String destKey, String... srcKeys) {
+  Response!(Long) bitop(BitOP op, String destKey, String srcKeys...) {
     client.bitop(op, destKey, srcKeys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) clusterNodes() {
+  Response!(String) clusterNodes() {
     client.clusterNodes();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterMeet(final String ip, final int port) {
+  Response!(String) clusterMeet(final String ip, final int port) {
     client.clusterMeet(ip, port);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterAddSlots(final int... slots) {
+  Response!(String) clusterAddSlots(final int slots...) {
     client.clusterAddSlots(slots);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterDelSlots(final int... slots) {
+  Response!(String) clusterDelSlots(final int slots...) {
     client.clusterDelSlots(slots);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterInfo() {
+  Response!(String) clusterInfo() {
     client.clusterInfo();
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(List!(String)) clusterGetKeysInSlot(final int slot, final int count) {
+  Response!(List!(String)) clusterGetKeysInSlot(final int slot, final int count) {
     client.clusterGetKeysInSlot(slot, count);
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(String) clusterSetSlotNode(final int slot, final String nodeId) {
+  Response!(String) clusterSetSlotNode(final int slot, final String nodeId) {
     client.clusterSetSlotNode(slot, nodeId);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterSetSlotMigrating(final int slot, final String nodeId) {
+  Response!(String) clusterSetSlotMigrating(final int slot, final String nodeId) {
     client.clusterSetSlotMigrating(slot, nodeId);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) clusterSetSlotImporting(final int slot, final String nodeId) {
+  Response!(String) clusterSetSlotImporting(final int slot, final String nodeId) {
     client.clusterSetSlotImporting(slot, nodeId);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Object) eval(String script) {
+  Response!(Object) eval(String script) {
     return this.eval(script, 0, new String[0]);
   }
 
   override
-  public Response!(Object) eval(String script, List!(String) keys, List!(String) args) {
+  Response!(Object) eval(String script, List!(String) keys, List!(String) args) {
     String[] argv = Redis.getParams(keys, args);
     return this.eval(script, keys.size(), argv);
   }
 
   override
-  public Response!(Object) eval(String script, int keyCount, String... params) {
+  Response!(Object) eval(String script, int keyCount, String params...) {
     getClient(script).eval(script, keyCount, params);
     return getResponse(BuilderFactory.EVAL_RESULT);
   }
 
   override
-  public Response!(Object) evalsha(String sha1) {
+  Response!(Object) evalsha(String sha1) {
     return this.evalsha(sha1, 0, new String[0]);
   }
 
   override
-  public Response!(Object) evalsha(String sha1, List!(String) keys, List!(String) args) {
+  Response!(Object) evalsha(String sha1, List!(String) keys, List!(String) args) {
     String[] argv = Redis.getParams(keys, args);
     return this.evalsha(sha1, keys.size(), argv);
   }
 
   override
-  public Response!(Object) evalsha(String sha1, int keyCount, String... params) {
+  Response!(Object) evalsha(String sha1, int keyCount, String params...) {
     getClient(sha1).evalsha(sha1, keyCount, params);
     return getResponse(BuilderFactory.EVAL_RESULT);
   }
 
   override
-  public Response!(Object) eval(byte[] script) {
+  Response!(Object) eval(byte[] script) {
     return this.eval(script, 0);
   }
 
   override
-  public Response!(Object) eval(byte[] script, byte[] keyCount, byte[]... params) {
+  Response!(Object) eval(byte[] script, byte[] keyCount, byte[] params...) {
     getClient(script).eval(script, keyCount, params);
     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
   }
 
   override
-  public Response!(Object) eval(byte[] script, List!(byte[]) keys, List!(byte[]) args) {
+  Response!(Object) eval(byte[] script, List!(byte[]) keys, List!(byte[]) args) {
     byte[][] argv = BinaryRedis.getParamsWithBinary(keys, args);
     return this.eval(script, keys.size(), argv);
   }
 
   override
-  public Response!(Object) eval(byte[] script, int keyCount, byte[]... params) {
+  Response!(Object) eval(byte[] script, int keyCount, byte[] params...) {
     getClient(script).eval(script, keyCount, params);
     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
   }
 
   override
-  public Response!(Object) evalsha(byte[] sha1) {
+  Response!(Object) evalsha(byte[] sha1) {
     return this.evalsha(sha1, 0);
   }
 
   override
-  public Response!(Object) evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args) {
+  Response!(Object) evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args) {
     byte[][] argv = BinaryRedis.getParamsWithBinary(keys, args);
     return this.evalsha(sha1, keys.size(), argv);
   }
 
   override
-  public Response!(Object) evalsha(byte[] sha1, int keyCount, byte[]... params) {
+  Response!(Object) evalsha(byte[] sha1, int keyCount, byte[] params...) {
     getClient(sha1).evalsha(sha1, keyCount, params);
     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
   }
 
   override
-  public Response!(Long) pfcount(String... keys) {
+  Response!(Long) pfcount(String keys...) {
     client.pfcount(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) pfcount(final byte[]... keys) {
+  Response!(Long) pfcount(final byte[] keys...) {
     client.pfcount(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) pfmerge(byte[] destkey, byte[]... sourcekeys) {
+  Response!(String) pfmerge(byte[] destkey, byte[] sourcekeys...) {
     client.pfmerge(destkey, sourcekeys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) pfmerge(String destkey, String... sourcekeys) {
+  Response!(String) pfmerge(String destkey, String sourcekeys...) {
     client.pfmerge(destkey, sourcekeys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(List!(String)) time() {
+  Response!(List!(String)) time() {
     client.time();
     return getResponse(BuilderFactory.STRING_LIST);
   }
 
   override
-  public Response!(Long) touch(String... keys) {
+  Response!(Long) touch(String keys...) {
     client.touch(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(Long) touch(byte[]... keys) {
+  Response!(Long) touch(byte[] keys...) {
     client.touch(keys);
     return getResponse(BuilderFactory.LONG);
   }
 
   override
-  public Response!(String) moduleUnload(String name) {
+  Response!(String) moduleUnload(String name) {
     client.moduleUnload(name);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(List!(Module)) moduleList() {
+  Response!(List!(Module)) moduleList() {
     client.moduleList();
     return getResponse(BuilderFactory.MODULE_LIST);
   }
 
   override
-  public Response!(String) moduleLoad(String path) {
+  Response!(String) moduleLoad(String path) {
     client.moduleLoad(path);
     return getResponse(BuilderFactory.STRING);
   }  
   
   override
-  public Response!(String) migrate(final String host, final int port, final int destinationDB,
-      final int timeout, final MigrateParams params, final String... keys) {
+  Response!(String) migrate(final String host, final int port, final int destinationDB,
+      final int timeout, final MigrateParams params, final String keys...) {
     client.migrate(host, port, destinationDB, timeout, params, keys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(String) migrate(final String host, final int port, final int destinationDB,
-      final int timeout, final MigrateParams params, final byte[]... keys) {
+  Response!(String) migrate(final String host, final int port, final int destinationDB,
+      final int timeout, final MigrateParams params, final byte[] keys...) {
     client.migrate(host, port, destinationDB, timeout, params, keys);
     return getResponse(BuilderFactory.STRING);
   }
 
   override
-  public Response!(Object) sendCommand(ProtocolCommand cmd, String... args){
+  Response!(Object) sendCommand(ProtocolCommand cmd, String args...){
     client.sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);
   }

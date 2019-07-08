@@ -11,21 +11,21 @@ import hunt.collection.List;
 import hunt.collection.Set;
 
 public interface MultiKeyRedisClusterCommands {
-  Long del(String... keys);
+  Long del(String keys...);
 
-  Long unlink(String... keys);
+  Long unlink(String keys...);
 
-  Long exists(String... keys);
+  Long exists(String keys...);
 
-  List!(String) blpop(int timeout, String... keys);
+  List!(String) blpop(int timeout, String keys...);
 
-  List!(String) brpop(int timeout, String... keys);
+  List!(String) brpop(int timeout, String keys...);
 
-  List!(String) mget(String... keys);
+  List!(String) mget(String keys...);
 
-  String mset(String... keysvalues);
+  String mset(String keysvalues...);
 
-  Long msetnx(String... keysvalues);
+  Long msetnx(String keysvalues...);
 
   String rename(String oldkey, String newkey);
 
@@ -33,13 +33,13 @@ public interface MultiKeyRedisClusterCommands {
 
   String rpoplpush(String srckey, String dstkey);
 
-  Set!(String) sdiff(String... keys);
+  Set!(String) sdiff(String keys...);
 
-  Long sdiffstore(String dstkey, String... keys);
+  Long sdiffstore(String dstkey, String keys...);
 
-  Set!(String) sinter(String... keys);
+  Set!(String) sinter(String keys...);
 
-  Long sinterstore(String dstkey, String... keys);
+  Long sinterstore(String dstkey, String keys...);
 
   Long smove(String srckey, String dstkey, String member);
 
@@ -47,33 +47,33 @@ public interface MultiKeyRedisClusterCommands {
 
   Long sort(String key, String dstkey);
 
-  Set!(String) sunion(String... keys);
+  Set!(String) sunion(String keys...);
 
-  Long sunionstore(String dstkey, String... keys);
+  Long sunionstore(String dstkey, String keys...);
 
-  Long zinterstore(String dstkey, String... sets);
+  Long zinterstore(String dstkey, String sets...);
 
-  Long zinterstore(String dstkey, ZParams params, String... sets);
+  Long zinterstore(String dstkey, ZParams params, String sets...);
 
-  Long zunionstore(String dstkey, String... sets);
+  Long zunionstore(String dstkey, String sets...);
 
-  Long zunionstore(String dstkey, ZParams params, String... sets);
+  Long zunionstore(String dstkey, ZParams params, String sets...);
 
   String brpoplpush(String source, String destination, int timeout);
 
   Long publish(String channel, String message);
 
-  void subscribe(RedisPubSub jedisPubSub, String... channels);
+  void subscribe(RedisPubSub jedisPubSub, String channels...);
 
-  void psubscribe(RedisPubSub jedisPubSub, String... patterns);
+  void psubscribe(RedisPubSub jedisPubSub, String patterns...);
 
-  Long bitop(BitOP op, String destKey, String... srcKeys);
+  Long bitop(BitOP op, String destKey, String srcKeys...);
 
-  String pfmerge(String destkey, String... sourcekeys);
+  String pfmerge(String destkey, String sourcekeys...);
 
-  long pfcount(String... keys);
+  long pfcount(String keys...);
 
-  Long touch(String... keys);
+  Long touch(String keys...);
 
   ScanResult!(String) scan(String cursor, ScanParams params);
 

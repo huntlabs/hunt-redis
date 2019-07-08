@@ -11,29 +11,29 @@ import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.exceptions.RedisExhaustedPoolException;
 
-public abstract class Pool!(T) implements Closeable {
+abstract class Pool!(T) implements Closeable {
   protected GenericObjectPool!(T) internalPool;
 
   /**
    * Using this constructor means you have to set and initialize the internalPool yourself.
    */
-  public Pool() {
+  Pool() {
   }
 
-  public Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
+  Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
     initPool(poolConfig, factory);
   }
 
   override
-  public void close() {
+  void close() {
     destroy();
   }
 
-  public boolean isClosed() {
+  bool isClosed() {
     return this.internalPool.isClosed();
   }
 
-  public void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
+  void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory!(T) factory) {
 
     if (this.internalPool != null) {
       try {
@@ -45,7 +45,7 @@ public abstract class Pool!(T) implements Closeable {
     this.internalPool = new GenericObjectPool!(T)(factory, poolConfig);
   }
 
-  public T getResource() {
+  T getResource() {
     try {
       return internalPool.borrowObject();
     } catch (NoSuchElementException nse) {
@@ -83,7 +83,7 @@ public abstract class Pool!(T) implements Closeable {
     }
   }
 
-  public void destroy() {
+  void destroy() {
     closeInternalPool();
   }
 
@@ -109,7 +109,7 @@ public abstract class Pool!(T) implements Closeable {
    * @return The number of instances currently borrowed from this pool, -1 if
    * the pool is inactive.
    */
-  public int getNumActive() {
+  int getNumActive() {
     if (poolInactive()) {
       return -1;
     }
@@ -123,7 +123,7 @@ public abstract class Pool!(T) implements Closeable {
    * @return The number of instances currently idle in this pool, -1 if the
    * pool is inactive.
    */
-  public int getNumIdle() {
+  int getNumIdle() {
     if (poolInactive()) {
       return -1;
     }
@@ -137,7 +137,7 @@ public abstract class Pool!(T) implements Closeable {
    *
    * @return The number of threads waiting, -1 if the pool is inactive.
    */
-  public int getNumWaiters() {
+  int getNumWaiters() {
     if (poolInactive()) {
       return -1;
     }
@@ -152,7 +152,7 @@ public abstract class Pool!(T) implements Closeable {
    * @return The mean waiting time, in milliseconds, -1 if the pool is
    * inactive.
    */
-  public long getMeanBorrowWaitTimeMillis() {
+  long getMeanBorrowWaitTimeMillis() {
     if (poolInactive()) {
       return -1;
     }
@@ -167,7 +167,7 @@ public abstract class Pool!(T) implements Closeable {
    * @return The maximum waiting time, in milliseconds, -1 if the pool is
    * inactive.
    */
-  public long getMaxBorrowWaitTimeMillis() {
+  long getMaxBorrowWaitTimeMillis() {
     if (poolInactive()) {
       return -1;
     }
@@ -175,11 +175,11 @@ public abstract class Pool!(T) implements Closeable {
     return this.internalPool.getMaxBorrowWaitTimeMillis();
   }
 
-  private boolean poolInactive() {
+  private bool poolInactive() {
     return this.internalPool == null || this.internalPool.isClosed();
   }
 
-  public void addObjects(int count) {
+  void addObjects(int count) {
     try {
       for (int i = 0; i < count; i++) {
         this.internalPool.addObject();

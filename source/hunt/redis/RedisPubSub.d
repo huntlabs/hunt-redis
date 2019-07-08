@@ -15,35 +15,35 @@ import hunt.redis.exceptions.RedisConnectionException;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.util.SafeEncoder;
 
-public abstract class RedisPubSub {
+abstract class RedisPubSub {
 
   private enum string JEDIS_SUBSCRIPTION_MESSAGE = "RedisPubSub is not subscribed to a Redis instance.";
   private int subscribedChannels = 0;
   private volatile Client client;
 
-  public void onMessage(String channel, String message) {
+  void onMessage(String channel, String message) {
   }
 
-  public void onPMessage(String pattern, String channel, String message) {
+  void onPMessage(String pattern, String channel, String message) {
   }
 
-  public void onSubscribe(String channel, int subscribedChannels) {
+  void onSubscribe(String channel, int subscribedChannels) {
   }
 
-  public void onUnsubscribe(String channel, int subscribedChannels) {
+  void onUnsubscribe(String channel, int subscribedChannels) {
   }
 
-  public void onPUnsubscribe(String pattern, int subscribedChannels) {
+  void onPUnsubscribe(String pattern, int subscribedChannels) {
   }
 
-  public void onPSubscribe(String pattern, int subscribedChannels) {
+  void onPSubscribe(String pattern, int subscribedChannels) {
   }
 
-  public void onPong(String pattern) {
+  void onPong(String pattern) {
 
   }
 
-  public void unsubscribe() {
+  void unsubscribe() {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -51,7 +51,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void unsubscribe(String... channels) {
+  void unsubscribe(String channels...) {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -59,7 +59,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void subscribe(String... channels) {
+  void subscribe(String channels...) {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -67,7 +67,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void psubscribe(String... patterns) {
+  void psubscribe(String patterns...) {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -75,7 +75,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void punsubscribe() {
+  void punsubscribe() {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -83,7 +83,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void punsubscribe(String... patterns) {
+  void punsubscribe(String patterns...) {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -91,7 +91,7 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public void ping() {
+  void ping() {
     if (client == null) {
       throw new RedisConnectionException(JEDIS_SUBSCRIPTION_MESSAGE);
     }
@@ -99,18 +99,18 @@ public abstract class RedisPubSub {
     client.flush();
   }
 
-  public boolean isSubscribed() {
+  bool isSubscribed() {
     return subscribedChannels > 0;
   }
 
-  public void proceedWithPatterns(Client client, String... patterns) {
+  void proceedWithPatterns(Client client, String patterns...) {
     this.client = client;
     client.psubscribe(patterns);
     client.flush();
     process(client);
   }
 
-  public void proceed(Client client, String... channels) {
+  void proceed(Client client, String channels...) {
     this.client = client;
     client.subscribe(channels);
     client.flush();
@@ -173,7 +173,7 @@ public abstract class RedisPubSub {
     this.client = null;
   }
 
-  public int getSubscribedChannels() {
+  int getSubscribedChannels() {
     return subscribedChannels;
   }
 }

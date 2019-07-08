@@ -1,17 +1,17 @@
 module hunt.redis.exceptions.InvalidURIException;
 
-public class InvalidURIException : RedisException {
+class InvalidURIException : RedisException {
 
 
-  public InvalidURIException(String message) {
+  InvalidURIException(String message) {
     super(message);
   }
 
-  public InvalidURIException(Throwable cause) {
+  InvalidURIException(Throwable cause) {
     super(cause);
   }
 
-  public InvalidURIException(String message, Throwable cause) {
+  InvalidURIException(String message, Throwable cause) {
     super(message, cause);
   }
 

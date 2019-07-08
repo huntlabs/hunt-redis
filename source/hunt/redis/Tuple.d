@@ -6,22 +6,22 @@ import java.util.Objects;
 import hunt.redis.util.ByteArrayComparator;
 import hunt.redis.util.SafeEncoder;
 
-public class Tuple : Comparable!(Tuple) {
+class Tuple : Comparable!(Tuple) {
   private byte[] element;
   private Double score;
 
-  public Tuple(String element, Double score) {
+  Tuple(String element, Double score) {
     this(SafeEncoder.encode(element), score);
   }
 
-  public Tuple(byte[] element, Double score) {
+  Tuple(byte[] element, Double score) {
     super();
     this.element = element;
     this.score = score;
   }
 
   override
-  public size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow() {
     final int prime = 31;
     int result = 1;
     result = prime * result;
@@ -36,7 +36,7 @@ public class Tuple : Comparable!(Tuple) {
   }
 
   override
-  public boolean equals(Object obj) {
+  bool equals(Object obj) {
     if (obj == null) return false;
     if (obj == this) return true;
     if (!(obj instanceof Tuple)) return false;
@@ -47,18 +47,18 @@ public class Tuple : Comparable!(Tuple) {
   }
 
   override
-  public int compareTo(Tuple other) {
+  int compareTo(Tuple other) {
     return compare(this, other);
   }
 
-  public static int compare(Tuple t1, Tuple t2) {
+  static int compare(Tuple t1, Tuple t2) {
     int compScore = Double.compare(t1.score, t2.score);
     if(compScore != 0) return compScore;
 
     return ByteArrayComparator.compare(t1.element, t2.element);
   }
 
-  public String getElement() {
+  String getElement() {
     if (null != element) {
       return SafeEncoder.encode(element);
     } else {
@@ -66,16 +66,16 @@ public class Tuple : Comparable!(Tuple) {
     }
   }
 
-  public byte[] getBinaryElement() {
+  byte[] getBinaryElement() {
     return element;
   }
 
-  public double getScore() {
+  double getScore() {
     return score;
   }
 
   override
-  public String toString() {
+  String toString() {
     return '[' + SafeEncoder.encode(element) + ',' + score + ']';
   }
 }

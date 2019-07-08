@@ -10,11 +10,11 @@ import hunt.collection.List;
 
 import hunt.redis.util.SafeEncoder;
 
-public class ZParams {
-  public enum Aggregate {
+class ZParams {
+  enum Aggregate {
     SUM, MIN, MAX;
 
-    public final byte[] raw;
+    final byte[] raw;
 
     Aggregate() {
       raw = SafeEncoder.encode(name());
@@ -28,7 +28,7 @@ public class ZParams {
    * @param weights weights.
    * @return 
    */
-  public ZParams weights(final double... weights) {
+  ZParams weights(final double weights...) {
     params.add(WEIGHTS.raw);
     foreach(final double weight ; weights) {
       params.add(Protocol.toByteArray(weight));
@@ -37,11 +37,11 @@ public class ZParams {
     return this;
   }
 
-  public Collection!(byte[]) getParams() {
+  Collection!(byte[]) getParams() {
     return Collections.unmodifiableCollection(params);
   }
 
-  public ZParams aggregate(final Aggregate aggregate) {
+  ZParams aggregate(final Aggregate aggregate) {
     params.add(AGGREGATE.raw);
     params.add(aggregate.raw);
     return this;

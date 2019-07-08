@@ -15,14 +15,14 @@ import hunt.collection.Map;
 
 import hunt.redis.util.SafeEncoder;
 
-public class ScanParams {
+class ScanParams {
 
   private final Map!(Keyword, ByteBuffer) params = new EnumMap!(Keyword, ByteBuffer)(Keyword.class);
 
-  public final static String SCAN_POINTER_START = String.valueOf(0);
-  public final static byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
+  final static String SCAN_POINTER_START = String.valueOf(0);
+  final static byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
 
-  public ScanParams match(final byte[] pattern) {
+  ScanParams match(final byte[] pattern) {
     params.put(MATCH, ByteBuffer.wrap(pattern));
     return this;
   }
@@ -33,7 +33,7 @@ public class ScanParams {
    * @param pattern
    * @return 
    */
-  public ScanParams match(final String pattern) {
+  ScanParams match(final String pattern) {
     params.put(MATCH, ByteBuffer.wrap(SafeEncoder.encode(pattern)));
     return this;
   }
@@ -44,14 +44,14 @@ public class ScanParams {
    * @param count
    * @return 
    */
-  public ScanParams count(final Integer count) {
+  ScanParams count(final Integer count) {
     params.put(COUNT, ByteBuffer.wrap(Protocol.toByteArray(count)));
     return this;
   }
 
-  public Collection!(byte[]) getParams() {
+  Collection!(byte[]) getParams() {
     List!(byte[]) paramsList = new ArrayList!(byte[])(params.size());
-    for (Map.Entry!(Keyword, ByteBuffer) param : params.entrySet()) {
+    foreach(Map.Entry!(Keyword, ByteBuffer) param ; params.entrySet()) {
       paramsList.add(param.getKey().raw);
       paramsList.add(param.getValue().array());
     }

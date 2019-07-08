@@ -1,16 +1,16 @@
 module hunt.redis.exceptions.RedisClusterOperationException;
 
-public class RedisClusterOperationException : RedisException {
+class RedisClusterOperationException : RedisException {
 
-  public RedisClusterOperationException(String message) {
+  RedisClusterOperationException(String message) {
     super(message);
   }
 
-  public RedisClusterOperationException(Throwable cause) {
+  RedisClusterOperationException(Throwable cause) {
     super(cause);
   }
 
-  public RedisClusterOperationException(String message, Throwable cause) {
+  RedisClusterOperationException(String message, Throwable cause) {
     super(message, cause);
   }
 }

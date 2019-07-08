@@ -1,24 +1,24 @@
 module hunt.redis.GeoCoordinate;
 
-public class GeoCoordinate {
+class GeoCoordinate {
   private double longitude;
   private double latitude;
 
-  public GeoCoordinate(double longitude, double latitude) {
+  GeoCoordinate(double longitude, double latitude) {
     this.longitude = longitude;
     this.latitude = latitude;
   }
 
-  public double getLongitude() {
+  double getLongitude() {
     return longitude;
   }
 
-  public double getLatitude() {
+  double getLatitude() {
     return latitude;
   }
 
   override
-  public boolean equals(Object o) {
+  bool equals(Object o) {
     if (o == null) return false;
     if (o == this) return true;
     if (!(o instanceof GeoCoordinate)) return false;
@@ -30,7 +30,7 @@ public class GeoCoordinate {
   }
 
   override
-  public size_t toHash() @trusted nothrow() {
+  size_t toHash() @trusted nothrow() {
     // follows IntelliJ default hashCode implementation
     int result;
     long temp;
@@ -42,7 +42,7 @@ public class GeoCoordinate {
   }
 
   override
-  public String toString() {
+  String toString() {
     return "(" + longitude + "," + latitude + ")";
   }
 }

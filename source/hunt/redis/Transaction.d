@@ -9,15 +9,15 @@ import hunt.redis.exceptions.RedisDataException;
 /**
  * Transaction is nearly identical to Pipeline, only differences are the multi/discard behaviors
  */
-public class Transaction : MultiKeyPipelineBase implements Closeable {
+class Transaction : MultiKeyPipelineBase implements Closeable {
 
-  protected boolean inTransaction = true;
+  protected bool inTransaction = true;
 
   protected Transaction() {
     // client will be set later in transaction block
   }
 
-  public Transaction(final Client client) {
+  Transaction(final Client client) {
     this.client = client;
   }
 
@@ -31,13 +31,13 @@ public class Transaction : MultiKeyPipelineBase implements Closeable {
     return client;
   }
 
-  public void clear() {
+  void clear() {
     if (inTransaction) {
       discard();
     }
   }
 
-  public List!(Object) exec() {
+  List!(Object) exec() {
     // Discard QUEUED or ERROR
     client.getMany(getPipelinedResponseLength());
     client.exec();
@@ -58,7 +58,7 @@ public class Transaction : MultiKeyPipelineBase implements Closeable {
     return formatted;
   }
 
-  public List<Response<?>> execGetResponse() {
+  List<Response<?>> execGetResponse() {
     // Discard QUEUED or ERROR
     client.getMany(getPipelinedResponseLength());
     client.exec();
@@ -75,7 +75,7 @@ public class Transaction : MultiKeyPipelineBase implements Closeable {
     return response;
   }
 
-  public String discard() {
+  String discard() {
     client.getMany(getPipelinedResponseLength());
     client.discard();
     inTransaction = false;
@@ -83,12 +83,12 @@ public class Transaction : MultiKeyPipelineBase implements Closeable {
     return client.getStatusCodeReply();
   }
 
-  public void setClient(Client client) {
+  void setClient(Client client) {
     this.client = client;
   }
 
   override
-  public void close() {
+  void close() {
     clear();
   }
 }

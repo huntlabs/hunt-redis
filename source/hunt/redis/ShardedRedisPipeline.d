@@ -5,7 +5,7 @@ import hunt.collection.Linkedlist;
 import hunt.collection.List;
 import hunt.collection.Queue;
 
-public class ShardedRedisPipeline : PipelineBase {
+class ShardedRedisPipeline : PipelineBase {
   private BinaryShardedRedis jedis;
   private List!(FutureResult) results = new ArrayList!(FutureResult)();
   private Queue!(Client) clients = new LinkedList!(Client)();
@@ -13,20 +13,20 @@ public class ShardedRedisPipeline : PipelineBase {
   private static class FutureResult {
     private Client client;
 
-    public FutureResult(Client client) {
+    FutureResult(Client client) {
       this.client = client;
     }
 
-    public Object get() {
+    Object get() {
       return client.getOne();
     }
   }
 
-  public void setShardedRedis(BinaryShardedRedis jedis) {
+  void setShardedRedis(BinaryShardedRedis jedis) {
     this.jedis = jedis;
   }
 
-  public List!(Object) getResults() {
+  List!(Object) getResults() {
     List!(Object) r = new ArrayList!(Object)();
     foreach(FutureResult fr ; results) {
       r.add(fr.get());
@@ -39,7 +39,7 @@ public class ShardedRedisPipeline : PipelineBase {
    * get return values from pipelined commands, capture the different Response&lt;?&gt; of the
    * commands you execute.
    */
-  public void sync() {
+  void sync() {
     foreach(Client client ; clients) {
       generateResponse(client.getOne());
     }
@@ -51,7 +51,7 @@ public class ShardedRedisPipeline : PipelineBase {
    * through all the responses and generate the right response type (usually it is a waste of time).
    * @return A list of all the responses in the order you executed them.
    */
-  public List!(Object) syncAndReturnAll() {
+  List!(Object) syncAndReturnAll() {
     List!(Object) formatted = new ArrayList!(Object)();
     foreach(Client client ; clients) {
       formatted.add(generateResponse(client.getOne()).get());

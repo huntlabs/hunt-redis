@@ -1,5 +1,5 @@
 module hunt.redis.Builder;
 
-public abstract class Builder!(T) {
-  public abstract T build(Object data);
+abstract class Builder!(T) {
+  abstract T build(Object data);
 }

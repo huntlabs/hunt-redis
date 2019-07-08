@@ -1,20 +1,20 @@
 module hunt.redis.util.ShardInfo;
 
-public abstract class ShardInfo!(T) {
+abstract class ShardInfo!(T) {
   private int weight;
 
-  public ShardInfo() {
+  ShardInfo() {
   }
 
-  public ShardInfo(int weight) {
+  ShardInfo(int weight) {
     this.weight = weight;
   }
 
-  public int getWeight() {
+  int getWeight() {
     return this.weight;
   }
 
   protected abstract T createResource();
 
-  public abstract String getName();
+  abstract String getName();
 }

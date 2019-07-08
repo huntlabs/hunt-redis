@@ -12,10 +12,10 @@ import hunt.collection.Set;
 import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
 
-public final class BuilderFactory {
-  public static final Builder!(Double) DOUBLE = new Builder!(Double)() {
+final class BuilderFactory {
+  static final Builder!(Double) DOUBLE = new Builder!(Double)() {
     override
-    public Double build(Object data) {
+    Double build(Object data) {
       String string = STRING.build(data);
       if (string == null) return null;
       try {
@@ -28,67 +28,67 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "double";
     }
   };
-  public static final Builder!(Boolean) BOOLEAN = new Builder!(Boolean)() {
+  static final Builder!(Boolean) BOOLEAN = new Builder!(Boolean)() {
     override
-    public Boolean build(Object data) {
+    Boolean build(Object data) {
       return ((Long) data) == 1;
     }
 
     override
-    public String toString() {
-      return "boolean";
+    String toString() {
+      return "bool";
     }
   };
-  public static final Builder!(byte[]) BYTE_ARRAY = new Builder!(byte[])() {
+  static final Builder!(byte[]) BYTE_ARRAY = new Builder!(byte[])() {
     override
-    public byte[] build(Object data) {
+    byte[] build(Object data) {
       return ((byte[]) data); // deleted == 1
     }
 
     override
-    public String toString() {
+    String toString() {
       return "byte[]";
     }
   };
 
-  public static final Builder!(Long) LONG = new Builder!(Long)() {
+  static final Builder!(Long) LONG = new Builder!(Long)() {
     override
-    public Long build(Object data) {
+    Long build(Object data) {
       return (Long) data;
     }
 
     override
-    public String toString() {
+    String toString() {
       return "long";
     }
 
   };
-  public static final Builder!(String) STRING = new Builder!(String)() {
+  static final Builder!(String) STRING = new Builder!(String)() {
     override
-    public String build(Object data) {
+    String build(Object data) {
       return data == null ? null : SafeEncoder.encode((byte[]) data);
     }
 
     override
-    public String toString() {
+    String toString() {
       return "string";
     }
 
   };
-  public static final Builder!(List!(String)) STRING_LIST = new Builder!(List!(String))() {
+  static final Builder!(List!(String)) STRING_LIST = new Builder!(List!(String))() {
     override
     @SuppressWarnings("unchecked")
-    public List!(String) build(Object data) {
+    List!(String) build(Object data) {
       if (null == data) {
         return null;
       }
       List!(byte[]) l = (List!(byte[])) data;
       final ArrayList!(String) result = new ArrayList!(String)(l.size());
-      for (final byte[] barray : l) {
+      foreach(final byte[] barray ; l) {
         if (barray == null) {
           result.add(null);
         } else {
@@ -99,15 +99,15 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(String)";
     }
 
   };
-  public static final Builder!(Map!(String, String)) STRING_MAP = new Builder!(Map!(String, String))() {
+  static final Builder!(Map!(String, String)) STRING_MAP = new Builder!(Map!(String, String))() {
     override
     @SuppressWarnings("unchecked")
-    public Map!(String, String) build(Object data) {
+    Map!(String, String) build(Object data) {
       final List!(byte[]) flatHash = (List!(byte[])) data;
       final Map!(String, String) hash = new HashMap!(String, String)(flatHash.size()/2, 1);
       final Iterator!(byte[]) iterator = flatHash.iterator();
@@ -119,16 +119,16 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "Map!(String, String)";
     }
 
   };
 
-  public static final Builder!(Map!(String, String)) PUBSUB_NUMSUB_MAP = new Builder!(Map!(String, String))() {
+  static final Builder!(Map!(String, String)) PUBSUB_NUMSUB_MAP = new Builder!(Map!(String, String))() {
     override
     @SuppressWarnings("unchecked")
-    public Map!(String, String) build(Object data) {
+    Map!(String, String) build(Object data) {
       final List!(Object) flatHash = (List!(Object)) data;
       final Map!(String, String) hash = new HashMap!(String, String)(flatHash.size()/2, 1);
       final Iterator!(Object) iterator = flatHash.iterator();
@@ -141,22 +141,22 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "PUBSUB_NUMSUB_MAP!(String, String)";
     }
 
   };
 
-  public static final Builder!(Set!(String)) STRING_SET = new Builder!(Set!(String))() {
+  static final Builder!(Set!(String)) STRING_SET = new Builder!(Set!(String))() {
     override
     @SuppressWarnings("unchecked")
-    public Set!(String) build(Object data) {
+    Set!(String) build(Object data) {
       if (null == data) {
         return null;
       }
       List!(byte[]) l = (List!(byte[])) data;
       final Set!(String) result = new HashSet!(String)(l.size(), 1);
-      for (final byte[] barray : l) {
+      foreach(final byte[] barray ; l) {
         if (barray == null) {
           result.add(null);
         } else {
@@ -167,16 +167,16 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "Set!(String)";
     }
 
   };
 
-  public static final Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
+  static final Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
     override
     @SuppressWarnings("unchecked")
-    public List!(byte[]) build(Object data) {
+    List!(byte[]) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -186,21 +186,21 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(byte[])";
     }
   };
 
-  public static final Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
+  static final Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
     override
     @SuppressWarnings("unchecked")
-    public Set!(byte[]) build(Object data) {
+    Set!(byte[]) build(Object data) {
       if (null == data) {
         return null;
       }
       List!(byte[]) l = (List!(byte[])) data;
       final Set!(byte[]) result = new LinkedHashSet!(byte[])(l);
-      for (final byte[] barray : l) {
+      foreach(final byte[] barray ; l) {
         if (barray == null) {
           result.add(null);
         } else {
@@ -211,14 +211,14 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "ZSet!(byte[])";
     }
   };
-  public static final Builder!(Map!(byte[], byte[])) BYTE_ARRAY_MAP = new Builder!(Map!(byte[], byte[]))() {
+  static final Builder!(Map!(byte[], byte[])) BYTE_ARRAY_MAP = new Builder!(Map!(byte[], byte[]))() {
     override
     @SuppressWarnings("unchecked")
-    public Map!(byte[], byte[]) build(Object data) {
+    Map!(byte[], byte[]) build(Object data) {
       final List!(byte[]) flatHash = (List!(byte[])) data;
       final Map!(byte[], byte[]) hash = new RedisByteHashMap();
       final Iterator!(byte[]) iterator = flatHash.iterator();
@@ -230,22 +230,22 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "Map!(byte[], byte[])";
     }
 
   };
 
-  public static final Builder!(Set!(String)) STRING_ZSET = new Builder!(Set!(String))() {
+  static final Builder!(Set!(String)) STRING_ZSET = new Builder!(Set!(String))() {
     override
     @SuppressWarnings("unchecked")
-    public Set!(String) build(Object data) {
+    Set!(String) build(Object data) {
       if (null == data) {
         return null;
       }
       List!(byte[]) l = (List!(byte[])) data;
       final Set!(String) result = new LinkedHashSet!(String)(l.size(), 1);
-      for (final byte[] barray : l) {
+      foreach(final byte[] barray ; l) {
         if (barray == null) {
           result.add(null);
         } else {
@@ -256,16 +256,16 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "ZSet!(String)";
     }
 
   };
 
-  public static final Builder!(Set!(Tuple)) TUPLE_ZSET = new Builder!(Set!(Tuple))() {
+  static final Builder!(Set!(Tuple)) TUPLE_ZSET = new Builder!(Set!(Tuple))() {
     override
     @SuppressWarnings("unchecked")
-    public Set!(Tuple) build(Object data) {
+    Set!(Tuple) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -279,21 +279,21 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "ZSet!(Tuple)";
     }
 
   };
 
-  public static final Builder!(Object) EVAL_RESULT = new Builder!(Object)() {
+  static final Builder!(Object) EVAL_RESULT = new Builder!(Object)() {
 
     override
-    public Object build(Object data) {
+    Object build(Object data) {
       return evalResult(data);
     }
 
     override
-    public String toString() {
+    String toString() {
       return "Eval!(Object)";
     }
 
@@ -315,15 +315,15 @@ public final class BuilderFactory {
 
   };
 
-  public static final Builder!(Object) EVAL_BINARY_RESULT = new Builder!(Object)() {
+  static final Builder!(Object) EVAL_BINARY_RESULT = new Builder!(Object)() {
 
     override
-    public Object build(Object data) {
+    Object build(Object data) {
       return evalResult(data);
     }
 
     override
-    public String toString() {
+    String toString() {
       return "Eval!(Object)";
     }
 
@@ -343,9 +343,9 @@ public final class BuilderFactory {
 
   };
 
-  public static final Builder!(List!(GeoCoordinate)) GEO_COORDINATE_LIST = new Builder!(List!(GeoCoordinate))() {
+  static final Builder!(List!(GeoCoordinate)) GEO_COORDINATE_LIST = new Builder!(List!(GeoCoordinate))() {
     override
-    public List!(GeoCoordinate) build(Object data) {
+    List!(GeoCoordinate) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -353,7 +353,7 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(GeoCoordinate)";
     }
 
@@ -373,9 +373,9 @@ public final class BuilderFactory {
     }
   };
 
-  public static final Builder!(List!(GeoRadiusResponse)) GEORADIUS_WITH_PARAMS_RESULT = new Builder!(List!(GeoRadiusResponse))() {
+  static final Builder!(List!(GeoRadiusResponse)) GEORADIUS_WITH_PARAMS_RESULT = new Builder!(List!(GeoRadiusResponse))() {
     override
-    public List!(GeoRadiusResponse) build(Object data) {
+    List!(GeoRadiusResponse) build(Object data) {
       if (data == null) {
         return null;
       }
@@ -423,15 +423,15 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "GeoRadiusWithParamsResult";
     }
   };
 
 
-  public static final Builder!(List!(Module)) MODULE_LIST = new Builder!(List!(Module))() {
+  static final Builder!(List!(Module)) MODULE_LIST = new Builder!(List!(Module))() {
     override
-    public List!(Module) build(Object data) {
+    List!(Module) build(Object data) {
       if (data == null) {
         return null;
       }
@@ -443,7 +443,7 @@ public final class BuilderFactory {
         return responses;
       }
 
-      for (List!(Object) moduleResp: objectList) {
+      foreach(List!(Object) moduleResp; objectList) {
         Module m = new Module(SafeEncoder.encode((byte[]) moduleResp.get(1)), ((Long) moduleResp.get(3)).intValue());
         responses.add(m);
       }
@@ -452,15 +452,15 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(Module)";
     }
   };
 
-  public static final Builder!(List!(Long)) LONG_LIST = new Builder!(List!(Long))() {
+  static final Builder!(List!(Long)) LONG_LIST = new Builder!(List!(Long))() {
     override
     @SuppressWarnings("unchecked")
-    public List!(Long) build(Object data) {
+    List!(Long) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -468,16 +468,16 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(Long)";
     }
 
   };
 
-  public static final Builder!(StreamEntryID) STREAM_ENTRY_ID = new Builder!(StreamEntryID)() {
+  static final Builder!(StreamEntryID) STREAM_ENTRY_ID = new Builder!(StreamEntryID)() {
     override
     @SuppressWarnings("unchecked")
-    public  StreamEntryID build(Object data) {
+     StreamEntryID build(Object data) {
       if (null == data) {
         return null;
       }
@@ -486,16 +486,16 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "StreamEntryID";
     }
   };
   
 
-  public static final Builder!(List!(StreamEntry)) STREAM_ENTRY_LIST = new Builder!(List!(StreamEntry))() {
+  static final Builder!(List!(StreamEntry)) STREAM_ENTRY_LIST = new Builder!(List!(StreamEntry))() {
     override
     @SuppressWarnings("unchecked")
-    public  List!(StreamEntry) build(Object data) {
+     List!(StreamEntry) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -506,7 +506,7 @@ public final class BuilderFactory {
         return responses;
       }
 
-      for(ArrayList!(Object) res : objectList) {
+      foreach(ArrayList!(Object) res ; objectList) {
         String entryIdString = SafeEncoder.encode((byte[])res.get(0));
         StreamEntryID entryID = new StreamEntryID(entryIdString);
         List!(byte[]) hash = (List!(byte[]))res.get(1);
@@ -523,15 +523,15 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(StreamEntry)";
     }
   };
   
-  public static final Builder!(List!(StreamPendingEntry)) STREAM_PENDING_ENTRY_LIST = new Builder!(List!(StreamPendingEntry))() {
+  static final Builder!(List!(StreamPendingEntry)) STREAM_PENDING_ENTRY_LIST = new Builder!(List!(StreamPendingEntry))() {
     override
     @SuppressWarnings("unchecked")
-    public  List!(StreamPendingEntry) build(Object data) {
+     List!(StreamPendingEntry) build(Object data) {
       if (null == data) {
         return null;
       }
@@ -550,18 +550,18 @@ public final class BuilderFactory {
     }
 
     override
-    public String toString() {
+    String toString() {
       return "List!(StreamPendingEntry)";
     }
   };
 
-  public static final Builder!(Object) OBJECT = new Builder!(Object)() {
+  static final Builder!(Object) OBJECT = new Builder!(Object)() {
     override
-    public Object build(Object data) {
+    Object build(Object data) {
       return data;
     }
     override
-    public String toString() {
+    String toString() {
       return "Object";
     }
   };

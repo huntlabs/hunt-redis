@@ -57,7 +57,7 @@ public interface RedisCommands {
 
   Long touch(String key);
 
-  Boolean setbit(String key, long offset, boolean value);
+  Boolean setbit(String key, long offset, bool value);
 
   Boolean setbit(String key, long offset, String value);
 
@@ -99,7 +99,7 @@ public interface RedisCommands {
 
   String hmset(String key, Map!(String, String) hash);
 
-  List!(String) hmget(String key, String... fields);
+  List!(String) hmget(String key, String fields...);
 
   Long hincrBy(String key, String field, long value);
 
@@ -107,7 +107,7 @@ public interface RedisCommands {
 
   Boolean hexists(String key, String field);
 
-  Long hdel(String key, String... field);
+  Long hdel(String key, String field...);
 
   Long hlen(String key);
 
@@ -117,9 +117,9 @@ public interface RedisCommands {
 
   Map!(String, String) hgetAll(String key);
 
-  Long rpush(String key, String... string);
+  Long rpush(String key, String string...);
 
-  Long lpush(String key, String... string);
+  Long lpush(String key, String string...);
 
   Long llen(String key);
 
@@ -137,11 +137,11 @@ public interface RedisCommands {
 
   String rpop(String key);
 
-  Long sadd(String key, String... member);
+  Long sadd(String key, String member...);
 
   Set!(String) smembers(String key);
 
-  Long srem(String key, String... member);
+  Long srem(String key, String member...);
 
   String spop(String key);
 
@@ -167,7 +167,7 @@ public interface RedisCommands {
 
   Set!(String) zrange(String key, long start, long stop);
 
-  Long zrem(String key, String... members);
+  Long zrem(String key, String members...);
 
   Double zincrby(String key, double increment, String member);
 
@@ -249,9 +249,9 @@ public interface RedisCommands {
 
   Long linsert(String key, ListPosition where, String pivot, String value);
 
-  Long lpushx(String key, String... string);
+  Long lpushx(String key, String string...);
 
-  Long rpushx(String key, String... string);
+  Long rpushx(String key, String string...);
 
   List!(String) blpop(int timeout, String key);
 
@@ -269,9 +269,9 @@ public interface RedisCommands {
 
   Long bitcount(String key, long start, long end);
 
-  Long bitpos(String key, boolean value);
+  Long bitpos(String key, bool value);
 
-  Long bitpos(String key, boolean value, BitPosParams params);
+  Long bitpos(String key, bool value, BitPosParams params);
 
   ScanResult<Map.Entry!(String, String)> hscan(String key, String cursor);
 
@@ -286,7 +286,7 @@ public interface RedisCommands {
 
   ScanResult!(String) sscan(String key, String cursor, ScanParams params);
 
-  Long pfadd(String key, String... elements);
+  Long pfadd(String key, String elements...);
 
   long pfcount(String key);
 
@@ -300,9 +300,9 @@ public interface RedisCommands {
 
   Double geodist(String key, String member1, String member2, GeoUnit unit);
 
-  List!(String) geohash(String key, String... members);
+  List!(String) geohash(String key, String members...);
 
-  List!(GeoCoordinate) geopos(String key, String... members);
+  List!(GeoCoordinate) geopos(String key, String members...);
 
   List!(GeoRadiusResponse) georadius(String key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -362,7 +362,7 @@ public interface RedisCommands {
    * @param approximateLength
    * @return
    */
-  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
+  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength);
   
   /**
    * XLEN key
@@ -402,7 +402,7 @@ public interface RedisCommands {
    * @param ids
    * @return
    */
-  long xack(String key, String group,  StreamEntryID... ids);
+  long xack(String key, String group,  StreamEntryID ids...);
   
   /**
    * XGROUP CREATE <key> <groupname> <id or $>
@@ -413,7 +413,7 @@ public interface RedisCommands {
    * @param makeStream
    * @return
    */
-  String xgroupCreate( String key, String groupname, StreamEntryID id, boolean makeStream);
+  String xgroupCreate( String key, String groupname, StreamEntryID id, bool makeStream);
   
   /**
    * XGROUP SETID <key> <groupname> <id or $>
@@ -462,7 +462,7 @@ public interface RedisCommands {
    * @param ids
    * @return
    */
-  long xdel( String key, StreamEntryID... ids);
+  long xdel( String key, StreamEntryID ids...);
   
   /**
    * XTRIM key MAXLEN [~] count
@@ -471,7 +471,7 @@ public interface RedisCommands {
    * @param approximate
    * @return
    */
-  long xtrim( String key, long maxLen, boolean approximate);
+  long xtrim( String key, long maxLen, bool approximate);
  
   /**
    *  XCLAIM <key> <group> <consumer> <min-idle-time> <ID-1> <ID-2>
@@ -479,8 +479,8 @@ public interface RedisCommands {
    *        [FORCE] [JUSTID]
    */        
   List!(StreamEntry) xclaim( String key, String group, String consumername, long minIdleTime, 
-      long newIdleTime, int retries, boolean force, StreamEntryID... ids);
+      long newIdleTime, int retries, bool force, StreamEntryID ids...);
 
 
-  Object sendCommand(ProtocolCommand cmd, String... args);
+  Object sendCommand(ProtocolCommand cmd, String args...);
 }

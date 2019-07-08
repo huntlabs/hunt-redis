@@ -9,9 +9,9 @@ public interface ClusterCommands {
 
   String clusterMeet(String ip, int port);
 
-  String clusterAddSlots(int... slots);
+  String clusterAddSlots(int slots...);
 
-  String clusterDelSlots(int... slots);
+  String clusterDelSlots(int slots...);
 
   String clusterInfo();
 

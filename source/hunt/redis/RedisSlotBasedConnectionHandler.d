@@ -7,33 +7,33 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import hunt.redis.exceptions.RedisException;
 import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
 
-public class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
+class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
 
-  public RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
+  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
       final GenericObjectPoolConfig poolConfig, int timeout) {
     this(nodes, poolConfig, timeout, timeout);
   }
 
-  public RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
+  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes,
       final GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, null);
   }
 
-  public RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password) {
+  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password);
   }
 
-  public RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName) {
+  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName);
   }
 
-  public RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName,
-                                         boolean ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
+  RedisSlotBasedConnectionHandler(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, String password, String clientName,
+                                         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, sslSocketFactory, sslParameters, hostnameVerifier, portMap);
   }
 
   override
-  public Redis getConnection() {
+  Redis getConnection() {
     // In antirez's redis-rb-cluster implementation,
     // getRandomConnection always return valid connection (able to
     // ping-pong)
@@ -66,7 +66,7 @@ public class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
   }
 
   override
-  public Redis getConnectionFromSlot(int slot) {
+  Redis getConnectionFromSlot(int slot) {
     RedisPool connectionPool = cache.getSlotPool(slot);
     if (connectionPool != null) {
       // It can't guaranteed to get valid connection because of node

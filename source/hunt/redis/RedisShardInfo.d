@@ -5,7 +5,7 @@ import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.ShardInfo;
 import hunt.redis.util.Sharded;
 
-public class RedisShardInfo : ShardInfo!(Redis) {
+class RedisShardInfo : ShardInfo!(Redis) {
 
   private int connectionTimeout;
   private int soTimeout;
@@ -15,12 +15,12 @@ public class RedisShardInfo : ShardInfo!(Redis) {
   private String name = null;
   // Default Redis DB
   private int db = 0;
-  private boolean ssl;
+  private bool ssl;
   private SSLSocketFactory sslSocketFactory;
   private SSLParameters sslParameters;
   private HostnameVerifier hostnameVerifier;
   
-  public RedisShardInfo(String host) {
+  RedisShardInfo(String host) {
     super(Sharded.DEFAULT_WEIGHT);
     URI uri = URI.create(host);
     if (RedisURIHelper.isValid(uri)) {
@@ -35,7 +35,7 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     }
   }
 
-  public RedisShardInfo(String host, SSLSocketFactory sslSocketFactory,
+  RedisShardInfo(String host, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(host);
     this.sslSocketFactory = sslSocketFactory;
@@ -43,74 +43,74 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  public RedisShardInfo(String host, String name) {
+  RedisShardInfo(String host, String name) {
     this(host, Protocol.DEFAULT_PORT, name);
   }
 
-  public RedisShardInfo(HostAndPort hp) {
+  RedisShardInfo(HostAndPort hp) {
     this(hp.getHost(), hp.getPort());
   }
 
-  public RedisShardInfo(String host, int port) {
+  RedisShardInfo(String host, int port) {
     this(host, port, Protocol.DEFAULT_TIMEOUT);
   }
 
-  public RedisShardInfo(String host, int port, boolean ssl) {
+  RedisShardInfo(String host, int port, bool ssl) {
     this(host, port, Protocol.DEFAULT_TIMEOUT, ssl);
   }
 
-  public RedisShardInfo(String host, int port, boolean ssl, SSLSocketFactory sslSocketFactory,
+  RedisShardInfo(String host, int port, bool ssl, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(host, port, Protocol.DEFAULT_TIMEOUT, ssl, sslSocketFactory, sslParameters,
         hostnameVerifier);
   }
 
-  public RedisShardInfo(String host, int port, String name) {
+  RedisShardInfo(String host, int port, String name) {
     this(host, port, Protocol.DEFAULT_TIMEOUT, name);
   }
 
-  public RedisShardInfo(String host, int port, String name, boolean ssl) {
+  RedisShardInfo(String host, int port, String name, bool ssl) {
     this(host, port, Protocol.DEFAULT_TIMEOUT, name, ssl);
   }
 
-  public RedisShardInfo(String host, int port, String name, boolean ssl, SSLSocketFactory sslSocketFactory,
+  RedisShardInfo(String host, int port, String name, bool ssl, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(host, port, Protocol.DEFAULT_TIMEOUT, name, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  public RedisShardInfo(String host, int port, int timeout) {
+  RedisShardInfo(String host, int port, int timeout) {
     this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT);
   }
 
-  public RedisShardInfo(String host, int port, int timeout, boolean ssl) {
+  RedisShardInfo(String host, int port, int timeout, bool ssl) {
     this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl);
   }
 
-  public RedisShardInfo(String host, int port, int timeout, boolean ssl,
+  RedisShardInfo(String host, int port, int timeout, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl, sslSocketFactory,
         sslParameters, hostnameVerifier);
   }
 
-  public RedisShardInfo(String host, int port, int timeout, String name) {
+  RedisShardInfo(String host, int port, int timeout, String name) {
     this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT);
     this.name = name;
   }
 
-  public RedisShardInfo(String host, int port, int timeout, String name, boolean ssl) {
+  RedisShardInfo(String host, int port, int timeout, String name, bool ssl) {
     this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl);
     this.name = name;
   }
 
-  public RedisShardInfo(String host, int port, int timeout, String name, boolean ssl,
+  RedisShardInfo(String host, int port, int timeout, String name, bool ssl,
       SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(host, port, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
     this.name = name;
   }
 
-  public RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight) {
+  RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight) {
     super(weight);
     this.host = host;
     this.port = port;
@@ -118,8 +118,8 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     this.soTimeout = soTimeout;
   }
 
-  public RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight,
-      boolean ssl) {
+  RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight,
+      bool ssl) {
     super(weight);
     this.host = host;
     this.port = port;
@@ -128,8 +128,8 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     this.ssl = ssl;
   }
 
-  public RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight,
-      boolean ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  RedisShardInfo(String host, int port, int connectionTimeout, int soTimeout, int weight,
+      bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(host, port, connectionTimeout, soTimeout, weight, ssl);
     this.sslSocketFactory = sslSocketFactory;
@@ -137,24 +137,24 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     this.hostnameVerifier = hostnameVerifier;
   }
 
-  public RedisShardInfo(String host, String name, int port, int timeout, int weight) {
+  RedisShardInfo(String host, String name, int port, int timeout, int weight) {
     this(host, port, timeout, timeout, weight);
     this.name = name;
   }
 
-  public RedisShardInfo(String host, String name, int port, int timeout, int weight, boolean ssl) {
+  RedisShardInfo(String host, String name, int port, int timeout, int weight, bool ssl) {
     this(host, port, timeout, timeout, weight, ssl);
     this.name = name;
   }
 
-  public RedisShardInfo(String host, String name, int port, int timeout, int weight,
-      boolean ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  RedisShardInfo(String host, String name, int port, int timeout, int weight,
+      bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(host, port, timeout, timeout, weight, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
     this.name = name;
   }
 
-  public RedisShardInfo(URI uri) {
+  RedisShardInfo(URI uri) {
     super(Sharded.DEFAULT_WEIGHT);
     if (!RedisURIHelper.isValid(uri)) {
       throw new InvalidURIException(String.format(
@@ -168,7 +168,7 @@ public class RedisShardInfo : ShardInfo!(Redis) {
     this.ssl = RedisURIHelper.isRedisSSLScheme(uri);
   }
 
-  public RedisShardInfo(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  RedisShardInfo(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     this(uri);
     this.sslSocketFactory = sslSocketFactory;
@@ -177,69 +177,69 @@ public class RedisShardInfo : ShardInfo!(Redis) {
   }
 
   override
-  public String toString() {
+  String toString() {
     return host + ":" + port + "*" + getWeight();
   }
 
-  public String getHost() {
+  String getHost() {
     return host;
   }
 
-  public int getPort() {
+  int getPort() {
     return port;
   }
 
-  public String getPassword() {
+  String getPassword() {
     return password;
   }
 
-  public void setPassword(String auth) {
+  void setPassword(String auth) {
     this.password = auth;
   }
 
-  public int getConnectionTimeout() {
+  int getConnectionTimeout() {
     return connectionTimeout;
   }
 
-  public void setConnectionTimeout(int connectionTimeout) {
+  void setConnectionTimeout(int connectionTimeout) {
     this.connectionTimeout = connectionTimeout;
   }
 
-  public int getSoTimeout() {
+  int getSoTimeout() {
     return soTimeout;
   }
 
-  public void setSoTimeout(int soTimeout) {
+  void setSoTimeout(int soTimeout) {
     this.soTimeout = soTimeout;
   }
 
   override
-  public String getName() {
+  String getName() {
     return name;
   }
 
-  public int getDb() {
+  int getDb() {
     return db;
   }
 
-  public boolean getSsl() {
+  bool getSsl() {
       return ssl;
   }
 
-  public SSLSocketFactory getSslSocketFactory() {
+  SSLSocketFactory getSslSocketFactory() {
     return sslSocketFactory;
   }
 
-  public SSLParameters getSslParameters() {
+  SSLParameters getSslParameters() {
     return sslParameters;
   }
 
-  public HostnameVerifier getHostnameVerifier() {
+  HostnameVerifier getHostnameVerifier() {
     return hostnameVerifier;
   }
 
   override
-  public Redis createResource() {
+  Redis createResource() {
     return new Redis(this);
   }
   

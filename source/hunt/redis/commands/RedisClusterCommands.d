@@ -50,7 +50,7 @@ public interface RedisClusterCommands {
 
   Long touch(String key);
 
-  Boolean setbit(String key, long offset, boolean value);
+  Boolean setbit(String key, long offset, bool value);
 
   Boolean setbit(String key, long offset, String value);
 
@@ -92,13 +92,13 @@ public interface RedisClusterCommands {
 
   String hmset(String key, Map!(String, String) hash);
 
-  List!(String) hmget(String key, String... fields);
+  List!(String) hmget(String key, String fields...);
 
   Long hincrBy(String key, String field, long value);
 
   Boolean hexists(String key, String field);
 
-  Long hdel(String key, String... field);
+  Long hdel(String key, String field...);
 
   Long hlen(String key);
 
@@ -108,9 +108,9 @@ public interface RedisClusterCommands {
 
   Map!(String, String) hgetAll(String key);
 
-  Long rpush(String key, String... string);
+  Long rpush(String key, String string...);
 
-  Long lpush(String key, String... string);
+  Long lpush(String key, String string...);
 
   Long llen(String key);
 
@@ -128,11 +128,11 @@ public interface RedisClusterCommands {
 
   String rpop(String key);
 
-  Long sadd(String key, String... member);
+  Long sadd(String key, String member...);
 
   Set!(String) smembers(String key);
 
-  Long srem(String key, String... member);
+  Long srem(String key, String member...);
 
   String spop(String key);
 
@@ -158,7 +158,7 @@ public interface RedisClusterCommands {
 
   Set!(String) zrange(String key, long start, long stop);
 
-  Long zrem(String key, String... members);
+  Long zrem(String key, String members...);
 
   Double zincrby(String key, double increment, String member);
 
@@ -240,9 +240,9 @@ public interface RedisClusterCommands {
 
   Long linsert(String key, ListPosition where, String pivot, String value);
 
-  Long lpushx(String key, String... string);
+  Long lpushx(String key, String string...);
 
-  Long rpushx(String key, String... string);
+  Long rpushx(String key, String string...);
 
   List!(String) blpop(int timeout, String key);
 
@@ -264,7 +264,7 @@ public interface RedisClusterCommands {
 
   ScanResult!(Tuple) zscan(String key, String cursor);
 
-  Long pfadd(String key, String... elements);
+  Long pfadd(String key, String elements...);
 
   long pfcount(String key);
 
@@ -278,9 +278,9 @@ public interface RedisClusterCommands {
 
   Double geodist(String key, String member1, String member2, GeoUnit unit);
 
-  List!(String) geohash(String key, String... members);
+  List!(String) geohash(String key, String members...);
 
-  List!(GeoCoordinate) geopos(String key, String... members);
+  List!(GeoCoordinate) geopos(String key, String members...);
 
   List!(GeoRadiusResponse) georadius(String key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -340,7 +340,7 @@ public interface RedisClusterCommands {
    * @param approximateLength
    * @return
    */
-  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, boolean approximateLength);
+  StreamEntryID xadd(String key, StreamEntryID id, Map!(String, String) hash, long maxLen, bool approximateLength);
   
   /**
    * XLEN key
@@ -380,7 +380,7 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry!(String, List!(StreamEntry))> xread(int count, long block, Map.Entry!(String, StreamEntryID)... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xread(int count, long block, Map.Entry!(String, StreamEntryID) streams...);
   
   /**
    * XACK key group ID [ID ...]
@@ -389,7 +389,7 @@ public interface RedisClusterCommands {
    * @param ids
    * @return
    */
-  Long xack(String key, String group,  StreamEntryID... ids);
+  Long xack(String key, String group,  StreamEntryID ids...);
   
   /**
    * XGROUP CREATE <key> <groupname> <id or $>
@@ -399,7 +399,7 @@ public interface RedisClusterCommands {
    * @param id
    * @return
    */
-  String xgroupCreate( String key, String groupname, StreamEntryID id, boolean makeStream);
+  String xgroupCreate( String key, String groupname, StreamEntryID id, bool makeStream);
   
   /**
    * XGROUP SETID <key> <groupname> <id or $>
@@ -440,7 +440,7 @@ public interface RedisClusterCommands {
    * @param streams
    * @return
    */
-  List<Map.Entry!(String, List!(StreamEntry))> xreadGroup(String groupname, String consumer, int count, long block, boolean noAck, Map.Entry!(String, StreamEntryID)... streams);
+  List<Map.Entry!(String, List!(StreamEntry))> xreadGroup(String groupname, String consumer, int count, long block, bool noAck, Map.Entry!(String, StreamEntryID) streams...);
 
   
   /**
@@ -462,7 +462,7 @@ public interface RedisClusterCommands {
    * @param ids
    * @return
    */
-  Long xdel( String key, StreamEntryID... ids);
+  Long xdel( String key, StreamEntryID ids...);
   
   /**
    * XTRIM key MAXLEN [~] count
@@ -471,7 +471,7 @@ public interface RedisClusterCommands {
    * @param approximateLength
    * @return
    */
-  Long xtrim( String key, long maxLen, boolean approximateLength);
+  Long xtrim( String key, long maxLen, bool approximateLength);
  
   /**
    *  XCLAIM <key> <group> <consumer> <min-idle-time> <ID-1> <ID-2>
@@ -479,9 +479,9 @@ public interface RedisClusterCommands {
    *        [FORCE] [JUSTID]
    */        
   List!(StreamEntry) xclaim( String key, String group, String consumername, long minIdleTime, 
-      long newIdleTime, int retries, boolean force, StreamEntryID... ids);
+      long newIdleTime, int retries, bool force, StreamEntryID ids...);
 
   Long waitReplicas(final String key, final int replicas, final long timeout);
 
-  Object sendCommand(final String sampleKey, ProtocolCommand cmd, String... args);
+  Object sendCommand(final String sampleKey, ProtocolCommand cmd, String args...);
 }
