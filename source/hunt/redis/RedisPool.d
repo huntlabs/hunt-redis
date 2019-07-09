@@ -3,7 +3,7 @@ module hunt.redis.RedisPool;
 import hunt.pool.impl.GenericObjectPool;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.exceptions.RedisException;
+import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 
 class RedisPool : RedisPoolAbstract {

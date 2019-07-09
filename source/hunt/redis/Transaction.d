@@ -3,10 +3,10 @@ module hunt.redis.Transaction;
 import hunt.redis.Response;
 
 import hunt.util.Common;
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.List;
 
-import hunt.redis.exceptions.RedisDataException;
+import hunt.redis.Exceptions;
 
 /**
  * Transaction is nearly identical to Pipeline, only differences are the multi/discard behaviors

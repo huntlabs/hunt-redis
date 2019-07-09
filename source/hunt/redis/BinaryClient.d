@@ -15,7 +15,7 @@ import hunt.redis.Protocol;
 // import hunt.redis.Protocol.Keyword.STORE;
 // import hunt.redis.Protocol.Keyword.WITHSCORES;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.collection.Map;
 

@@ -4,8 +4,8 @@ import hunt.collection.List;
 import hunt.collection.Set;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.exceptions.RedisException;
-import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 
 class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
 

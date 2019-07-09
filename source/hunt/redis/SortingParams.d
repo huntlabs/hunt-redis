@@ -1,14 +1,8 @@
 module hunt.redis.SortingParams;
 
-import hunt.redis.Protocol.Keyword.ALPHA;
-import hunt.redis.Protocol.Keyword.ASC;
-import hunt.redis.Protocol.Keyword.BY;
-import hunt.redis.Protocol.Keyword.DESC;
-import hunt.redis.Protocol.Keyword.GET;
-import hunt.redis.Protocol.Keyword.LIMIT;
-import hunt.redis.Protocol.Keyword.NOSORT;
+import hunt.redis.Protocol;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.Collection;
 import hunt.collection.Collections;
 import hunt.collection.List;

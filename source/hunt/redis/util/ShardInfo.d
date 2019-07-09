@@ -1,12 +1,12 @@
 module hunt.redis.util.ShardInfo;
 
-abstract class ShardInfo!(T) {
+abstract class ShardInfo(T) {
   private int weight;
 
-  ShardInfo() {
+  this() {
   }
 
-  ShardInfo(int weight) {
+  this(int weight) {
     this.weight = weight;
   }
 

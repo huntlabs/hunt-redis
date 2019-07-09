@@ -1,7 +1,7 @@
 module hunt.redis.Pipeline;
 
 import hunt.util.Common;
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.List;
 
 import hunt.redis.Exceptions;

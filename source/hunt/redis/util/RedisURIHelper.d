@@ -7,7 +7,7 @@ class RedisURIHelper {
   private enum string REDIS = "redis";
   private enum string REDISS = "rediss";
 
-  private RedisURIHelper(){
+  private this(){
     throw new InstantiationError( "Must not instantiate this class" );
   }
 

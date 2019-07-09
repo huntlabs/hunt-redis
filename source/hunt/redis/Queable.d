@@ -1,6 +1,6 @@
 module hunt.redis.Queable;
 
-import hunt.collection.Linkedlist;
+import hunt.collection.LinkedList;
 import hunt.collection.Queue;
 
 // class Queable {

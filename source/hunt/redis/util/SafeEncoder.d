@@ -1,7 +1,5 @@
 module hunt.redis.util.SafeEncoder;
 
-import java.io.UnsupportedEncodingException;
-
 import hunt.redis.Exceptions;
 import hunt.redis.Protocol;
 

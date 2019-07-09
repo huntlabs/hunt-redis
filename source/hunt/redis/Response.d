@@ -1,6 +1,6 @@
 module hunt.redis.Response;
 
-import hunt.redis.exceptions.RedisDataException;
+import hunt.redis.Exceptions;
 
 abstract class AbstractResponse {
   protected bool building = false;

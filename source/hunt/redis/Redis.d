@@ -1,10 +1,4 @@
 module hunt.redis.Redis;
-import java.util.AbstractMap;
-import hunt.collection.ArraryList;
-import hunt.collection.Iterator;
-import hunt.collection.List;
-import hunt.collection.Map;
-import hunt.collection.Set;
 
 import hunt.redis.commands.AdvancedRedisCommands;
 import hunt.redis.commands.BasicCommands;
@@ -24,6 +18,7 @@ import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
 
+import hunt.collection;
 import hunt.Exceptions;
 
 

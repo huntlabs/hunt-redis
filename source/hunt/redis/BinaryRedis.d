@@ -1,6 +1,6 @@
 module hunt.redis.BinaryRedis;
 
-import hunt.redis.Protocol.toByteArray;
+import hunt.redis.Protocol;
 
 // import java.net.URI;
 import hunt.net.util.HttpURI;
@@ -14,9 +14,9 @@ import hunt.redis.commands.BinaryRedisCommands;
 import hunt.redis.commands.BinaryScriptingCommands;
 import hunt.redis.commands.MultiKeyBinaryCommands;
 import hunt.redis.commands.ProtocolCommand;
-import hunt.redis.exceptions.InvalidURIException;
-import hunt.redis.exceptions.RedisDataException;
-import hunt.redis.exceptions.RedisException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 import hunt.redis.params.ClientKillParams;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.MigrateParams;

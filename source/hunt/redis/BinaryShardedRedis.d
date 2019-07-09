@@ -7,7 +7,7 @@ import hunt.collection.Set;
 
 import hunt.redis.commands.BinaryRedisCommands;
 import hunt.redis.commands.ProtocolCommand;
-import hunt.redis.exceptions.RedisConnectionException;
+import hunt.redis.Exceptions;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;

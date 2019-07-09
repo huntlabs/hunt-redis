@@ -1,12 +1,12 @@
 module hunt.redis.RedisClusterCommand;
 
-import hunt.redis.exceptions.RedisAskDataException;
-import hunt.redis.exceptions.RedisClusterMaxAttemptsException;
-import hunt.redis.exceptions.RedisClusterOperationException;
-import hunt.redis.exceptions.RedisConnectionException;
-import hunt.redis.exceptions.RedisMovedDataException;
-import hunt.redis.exceptions.RedisNoReachableClusterNodeException;
-import hunt.redis.exceptions.RedisRedirectionException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 import hunt.redis.util.RedisClusterCRC16;
 
 abstract class RedisClusterCommand(T) {

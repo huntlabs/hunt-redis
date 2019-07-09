@@ -5,7 +5,7 @@ module hunt.redis.ZParams;
 
 import hunt.redis.Protocol;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.Collection;
 import hunt.collection.Collections;
 import hunt.collection.List;

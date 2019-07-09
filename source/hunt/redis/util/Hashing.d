@@ -1,39 +1,39 @@
 module hunt.redis.util.Hashing;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+// import hunt.security.MessageDigest;
+// import hunt.security.NoSuchAlgorithmException;
 
-interface Hashing {
-  Hashing MURMUR_HASH = new MurmurHash();
-  ThreadLocal!(MessageDigest) md5Holder = new ThreadLocal!(MessageDigest)();
+// interface Hashing {
+//   Hashing MURMUR_HASH = new MurmurHash();
+//   ThreadLocal!(MessageDigest) md5Holder = new ThreadLocal!(MessageDigest)();
 
-  Hashing MD5 = new class Hashing {
-    override
-    long hash(string key) {
-      return hash(SafeEncoder.encode(key));
-    }
+//   Hashing MD5 = new class Hashing {
+//     override
+//     long hash(string key) {
+//       return hash(SafeEncoder.encode(key));
+//     }
 
-    override
-    long hash(byte[] key) {
-      try {
-        if (md5Holder.get() is null) {
-          md5Holder.set(MessageDigest.getInstance("MD5"));
-        }
-      } catch (NoSuchAlgorithmException e) {
-        throw new IllegalStateException("++++ no md5 algorithm found");
-      }
-      MessageDigest md5 = md5Holder.get();
+//     override
+//     long hash(byte[] key) {
+//       try {
+//         if (md5Holder.get() is null) {
+//           md5Holder.set(MessageDigest.getInstance("MD5"));
+//         }
+//       } catch (NoSuchAlgorithmException e) {
+//         throw new IllegalStateException("++++ no md5 algorithm found");
+//       }
+//       MessageDigest md5 = md5Holder.get();
 
-      md5.reset();
-      md5.update(key);
-      byte[] bKey = md5.digest();
-      long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
-          | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
-      return res;
-    }
-  };
+//       md5.reset();
+//       md5.update(key);
+//       byte[] bKey = md5.digest();
+//       long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
+//           | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
+//       return res;
+//     }
+//   };
 
-  long hash(string key);
+//   long hash(string key);
 
-  long hash(byte[] key);
-}
+//   long hash(byte[] key);
+// }

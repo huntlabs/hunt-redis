@@ -5,7 +5,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.exceptions.RedisConnectionException;
+import hunt.redis.Exceptions;
 
 // abstract class RedisClusterConnectionHandler : Closeable {
 //   protected RedisClusterInfoCache cache;

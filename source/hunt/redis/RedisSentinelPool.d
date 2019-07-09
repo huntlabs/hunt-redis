@@ -8,8 +8,8 @@ import hunt.collection.Set;
 import hunt.logging.ConsoleLogger;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.exceptions.RedisConnectionException;
-import hunt.redis.exceptions.RedisException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 
 
 /**

@@ -2,24 +2,26 @@ module hunt.redis.Connection;
 
 import hunt.util.Common;
 import hunt.Exceptions;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import hunt.collection.ArraryList;
+// import java.net.InetSocketAddress;
+// import java.net.Socket;
+// import java.net.SocketException;
+import hunt.collection.ArrayList;
 import hunt.collection.List;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+// import javax.net.ssl.HostnameVerifier;
+// import javax.net.ssl.SSLParameters;
+// import javax.net.ssl.SSLSocket;
+// import javax.net.ssl.SSLSocketFactory;
 
 import hunt.redis.commands.ProtocolCommand;
-import hunt.redis.exceptions.RedisConnectionException;
-import hunt.redis.exceptions.RedisDataException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 import hunt.redis.util.IOUtils;
 import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
+
+import std.socket;
 
 class Connection : Closeable {
 

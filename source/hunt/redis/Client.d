@@ -1,8 +1,8 @@
 module hunt.redis.Client;
 
-import hunt.redis.Protocol.toByteArray;
+import hunt.redis.Protocol;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;

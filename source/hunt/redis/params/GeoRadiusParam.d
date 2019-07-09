@@ -3,7 +3,7 @@ module hunt.redis.params.GeoRadiusParam;
 import hunt.redis.Protocol;
 import hunt.redis.util.SafeEncoder;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 
 class GeoRadiusParam : Params {
   private enum string WITHCOORD = "withcoord";

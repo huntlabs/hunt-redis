@@ -1,6 +1,6 @@
 module hunt.redis.RedisShardInfo;
 
-import hunt.redis.exceptions.InvalidURIException;
+import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.ShardInfo;
 import hunt.redis.util.Sharded;

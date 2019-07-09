@@ -1,19 +1,10 @@
 module hunt.redis.ScanParams;
 
-import hunt.redis.Protocol.Keyword.COUNT;
-import hunt.redis.Protocol.Keyword.MATCH;
-
-import hunt.redis.Protocol.Keyword;
-
-import hunt.collection.ByteBuffer;
-import hunt.collection.ArraryList;
-import hunt.collection.Collection;
-import hunt.collection.Collections;
-import java.util.EnumMap;
-import hunt.collection.List;
-import hunt.collection.Map;
-
+import hunt.redis.Protocol;
 import hunt.redis.util.SafeEncoder;
+
+import hunt.collection;
+
 
 // class ScanParams {
 

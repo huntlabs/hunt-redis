@@ -42,16 +42,8 @@ class RedisNoScriptException : RedisDataException {
     mixin BasicExceptionCtors;
 }
 
-class RedisNoScriptException : RedisDataException  {
-    mixin BasicExceptionCtors;
-}
 
 class RedisClusterMaxAttemptsException : RedisClusterOperationException {
-    mixin BasicExceptionCtors;
-}
-
-
-class RedisNoReachableClusterNodeException : RedisConnectionException {
     mixin BasicExceptionCtors;
 }
 

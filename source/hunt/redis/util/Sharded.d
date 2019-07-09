@@ -1,16 +1,10 @@
 module hunt.redis.util.Sharded;
 
-import hunt.collection.Collection;
-import hunt.collection.Collections;
-import hunt.collection.LInkedHashMap;
-import hunt.collection.List;
-import hunt.collection.Map;
-import hunt.collection.SortedMap;
-import hunt.collection.TreeMap;
+import hunt.collection;
 
 import std.regex;
 
-class Sharded!(R, S extends ShardInfo!(R)) {
+class Sharded(R, S) if(is(S : ShardInfo!(R))) {
 
   enum int DEFAULT_WEIGHT = 1;
   private TreeMap!(Long, S) nodes;
@@ -26,23 +20,23 @@ class Sharded!(R, S extends ShardInfo!(R)) {
   // the tag is anything between {}
   static Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");
 
-  Sharded(List!(S) shards) {
+  this(List!(S) shards) {
     this(shards, Hashing.MURMUR_HASH); // MD5 is really not good as we works
     // with 64-bits not 128
   }
 
-  Sharded(List!(S) shards, Hashing algo) {
+  this(List!(S) shards, Hashing algo) {
     this.algo = algo;
     initialize(shards);
   }
 
-  Sharded(List!(S) shards, Pattern tagPattern) {
+  this(List!(S) shards, Pattern tagPattern) {
     this(shards, Hashing.MURMUR_HASH, tagPattern); // MD5 is really not good
     // as we works with
     // 64-bits not 128
   }
 
-  Sharded(List!(S) shards, Hashing algo, Pattern tagPattern) {
+  this(List!(S) shards, Hashing algo, Pattern tagPattern) {
     this.algo = algo;
     this.tagPattern = tagPattern;
     initialize(shards);

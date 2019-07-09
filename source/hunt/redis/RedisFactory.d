@@ -1,12 +1,12 @@
 module hunt.redis.RedisFactory;
-import java.util.concurrent.atomic.AtomicReference;
+// import java.util.concurrent.atomic.AtomicReference;
 
 import hunt.pool.PooledObject;
 import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.DefaultPooledObject;
 
-import hunt.redis.exceptions.InvalidURIException;
-import hunt.redis.exceptions.RedisException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 
 /**

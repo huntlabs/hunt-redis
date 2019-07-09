@@ -1,6 +1,6 @@
 module hunt.redis.params.Params;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.HashMap;
 import hunt.collection.Map;
 import hunt.Exceptions;

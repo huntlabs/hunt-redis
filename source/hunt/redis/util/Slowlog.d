@@ -1,8 +1,12 @@
 module hunt.redis.util.Slowlog;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.List;
 
+import hunt.text.StringBuilder;
+
+/**
+*/
 class Slowlog {
   private long id;
   private long timeStamp;
@@ -11,13 +15,13 @@ class Slowlog {
   private enum string COMMA = ",";
 
   
-  private Slowlog(List!(Object) properties) {
+  private this(List!(Object) properties) {
     super();
-    this.id = (Long) properties.get(0);
-    this.timeStamp = (Long) properties.get(1);
-    this.executionTime = (Long) properties.get(2);
+    this.id = cast(Long) properties.get(0);
+    this.timeStamp = cast(Long) properties.get(1);
+    this.executionTime = cast(Long) properties.get(2);
 
-    List!(byte[]) bargs = (List!(byte[])) properties.get(3);
+    List!(byte[]) bargs = cast(List!(byte[])) properties.get(3);
     this.args = new ArrayList!(string)(bargs.size());
 
     foreach(byte[] barg ; bargs) {
@@ -29,7 +33,7 @@ class Slowlog {
   static List!(Slowlog) from(List!(Object) nestedMultiBulkReply) {
     List!(Slowlog) logs = new ArrayList!(Slowlog)(nestedMultiBulkReply.size());
     foreach(Object obj ; nestedMultiBulkReply) {
-      List!(Object) properties = (List!(Object)) obj;
+      List!(Object) properties = cast(List!(Object)) obj;
       logs.add(new Slowlog(properties));
     }
 

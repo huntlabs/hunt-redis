@@ -78,7 +78,8 @@ class RedisOutputStream : FilterOutputStream {
         flushBuffer();
       }
 
-      System.arraycopy(b, off, buf, count, len);
+      // System.arraycopy(b, off, buf, count, len);
+      buf[count .. count+len] = b[off .. off+len];
       count += len;
     }
   }
@@ -94,7 +95,7 @@ class RedisOutputStream : FilterOutputStream {
 
   void writeIntCrLf(int value) {
     if (value < 0) {
-      write((byte) '-');
+      write(cast(byte) '-');
       value = -value;
     }
 

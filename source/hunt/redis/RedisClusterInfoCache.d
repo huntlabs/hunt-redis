@@ -1,16 +1,16 @@
 module hunt.redis.RedisClusterInfoCache;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 import hunt.collection.Collections;
 import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+// import java.util.concurrent.locks.Lock;
+// import java.util.concurrent.locks.ReentrantReadWriteLock;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.exceptions.RedisConnectionException;
-import hunt.redis.exceptions.RedisException;
+import hunt.redis.Exceptions;
+import hunt.redis.Exceptions;
 import hunt.redis.util.SafeEncoder;
 
 // class RedisClusterInfoCache {

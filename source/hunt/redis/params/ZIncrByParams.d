@@ -2,7 +2,7 @@ module hunt.redis.params.ZIncrByParams;
 
 import hunt.redis.util.SafeEncoder;
 
-import hunt.collection.ArraryList;
+import hunt.collection.ArrayList;
 
 /**
  * Parameters for ZINCRBY commands <br/>
