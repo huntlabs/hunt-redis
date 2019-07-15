@@ -1,6 +1,6 @@
 module hunt.redis.commands.ProtocolCommand;
 
-public interface ProtocolCommand {
+interface ProtocolCommand {
 
   byte[] getRaw();
 

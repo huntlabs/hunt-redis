@@ -14,7 +14,7 @@ import hunt.Long;
 /**
  * Multikey related commands (these are split out because they are non-shardable)
  */
-public interface MultiKeyCommandsPipeline {
+interface MultiKeyCommandsPipeline {
   Response!(Long) del(string[] keys...);
 
   Response!(Long) unlink(string[] keys...);

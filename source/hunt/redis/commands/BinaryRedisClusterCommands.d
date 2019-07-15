@@ -23,7 +23,7 @@ import hunt.collection.Set;
 import hunt.Double;
 import hunt.Long;
 
-public interface BinaryRedisClusterCommands {
+interface BinaryRedisClusterCommands {
   string set(byte[] key, byte[] value);
 
   string set(byte[] key, byte[] value, SetParams params);

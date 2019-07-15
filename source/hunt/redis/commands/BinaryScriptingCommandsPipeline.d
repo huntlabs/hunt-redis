@@ -4,7 +4,7 @@ import hunt.redis.Response;
 
 import hunt.collection.List;
 
-public interface BinaryScriptingCommandsPipeline {
+interface BinaryScriptingCommandsPipeline {
 
   Response!(Object) eval(byte[] script, byte[] keyCount, byte[] params...);
 

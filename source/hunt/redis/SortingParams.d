@@ -13,7 +13,11 @@ import hunt.redis.util.SafeEncoder;
  * Builder Class for {@link Redis#sort(string, SortingParams) SORT} Parameters.
  */
 class SortingParams {
-  private List!(byte[]) params = new ArrayList!(byte[])();
+  private List!(byte[]) params;
+
+  this() {
+    params = new ArrayList!(byte[])();
+  }
 
   /**
    * Sort by weight in keys.

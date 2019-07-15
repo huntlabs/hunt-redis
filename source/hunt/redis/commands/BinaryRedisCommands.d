@@ -27,7 +27,7 @@ import hunt.Long;
 /**
  * Common interface for sharded and non-sharded BinaryRedis
  */
-public interface BinaryRedisCommands {
+interface BinaryRedisCommands {
   string set(byte[] key, byte[] value);
 
   string set(byte[] key, byte[] value, SetParams params);

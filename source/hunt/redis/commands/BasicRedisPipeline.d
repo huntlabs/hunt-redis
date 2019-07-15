@@ -9,7 +9,7 @@ import hunt.Long;
 /**
  * Pipelined responses for all of the low level, non key related commands
  */
-public interface BasicRedisPipeline {
+interface BasicRedisPipeline {
 
   Response!(string) bgrewriteaof();
 

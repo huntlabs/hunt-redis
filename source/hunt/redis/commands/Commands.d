@@ -16,7 +16,7 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 
-public interface Commands {
+interface Commands {
 
   void ping(string message);
   

@@ -24,7 +24,7 @@ import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
-public interface BinaryRedisPipeline {
+interface BinaryRedisPipeline {
   Response!(Long) append(byte[] key, byte[] value);
 
   Response!(List!(byte[])) blpop(byte[] arg);

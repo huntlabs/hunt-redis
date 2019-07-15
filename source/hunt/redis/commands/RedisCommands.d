@@ -29,7 +29,7 @@ import hunt.redis.params.ZIncrByParams;
 /**
  * Common interface for sharded and non-sharded Redis
  */
-public interface RedisCommands {
+interface RedisCommands {
   string set(string key, string value);
 
   string set(string key, string value, SetParams params);

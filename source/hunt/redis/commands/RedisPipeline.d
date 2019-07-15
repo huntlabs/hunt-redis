@@ -26,7 +26,7 @@ import hunt.Double;
 import hunt.Long;
 
 
-public interface RedisPipeline {
+interface RedisPipeline {
   Response!(Long) append(string key, string value);
 
   Response!(List!(string)) blpop(string arg);

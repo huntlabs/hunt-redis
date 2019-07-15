@@ -33,12 +33,12 @@ class RedisSentinelPool : RedisPoolAbstract {
 
   protected string clientName;
 
-  protected Set!(MasterListener) masterListeners = new HashSet!(MasterListener)();
+  protected Set!(MasterListener) masterListeners;
 
   private RedisFactory factory;
   private HostAndPort currentHostMaster;
   
-  private Object initPoolLock = new Object();
+  private Object initPoolLock;
 
   this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig) {
@@ -91,6 +91,9 @@ class RedisSentinelPool : RedisPoolAbstract {
   this(string masterName, Set!(string) sentinels,
       GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout,
       string password, int database, string clientName) {
+    
+    masterListeners = new HashSet!(MasterListener)();
+    initPoolLock = new Object();
     this.poolConfig = poolConfig;
     this.connectionTimeout = connectionTimeout;
     this.soTimeout = soTimeout;

@@ -7,7 +7,7 @@ import hunt.redis.params.ClientKillParams;
 
 import hunt.Long;
 
-public interface AdvancedBinaryRedisCommands {
+interface AdvancedBinaryRedisCommands {
 
   List!(byte[]) configGet(byte[] pattern);
 

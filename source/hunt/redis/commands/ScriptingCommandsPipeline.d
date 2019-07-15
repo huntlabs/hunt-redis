@@ -4,7 +4,7 @@ import hunt.redis.Response;
 
 import hunt.collection.List;
 
-public interface ScriptingCommandsPipeline {
+interface ScriptingCommandsPipeline {
   Response!(Object) eval(string script, int keyCount, string[] params...);
 
   Response!(Object) eval(string script, List!(string) keys, List!(string) args);

@@ -4,7 +4,7 @@ import hunt.redis.Response;
 
 import hunt.collection.List;
 
-public interface ClusterPipeline {
+interface ClusterPipeline {
   Response!(string) clusterNodes();
 
   Response!(string) clusterMeet(string ip, int port);

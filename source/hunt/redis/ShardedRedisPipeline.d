@@ -23,8 +23,13 @@ private class FutureResult {
 */
 class ShardedRedisPipeline : PipelineBase {
   private BinaryShardedRedis jedis;
-  private List!(FutureResult) results = new ArrayList!(FutureResult)();
-  private Queue!(Client) clients = new LinkedList!(Client)();
+  private List!(FutureResult) results;
+  private Queue!(Client) clients;
+
+  this() {
+    results = new ArrayList!(FutureResult)();
+    clients = new LinkedList!(Client)();
+  }
 
 
   void setShardedRedis(BinaryShardedRedis jedis) {

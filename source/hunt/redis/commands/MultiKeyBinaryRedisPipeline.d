@@ -13,7 +13,7 @@ import hunt.Long;
 /**
  * Multikey related commands (these are split out because they are non-shardable)
  */
-public interface MultiKeyBinaryRedisPipeline {
+interface MultiKeyBinaryRedisPipeline {
 
   Response!(Long) del(byte[] keys...);
 

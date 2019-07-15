@@ -2,7 +2,7 @@ module hunt.redis.commands.ScriptingCommands;
 
 import hunt.collection.List;
 
-public interface ScriptingCommands {
+interface ScriptingCommands {
   Object eval(string script, int keyCount, string[] params...);
 
   Object eval(string script, List!(string) keys, List!(string) args);

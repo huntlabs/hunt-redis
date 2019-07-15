@@ -4,7 +4,7 @@ import hunt.collection.List;
 import hunt.Boolean;
 
 
-public interface RedisClusterScriptingCommands {
+interface RedisClusterScriptingCommands {
   Object eval(string script, int keyCount, string[] params...);
 
   Object eval(string script, List!(string) keys, List!(string) args);

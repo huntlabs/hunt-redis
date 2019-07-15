@@ -26,7 +26,7 @@ import hunt.Double;
 import hunt.Long;
 
 
-public interface RedisClusterCommands {
+interface RedisClusterCommands {
   string set(string key, string value);
 
   string set(string key, string value, SetParams params);

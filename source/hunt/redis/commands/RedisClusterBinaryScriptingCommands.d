@@ -4,7 +4,7 @@ import hunt.collection.List;
 import hunt.Double;
 import hunt.Long;
 
-public interface RedisClusterBinaryScriptingCommands {
+interface RedisClusterBinaryScriptingCommands {
   Object eval(byte[] script, byte[] keyCount, byte[] params...);
 
   Object eval(byte[] script, int keyCount, byte[] params...);

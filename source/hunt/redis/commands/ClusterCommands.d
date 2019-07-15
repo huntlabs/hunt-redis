@@ -5,7 +5,7 @@ import hunt.Long;
 
 import hunt.redis.ClusterReset;
 
-public interface ClusterCommands {
+interface ClusterCommands {
   string clusterNodes();
 
   string clusterMeet(string ip, int port);

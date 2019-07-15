@@ -15,7 +15,7 @@ import hunt.net.util.HttpURI;
  * PoolableObjectFactory custom impl.
  */
 class RedisFactory : PooledObjectFactory!(Redis) {
-    private HostAndPort hostAndPort; // = new AtomicReference!(HostAndPort)();
+    private HostAndPort hostAndPort; 
     private int connectionTimeout;
     private int soTimeout;
     private string password;
