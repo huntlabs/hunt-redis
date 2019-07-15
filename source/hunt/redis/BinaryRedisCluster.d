@@ -3,7 +3,7 @@ module hunt.redis.BinaryRedisCluster;
 import hunt.redis.commands.BinaryRedisClusterCommands;
 import hunt.redis.commands.RedisClusterBinaryScriptingCommands;
 import hunt.redis.commands.MultiKeyBinaryRedisClusterCommands;
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
@@ -122,7 +122,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long exists(byte[] keys...) {
+//   Long exists(byte[][] keys...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -252,7 +252,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long touch(byte[] keys...) {
+//   Long touch(byte[][] keys...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -472,7 +472,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(byte[]) hmget(byte[] key, byte[] fields...) {
+//   List!(byte[]) hmget(byte[] key, byte[][] fields...) {
 //     return new RedisClusterCommand!(List!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       List!(byte[]) execute(Redis connection) {
@@ -512,7 +512,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long hdel(byte[] key, byte[] field...) {
+//   Long hdel(byte[] key, byte[][] field...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -562,7 +562,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long rpush(byte[] key, byte[] args...) {
+//   Long rpush(byte[] key, byte[][] args...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -572,7 +572,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long lpush(byte[] key, byte[] args...) {
+//   Long lpush(byte[] key, byte[][] args...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -662,7 +662,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long sadd(byte[] key, byte[] member...) {
+//   Long sadd(byte[] key, byte[][] member...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -682,7 +682,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long srem(byte[] key, byte[] member...) {
+//   Long srem(byte[] key, byte[][] member...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -803,7 +803,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zrem(byte[] key, byte[] members...) {
+//   Long zrem(byte[] key, byte[][] members...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1153,7 +1153,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long lpushx(byte[] key, byte[] arg...) {
+//   Long lpushx(byte[] key, byte[][] arg...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1163,7 +1163,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long rpushx(byte[] key, byte[] arg...) {
+//   Long rpushx(byte[] key, byte[][] arg...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1193,7 +1193,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long unlink(byte[] keys...) {
+//   Long unlink(byte[][] keys...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1234,7 +1234,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long pfadd(byte[] key, byte[] elements...) {
+//   Long pfadd(byte[] key, byte[][] elements...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1326,7 +1326,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Object eval(byte[] script, byte[] keyCount, byte[] params...) {
+//   Object eval(byte[] script, byte[] keyCount, byte[][] params...) {
 //     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
 //       override
 //       Object execute(Redis connection) {
@@ -1336,7 +1336,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Object eval(byte[] script, int keyCount, byte[] params...) {
+//   Object eval(byte[] script, int keyCount, byte[][] params...) {
 //     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
 //       override
 //       Object execute(Redis connection) {
@@ -1386,7 +1386,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Object evalsha(byte[] sha1, int keyCount, byte[] params...) {
+//   Object evalsha(byte[] sha1, int keyCount, byte[][] params...) {
 //     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
 //       override
 //       Object execute(Redis connection) {
@@ -1396,7 +1396,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(Long) scriptExists(byte[] sampleKey, byte[] sha1...) {
+//   List!(Long) scriptExists(byte[] sampleKey, byte[][] sha1...) {
 //     return new RedisClusterCommand!(List!(Long))(connectionHandler, maxAttempts) {
 //       override
 //       List!(Long) execute(Redis connection) {
@@ -1436,7 +1436,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long del(byte[] keys...) {
+//   Long del(byte[][] keys...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1446,7 +1446,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(byte[]) blpop(int timeout, byte[] keys...) {
+//   List!(byte[]) blpop(int timeout, byte[][] keys...) {
 //     return new RedisClusterCommand!(List!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       List!(byte[]) execute(Redis connection) {
@@ -1456,7 +1456,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(byte[]) brpop(int timeout, byte[] keys...) {
+//   List!(byte[]) brpop(int timeout, byte[][] keys...) {
 //     return new RedisClusterCommand!(List!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       List!(byte[]) execute(Redis connection) {
@@ -1466,7 +1466,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(byte[]) mget(byte[] keys...) {
+//   List!(byte[]) mget(byte[][] keys...) {
 //     return new RedisClusterCommand!(List!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       List!(byte[]) execute(Redis connection) {
@@ -1476,7 +1476,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   string mset(byte[] keysvalues...) {
+//   string mset(byte[][] keysvalues...) {
 //     byte[][] keys = new byte[keysvalues.length / 2][];
 
 //     for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
@@ -1492,7 +1492,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long msetnx(byte[] keysvalues...) {
+//   Long msetnx(byte[][] keysvalues...) {
 //     byte[][] keys = new byte[keysvalues.length / 2][];
 
 //     for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
@@ -1538,7 +1538,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Set!(byte[]) sdiff(byte[] keys...) {
+//   Set!(byte[]) sdiff(byte[][] keys...) {
 //     return new RedisClusterCommand!(Set!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       Set!(byte[]) execute(Redis connection) {
@@ -1548,7 +1548,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long sdiffstore(byte[] dstkey, byte[] keys...) {
+//   Long sdiffstore(byte[] dstkey, byte[][] keys...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, keys);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1560,7 +1560,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Set!(byte[]) sinter(byte[] keys...) {
+//   Set!(byte[]) sinter(byte[][] keys...) {
 //     return new RedisClusterCommand!(Set!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       Set!(byte[]) execute(Redis connection) {
@@ -1570,7 +1570,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long sinterstore(byte[] dstkey, byte[] keys...) {
+//   Long sinterstore(byte[] dstkey, byte[][] keys...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, keys);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1612,7 +1612,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Set!(byte[]) sunion(byte[] keys...) {
+//   Set!(byte[]) sunion(byte[][] keys...) {
 //     return new RedisClusterCommand!(Set!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       Set!(byte[]) execute(Redis connection) {
@@ -1622,7 +1622,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long sunionstore(byte[] dstkey, byte[] keys...) {
+//   Long sunionstore(byte[] dstkey, byte[][] keys...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, keys);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1634,7 +1634,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zinterstore(byte[] dstkey, byte[] sets...) {
+//   Long zinterstore(byte[] dstkey, byte[][] sets...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1646,7 +1646,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zinterstore(byte[] dstkey, ZParams params, byte[] sets...) {
+//   Long zinterstore(byte[] dstkey, ZParams params, byte[][] sets...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1658,7 +1658,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zunionstore(byte[] dstkey, byte[] sets...) {
+//   Long zunionstore(byte[] dstkey, byte[][] sets...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1670,7 +1670,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zunionstore(byte[] dstkey, ZParams params, byte[] sets...) {
+//   Long zunionstore(byte[] dstkey, ZParams params, byte[][] sets...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(dstkey, sets);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1702,7 +1702,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   void subscribe(BinaryRedisPubSub jedisPubSub, byte[] channels...) {
+//   void subscribe(BinaryRedisPubSub jedisPubSub, byte[][] channels...) {
 //     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
 //       override
 //       Integer execute(Redis connection) {
@@ -1713,7 +1713,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   void psubscribe(BinaryRedisPubSub jedisPubSub, byte[] patterns...) {
+//   void psubscribe(BinaryRedisPubSub jedisPubSub, byte[][] patterns...) {
 //     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
 //       override
 //       Integer execute(Redis connection) {
@@ -1724,7 +1724,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long bitop(BitOP op, byte[] destKey, byte[] srcKeys...) {
+//   Long bitop(BitOP op, byte[] destKey, byte[][] srcKeys...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(destKey, srcKeys);
 
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
@@ -1736,7 +1736,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   string pfmerge(byte[] destkey, byte[] sourcekeys...) {
+//   string pfmerge(byte[] destkey, byte[][] sourcekeys...) {
 //     byte[][] wholeKeys = KeyMergeUtil.merge(destkey, sourcekeys);
 
 //     return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
@@ -1748,7 +1748,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long pfcount(byte[] keys...) {
+//   Long pfcount(byte[][] keys...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -1800,7 +1800,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(byte[]) geohash(byte[] key, byte[] members...) {
+//   List!(byte[]) geohash(byte[] key, byte[][] members...) {
 //     return new RedisClusterCommand!(List!(byte[]))(connectionHandler, maxAttempts) {
 //       override
 //       List!(byte[]) execute(Redis connection) {
@@ -1810,7 +1810,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(GeoCoordinate) geopos(byte[] key, byte[] members...) {
+//   List!(GeoCoordinate) geopos(byte[] key, byte[][] members...) {
 //     return new RedisClusterCommand!(List!(GeoCoordinate))(connectionHandler, maxAttempts) {
 //       override
 //       List!(GeoCoordinate) execute(Redis connection) {
@@ -2012,7 +2012,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   List!(Long) bitfield(byte[] key, byte[] arguments...) {
+//   List!(Long) bitfield(byte[] key, byte[][] arguments...) {
 //     return new RedisClusterCommand!(List!(Long))(connectionHandler, maxAttempts) {
 //       override
 //       List!(Long) execute(Redis connection) {
@@ -2084,7 +2084,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long xack(byte[] key, byte[] group, byte[] ids...) {
+//   Long xack(byte[] key, byte[] group, byte[][] ids...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -2148,7 +2148,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long xdel(byte[] key, byte[] ids...) {
+//   Long xdel(byte[] key, byte[][] ids...) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -2200,7 +2200,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Object sendCommand(byte[] sampleKey, ProtocolCommand cmd, byte[] args...) {
+//   Object sendCommand(byte[] sampleKey, ProtocolCommand cmd, byte[][] args...) {
 //     return new RedisClusterCommand!(Object)(connectionHandler, maxAttempts) {
 //       override
 //       Object execute(Redis connection){

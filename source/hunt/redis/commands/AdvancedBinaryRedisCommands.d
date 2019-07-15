@@ -29,7 +29,7 @@ interface AdvancedBinaryRedisCommands {
 
   string migrate(string host, int port, byte[] key, int destinationDB, int timeout);
 
-  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, byte[] keys...);
+  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, byte[][] keys...);
 
   string clientKill(byte[] ipPort);
 

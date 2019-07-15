@@ -50,7 +50,7 @@ class ZIncrByParams : Params {
     return this;
   }
 
-  byte[][] getByteParams(byte[] key, byte[] args...) {
+  byte[][] getByteParams(byte[] key, byte[][] args...) {
     ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
     byteParams.add(key);
 

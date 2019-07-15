@@ -1,6 +1,6 @@
 module hunt.redis.commands.BinaryRedisClusterCommands;
 
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
@@ -96,7 +96,7 @@ interface BinaryRedisClusterCommands {
 
   string hmset(byte[] key, Map!(byte[], byte[]) hash);
 
-  List!(byte[]) hmget(byte[] key, byte[] fields...);
+  List!(byte[]) hmget(byte[] key, byte[][] fields...);
 
   Long hincrBy(byte[] key, byte[] field, long value);
 
@@ -104,7 +104,7 @@ interface BinaryRedisClusterCommands {
 
   bool hexists(byte[] key, byte[] field);
 
-  Long hdel(byte[] key, byte[] field...);
+  Long hdel(byte[] key, byte[][] field...);
 
   Long hlen(byte[] key);
 
@@ -114,9 +114,9 @@ interface BinaryRedisClusterCommands {
 
   Map!(byte[], byte[]) hgetAll(byte[] key);
 
-  Long rpush(byte[] key, byte[] args...);
+  Long rpush(byte[] key, byte[][] args...);
 
-  Long lpush(byte[] key, byte[] args...);
+  Long lpush(byte[] key, byte[][] args...);
 
   Long llen(byte[] key);
 
@@ -134,11 +134,11 @@ interface BinaryRedisClusterCommands {
 
   byte[] rpop(byte[] key);
 
-  Long sadd(byte[] key, byte[] member...);
+  Long sadd(byte[] key, byte[][] member...);
 
   Set!(byte[]) smembers(byte[] key);
 
-  Long srem(byte[] key, byte[] member...);
+  Long srem(byte[] key, byte[][] member...);
 
   byte[] spop(byte[] key);
 
@@ -164,7 +164,7 @@ interface BinaryRedisClusterCommands {
 
   Set!(byte[]) zrange(byte[] key, long start, long stop);
 
-  Long zrem(byte[] key, byte[] members...);
+  Long zrem(byte[] key, byte[][] members...);
 
   Double zincrby(byte[] key, double increment, byte[] member);
 
@@ -246,9 +246,9 @@ interface BinaryRedisClusterCommands {
 
   Long linsert(byte[] key, ListPosition where, byte[] pivot, byte[] value);
 
-  Long lpushx(byte[] key, byte[] arg...);
+  Long lpushx(byte[] key, byte[][] arg...);
 
-  Long rpushx(byte[] key, byte[] arg...);
+  Long rpushx(byte[] key, byte[][] arg...);
 
   Long del(byte[] key);
 
@@ -260,7 +260,7 @@ interface BinaryRedisClusterCommands {
 
   Long bitcount(byte[] key, long start, long end);
 
-  Long pfadd(byte[] key, byte[] elements...);
+  Long pfadd(byte[] key, byte[][] elements...);
 
   long pfcount(byte[] key);
 
@@ -274,9 +274,9 @@ interface BinaryRedisClusterCommands {
 
   Double geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit);
 
-  List!(byte[]) geohash(byte[] key, byte[] members...);
+  List!(byte[]) geohash(byte[] key, byte[][] members...);
 
-  List!(GeoCoordinate) geopos(byte[] key, byte[] members...);
+  List!(GeoCoordinate) geopos(byte[] key, byte[][] members...);
 
   List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude, double radius,
       GeoUnit unit);
@@ -318,7 +318,7 @@ interface BinaryRedisClusterCommands {
    * @param arguments
    * @return 
    */
-  List!(Long) bitfield(byte[] key, byte[] arguments...);
+  List!(Long) bitfield(byte[] key, byte[][] arguments...);
   
   /**
    * Used for HSTRLEN Redis command
@@ -336,7 +336,7 @@ interface BinaryRedisClusterCommands {
 
   List!(byte[]) xrevrange(byte[] key, byte[] end, byte[] start, int count);
 
-  Long xack(byte[] key, byte[] group, byte[] ids...);
+  Long xack(byte[] key, byte[] group, byte[][] ids...);
  
   string xgroupCreate(byte[] key, byte[] consumer, byte[] id, bool makeStream);
 
@@ -346,7 +346,7 @@ interface BinaryRedisClusterCommands {
 
   string xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName);
  
-  Long xdel(byte[] key, byte[] ids...);
+  Long xdel(byte[] key, byte[][] ids...);
 
   Long xtrim(byte[] key, long maxLen, bool approximateLength);
 
@@ -356,5 +356,5 @@ interface BinaryRedisClusterCommands {
 
   Long waitReplicas(byte[] key, int replicas, long timeout);
 
-  Object sendCommand(byte[] sampleKey, ProtocolCommand cmd, byte[] args...);
+  Object sendCommand(byte[] sampleKey, ProtocolCommand cmd, byte[][] args...);
 }

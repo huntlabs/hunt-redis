@@ -34,7 +34,7 @@ import hunt.redis.commands.ClusterCommands;
 import hunt.redis.commands.RedisCommands;
 import hunt.redis.commands.ModuleCommands;
 import hunt.redis.commands.MultiKeyCommands;
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 import hunt.redis.commands.ScriptingCommands;
 import hunt.redis.commands.SentinelCommands;
 import hunt.redis.params.GeoRadiusParam;

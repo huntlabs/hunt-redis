@@ -147,7 +147,7 @@ class SortingParams {
    * @param patterns
    * @return the SortingParams Object
    */
-  SortingParams get(byte[] patterns...) {
+  SortingParams get(byte[][] patterns...) {
     foreach(byte[] pattern ; patterns) {
       params.add(GET.raw);
       params.add(pattern);

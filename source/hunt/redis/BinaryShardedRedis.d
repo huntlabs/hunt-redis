@@ -21,7 +21,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 import hunt.redis.commands.BinaryRedisCommands;
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
@@ -274,7 +274,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  List!(byte[]) hmget(byte[] key, byte[] fields...) {
+  List!(byte[]) hmget(byte[] key, byte[][] fields...) {
     Redis j = getShard(key);
     return j.hmget(key, fields);
   }
@@ -298,7 +298,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long hdel(byte[] key, byte[] fields...) {
+  Long hdel(byte[] key, byte[][] fields...) {
     Redis j = getShard(key);
     return j.hdel(key, fields);
   }
@@ -328,13 +328,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long rpush(byte[] key, byte[] strings...) {
+  Long rpush(byte[] key, byte[][] strings...) {
     Redis j = getShard(key);
     return j.rpush(key, strings);
   }
 
   override
-  Long lpush(byte[] key, byte[] strings...) {
+  Long lpush(byte[] key, byte[][] strings...) {
     Redis j = getShard(key);
     return j.lpush(key, strings);
   }
@@ -346,7 +346,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long lpushx(byte[] key, byte[] string...) {
+  Long lpushx(byte[] key, byte[][] string...) {
     Redis j = getShard(key);
     return j.lpushx(key, string);
   }
@@ -358,7 +358,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long rpushx(byte[] key, byte[] string...) {
+  Long rpushx(byte[] key, byte[][] string...) {
     Redis j = getShard(key);
     return j.rpushx(key, string);
   }
@@ -412,7 +412,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long sadd(byte[] key, byte[] members...) {
+  Long sadd(byte[] key, byte[][] members...) {
     Redis j = getShard(key);
     return j.sadd(key, members);
   }
@@ -424,7 +424,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long srem(byte[] key, byte[] members...) {
+  Long srem(byte[] key, byte[][] members...) {
     Redis j = getShard(key);
     return j.srem(key, members);
   }
@@ -496,7 +496,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long zrem(byte[] key, byte[] members...) {
+  Long zrem(byte[] key, byte[][] members...) {
     Redis j = getShard(key);
     return j.zrem(key, members);
   }
@@ -826,7 +826,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long pfadd(byte[] key, byte[] elements...) {
+  Long pfadd(byte[] key, byte[][] elements...) {
     Redis j = getShard(key);
     return j.pfadd(key, elements);
   }
@@ -862,13 +862,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  List!(byte[]) geohash(byte[] key, byte[] members...) {
+  List!(byte[]) geohash(byte[] key, byte[][] members...) {
     Redis j = getShard(key);
     return j.geohash(key, members);
   }
 
   override
-  List!(GeoCoordinate) geopos(byte[] key, byte[] members...) {
+  List!(GeoCoordinate) geopos(byte[] key, byte[][] members...) {
     Redis j = getShard(key);
     return j.geopos(key, members);
   }
@@ -966,7 +966,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  List!(Long) bitfield(byte[] key, byte[] arguments...) {
+  List!(Long) bitfield(byte[] key, byte[][] arguments...) {
     Redis j = getShard(key);
     return j.bitfield(key, arguments);
  }
@@ -1002,7 +1002,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long xack(byte[] key, byte[] group, byte[] ids...) {
+  Long xack(byte[] key, byte[] group, byte[][] ids...) {
     Redis j = getShard(key);
     return j.xack(key, group, ids);
   }
@@ -1032,7 +1032,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Long xdel(byte[] key, byte[] ids...) {
+  Long xdel(byte[] key, byte[][] ids...) {
     Redis j = getShard(key);
     return j.xdel(key, ids);
   }
@@ -1057,7 +1057,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Object sendCommand(ProtocolCommand cmd, byte[] args...) {
+  Object sendCommand(ProtocolCommand cmd, byte[][] args...) {
     // default since no sample key provided in RedisCommands interface
     byte[] sampleKey = args.length > 0 ? args[0] : cmd.getRaw();
     Redis j = getShard(args[0]);

@@ -55,146 +55,173 @@ class Client : BinaryClient, Commands {
   void ping(string message) {
     ping(SafeEncoder.encode(message));
   }
+  alias ping = BinaryClient.ping;
   
   override
   void set(string key, string value) {
     set(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
+  alias set = BinaryClient.set;
 
   override
   void set(string key, string value, SetParams params) {
     set(SafeEncoder.encode(key), SafeEncoder.encode(value), params);
   }
+  alias set = BinaryClient.set;
 
   override
   void get(string key) {
     get(SafeEncoder.encode(key));
   }
+  alias get = BinaryClient.get;
 
   override
   void exists(string[] keys...) {
     exists(SafeEncoder.encodeMany(keys));
   }
+  alias exists = BinaryClient.exists;
 
   override
   void del(string[] keys...) {
     del(SafeEncoder.encodeMany(keys));
   }
+  alias del = BinaryClient.del;
 
   override
   void unlink(string[] keys...) {
     unlink(SafeEncoder.encodeMany(keys));
   }
+  alias unlink = BinaryClient.unlink;
 
   override
   void type(string key) {
     type(SafeEncoder.encode(key));
   }
+  alias type = BinaryClient.type;
 
   override
   void keys(string pattern) {
     keys(SafeEncoder.encode(pattern));
   }
+  alias keys = BinaryClient.keys;
 
   override
   void rename(string oldkey, string newkey) {
     rename(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
   }
+  alias rename = BinaryClient.rename;
 
-  override
   void renamenx(string oldkey, string newkey) {
     renamenx(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
   }
+  alias renamenx = BinaryClient.renamenx;
 
-  override
   void expire(string key, int seconds) {
     expire(SafeEncoder.encode(key), seconds);
   }
+  alias expire = BinaryClient.expire;
 
-  override
+  // override
   void expireAt(string key, long unixTime) {
     expireAt(SafeEncoder.encode(key), unixTime);
   }
+  alias expireAt = BinaryClient.expireAt;
 
-  override
+
   void ttl(string key) {
     ttl(SafeEncoder.encode(key));
   }
+  alias ttl = BinaryClient.ttl;
 
   override
   void touch(string[] keys...) {
     touch(SafeEncoder.encodeMany(keys));
   }
+  alias touch = BinaryClient.touch;
 
   override
   void move(string key, int dbIndex) {
     move(SafeEncoder.encode(key), dbIndex);
   }
+  alias move = BinaryClient.move;
 
   override
   void getSet(string key, string value) {
     getSet(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
+  alias getSet = BinaryClient.getSet;
 
   override
   void mget(string[] keys...) {
     mget(SafeEncoder.encodeMany(keys));
   }
+  alias mget = BinaryClient.mget;
 
   override
   void setnx(string key, string value) {
     setnx(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
+  alias setnx = BinaryClient.setnx;
 
   override
   void setex(string key, int seconds, string value) {
     setex(SafeEncoder.encode(key), seconds, SafeEncoder.encode(value));
   }
+  alias setex = BinaryClient.setex;
 
   override
   void mset(string[] keysvalues...) {
     mset(SafeEncoder.encodeMany(keysvalues));
   }
+  alias mset = BinaryClient.mset;
 
   override
   void msetnx(string[] keysvalues...) {
     msetnx(SafeEncoder.encodeMany(keysvalues));
   }
+  alias msetnx = BinaryClient.msetnx;
 
   override
   void decrBy(string key, long decrement) {
     decrBy(SafeEncoder.encode(key), decrement);
   }
+  alias decrBy = BinaryClient.decrBy;
 
   override
   void decr(string key) {
     decr(SafeEncoder.encode(key));
   }
+  alias decr = BinaryClient.decr;
 
   override
   void incrBy(string key, long increment) {
     incrBy(SafeEncoder.encode(key), increment);
   }
+  alias incrBy = BinaryClient.incrBy;
 
   override
   void incr(string key) {
     incr(SafeEncoder.encode(key));
   }
+  alias incr = BinaryClient.incr;
 
   override
   void append(string key, string value) {
     append(SafeEncoder.encode(key), SafeEncoder.encode(value));
   }
+  alias append = BinaryClient.append;
 
   override
   void substr(string key, int start, int end) {
     substr(SafeEncoder.encode(key), start, end);
   }
+  alias substr = BinaryClient.substr;
 
   override
   void hset(string key, string field, string value) {
     hset(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
   }
+  alias hset = BinaryClient.hset;
 
   override
   void hset(string key, Map!(string, string) hash) {
@@ -204,16 +231,19 @@ class Client : BinaryClient, Commands {
     }
     hset(SafeEncoder.encode(key), bhash);
   }
+  alias hset = BinaryClient.hset;
 
   override
   void hget(string key, string field) {
     hget(SafeEncoder.encode(key), SafeEncoder.encode(field));
   }
+  alias hget = BinaryClient.hget;
 
   override
   void hsetnx(string key, string field, string value) {
     hsetnx(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
   }
+  alias hsetnx = BinaryClient.hsetnx;
 
   override
   void hmset(string key, Map!(string, string) hash) {
@@ -223,209 +253,250 @@ class Client : BinaryClient, Commands {
     }
     hmset(SafeEncoder.encode(key), bhash);
   }
+  alias hmset = BinaryClient.hmset;
 
   override
   void hmget(string key, string[] fields...) {
     hmget(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
+  alias hmget = BinaryClient.hmget;
 
   override
   void hincrBy(string key, string field, long value) {
     hincrBy(SafeEncoder.encode(key), SafeEncoder.encode(field), value);
   }
+  alias hincrBy = BinaryClient.hincrBy;
 
   override
   void hexists(string key, string field) {
     hexists(SafeEncoder.encode(key), SafeEncoder.encode(field));
   }
+  alias hexists = BinaryClient.hexists;
 
   override
   void hdel(string key, string[] fields...) {
     hdel(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
   }
+  alias hdel = BinaryClient.hdel;
 
   override
   void hlen(string key) {
     hlen(SafeEncoder.encode(key));
   }
+  alias hlen = BinaryClient.hlen;
 
   override
   void hkeys(string key) {
     hkeys(SafeEncoder.encode(key));
   }
+  alias hkeys = BinaryClient.hkeys;
 
   override
   void hvals(string key) {
     hvals(SafeEncoder.encode(key));
   }
+  alias hvals = BinaryClient.hvals;
 
   override
   void hgetAll(string key) {
     hgetAll(SafeEncoder.encode(key));
   }
+  alias hgetAll = BinaryClient.hgetAll;
 
   override
   void rpush(string key, string[] string...) {
     rpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
+  alias rpush = BinaryClient.rpush;
 
   override
   void lpush(string key, string[] string...) {
     lpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
   }
+  alias lpush = BinaryClient.lpush;
 
   override
   void llen(string key) {
     llen(SafeEncoder.encode(key));
   }
+  alias llen = BinaryClient.llen;
 
   override
   void lrange(string key, long start, long stop) {
     lrange(SafeEncoder.encode(key), start, stop);
   }
+  alias lrange = BinaryClient.lrange;
 
   override
   void ltrim(string key, long start, long stop) {
     ltrim(SafeEncoder.encode(key), start, stop);
   }
+  alias ltrim = BinaryClient.ltrim;
 
   override
   void lindex(string key, long index) {
     lindex(SafeEncoder.encode(key), index);
   }
+  alias lindex = BinaryClient.lindex;
 
   override
   void lset(string key, long index, string value) {
     lset(SafeEncoder.encode(key), index, SafeEncoder.encode(value));
   }
+  alias lset = BinaryClient.lset;
 
   override
   void lrem(string key, long count, string value) {
     lrem(SafeEncoder.encode(key), count, SafeEncoder.encode(value));
   }
+  alias lrem = BinaryClient.lrem;
 
   override
   void lpop(string key) {
     lpop(SafeEncoder.encode(key));
   }
+  alias lpop = BinaryClient.lpop;
 
   override
   void rpop(string key) {
     rpop(SafeEncoder.encode(key));
   }
+  alias rpop = BinaryClient.rpop;
 
   override
   void rpoplpush(string srckey, string dstkey) {
     rpoplpush(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey));
   }
+  alias rpoplpush = BinaryClient.rpoplpush;
 
   override
   void sadd(string key, string[] members...) {
     sadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
+  alias sadd = BinaryClient.sadd;
 
   override
   void smembers(string key) {
     smembers(SafeEncoder.encode(key));
   }
+  alias smembers = BinaryClient.smembers;
 
   override
   void srem(string key, string[] members...) {
     srem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
+  alias srem = BinaryClient.srem;
 
   override
   void spop(string key) {
     spop(SafeEncoder.encode(key));
   }
+  alias spop = BinaryClient.spop;
 
   override
   void spop(string key, long count) {
     spop(SafeEncoder.encode(key), count);
   }
+  alias spop = BinaryClient.spop;
 
   override
   void smove(string srckey, string dstkey, string member) {
     smove(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey), SafeEncoder.encode(member));
   }
+  alias smove = BinaryClient.smove;
 
   override
   void scard(string key) {
     scard(SafeEncoder.encode(key));
   }
+  alias scard = BinaryClient.scard;
 
   override
   void sismember(string key, string member) {
     sismember(SafeEncoder.encode(key), SafeEncoder.encode(member));
   }
+  alias sismember = BinaryClient.sismember;
 
   override
   void sinter(string[] keys...) {
     sinter(SafeEncoder.encodeMany(keys));
   }
+  alias sinter = BinaryClient.sinter;
 
   override
   void sinterstore(string dstkey, string[] keys...) {
     sinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
+  alias sinterstore = BinaryClient.sinterstore;
 
   override
   void sunion(string[] keys...) {
     sunion(SafeEncoder.encodeMany(keys));
   }
+  alias sunion = BinaryClient.sunion;
 
   override
   void sunionstore(string dstkey, string[] keys...) {
     sunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
+  alias sunionstore = BinaryClient.sunionstore;
 
   override
   void sdiff(string[] keys...) {
     sdiff(SafeEncoder.encodeMany(keys));
   }
+  alias sdiff = BinaryClient.sdiff;
 
   override
   void sdiffstore(string dstkey, string[] keys...) {
     sdiffstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
   }
+  alias sdiffstore = BinaryClient.sdiffstore;
 
   override
   void srandmember(string key) {
     srandmember(SafeEncoder.encode(key));
   }
+  alias srandmember = BinaryClient.srandmember;
 
   override
   void zadd(string key, double score, string member) {
     zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member));
   }
+  alias zadd = BinaryClient.zadd;
 
   override
   void zadd(string key, double score, string member,
       ZAddParams params) {
     zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member), params);
   }
+  alias zadd = BinaryClient.zadd;
 
   override
   void zadd(string key, Map!(string, Double) scoreMembers) {
     HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
     zadd(SafeEncoder.encode(key), binaryScoreMembers);
   }
+  alias zadd = BinaryClient.zadd;
 
   override
   void zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
     HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
     zadd(SafeEncoder.encode(key), binaryScoreMembers, params);
   }
+  alias zadd = BinaryClient.zadd;
 
   override
   void zrange(string key, long start, long stop) {
     zrange(SafeEncoder.encode(key), start, stop);
   }
+  alias zrange = BinaryClient.zrange;
 
   override
   void zrem(string key, string[] members...) {
     zrem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
   }
+  alias zrem = BinaryClient.zrem;
 
   override
   void zincrby(string key, double increment, string member) {

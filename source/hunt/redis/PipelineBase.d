@@ -19,7 +19,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 import hunt.redis.commands.BinaryRedisPipeline;
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 import hunt.redis.commands.RedisPipeline;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
@@ -253,7 +253,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) hdel(byte[] key, byte[] field...) {
+  Response!(Long) hdel(byte[] key, byte[][] field...) {
     getClient(key).hdel(key, field);
     return getResponse(BuilderFactory.LONG);
   }
@@ -337,7 +337,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(List!(byte[])) hmget(byte[] key, byte[] fields...) {
+  Response!(List!(byte[])) hmget(byte[] key, byte[][] fields...) {
     getClient(key).hmget(key, fields);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
@@ -481,7 +481,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) lpush(byte[] key, byte[] string...) {
+  Response!(Long) lpush(byte[] key, byte[][] string...) {
     getClient(key).lpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -493,7 +493,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) lpushx(byte[] key, byte[] bytes...) {
+  Response!(Long) lpushx(byte[] key, byte[][] bytes...) {
     getClient(key).lpushx(key, bytes);
     return getResponse(BuilderFactory.LONG);
   }
@@ -589,7 +589,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) rpush(byte[] key, byte[] string...) {
+  Response!(Long) rpush(byte[] key, byte[][] string...) {
     getClient(key).rpush(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -601,7 +601,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) rpushx(byte[] key, byte[] string...) {
+  Response!(Long) rpushx(byte[] key, byte[][] string...) {
     getClient(key).rpushx(key, string);
     return getResponse(BuilderFactory.LONG);
   }
@@ -613,7 +613,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) sadd(byte[] key, byte[] member...) {
+  Response!(Long) sadd(byte[] key, byte[][] member...) {
     getClient(key).sadd(key, member);
     return getResponse(BuilderFactory.LONG);
   }
@@ -805,7 +805,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) srem(byte[] key, byte[] member...) {
+  Response!(Long) srem(byte[] key, byte[][] member...) {
     getClient(key).srem(key, member);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1229,7 +1229,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) zrem(byte[] key, byte[] members...) {
+  Response!(Long) zrem(byte[] key, byte[][] members...) {
     getClient(key).zrem(key, members);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1577,7 +1577,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) pfadd(byte[] key, byte[] elements...) {
+  Response!(Long) pfadd(byte[] key, byte[][] elements...) {
     getClient(key).pfadd(key, elements);
     return getResponse(BuilderFactory.LONG);
   }
@@ -1649,7 +1649,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(List!(byte[])) geohash(byte[] key, byte[] members...) {
+  Response!(List!(byte[])) geohash(byte[] key, byte[][] members...) {
     getClient(key).geohash(key, members);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
   }
@@ -1661,7 +1661,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(List!(GeoCoordinate)) geopos(byte[] key, byte[] members...) {
+  Response!(List!(GeoCoordinate)) geopos(byte[] key, byte[][] members...) {
     getClient(key).geopos(key, members);
     return getResponse(BuilderFactory.GEO_COORDINATE_LIST);
   }
@@ -1791,7 +1791,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(List!(Long)) bitfield(byte[] key, byte[] elements...) {
+  Response!(List!(Long)) bitfield(byte[] key, byte[][] elements...) {
     getClient(key).bitfield(key, elements);
     return getResponse(BuilderFactory.LONG_LIST);
   }
@@ -1877,7 +1877,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
   
   override
-  Response!(Long) xack(byte[] key, byte[] group,  byte[] ids...){
+  Response!(Long) xack(byte[] key, byte[] group,  byte[][] ids...){
     getClient(key).xack(key, group, ids);
     return getResponse(BuilderFactory.LONG);                    
   }
@@ -1950,7 +1950,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Long) xdel(byte[] key, byte[] ids...){
+  Response!(Long) xdel(byte[] key, byte[][] ids...){
     getClient(key).xdel(key, ids);
     return getResponse(BuilderFactory.LONG);            
   }
@@ -1976,7 +1976,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
  
   override
   Response!(List!(byte[])) xclaim(byte[] key, byte[] group, byte[] consumername, long minIdleTime, 
-      long newIdleTime, int retries, bool force, byte[] ids...){
+      long newIdleTime, int retries, bool force, byte[][] ids...){
     getClient(key).xclaim(key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);            
   }
@@ -1989,7 +1989,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
   }
 
   override
-  Response!(Object) sendCommand(ProtocolCommand cmd, byte[] args...){
+  Response!(Object) sendCommand(ProtocolCommand cmd, byte[][] args...){
     byte[] key = args.length > 0 ? args[0] : cmd.getRaw();
     getClient(key).sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);

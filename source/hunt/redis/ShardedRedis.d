@@ -32,7 +32,7 @@ import hunt.redis.Tuple;
 import hunt.redis.ZParams;
 
 import hunt.redis.commands.RedisCommands;
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;

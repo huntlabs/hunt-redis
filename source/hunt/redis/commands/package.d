@@ -19,7 +19,7 @@ public import hunt.redis.commands.MultiKeyBinaryRedisPipeline;
 public import hunt.redis.commands.MultiKeyCommands;
 public import hunt.redis.commands.MultiKeyCommandsPipeline;
 public import hunt.redis.commands.MultiKeyRedisClusterCommands;
-public import hunt.redis.commands.ProtocolCommand;
+public import hunt.redis.Protocol;
 public import hunt.redis.commands.RedisClusterBinaryScriptingCommands;
 public import hunt.redis.commands.RedisClusterCommands;
 public import hunt.redis.commands.RedisClusterScriptingCommands;

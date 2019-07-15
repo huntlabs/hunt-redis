@@ -35,17 +35,17 @@ abstract class BinaryRedisPubSub {
     client.flush();
   }
 
-  void unsubscribe(byte[] channels...) {
+  void unsubscribe(byte[][] channels...) {
     client.unsubscribe(channels);
     client.flush();
   }
 
-  void subscribe(byte[] channels...) {
+  void subscribe(byte[][] channels...) {
     client.subscribe(channels);
     client.flush();
   }
 
-  void psubscribe(byte[] patterns...) {
+  void psubscribe(byte[][] patterns...) {
     client.psubscribe(patterns);
     client.flush();
   }
@@ -55,7 +55,7 @@ abstract class BinaryRedisPubSub {
     client.flush();
   }
 
-  void punsubscribe(byte[] patterns...) {
+  void punsubscribe(byte[][] patterns...) {
     client.punsubscribe(patterns);
     client.flush();
   }
@@ -64,14 +64,14 @@ abstract class BinaryRedisPubSub {
     return subscribedChannels > 0;
   }
 
-  void proceedWithPatterns(Client client, byte[] patterns...) {
+  void proceedWithPatterns(Client client, byte[][] patterns...) {
     this.client = client;
     client.psubscribe(patterns);
     client.flush();
     process(client);
   }
 
-  void proceed(Client client, byte[] channels...) {
+  void proceed(Client client, byte[][] channels...) {
     this.client = client;
     client.subscribe(channels);
     client.flush();

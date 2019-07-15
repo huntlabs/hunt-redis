@@ -5,7 +5,7 @@ import hunt.collection.ArrayList;
 import hunt.collection.List;
 // import java.util.Locale;
 
-import hunt.redis.commands.ProtocolCommand;
+// import hunt.redis.commands.Command;
 import hunt.redis.Exceptions;
 import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
@@ -86,13 +86,14 @@ final class Protocol {
     // this prevent the class from instantiation
   }
 
-  static void sendCommand(RedisOutputStream os, ProtocolCommand command,
-      byte[] args...) {
-    sendCommand(os, command.getRaw(), args);
+  static void sendCommand(RedisOutputStream os, Command command,
+      byte[][] args...) {
+    // sendCommand(os, command.getRaw(), args);
+    sendCommand(os, cast(byte[])command.to!string(), args);
   }
 
   private static void sendCommand(RedisOutputStream os, byte[] command,
-      byte[] args...) {
+      byte[][] args...) {
     try {
       os.write(ASTERISK_BYTE);
       os.writeIntCrLf(args.length + 1);
@@ -273,3 +274,6 @@ final class Protocol {
     IDLE, TIME, RETRYCOUNT, FORCE
   }
 }
+
+
+alias ProtocolCommand = Protocol.Command;

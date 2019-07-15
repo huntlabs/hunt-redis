@@ -1,6 +1,6 @@
 module hunt.redis.commands.RedisCommands;
 
-import hunt.redis.commands.ProtocolCommand;
+// import hunt.redis.commands.Command;
 
 import hunt.collection.List;
 import hunt.collection.Map;
@@ -15,6 +15,7 @@ import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
 import hunt.redis.GeoUnit;
 import hunt.redis.ListPosition;
+import hunt.redis.Protocol;
 import hunt.redis.StreamPendingEntry;
 import hunt.redis.ScanParams;
 import hunt.redis.ScanResult;
@@ -25,6 +26,7 @@ import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
+
 
 /**
  * Common interface for sharded and non-sharded Redis

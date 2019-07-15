@@ -1,6 +1,6 @@
 module hunt.redis.Connection;
 
-import hunt.redis.commands.ProtocolCommand;
+// import hunt.redis.commands.Command;
 import hunt.redis.Exceptions;
 import hunt.redis.Protocol;
 import hunt.redis.util.IOUtils;
@@ -27,6 +27,7 @@ import hunt.util.Common;
 import std.socket;
 
 alias Protocol = hunt.redis.Protocol.Protocol;
+alias Command = Protocol.Command;
 
 class Connection : Closeable {
 
@@ -115,7 +116,7 @@ class Connection : Closeable {
     }
   }
 
-  void sendCommand(ProtocolCommand cmd, string[] args...) {
+  void sendCommand(Command cmd, string[] args...) {
     byte[][] bargs = new byte[args.length][];
     for (int i = 0; i < args.length; i++) {
       bargs[i] = SafeEncoder.encode(args[i]);
@@ -123,11 +124,11 @@ class Connection : Closeable {
     sendCommand(cmd, bargs);
   }
 
-  void sendCommand(ProtocolCommand cmd) {
+  void sendCommand(Command cmd) {
     sendCommand(cmd, EMPTY_ARGS);
   }
 
-  void sendCommand(ProtocolCommand cmd, byte[] args...) {
+  void sendCommand(Command cmd, byte[][] args...) {
     try {
       connect();
       Protocol.sendCommand(outputStream, cmd, args);

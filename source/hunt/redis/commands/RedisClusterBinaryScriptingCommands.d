@@ -5,9 +5,9 @@ import hunt.Double;
 import hunt.Long;
 
 interface RedisClusterBinaryScriptingCommands {
-  Object eval(byte[] script, byte[] keyCount, byte[] params...);
+  Object eval(byte[] script, byte[] keyCount, byte[][] params...);
 
-  Object eval(byte[] script, int keyCount, byte[] params...);
+  Object eval(byte[] script, int keyCount, byte[][] params...);
 
   Object eval(byte[] script, List!(byte[]) keys, List!(byte[]) args);
 
@@ -27,14 +27,14 @@ interface RedisClusterBinaryScriptingCommands {
 
   Object evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args);
 
-  Object evalsha(byte[] sha1, int keyCount, byte[] params...);
+  Object evalsha(byte[] sha1, int keyCount, byte[][] params...);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @param sha1
    * @return 
    */
-  List!(Long) scriptExists(byte[] sampleKey, byte[] sha1...);
+  List!(Long) scriptExists(byte[] sampleKey, byte[][] sha1...);
 
   /**
    * @param script

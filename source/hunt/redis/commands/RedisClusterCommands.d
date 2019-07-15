@@ -1,6 +1,6 @@
 module hunt.redis.commands.RedisClusterCommands;
 
-import hunt.redis.commands.ProtocolCommand;
+import hunt.redis.Protocol;
 
 import hunt.redis.StreamEntryID;
 import hunt.redis.GeoCoordinate;

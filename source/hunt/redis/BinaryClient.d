@@ -21,25 +21,16 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-
-// import hunt.redis.Protocol.toByteArray;
-// import hunt.redis.Protocol.Command;
-// import hunt.redis.Protocol.Keyword.ENCODING;
-// import hunt.redis.Protocol.Keyword.IDLETIME;
-// import hunt.redis.Protocol.Keyword.LEN;
-// import hunt.redis.Protocol.Keyword.LIMIT;
-// import hunt.redis.Protocol.Keyword.NO;
-// import hunt.redis.Protocol.Keyword.ONE;
-// import hunt.redis.Protocol.Keyword.REFCOUNT;
-// import hunt.redis.Protocol.Keyword.RESET;
-// import hunt.redis.Protocol.Keyword.STORE;
-// import hunt.redis.Protocol.Keyword.WITHSCORES;
-
 import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.collection.Map;
-
 import hunt.Double;
+
+import std.conv;
+
+alias Keyword = Protocol.Keyword;
+alias Command = Protocol.Command;
+alias toByteArray = Protocol.toByteArray;
 
 class BinaryClient : Connection {
 
@@ -82,17 +73,19 @@ class BinaryClient : Connection {
   }
 
   private byte[][] joinParameters(byte[] first, byte[][] rest) {
-    byte[][] result = new byte[rest.length + 1][];
+    byte[][] result = new byte[][rest.length + 1];
     result[0] = first;
-    System.arraycopy(rest, 0, result, 1, rest.length);
+    // System.arraycopy(rest, 0, result, 1, rest.length);
+    result[1 .. $] = rest[0 .. $];
     return result;
   }
 
   private byte[][] joinParameters(byte[] first, byte[] second, byte[][] rest) {
-    byte[][] result = new byte[rest.length + 2][];
+    byte[][] result = new byte[][rest.length + 2];
     result[0] = first;
     result[1] = second;
-    System.arraycopy(rest, 0, result, 2, rest.length);
+    // System.arraycopy(rest, 0, result, 2, rest.length);
+    result[2 .. $] = rest[0 .. $];
     return result;
   }
 
@@ -120,156 +113,156 @@ class BinaryClient : Connection {
   }
 
   void ping() {
-    sendCommand(PING);
+    sendCommand(Command.PING);
   }
 
   void ping(byte[] message) {
-    sendCommand(PING, message);
+    sendCommand(Command.PING, message);
   }
 
   void set(byte[] key, byte[] value) {
-    sendCommand(SET, key, value);
+    sendCommand(Command.SET, key, value);
   }
 
   void set(byte[] key, byte[] value, SetParams params) {
-    sendCommand(SET, params.getByteParams(key, value));
+    sendCommand(Command.SET, params.getByteParams(key, value));
   }
 
   void get(byte[] key) {
-    sendCommand(GET, key);
+    sendCommand(Command.GET, key);
   }
 
   void quit() {
     db = 0;
-    sendCommand(QUIT);
+    sendCommand(Command.QUIT);
   }
 
-  void exists(byte[] keys...) {
-    sendCommand(EXISTS, keys);
+  void exists(byte[][] keys...) {
+    sendCommand(Command.EXISTS, keys);
   }
 
-  void del(byte[] keys...) {
-    sendCommand(DEL, keys);
+  void del(byte[][] keys...) {
+    sendCommand(Command.DEL, keys);
   }
 
-  void unlink(byte[] keys...) {
-    sendCommand(UNLINK, keys);
+  void unlink(byte[][] keys...) {
+    sendCommand(Command.UNLINK, keys);
   }
 
   void type(byte[] key) {
-    sendCommand(TYPE, key);
+    sendCommand(Command.TYPE, key);
   }
 
   void flushDB() {
-    sendCommand(FLUSHDB);
+    sendCommand(Command.FLUSHDB);
   }
 
   void keys(byte[] pattern) {
-    sendCommand(KEYS, pattern);
+    sendCommand(Command.KEYS, pattern);
   }
 
   void randomKey() {
-    sendCommand(RANDOMKEY);
+    sendCommand(Command.RANDOMKEY);
   }
 
   void rename(byte[] oldkey, byte[] newkey) {
-    sendCommand(RENAME, oldkey, newkey);
+    sendCommand(Command.RENAME, oldkey, newkey);
   }
 
   void renamenx(byte[] oldkey, byte[] newkey) {
-    sendCommand(RENAMENX, oldkey, newkey);
+    sendCommand(Command.RENAMENX, oldkey, newkey);
   }
 
   void dbSize() {
-    sendCommand(DBSIZE);
+    sendCommand(Command.DBSIZE);
   }
 
   void expire(byte[] key, int seconds) {
-    sendCommand(EXPIRE, key, toByteArray(seconds));
+    sendCommand(Command.EXPIRE, key, toByteArray(seconds));
   }
 
   void expireAt(byte[] key, long unixTime) {
-    sendCommand(EXPIREAT, key, toByteArray(unixTime));
+    sendCommand(Command.EXPIREAT, key, toByteArray(unixTime));
   }
 
   void ttl(byte[] key) {
-    sendCommand(TTL, key);
+    sendCommand(Command.TTL, key);
   }
 
-  void touch(byte[] keys...) {
-    sendCommand(TOUCH, keys);
+  void touch(byte[][] keys...) {
+    sendCommand(Command.TOUCH, keys);
   }
 
   void select(int index) {
-    sendCommand(SELECT, toByteArray(index));
+    sendCommand(Command.SELECT, toByteArray(index));
   }
 
   void swapDB(int index1, int index2) {
-    sendCommand(SWAPDB, toByteArray(index1), toByteArray(index2));
+    sendCommand(Command.SWAPDB, toByteArray(index1), toByteArray(index2));
   }
 
   void move(byte[] key, int dbIndex) {
-    sendCommand(MOVE, key, toByteArray(dbIndex));
+    sendCommand(Command.MOVE, key, toByteArray(dbIndex));
   }
 
   void flushAll() {
-    sendCommand(FLUSHALL);
+    sendCommand(Command.FLUSHALL);
   }
 
   void getSet(byte[] key, byte[] value) {
-    sendCommand(GETSET, key, value);
+    sendCommand(Command.GETSET, key, value);
   }
 
-  void mget(byte[] keys...) {
-    sendCommand(MGET, keys);
+  void mget(byte[][] keys...) {
+    sendCommand(Command.MGET, keys);
   }
 
   void setnx(byte[] key, byte[] value) {
-    sendCommand(SETNX, key, value);
+    sendCommand(Command.SETNX, key, value);
   }
 
   void setex(byte[] key, int seconds, byte[] value) {
-    sendCommand(SETEX, key, toByteArray(seconds), value);
+    sendCommand(Command.SETEX, key, toByteArray(seconds), value);
   }
 
-  void mset(byte[] keysvalues...) {
-    sendCommand(MSET, keysvalues);
+  void mset(byte[][] keysvalues...) {
+    sendCommand(Command.MSET, keysvalues);
   }
 
-  void msetnx(byte[] keysvalues...) {
-    sendCommand(MSETNX, keysvalues);
+  void msetnx(byte[][] keysvalues...) {
+    sendCommand(Command.MSETNX, keysvalues);
   }
 
   void decrBy(byte[] key, long decrement) {
-    sendCommand(DECRBY, key, toByteArray(decrement));
+    sendCommand(Command.DECRBY, key, toByteArray(decrement));
   }
 
   void decr(byte[] key) {
-    sendCommand(DECR, key);
+    sendCommand(Command.DECR, key);
   }
 
   void incrBy(byte[] key, long increment) {
-    sendCommand(INCRBY, key, toByteArray(increment));
+    sendCommand(Command.INCRBY, key, toByteArray(increment));
   }
 
   void incrByFloat(byte[] key, double increment) {
-    sendCommand(INCRBYFLOAT, key, toByteArray(increment));
+    sendCommand(Command.INCRBYFLOAT, key, toByteArray(increment));
   }
 
   void incr(byte[] key) {
-    sendCommand(INCR, key);
+    sendCommand(Command.INCR, key);
   }
 
   void append(byte[] key, byte[] value) {
-    sendCommand(APPEND, key, value);
+    sendCommand(Command.APPEND, key, value);
   }
 
   void substr(byte[] key, int start, int end) {
-    sendCommand(SUBSTR, key, toByteArray(start), toByteArray(end));
+    sendCommand(Command.SUBSTR, key, toByteArray(start), toByteArray(end));
   }
 
   void hset(byte[] key, byte[] field, byte[] value) {
-    sendCommand(HSET, key, field, value);
+    sendCommand(Command.HSET, key, field, value);
   }
 
   // void hset(byte[] key, Map!(byte[], byte[]) hash) {
@@ -281,171 +274,171 @@ class BinaryClient : Connection {
   //     params[index++] = entry.getKey();
   //     params[index++] = entry.getValue();
   //   }
-  //   sendCommand(HSET, params);
+  //   sendCommand(Command.HSET, params);
   // }
 
   void hget(byte[] key, byte[] field) {
-    sendCommand(HGET, key, field);
+    sendCommand(Command.HGET, key, field);
   }
 
   void hsetnx(byte[] key, byte[] field, byte[] value) {
-    sendCommand(HSETNX, key, field, value);
+    sendCommand(Command.HSETNX, key, field, value);
   }
 
-  // void hmset(byte[] key, Map!(byte[], byte[]) hash) {
-  //   List!(byte[]) params = new ArrayList!(byte[])();
-  //   params.add(key);
+  void hmset(byte[] key, Map!(byte[], byte[]) hash) {
+    List!(byte[]) params = new ArrayList!(byte[])();
+    params.add(key);
 
-  //   foreach(Entry!(byte[], byte[]) entry ; hash.entrySet()) {
-  //     params.add(entry.getKey());
-  //     params.add(entry.getValue());
-  //   }
-  //   sendCommand(HMSET, params.toArray(new byte[params.size()][]));
-  // }
+    foreach(byte[] key, byte[] value ; hash) {
+      params.add(key);
+      params.add(value);
+    }
+    sendCommand(Command.HMSET, params.toArray());
+  }
 
-  void hmget(byte[] key, byte[] fields...) {
-    sendCommand(HMGET, joinParameters(key, fields));
+  void hmget(byte[] key, byte[][] fields...) {
+    sendCommand(Command.HMGET, joinParameters(key, fields));
   }
 
   void hincrBy(byte[] key, byte[] field, long value) {
-    sendCommand(HINCRBY, key, field, toByteArray(value));
+    sendCommand(Command.HINCRBY, key, field, toByteArray(value));
   }
 
   void hexists(byte[] key, byte[] field) {
-    sendCommand(HEXISTS, key, field);
+    sendCommand(Command.HEXISTS, key, field);
   }
 
-  void hdel(byte[] key, byte[] fields...) {
-    sendCommand(HDEL, joinParameters(key, fields));
+  void hdel(byte[] key, byte[][] fields...) {
+    sendCommand(Command.HDEL, joinParameters(key, fields));
   }
 
   void hlen(byte[] key) {
-    sendCommand(HLEN, key);
+    sendCommand(Command.HLEN, key);
   }
 
   void hkeys(byte[] key) {
-    sendCommand(HKEYS, key);
+    sendCommand(Command.HKEYS, key);
   }
 
   void hvals(byte[] key) {
-    sendCommand(HVALS, key);
+    sendCommand(Command.HVALS, key);
   }
 
   void hgetAll(byte[] key) {
-    sendCommand(HGETALL, key);
+    sendCommand(Command.HGETALL, key);
   }
 
-  void rpush(byte[] key, byte[] strings...) {
-    sendCommand(RPUSH, joinParameters(key, strings));
+  void rpush(byte[] key, byte[][] strings...) {
+    sendCommand(Command.RPUSH, joinParameters(key, strings));
   }
 
-  void lpush(byte[] key, byte[] strings...) {
-    sendCommand(LPUSH, joinParameters(key, strings));
+  void lpush(byte[] key, byte[][] strings...) {
+    sendCommand(Command.LPUSH, joinParameters(key, strings));
   }
 
   void llen(byte[] key) {
-    sendCommand(LLEN, key);
+    sendCommand(Command.LLEN, key);
   }
 
   void lrange(byte[] key, long start, long stop) {
-    sendCommand(LRANGE, key, toByteArray(start), toByteArray(stop));
+    sendCommand(Command.LRANGE, key, toByteArray(start), toByteArray(stop));
   }
 
   void ltrim(byte[] key, long start, long stop) {
-    sendCommand(LTRIM, key, toByteArray(start), toByteArray(stop));
+    sendCommand(Command.LTRIM, key, toByteArray(start), toByteArray(stop));
   }
 
   void lindex(byte[] key, long index) {
-    sendCommand(LINDEX, key, toByteArray(index));
+    sendCommand(Command.LINDEX, key, toByteArray(index));
   }
 
   void lset(byte[] key, long index, byte[] value) {
-    sendCommand(LSET, key, toByteArray(index), value);
+    sendCommand(Command.LSET, key, toByteArray(index), value);
   }
 
   void lrem(byte[] key, long count, byte[] value) {
-    sendCommand(LREM, key, toByteArray(count), value);
+    sendCommand(Command.LREM, key, toByteArray(count), value);
   }
 
   void lpop(byte[] key) {
-    sendCommand(LPOP, key);
+    sendCommand(Command.LPOP, key);
   }
 
   void rpop(byte[] key) {
-    sendCommand(RPOP, key);
+    sendCommand(Command.RPOP, key);
   }
 
   void rpoplpush(byte[] srckey, byte[] dstkey) {
-    sendCommand(RPOPLPUSH, srckey, dstkey);
+    sendCommand(Command.RPOPLPUSH, srckey, dstkey);
   }
 
-  void sadd(byte[] key, byte[] members...) {
-    sendCommand(SADD, joinParameters(key, members));
+  void sadd(byte[] key, byte[][] members...) {
+    sendCommand(Command.SADD, joinParameters(key, members));
   }
 
   void smembers(byte[] key) {
-    sendCommand(SMEMBERS, key);
+    sendCommand(Command.SMEMBERS, key);
   }
 
-  void srem(byte[] key, byte[] members...) {
-    sendCommand(SREM, joinParameters(key, members));
+  void srem(byte[] key, byte[][] members...) {
+    sendCommand(Command.SREM, joinParameters(key, members));
   }
 
   void spop(byte[] key) {
-    sendCommand(SPOP, key);
+    sendCommand(Command.SPOP, key);
   }
 
   void spop(byte[] key, long count) {
-    sendCommand(SPOP, key, toByteArray(count));
+    sendCommand(Command.SPOP, key, toByteArray(count));
   }
 
   void smove(byte[] srckey, byte[] dstkey, byte[] member) {
-    sendCommand(SMOVE, srckey, dstkey, member);
+    sendCommand(Command.SMOVE, srckey, dstkey, member);
   }
 
   void scard(byte[] key) {
-    sendCommand(SCARD, key);
+    sendCommand(Command.SCARD, key);
   }
 
   void sismember(byte[] key, byte[] member) {
-    sendCommand(SISMEMBER, key, member);
+    sendCommand(Command.SISMEMBER, key, member);
   }
 
-  void sinter(byte[] keys...) {
-    sendCommand(SINTER, keys);
+  void sinter(byte[][] keys...) {
+    sendCommand(Command.SINTER, keys);
   }
 
-  void sinterstore(byte[] dstkey, byte[] keys...) {
-    sendCommand(SINTERSTORE, joinParameters(dstkey, keys));
+  void sinterstore(byte[] dstkey, byte[][] keys...) {
+    sendCommand(Command.SINTERSTORE, joinParameters(dstkey, keys));
   }
 
-  void sunion(byte[] keys...) {
-    sendCommand(SUNION, keys);
+  void sunion(byte[][] keys...) {
+    sendCommand(Command.SUNION, keys);
   }
 
-  void sunionstore(byte[] dstkey, byte[] keys...) {
-    sendCommand(SUNIONSTORE, joinParameters(dstkey, keys));
+  void sunionstore(byte[] dstkey, byte[][] keys...) {
+    sendCommand(Command.SUNIONSTORE, joinParameters(dstkey, keys));
   }
 
-  void sdiff(byte[] keys...) {
-    sendCommand(SDIFF, keys);
+  void sdiff(byte[][] keys...) {
+    sendCommand(Command.SDIFF, keys);
   }
 
-  void sdiffstore(byte[] dstkey, byte[] keys...) {
-    sendCommand(SDIFFSTORE, joinParameters(dstkey, keys));
+  void sdiffstore(byte[] dstkey, byte[][] keys...) {
+    sendCommand(Command.SDIFFSTORE, joinParameters(dstkey, keys));
   }
 
   void srandmember(byte[] key) {
-    sendCommand(SRANDMEMBER, key);
+    sendCommand(Command.SRANDMEMBER, key);
   }
 
   void zadd(byte[] key, double score, byte[] member) {
-    sendCommand(ZADD, key, toByteArray(score), member);
+    sendCommand(Command.ZADD, key, toByteArray(score), member);
   }
 
   void zadd(byte[] key, double score, byte[] member,
       ZAddParams params) {
-    sendCommand(ZADD, params.getByteParams(key, toByteArray(score), member));
+    sendCommand(Command.ZADD, params.getByteParams(key, toByteArray(score), member));
   }
 
   void zadd(byte[] key, Map!(byte[], Double) scoreMembers) {
@@ -453,283 +446,281 @@ class BinaryClient : Connection {
     args.add(key);
     args.addAll(convertScoreMembersToByteArrays(scoreMembers));
 
-    byte[][] argsArray = new byte[args.size()][];
-    args.toArray(argsArray);
+    byte[][] argsArray = args.toArray();
 
-    sendCommand(ZADD, argsArray);
+    sendCommand(Command.ZADD, argsArray);
   }
 
   void zadd(byte[] key, Map!(byte[], Double) scoreMembers, ZAddParams params) {
     ArrayList!(byte[]) args = convertScoreMembersToByteArrays(scoreMembers);
-    byte[][] argsArray = new byte[args.size()][];
-    args.toArray(argsArray);
+    byte[][] argsArray = args.toArray();
 
-    sendCommand(ZADD, params.getByteParams(key, argsArray));
+    sendCommand(Command.ZADD, params.getByteParams(key, argsArray));
   }
 
   void zrange(byte[] key, long start, long stop) {
-    sendCommand(ZRANGE, key, toByteArray(start), toByteArray(stop));
+    sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop));
   }
 
-  void zrem(byte[] key, byte[] members...) {
-    sendCommand(ZREM, joinParameters(key, members));
+  void zrem(byte[] key, byte[][] members...) {
+    sendCommand(Command.ZREM, joinParameters(key, members));
   }
 
   void zincrby(byte[] key, double increment, byte[] member) {
-    sendCommand(ZINCRBY, key, toByteArray(increment), member);
+    sendCommand(Command.ZINCRBY, key, toByteArray(increment), member);
   }
 
   void zincrby(byte[] key, double increment, byte[] member,
       ZIncrByParams params) {
     // Note that it actually calls ZADD with INCR option, so it requires Redis 3.0.2 or upper.
-    sendCommand(ZADD, params.getByteParams(key, toByteArray(increment), member));
+    sendCommand(Command.ZADD, params.getByteParams(key, toByteArray(increment), member));
   }
 
   void zrank(byte[] key, byte[] member) {
-    sendCommand(ZRANK, key, member);
+    sendCommand(Command.ZRANK, key, member);
   }
 
   void zrevrank(byte[] key, byte[] member) {
-    sendCommand(ZREVRANK, key, member);
+    sendCommand(Command.ZREVRANK, key, member);
   }
 
   void zrevrange(byte[] key, long start, long stop) {
-    sendCommand(ZREVRANGE, key, toByteArray(start), toByteArray(stop));
+    sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop));
   }
 
   void zrangeWithScores(byte[] key, long start, long stop) {
-    sendCommand(ZRANGE, key, toByteArray(start), toByteArray(stop), WITHSCORES.raw);
+    sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrevrangeWithScores(byte[] key, long start, long stop) {
-    sendCommand(ZREVRANGE, key, toByteArray(start), toByteArray(stop), WITHSCORES.raw);
+    sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zcard(byte[] key) {
-    sendCommand(ZCARD, key);
+    sendCommand(Command.ZCARD, key);
   }
 
   void zscore(byte[] key, byte[] member) {
-    sendCommand(ZSCORE, key, member);
+    sendCommand(Command.ZSCORE, key, member);
   }
 
   void multi() {
-    sendCommand(MULTI);
+    sendCommand(Command.MULTI);
     _isInMulti = true;
   }
 
   void discard() {
-    sendCommand(DISCARD);
+    sendCommand(Command.DISCARD);
     _isInMulti = false;
     _isInWatch = false;
   }
 
   void exec() {
-    sendCommand(EXEC);
+    sendCommand(Command.EXEC);
     _isInMulti = false;
     _isInWatch = false;
   }
 
-  void watch(byte[] keys...) {
-    sendCommand(WATCH, keys);
+  void watch(byte[][] keys...) {
+    sendCommand(Command.WATCH, keys);
     _isInWatch = true;
   }
 
   void unwatch() {
-    sendCommand(UNWATCH);
+    sendCommand(Command.UNWATCH);
     _isInWatch = false;
   }
 
   void sort(byte[] key) {
-    sendCommand(SORT, key);
+    sendCommand(Command.SORT, key);
   }
 
   void sort(byte[] key, SortingParams sortingParameters) {
     List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.addAll(sortingParameters.getParams());
-    sendCommand(SORT, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.SORT, args.toArray());
   }
 
   void blpop(byte[][] args) {
-    sendCommand(BLPOP, args);
+    sendCommand(Command.BLPOP, args);
   }
 
-  void blpop(int timeout, byte[] keys...) {
+  void blpop(int timeout, byte[][] keys...) {
     List!(byte[]) args = new ArrayList!(byte[])();
     foreach(byte[] arg ; keys) {
       args.add(arg);
     }
     args.add(Protocol.toByteArray(timeout));
-    blpop(args.toArray(new byte[args.size()][]));
+    blpop(args.toArray());
   }
 
   void sort(byte[] key, SortingParams sortingParameters, byte[] dstkey) {
     List!(byte[]) args = new ArrayList!(byte[])();
     args.add(key);
     args.addAll(sortingParameters.getParams());
-    args.add(STORE.raw);
+    args.add(cast(byte[])to!string(Keyword.STORE));
     args.add(dstkey);
-    sendCommand(SORT, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.SORT, args.toArray());
   }
 
   void sort(byte[] key, byte[] dstkey) {
-    sendCommand(SORT, key, STORE.raw, dstkey);
+    sendCommand(Command.SORT, key, cast(byte[])to!string(Keyword.STORE), dstkey);
   }
 
   void brpop(byte[][] args) {
-    sendCommand(BRPOP, args);
+    sendCommand(Command.BRPOP, args);
   }
 
-  void brpop(int timeout, byte[] keys...) {
+  void brpop(int timeout, byte[][] keys...) {
     List!(byte[]) args = new ArrayList!(byte[])();
     foreach(byte[] arg ; keys) {
       args.add(arg);
     }
     args.add(Protocol.toByteArray(timeout));
-    brpop(args.toArray(new byte[args.size()][]));
+    brpop(args.toArray());
   }
 
   void auth(string password) {
     setPassword(password);
-    sendCommand(AUTH, password);
+    sendCommand(Command.AUTH, password);
   }
 
-  void subscribe(byte[] channels...) {
-    sendCommand(SUBSCRIBE, channels);
+  void subscribe(byte[][] channels...) {
+    sendCommand(Command.SUBSCRIBE, channels);
   }
 
   void publish(byte[] channel, byte[] message) {
-    sendCommand(PUBLISH, channel, message);
+    sendCommand(Command.PUBLISH, channel, message);
   }
 
   void unsubscribe() {
-    sendCommand(UNSUBSCRIBE);
+    sendCommand(Command.UNSUBSCRIBE);
   }
 
-  void unsubscribe(byte[] channels...) {
-    sendCommand(UNSUBSCRIBE, channels);
+  void unsubscribe(byte[][] channels...) {
+    sendCommand(Command.UNSUBSCRIBE, channels);
   }
 
-  void psubscribe(byte[] patterns...) {
-    sendCommand(PSUBSCRIBE, patterns);
+  void psubscribe(byte[][] patterns...) {
+    sendCommand(Command.PSUBSCRIBE, patterns);
   }
 
   void punsubscribe() {
-    sendCommand(PUNSUBSCRIBE);
+    sendCommand(Command.PUNSUBSCRIBE);
   }
 
-  void punsubscribe(byte[] patterns...) {
-    sendCommand(PUNSUBSCRIBE, patterns);
+  void punsubscribe(byte[][] patterns...) {
+    sendCommand(Command.PUNSUBSCRIBE, patterns);
   }
 
-  void pubsub(byte[] args...) {
-    sendCommand(PUBSUB, args);
+  void pubsub(byte[][] args...) {
+    sendCommand(Command.PUBSUB, args);
   }
 
   void zcount(byte[] key, double min, double max) {
-    sendCommand(ZCOUNT, key, toByteArray(min), toByteArray(max));
+    sendCommand(Command.ZCOUNT, key, toByteArray(min), toByteArray(max));
   }
 
   void zcount(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZCOUNT, key, min, max);
+    sendCommand(Command.ZCOUNT, key, min, max);
   }
 
   void zrangeByScore(byte[] key, double min, double max) {
-    sendCommand(ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
+    sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
   }
 
   void zrangeByScore(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZRANGEBYSCORE, key, min, max);
+    sendCommand(Command.ZRANGEBYSCORE, key, min, max);
   }
 
   void zrevrangeByScore(byte[] key, double max, double min) {
-    sendCommand(ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min));
+    sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min));
   }
 
   void zrevrangeByScore(byte[] key, byte[] max, byte[] min) {
-    sendCommand(ZREVRANGEBYSCORE, key, max, min);
+    sendCommand(Command.ZREVRANGEBYSCORE, key, max, min);
   }
 
   void zrangeByScore(byte[] key, double min, double max, int offset,
       int count) {
-    sendCommand(ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), LIMIT.raw, toByteArray(offset),
+    sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset),
       toByteArray(count));
   }
 
   void zrevrangeByScore(byte[] key, double max, double min,
       int offset, int count) {
-    sendCommand(ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), LIMIT.raw, toByteArray(offset),
+    sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset),
       toByteArray(count));
   }
 
   void zrangeByScoreWithScores(byte[] key, double min, double max) {
-    sendCommand(ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), WITHSCORES.raw);
+    sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrevrangeByScoreWithScores(byte[] key, double max, double min) {
-    sendCommand(ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), WITHSCORES.raw);
+    sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrangeByScoreWithScores(byte[] key, double min, double max,
       int offset, int count) {
-    sendCommand(ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), LIMIT.raw, toByteArray(offset),
-      toByteArray(count), WITHSCORES.raw);
+    sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset),
+      toByteArray(count), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrevrangeByScoreWithScores(byte[] key, double max, double min,
       int offset, int count) {
-    sendCommand(ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), LIMIT.raw, toByteArray(offset),
-      toByteArray(count), WITHSCORES.raw);
+    sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset),
+      toByteArray(count), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrangeByScore(byte[] key, byte[] min, byte[] max, int offset,
       int count) {
-    sendCommand(ZRANGEBYSCORE, key, min, max, LIMIT.raw, toByteArray(offset), toByteArray(count));
+    sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
   }
 
   void zrevrangeByScore(byte[] key, byte[] max, byte[] min,
       int offset, int count) {
-    sendCommand(ZREVRANGEBYSCORE, key, max, min, LIMIT.raw, toByteArray(offset), toByteArray(count));
+    sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
   }
 
   void zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZRANGEBYSCORE, key, min, max, WITHSCORES.raw);
+    sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min) {
-    sendCommand(ZREVRANGEBYSCORE, key, max, min, WITHSCORES.raw);
+    sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max,
       int offset, int count) {
-    sendCommand(ZRANGEBYSCORE, key, min, max, LIMIT.raw, toByteArray(offset), toByteArray(count),
-      WITHSCORES.raw);
+    sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count),
+      cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min,
       int offset, int count) {
-    sendCommand(ZREVRANGEBYSCORE, key, max, min, LIMIT.raw, toByteArray(offset),
-      toByteArray(count), WITHSCORES.raw);
+    sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset),
+      toByteArray(count), cast(byte[])to!string(Keyword.WITHSCORES));
   }
 
   void zremrangeByRank(byte[] key, long start, long stop) {
-    sendCommand(ZREMRANGEBYRANK, key, toByteArray(start), toByteArray(stop));
+    sendCommand(Command.ZREMRANGEBYRANK, key, toByteArray(start), toByteArray(stop));
   }
 
   void zremrangeByScore(byte[] key, double min, double max) {
-    sendCommand(ZREMRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
+    sendCommand(Command.ZREMRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
   }
 
   void zremrangeByScore(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZREMRANGEBYSCORE, key, min, max);
+    sendCommand(Command.ZREMRANGEBYSCORE, key, min, max);
   }
 
-  void zunionstore(byte[] dstkey, byte[] sets...) {
-    sendCommand(ZUNIONSTORE, joinParameters(dstkey, toByteArray(sets.length), sets));
+  void zunionstore(byte[] dstkey, byte[][] sets...) {
+    sendCommand(Command.ZUNIONSTORE, joinParameters(dstkey, toByteArray(sets.length), sets));
   }
 
-  void zunionstore(byte[] dstkey, ZParams params, byte[] sets...) {
+  void zunionstore(byte[] dstkey, ZParams params, byte[][] sets...) {
     List!(byte[]) args = new ArrayList!(byte[])();
     args.add(dstkey);
     args.add(Protocol.toByteArray(sets.length));
@@ -737,14 +728,14 @@ class BinaryClient : Connection {
       args.add(set);
     }
     args.addAll(params.getParams());
-    sendCommand(ZUNIONSTORE, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.ZUNIONSTORE, args.toArray());
   }
 
-  void zinterstore(byte[] dstkey, byte[] sets...) {
-    sendCommand(ZINTERSTORE, joinParameters(dstkey, Protocol.toByteArray(sets.length), sets));
+  void zinterstore(byte[] dstkey, byte[][] sets...) {
+    sendCommand(Command.ZINTERSTORE, joinParameters(dstkey, Protocol.toByteArray(sets.length), sets));
   }
 
-  void zinterstore(byte[] dstkey, ZParams params, byte[] sets...) {
+  void zinterstore(byte[] dstkey, ZParams params, byte[][] sets...) {
     List!(byte[]) args = new ArrayList!(byte[])();
     args.add(dstkey);
     args.add(Protocol.toByteArray(sets.length));
@@ -752,138 +743,138 @@ class BinaryClient : Connection {
       args.add(set);
     }
     args.addAll(params.getParams());
-    sendCommand(ZINTERSTORE, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.ZINTERSTORE, args.toArray());
   }
 
   void zlexcount(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZLEXCOUNT, key, min, max);
+    sendCommand(Command.ZLEXCOUNT, key, min, max);
   }
 
   void zrangeByLex(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZRANGEBYLEX, key, min, max);
+    sendCommand(Command.ZRANGEBYLEX, key, min, max);
   }
 
   void zrangeByLex(byte[] key, byte[] min, byte[] max, int offset,
       int count) {
-    sendCommand(ZRANGEBYLEX, key, min, max, LIMIT.raw, toByteArray(offset), toByteArray(count));
+    sendCommand(Command.ZRANGEBYLEX, key, min, max, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
   }
 
   void zrevrangeByLex(byte[] key, byte[] max, byte[] min) {
-    sendCommand(ZREVRANGEBYLEX, key, max, min);
+    sendCommand(Command.ZREVRANGEBYLEX, key, max, min);
   }
 
   void zrevrangeByLex(byte[] key, byte[] max, byte[] min,
       int offset, int count) {
-    sendCommand(ZREVRANGEBYLEX, key, max, min, LIMIT.raw, toByteArray(offset), toByteArray(count));
+    sendCommand(Command.ZREVRANGEBYLEX, key, max, min, cast(byte[])to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
   }
 
   void zremrangeByLex(byte[] key, byte[] min, byte[] max) {
-    sendCommand(ZREMRANGEBYLEX, key, min, max);
+    sendCommand(Command.ZREMRANGEBYLEX, key, min, max);
   }
 
   void save() {
-    sendCommand(SAVE);
+    sendCommand(Command.SAVE);
   }
 
   void bgsave() {
-    sendCommand(BGSAVE);
+    sendCommand(Command.BGSAVE);
   }
 
   void bgrewriteaof() {
-    sendCommand(BGREWRITEAOF);
+    sendCommand(Command.BGREWRITEAOF);
   }
 
   void lastsave() {
-    sendCommand(LASTSAVE);
+    sendCommand(Command.LASTSAVE);
   }
 
   void shutdown() {
-    sendCommand(SHUTDOWN);
+    sendCommand(Command.SHUTDOWN);
   }
 
   void info() {
-    sendCommand(INFO);
+    sendCommand(Command.INFO);
   }
 
   void info(string section) {
-    sendCommand(INFO, section);
+    sendCommand(Command.INFO, section);
   }
 
   void monitor() {
-    sendCommand(MONITOR);
+    sendCommand(Command.MONITOR);
   }
 
   void slaveof(string host, int port) {
-    sendCommand(SLAVEOF, host, string.valueOf(port));
+    sendCommand(Command.SLAVEOF, host, port.to!string);
   }
 
   void slaveofNoOne() {
-    sendCommand(SLAVEOF, NO.raw, ONE.raw);
+    sendCommand(Command.SLAVEOF, cast(byte[])to!string(Keyword.NO), cast(byte[])to!string(Keyword.ONE));
   }
 
   void configGet(byte[] pattern) {
-    sendCommand(CONFIG, Keyword.GET.raw, pattern);
+    sendCommand(Command.CONFIG, cast(byte[])to!string(Keyword.GET), pattern);
   }
 
   void configSet(byte[] parameter, byte[] value) {
-    sendCommand(CONFIG, Keyword.SET.raw, parameter, value);
+    sendCommand(Command.CONFIG, cast(byte[])to!string(Keyword.SET), parameter, value);
   }
 
   void strlen(byte[] key) {
-    sendCommand(STRLEN, key);
+    sendCommand(Command.STRLEN, key);
   }
 
   void sync() {
-    sendCommand(SYNC);
+    sendCommand(Command.SYNC);
   }
 
-  void lpushx(byte[] key, byte[] string...) {
-    sendCommand(LPUSHX, joinParameters(key, string));
+  void lpushx(byte[] key, byte[][] strings...) {
+    sendCommand(Command.LPUSHX, joinParameters(key, strings));
   }
 
   void persist(byte[] key) {
-    sendCommand(PERSIST, key);
+    sendCommand(Command.PERSIST, key);
   }
 
-  void rpushx(byte[] key, byte[] string...) {
-    sendCommand(RPUSHX, joinParameters(key, string));
+  void rpushx(byte[] key, byte[][] strings...) {
+    sendCommand(Command.RPUSHX, joinParameters(key, strings));
   }
 
-  void echo(byte[] string) {
-    sendCommand(ECHO, string);
+  void echo(byte[] strings) {
+    sendCommand(Command.ECHO, strings);
   }
 
   void linsert(byte[] key, ListPosition where, byte[] pivot,
       byte[] value) {
-    sendCommand(LINSERT, key, where.raw, pivot, value);
+    sendCommand(Command.LINSERT, key, cast(byte[])to!string(where), pivot, value);
   }
 
   // void debug(DebugParams params) {
-  //   sendCommand(DEBUG, params.getCommand());
+  //   sendCommand(Command.DEBUG, params.getCommand());
   // }
 
   void brpoplpush(byte[] source, byte[] destination, int timeout) {
-    sendCommand(BRPOPLPUSH, source, destination, toByteArray(timeout));
+    sendCommand(Command.BRPOPLPUSH, source, destination, toByteArray(timeout));
   }
 
   void configResetStat() {
-    sendCommand(CONFIG, Keyword.RESETSTAT.raw);
+    sendCommand(Command.CONFIG, cast(byte[])to!string(Keyword.RESETSTAT));
   }
 
   void configRewrite() {
-    sendCommand(CONFIG, Keyword.REWRITE.raw);
+    sendCommand(Command.CONFIG, cast(byte[])to!string(Keyword.REWRITE));
   }
 
   void setbit(byte[] key, long offset, byte[] value) {
-    sendCommand(SETBIT, key, toByteArray(offset), value);
+    sendCommand(Command.SETBIT, key, toByteArray(offset), value);
   }
 
   void setbit(byte[] key, long offset, bool value) {
-    sendCommand(SETBIT, key, toByteArray(offset), toByteArray(value));
+    sendCommand(Command.SETBIT, key, toByteArray(offset), toByteArray(value));
   }
 
   void getbit(byte[] key, long offset) {
-    sendCommand(GETBIT, key, toByteArray(offset));
+    sendCommand(Command.GETBIT, key, toByteArray(offset));
   }
 
   void bitpos(byte[] key, bool value, BitPosParams params) {
@@ -891,15 +882,15 @@ class BinaryClient : Connection {
     args.add(key);
     args.add(toByteArray(value));
     args.addAll(params.getParams());
-    sendCommand(BITPOS, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.BITPOS, args.toArray());
   }
 
   void setrange(byte[] key, long offset, byte[] value) {
-    sendCommand(SETRANGE, key, toByteArray(offset), value);
+    sendCommand(Command.SETRANGE, key, toByteArray(offset), value);
   }
 
   void getrange(byte[] key, long startOffset, long endOffset) {
-    sendCommand(GETRANGE, key, toByteArray(startOffset), toByteArray(endOffset));
+    sendCommand(Command.GETRANGE, key, toByteArray(startOffset), toByteArray(endOffset));
   }
 
   int getDB() {
@@ -926,182 +917,184 @@ class BinaryClient : Connection {
   }
 
   void eval(byte[] script, byte[] keyCount, byte[][] params) {
-    sendCommand(EVAL, joinParameters(script, keyCount, params));
+    sendCommand(Command.EVAL, joinParameters(script, keyCount, params));
   }
 
-  void eval(byte[] script, int keyCount, byte[] params...) {
-    sendCommand(EVAL, joinParameters(script, toByteArray(keyCount), params));
+  void eval(byte[] script, int keyCount, byte[][] params...) {
+    sendCommand(Command.EVAL, joinParameters(script, toByteArray(keyCount), params));
   }
 
-  void evalsha(byte[] sha1, byte[] keyCount, byte[] params...) {
-    sendCommand(EVALSHA, joinParameters(sha1, keyCount, params));
+  void evalsha(byte[] sha1, byte[] keyCount, byte[][] params...) {
+    sendCommand(Command.EVALSHA, joinParameters(sha1, keyCount, params));
   }
 
-  void evalsha(byte[] sha1, int keyCount, byte[] params...) {
-    sendCommand(EVALSHA, joinParameters(sha1, toByteArray(keyCount), params));
+  void evalsha(byte[] sha1, int keyCount, byte[][] params...) {
+    sendCommand(Command.EVALSHA, joinParameters(sha1, toByteArray(keyCount), params));
   }
 
   void scriptFlush() {
-    sendCommand(SCRIPT, Keyword.FLUSH.raw);
+    sendCommand(Command.SCRIPT, cast(byte[])to!string(Keyword.FLUSH));
   }
 
-  void scriptExists(byte[] sha1...) {
-    sendCommand(SCRIPT, joinParameters(Keyword.EXISTS.raw, sha1));
+  void scriptExists(byte[][] sha1...) {
+    sendCommand(Command.SCRIPT, joinParameters(cast(byte[])to!string(Keyword.EXISTS), sha1));
   }
 
   void scriptLoad(byte[] script) {
-    sendCommand(SCRIPT, Keyword.LOAD.raw, script);
+    sendCommand(Command.SCRIPT, cast(byte[])to!string(Keyword.LOAD), script);
   }
 
   void scriptKill() {
-    sendCommand(SCRIPT, Keyword.KILL.raw);
+    sendCommand(Command.SCRIPT, cast(byte[])to!string(Keyword.KILL));
   }
 
   void slowlogGet() {
-    sendCommand(SLOWLOG, Keyword.GET.raw);
+    sendCommand(Command.SLOWLOG, cast(byte[])to!string(Keyword.GET));
   }
 
   void slowlogGet(long entries) {
-    sendCommand(SLOWLOG, Keyword.GET.raw, toByteArray(entries));
+    sendCommand(Command.SLOWLOG, cast(byte[])to!string(Keyword.GET), toByteArray(entries));
   }
 
   void slowlogReset() {
-    sendCommand(SLOWLOG, RESET.raw);
+    sendCommand(Command.SLOWLOG, cast(byte[])to!string(Keyword.RESET));
   }
 
   void slowlogLen() {
-    sendCommand(SLOWLOG, LEN.raw);
+    sendCommand(Command.SLOWLOG, cast(byte[])to!string(Keyword.LEN));
   }
 
   void objectRefcount(byte[] key) {
-    sendCommand(OBJECT, REFCOUNT.raw, key);
+    sendCommand(Command.OBJECT, cast(byte[])to!string(Keyword.REFCOUNT), key);
   }
 
   void objectIdletime(byte[] key) {
-    sendCommand(OBJECT, IDLETIME.raw, key);
+    sendCommand(Command.OBJECT, cast(byte[])to!string(Keyword.IDLETIME), key);
   }
 
   void objectEncoding(byte[] key) {
-    sendCommand(OBJECT, ENCODING.raw, key);
+    sendCommand(Command.OBJECT, cast(byte[])to!string(Keyword.ENCODING), key);
   }
 
   void bitcount(byte[] key) {
-    sendCommand(BITCOUNT, key);
+    sendCommand(Command.BITCOUNT, key);
   }
 
   void bitcount(byte[] key, long start, long end) {
-    sendCommand(BITCOUNT, key, toByteArray(start), toByteArray(end));
+    sendCommand(Command.BITCOUNT, key, toByteArray(start), toByteArray(end));
   }
 
-  void bitop(BitOP op, byte[] destKey, byte[] srcKeys...) {
-    sendCommand(BITOP, joinParameters(op.raw, destKey, srcKeys));
+  void bitop(BitOP op, byte[] destKey, byte[][] srcKeys...) {
+    sendCommand(Command.BITOP, joinParameters(cast(byte[])to!string(op), destKey, srcKeys));
   }
 
-  void sentinel(byte[] args...) {
-    sendCommand(SENTINEL, args);
+  void sentinel(byte[][] args...) {
+    sendCommand(Command.SENTINEL, args);
   }
 
   void dump(byte[] key) {
-    sendCommand(DUMP, key);
+    sendCommand(Command.DUMP, key);
   }
 
   void restore(byte[] key, int ttl, byte[] serializedValue) {
-    sendCommand(RESTORE, key, toByteArray(ttl), serializedValue);
+    sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue);
   }
 
   void restoreReplace(byte[] key, int ttl, byte[] serializedValue) {
-    sendCommand(RESTORE, key, toByteArray(ttl), serializedValue, Keyword.REPLACE.raw);
+    sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue, cast(byte[])to!string(Keyword.REPLACE));
   }
 
   void pexpire(byte[] key, long milliseconds) {
-    sendCommand(PEXPIRE, key, toByteArray(milliseconds));
+    sendCommand(Command.PEXPIRE, key, toByteArray(milliseconds));
   }
 
   void pexpireAt(byte[] key, long millisecondsTimestamp) {
-    sendCommand(PEXPIREAT, key, toByteArray(millisecondsTimestamp));
+    sendCommand(Command.PEXPIREAT, key, toByteArray(millisecondsTimestamp));
   }
 
   void pttl(byte[] key) {
-    sendCommand(PTTL, key);
+    sendCommand(Command.PTTL, key);
   }
 
   void psetex(byte[] key, long milliseconds, byte[] value) {
-    sendCommand(PSETEX, key, toByteArray(milliseconds), value);
+    sendCommand(Command.PSETEX, key, toByteArray(milliseconds), value);
   }
 
   void srandmember(byte[] key, int count) {
-    sendCommand(SRANDMEMBER, key, toByteArray(count));
+    sendCommand(Command.SRANDMEMBER, key, toByteArray(count));
   }
 
   void memoryDoctor() {
-    sendCommand(MEMORY, Keyword.DOCTOR.raw);
+    sendCommand(Command.MEMORY, cast(byte[])to!string(Keyword.DOCTOR));
   }
 
   void clientKill(byte[] ipPort) {
-    sendCommand(CLIENT, Keyword.KILL.raw, ipPort);
+    sendCommand(Command.CLIENT, cast(byte[])to!string(Keyword.KILL), ipPort);
   }
 
   void clientKill(string ip, int port) {
-    sendCommand(CLIENT, Keyword.KILL.name(), ip + ':' + port);
+    sendCommand(Command.CLIENT, Keyword.KILL.to!string(), ip ~ ":" ~ port.to!string);
   }
 
   void clientKill(ClientKillParams params) {
-    sendCommand(CLIENT, joinParameters(Keyword.KILL.raw, params.getByteParams()));
+    sendCommand(Command.CLIENT, joinParameters(cast(byte[])to!string(Keyword.KILL), params.getByteParams()));
   }
 
   void clientGetname() {
-    sendCommand(CLIENT, Keyword.GETNAME.raw);
+    sendCommand(Command.CLIENT, cast(byte[])to!string(Keyword.GETNAME));
   }
 
   void clientList() {
-    sendCommand(CLIENT, Keyword.LIST.raw);
+    sendCommand(Command.CLIENT, cast(byte[])to!string(Keyword.LIST));
   }
 
   void clientSetname(byte[] name) {
-    sendCommand(CLIENT, Keyword.SETNAME.raw, name);
+    sendCommand(Command.CLIENT, cast(byte[])to!string(Keyword.SETNAME), name);
   }
 
   void clientPause(long timeout) {
-    sendCommand(CLIENT, Keyword.PAUSE.raw, toByteArray(timeout));
+    sendCommand(Command.CLIENT, cast(byte[])to!string(Keyword.PAUSE), toByteArray(timeout));
   }
 
   void time() {
-    sendCommand(TIME);
+    sendCommand(Command.TIME);
   }
 
   void migrate(string host, int port, byte[] key, int destinationDb,
       int timeout) {
-    sendCommand(MIGRATE, SafeEncoder.encode(host), toByteArray(port), key,
+    sendCommand(Command.MIGRATE, SafeEncoder.encode(host), toByteArray(port), key,
         toByteArray(destinationDb), toByteArray(timeout));
   }
 
   void migrate(string host, int port, int destinationDB,
-      int timeout, MigrateParams params, byte[] keys...) {
+      int timeout, MigrateParams params, byte[][] keys...) {
     byte[][] bparams = params.getByteParams();
-    int len = 5 + bparams.length + 1 + keys.length;
-    byte[][] args = new byte[len][];
+    int len = cast(int)(5 + bparams.length + 1 + keys.length);
+    byte[][] args = new byte[][len];
     int i = 0;
     args[i++] = SafeEncoder.encode(host);
     args[i++] = toByteArray(port);
     args[i++] = new byte[0];
     args[i++] = toByteArray(destinationDB);
     args[i++] = toByteArray(timeout);
-    System.arraycopy(bparams, 0, args, i, bparams.length);
+    // System.arraycopy(bparams, 0, args, i, bparams.length);
+    args[i .. i+bparams.length] = bparams[0 .. $];
     i += bparams.length;
-    args[i++] = Keyword.KEYS.raw;
-    System.arraycopy(keys, 0, args, i, keys.length);
-    sendCommand(MIGRATE, args);
+    args[i++] = cast(byte[])to!string(Keyword.KEYS);
+    // System.arraycopy(keys, 0, args, i, keys.length);
+    args[i .. i+keys.length] = keys[0 .. $];
+    sendCommand(Command.MIGRATE, args);
   }
 
   void hincrByFloat(byte[] key, byte[] field, double increment) {
-    sendCommand(HINCRBYFLOAT, key, field, toByteArray(increment));
+    sendCommand(Command.HINCRBYFLOAT, key, field, toByteArray(increment));
   }
 
   void scan(byte[] cursor, ScanParams params) {
     List!(byte[]) args = new ArrayList!(byte[])();
     args.add(cursor);
     args.addAll(params.getParams());
-    sendCommand(SCAN, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.SCAN, args.toArray());
   }
 
   void hscan(byte[] key, byte[] cursor, ScanParams params) {
@@ -1109,7 +1102,7 @@ class BinaryClient : Connection {
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
-    sendCommand(HSCAN, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.HSCAN, args.toArray());
   }
 
   void sscan(byte[] key, byte[] cursor, ScanParams params) {
@@ -1117,7 +1110,7 @@ class BinaryClient : Connection {
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
-    sendCommand(SSCAN, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.SSCAN, args.toArray());
   }
 
   void zscan(byte[] key, byte[] cursor, ScanParams params) {
@@ -1125,43 +1118,43 @@ class BinaryClient : Connection {
     args.add(key);
     args.add(cursor);
     args.addAll(params.getParams());
-    sendCommand(ZSCAN, args.toArray(new byte[args.size()][]));
+    sendCommand(Command.ZSCAN, args.toArray());
   }
 
   void waitReplicas(int replicas, long timeout) {
-    sendCommand(WAIT, toByteArray(replicas), toByteArray(timeout));
+    sendCommand(Command.WAIT, toByteArray(replicas), toByteArray(timeout));
   }
 
-  void cluster(byte[] args...) {
-    sendCommand(CLUSTER, args);
+  void cluster(byte[][] args...) {
+    sendCommand(Command.CLUSTER, args);
   }
 
   void asking() {
-    sendCommand(ASKING);
+    sendCommand(Command.ASKING);
   }
 
-  void pfadd(byte[] key, byte[] elements...) {
-    sendCommand(PFADD, joinParameters(key, elements));
+  void pfadd(byte[] key, byte[][] elements...) {
+    sendCommand(Command.PFADD, joinParameters(key, elements));
   }
 
   void pfcount(byte[] key) {
-    sendCommand(PFCOUNT, key);
+    sendCommand(Command.PFCOUNT, key);
   }
 
-  void pfcount(byte[] keys...) {
-    sendCommand(PFCOUNT, keys);
+  void pfcount(byte[][] keys...) {
+    sendCommand(Command.PFCOUNT, keys);
   }
 
-  void pfmerge(byte[] destkey, byte[] sourcekeys...) {
-    sendCommand(PFMERGE, joinParameters(destkey, sourcekeys));
+  void pfmerge(byte[] destkey, byte[][] sourcekeys...) {
+    sendCommand(Command.PFMERGE, joinParameters(destkey, sourcekeys));
   }
 
   void readonly() {
-    sendCommand(READONLY);
+    sendCommand(Command.READONLY);
   }
 
   void geoadd(byte[] key, double longitude, double latitude, byte[] member) {
-    sendCommand(GEOADD, key, toByteArray(longitude), toByteArray(latitude), member);
+    sendCommand(Command.GEOADD, key, toByteArray(longitude), toByteArray(latitude), member);
   }
 
   void geoadd(byte[] key, Map!(byte[], GeoCoordinate) memberCoordinateMap) {
@@ -1169,86 +1162,85 @@ class BinaryClient : Connection {
     args.add(key);
     args.addAll(convertGeoCoordinateMapToByteArrays(memberCoordinateMap));
 
-    byte[][] argsArray = new byte[args.size()][];
-    args.toArray(argsArray);
+    byte[][] argsArray = args.toArray();
 
-    sendCommand(GEOADD, argsArray);
+    sendCommand(Command.GEOADD, argsArray);
   }
 
   void geodist(byte[] key, byte[] member1, byte[] member2) {
-    sendCommand(GEODIST, key, member1, member2);
+    sendCommand(Command.GEODIST, key, member1, member2);
   }
 
   void geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit) {
-    sendCommand(GEODIST, key, member1, member2, unit.raw);
+    sendCommand(Command.GEODIST, key, member1, member2, cast(byte[])to!string(unit));
   }
 
-  void geohash(byte[] key, byte[] members...) {
-    sendCommand(GEOHASH, joinParameters(key, members));
+  void geohash(byte[] key, byte[][] members...) {
+    sendCommand(Command.GEOHASH, joinParameters(key, members));
   }
 
   void geopos(byte[] key, byte[][] members) {
-    sendCommand(GEOPOS, joinParameters(key, members));
+    sendCommand(Command.GEOPOS, joinParameters(key, members));
   }
 
   void georadius(byte[] key, double longitude, double latitude, double radius, GeoUnit unit) {
-    sendCommand(GEORADIUS, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-      unit.raw);
+    sendCommand(Command.GEORADIUS, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
+      cast(byte[])to!string(unit));
   }
 
   void georadiusReadonly(byte[] key, double longitude, double latitude, double radius, GeoUnit unit) {
-    sendCommand(GEORADIUS_RO, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-      unit.raw);
+    sendCommand(Command.GEORADIUS_RO, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
+      cast(byte[])to!string(unit));
   }
 
   void georadius(byte[] key, double longitude, double latitude, double radius, GeoUnit unit,
       GeoRadiusParam param) {
-    sendCommand(GEORADIUS, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-      toByteArray(radius), unit.raw));
+    sendCommand(Command.GEORADIUS, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
+      toByteArray(radius), cast(byte[])to!string(unit)));
   }
 
   void georadiusReadonly(byte[] key, double longitude, double latitude, double radius, GeoUnit unit,
       GeoRadiusParam param) {
-    sendCommand(GEORADIUS_RO, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-      toByteArray(radius), unit.raw));
+    sendCommand(Command.GEORADIUS_RO, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
+      toByteArray(radius), cast(byte[])to!string(unit)));
   }
 
   void georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit) {
-    sendCommand(GEORADIUSBYMEMBER, key, member, toByteArray(radius), unit.raw);
+    sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), cast(byte[])to!string(unit));
   }
 
   void georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit) {
-    sendCommand(GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), unit.raw);
+    sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), cast(byte[])to!string(unit));
   }
 
   void georadiusByMember(byte[] key, byte[] member, double radius, GeoUnit unit,
       GeoRadiusParam param) {
-    sendCommand(GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), unit.raw));
+    sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), cast(byte[])to!string(unit)));
   }
 
   void georadiusByMemberReadonly(byte[] key, byte[] member, double radius, GeoUnit unit,
       GeoRadiusParam param) {
-    sendCommand(GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), unit.raw));
+    sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), cast(byte[])to!string(unit)));
   }
 
   void moduleLoad(byte[] path) {
-    sendCommand(MODULE, Keyword.LOAD.raw, path);
+    sendCommand(Command.MODULE, cast(byte[])to!string(Keyword.LOAD), path);
   }
 
   void moduleList() {
-    sendCommand(MODULE, Keyword.LIST.raw);
+    sendCommand(Command.MODULE, cast(byte[])to!string(Keyword.LIST));
   }
 
   void moduleUnload(byte[] name) {
-    sendCommand(MODULE, Keyword.UNLOAD.raw, name);
+    sendCommand(Command.MODULE, cast(byte[])to!string(Keyword.UNLOAD), name);
   }
 
   private ArrayList!(byte[]) convertScoreMembersToByteArrays(Map!(byte[], Double) scoreMembers) {
     ArrayList!(byte[]) args = new ArrayList!(byte[])(scoreMembers.size() * 2);
 
-    foreach(MapEntry!(byte[], Double) entry ; scoreMembers.entrySet()) {
-      args.add(toByteArray(entry.getValue()));
-      args.add(entry.getKey());
+    foreach(byte[] key, Double value ; scoreMembers) {
+      args.add(toByteArray(value.value()));
+      args.add(key);
     }
 
     return args;
@@ -1258,27 +1250,26 @@ class BinaryClient : Connection {
       Map!(byte[], GeoCoordinate) memberCoordinateMap) {
     List!(byte[]) args = new ArrayList!(byte[])(memberCoordinateMap.size() * 3);
 
-    foreach(Entry!(byte[], GeoCoordinate) entry ; memberCoordinateMap.entrySet()) {
-      GeoCoordinate coordinate = entry.getValue();
+    foreach(byte[] key, GeoCoordinate coordinate ; memberCoordinateMap) {
       args.add(toByteArray(coordinate.getLongitude()));
       args.add(toByteArray(coordinate.getLatitude()));
-      args.add(entry.getKey());
+      args.add(key);
     }
 
     return args;
   }
 
-  void bitfield(byte[] key, byte[] value...) {
-    sendCommand(BITFIELD, joinParameters(key, value));
+  void bitfield(byte[] key, byte[][] value...) {
+    sendCommand(Command.BITFIELD, joinParameters(key, value));
   }
 
   void hstrlen(byte[] key, byte[] field) {
-    sendCommand(HSTRLEN, key, field);
+    sendCommand(Command.HSTRLEN, key, field);
   }
   
   void xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, bool approximateLength) {
       int maxLexArgs = 0;
-      if(maxLen < Long.MAX_VALUE) { // optional arguments
+      if(maxLen < long.max) { // optional arguments
         if(approximateLength) {
           maxLexArgs = 3; // e.g. MAXLEN ~ 1000 
         } else {
@@ -1286,11 +1277,11 @@ class BinaryClient : Connection {
         }
       }
     
-	  byte[][] params = new byte[2 + maxLexArgs + hash.size() * 2][];
+	  byte[][] params = new byte[][2 + maxLexArgs + hash.size() * 2];
 	  int index = 0;
 	  params[index++] = key;
-	  if(maxLen < Long.MAX_VALUE) {
-	    params[index++] = Keyword.MAXLEN.raw;
+	  if(maxLen < long.max) {
+	    params[index++] = cast(byte[])to!string(Keyword.MAXLEN);
 	    if(approximateLength) {
 	      params[index++] = Protocol.BYTES_TILDE;
 	    }
@@ -1298,93 +1289,93 @@ class BinaryClient : Connection {
 	  }
 	  
 	  params[index++] = id;
-	  foreach(Entry!(byte[], byte[]) entry ; hash.entrySet()) {
-	    params[index++] = entry.getKey();
-	    params[index++] = entry.getValue();
+	  foreach(byte[] key, byte[] value ; hash) {
+	    params[index++] = key;
+	    params[index++] = value;
 	  }
-	  sendCommand(XADD, params);
+	  sendCommand(Command.XADD, params);
   }
   
   void xlen(byte[] key) {
-     sendCommand(XLEN, key);
+     sendCommand(Command.XLEN, key);
   }
   
   void xrange(byte[] key, byte[] start, byte[] end, long count) { 
-     sendCommand(XRANGE, key, start, end, Keyword.COUNT.raw, toByteArray(count));
+     sendCommand(Command.XRANGE, key, start, end, cast(byte[])to!string(Keyword.COUNT), toByteArray(count));
   }
   
   void xrevrange(byte[] key, byte[] end, byte[] start, int count) {
-    sendCommand(XREVRANGE, key, end, start, Keyword.COUNT.raw, toByteArray(count));
+    sendCommand(Command.XREVRANGE, key, end, start, cast(byte[])to!string(Keyword.COUNT), toByteArray(count));
   }
 
   void xread(int count, long block, Map!(byte[], byte[]) streams) {
-    byte[][] params = new byte[3 + streams.size() * 2 + (block > 0 ? 2 : 0)][];
+    byte[][] params = new byte[][3 + streams.size() * 2 + (block > 0 ? 2 : 0)];
 
     int streamsIndex = 0;
-    params[streamsIndex++] = Keyword.COUNT.raw;
+    params[streamsIndex++] = cast(byte[])to!string(Keyword.COUNT);
     params[streamsIndex++] = toByteArray(count);
     if(block > 0) {
-      params[streamsIndex++] = Keyword.BLOCK.raw;
+      params[streamsIndex++] = cast(byte[])to!string(Keyword.BLOCK);
       params[streamsIndex++] = toByteArray(block);
     }
     
-    params[streamsIndex++] = Keyword.STREAMS.raw;
+    params[streamsIndex++] = cast(byte[])to!string(Keyword.STREAMS);
     int idsIndex = streamsIndex + streams.size();
 
-    foreach(Entry!(byte[], byte[]) entry ; streams.entrySet()) {
-      params[streamsIndex++] = entry.getKey();
-      params[idsIndex++] = entry.getValue();
+    foreach(byte[] key, byte[] value; streams) {
+      params[streamsIndex++] = key;
+      params[idsIndex++] = value;
     }
     
-    sendCommand(XREAD, params);
+    sendCommand(Command.XREAD, params);
  }
   
-  void xack(byte[] key, byte[] group, byte[] ids...) {
-    byte[][] params = new byte[2 + ids.length][];
+  void xack(byte[] key, byte[] group, byte[][] ids...) {
+    byte[][] params = new byte[][2 + ids.length];
     int index = 0;
     params[index++] = key;
     params[index++] = group;
     foreach(byte[] id ; ids) {
       params[index++] = id;
     }
-    sendCommand(XACK, params);
+    sendCommand(Command.XACK, params);
   }
    
   void xgroupCreate(byte[] key, byte[] groupname, byte[] id, bool makeStream) {
     if(makeStream) {
-      sendCommand(XGROUP, Keyword.CREATE.raw, key, groupname, id, Keyword.MKSTREAM.raw);  
+      sendCommand(Command.XGROUP, cast(byte[])to!string(Keyword.CREATE), key, groupname, id, cast(byte[])to!string(Keyword.MKSTREAM));  
     } else {
-      sendCommand(XGROUP, Keyword.CREATE.raw, key, groupname, id);  
+      sendCommand(Command.XGROUP, cast(byte[])to!string(Keyword.CREATE), key, groupname, id);  
     }
   }
 
   void xgroupSetID(byte[] key, byte[] groupname, byte[] id) {
-    sendCommand(XGROUP, Keyword.SETID.raw, key, groupname, id);    
+    sendCommand(Command.XGROUP, cast(byte[])to!string(Keyword.SETID), key, groupname, id);    
   }
 
   void xgroupDestroy(byte[] key, byte[] groupname) {
-    sendCommand(XGROUP, Keyword.DESTROY.raw, key, groupname);    
+    sendCommand(Command.XGROUP, cast(byte[])to!string(Keyword.DESTROY), key, groupname);    
   }
 
   void xgroupDelConsumer(byte[] key, byte[] groupname, byte[] consumerName) {
-    sendCommand(XGROUP, Keyword.DELCONSUMER.raw, key, groupname, consumerName);    
+    sendCommand(Command.XGROUP, cast(byte[])to!string(Keyword.DELCONSUMER), key, groupname, consumerName);    
   }
    
-  void xdel(byte[] key, byte[] ids...) {
-    byte[][] params = new byte[1 + ids.length][];
+  void xdel(byte[] key, byte[][] ids...) {
+    byte[][] params = new byte[][1 + ids.length];
     int index = 0;
     params[index++] = key;
     foreach(byte[] id ; ids) {
       params[index++] = id;
     }
-    sendCommand(XDEL, params);
+    sendCommand(Command.XDEL, params);
   }
   
   void xtrim(byte[] key, long maxLen, bool approximateLength) {
     if(approximateLength) {
-      sendCommand(XTRIM, key, Keyword.MAXLEN.raw, Protocol.BYTES_TILDE ,toByteArray(maxLen));
+      sendCommand(Command.XTRIM, key, cast(byte[])to!string(Keyword.MAXLEN), Protocol.BYTES_TILDE ,toByteArray(maxLen));
     } else {
-      sendCommand(XTRIM, key, Keyword.MAXLEN.raw, toByteArray(maxLen));
+      sendCommand(Command.XTRIM, key, cast(byte[])to!string(Keyword.MAXLEN), toByteArray(maxLen));
     }
   }
   
@@ -1402,48 +1393,48 @@ class BinaryClient : Connection {
     }
     
     
-    byte[][] params = new byte[4 + optional + streams.size() * 2][];
+    byte[][] params = new byte[][4 + optional + streams.size() * 2];
 
     int streamsIndex = 0;
-    params[streamsIndex++] = Keyword.GROUP.raw;
+    params[streamsIndex++] = cast(byte[])to!string(Keyword.GROUP);
     params[streamsIndex++] = groupname;
     params[streamsIndex++] = consumer;
     if(count>0) {
-      params[streamsIndex++] = Keyword.COUNT.raw;
+      params[streamsIndex++] = cast(byte[])to!string(Keyword.COUNT);
       params[streamsIndex++] = toByteArray(count);
     }
     if(block > 0) {
-      params[streamsIndex++] = Keyword.BLOCK.raw;
+      params[streamsIndex++] = cast(byte[])to!string(Keyword.BLOCK);
       params[streamsIndex++] = toByteArray(block);
     }
     if(noAck) {
-      params[streamsIndex++] = Keyword.NOACK.raw;
+      params[streamsIndex++] = cast(byte[])to!string(Keyword.NOACK);
     }
-    params[streamsIndex++] = Keyword.STREAMS.raw;
+    params[streamsIndex++] = cast(byte[])to!string(Keyword.STREAMS);
     
     int idsIndex = streamsIndex + streams.size();
-    foreach(Entry!(byte[], byte[]) entry ; streams.entrySet()) {
-      params[streamsIndex++] = entry.getKey();
-      params[idsIndex++] = entry.getValue();
+    foreach(byte[] key, byte[] value ; streams) {
+      params[streamsIndex++] = key;
+      params[idsIndex++] = value;
     }
     
-    sendCommand(XREADGROUP, params);
+    sendCommand(Command.XREADGROUP, params);
   }
 
   
   void xpending(byte[] key, byte[] groupname, byte[] start, 
                 byte[] end, int count, byte[] consumername) {
     if(consumername is null) {
-      sendCommand(XPENDING, key, groupname, start, end, toByteArray(count));
+      sendCommand(Command.XPENDING, key, groupname, start, end, toByteArray(count));
     } else {
-      sendCommand(XPENDING, key, groupname, start, end, toByteArray(count), consumername);
+      sendCommand(Command.XPENDING, key, groupname, start, end, toByteArray(count), consumername);
     }
   }
 
   void xclaim(byte[] key, byte[] groupname, byte[] consumername, long minIdleTime, 
               long newIdleTime, int retries, bool force, byte[][] ids) {
       
-      ArrayList!(byte[]) arguments = new ArrayList!(byte[])(10 + ids.length);
+      ArrayList!(byte[]) arguments = new ArrayList!(byte[])(cast(int)(10 + ids.length));
 
       arguments.add(key);
       arguments.add(groupname);
@@ -1454,17 +1445,17 @@ class BinaryClient : Connection {
         arguments.add(id);  
       }
       if(newIdleTime > 0) {
-        arguments.add(Keyword.IDLE.raw);
+        arguments.add(cast(byte[])to!string(Keyword.IDLE));
         arguments.add(toByteArray(newIdleTime));
       }
       if(retries > 0) {
-        arguments.add(Keyword.RETRYCOUNT.raw);
+        arguments.add(cast(byte[])to!string(Keyword.RETRYCOUNT));
         arguments.add(toByteArray(retries));        
       }
       if(force) {
-        arguments.add(Keyword.FORCE.raw);        
+        arguments.add(cast(byte[])to!string(Keyword.FORCE));        
       }
-      sendCommand(XCLAIM, arguments.toArray(new byte[arguments.size()][]));
+      sendCommand(Command.XCLAIM, arguments.toArray());
   }
 
 }

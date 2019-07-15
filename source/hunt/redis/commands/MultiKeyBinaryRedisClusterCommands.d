@@ -14,21 +14,21 @@ import hunt.collection.Set;
 import hunt.Long;
 
 interface MultiKeyBinaryRedisClusterCommands {
-  Long del(byte[] keys...);
+  Long del(byte[][] keys...);
 
-  Long unlink(byte[] keys...);
+  Long unlink(byte[][] keys...);
 
-  Long exists(byte[] keys...);
+  Long exists(byte[][] keys...);
 
-  List!(byte[]) blpop(int timeout, byte[] keys...);
+  List!(byte[]) blpop(int timeout, byte[][] keys...);
 
-  List!(byte[]) brpop(int timeout, byte[] keys...);
+  List!(byte[]) brpop(int timeout, byte[][] keys...);
 
-  List!(byte[]) mget(byte[] keys...);
+  List!(byte[]) mget(byte[][] keys...);
 
-  string mset(byte[] keysvalues...);
+  string mset(byte[][] keysvalues...);
 
-  Long msetnx(byte[] keysvalues...);
+  Long msetnx(byte[][] keysvalues...);
 
   string rename(byte[] oldkey, byte[] newkey);
 
@@ -36,13 +36,13 @@ interface MultiKeyBinaryRedisClusterCommands {
 
   byte[] rpoplpush(byte[] srckey, byte[] dstkey);
 
-  Set!(byte[]) sdiff(byte[] keys...);
+  Set!(byte[]) sdiff(byte[][] keys...);
 
-  Long sdiffstore(byte[] dstkey, byte[] keys...);
+  Long sdiffstore(byte[] dstkey, byte[][] keys...);
 
-  Set!(byte[]) sinter(byte[] keys...);
+  Set!(byte[]) sinter(byte[][] keys...);
 
-  Long sinterstore(byte[] dstkey, byte[] keys...);
+  Long sinterstore(byte[] dstkey, byte[][] keys...);
 
   Long smove(byte[] srckey, byte[] dstkey, byte[] member);
 
@@ -50,33 +50,33 @@ interface MultiKeyBinaryRedisClusterCommands {
 
   Long sort(byte[] key, byte[] dstkey);
 
-  Set!(byte[]) sunion(byte[] keys...);
+  Set!(byte[]) sunion(byte[][] keys...);
 
-  Long sunionstore(byte[] dstkey, byte[] keys...);
+  Long sunionstore(byte[] dstkey, byte[][] keys...);
 
-  Long zinterstore(byte[] dstkey, byte[] sets...);
+  Long zinterstore(byte[] dstkey, byte[][] sets...);
 
-  Long zinterstore(byte[] dstkey, ZParams params, byte[] sets...);
+  Long zinterstore(byte[] dstkey, ZParams params, byte[][] sets...);
 
-  Long zunionstore(byte[] dstkey, byte[] sets...);
+  Long zunionstore(byte[] dstkey, byte[][] sets...);
 
-  Long zunionstore(byte[] dstkey, ZParams params, byte[] sets...);
+  Long zunionstore(byte[] dstkey, ZParams params, byte[][] sets...);
 
   byte[] brpoplpush(byte[] source, byte[] destination, int timeout);
 
   Long publish(byte[] channel, byte[] message);
 
-  void subscribe(BinaryRedisPubSub jedisPubSub, byte[] channels...);
+  void subscribe(BinaryRedisPubSub jedisPubSub, byte[][] channels...);
 
-  void psubscribe(BinaryRedisPubSub jedisPubSub, byte[] patterns...);
+  void psubscribe(BinaryRedisPubSub jedisPubSub, byte[][] patterns...);
 
-  Long bitop(BitOP op, byte[] destKey, byte[] srcKeys...);
+  Long bitop(BitOP op, byte[] destKey, byte[][] srcKeys...);
 
-  string pfmerge(byte[] destkey, byte[] sourcekeys...);
+  string pfmerge(byte[] destkey, byte[][] sourcekeys...);
 
-  Long pfcount(byte[] keys...);
+  Long pfcount(byte[][] keys...);
 
-  Long touch(byte[] keys...);
+  Long touch(byte[][] keys...);
 
   ScanResult!(byte[]) scan(byte[] cursor, ScanParams params);
 
