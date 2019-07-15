@@ -228,8 +228,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
    * @param key
    * @return Boolean reply, true if the key exists, otherwise false
    */
-  override
-  Boolean exists(string key) {
+  // override
+  bool exists(string key) {
     checkIsInMultiOrPipeline();
     client.exists(key);
     return client.getIntegerReply() == 1;
@@ -343,8 +343,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
    * @param newkey
    * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
    */
-  override
-  Long renamenx(string oldkey, string newkey) {
+  // override
+  Long hexistsrenamenx(string oldkey, string newkey) {
     checkIsInMultiOrPipeline();
     client.renamenx(oldkey, newkey);
     return client.getIntegerReply();
@@ -886,8 +886,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
    * @return Return true if the hash stored at key contains the specified field. Return false if the key is
    *         not found or the field is not present.
    */
-  override
-  Boolean hexists(string key, string field) {
+  // override
+  bool hexists(string key, string field) {
     checkIsInMultiOrPipeline();
     client.hexists(key, field);
     return client.getIntegerReply() == 1;

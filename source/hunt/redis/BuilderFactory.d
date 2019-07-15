@@ -1,41 +1,59 @@
 module hunt.redis.BuilderFactory;
 
+import hunt.redis.Builder;
+
 import hunt.collection;
+import hunt.Boolean;
+import hunt.Byte;
+import hunt.Double;
+import hunt.Integer;
+import hunt.Long;
 
 import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
 
-// class BuilderFactory {
-//   static Builder!(Double) DOUBLE = new Builder!(Double)() {
-//     override
-//     Double build(Object data) {
-//       string string = STRING.build(data);
-//       if (string is null) return null;
-//       try {
-//         return Double.valueOf(string);
-//       } catch (NumberFormatException e) {
-//         if (string.equals("inf") || string.equals("+inf")) return Double.POSITIVE_INFINITY;
-//         if (string.equals("-inf")) return Double.NEGATIVE_INFINITY;
-//         throw e;
-//       }
-//     }
+import std.concurrency : initOnce;
 
-//     override
-//     string toString() {
-//       return "double";
-//     }
-//   };
-//   static Builder!(Boolean) BOOLEAN = new Builder!(Boolean)() {
-//     override
-//     Boolean build(Object data) {
-//       return ((Long) data) == 1;
-//     }
+class BuilderFactory {
+  static Builder!(Double) DOUBLE() {
+    __gshared Double inst;
+    return initOnce!inst(new class Builder!(Double) {
+        override
+        Double build(Object data) {
+            string string = STRING.build(data);
+            if (string is null) return null;
+            try {
+                return Double.valueOf(string);
+            } catch (NumberFormatException e) {
+                if (string == "inf" || string == "+inf") return Double.POSITIVE_INFINITY;
+                if (string == "-inf") return Double.NEGATIVE_INFINITY;
+                throw e;
+            }
+        }
 
-//     override
-//     string toString() {
-//       return "bool";
-//     }
-//   };
+        override
+        string toString() {
+            return "double";
+        }
+    });
+  } 
+
+  static Builder!(Boolean) BOOLEAN() {
+    __gshared Boolean inst;
+    return initOnce!inst(new class Builder!(Boolean) {
+        override
+        Boolean build(Object data) {
+            return Boolean.valueOf((cast(Long) data) == 1);
+        }
+
+        override
+        string toString() {
+            return "bool";
+        }
+    });
+  }
+
+
 //   static Builder!(byte[]) BYTE_ARRAY = new Builder!(byte[])() {
 //     override
 //     byte[] build(Object data) {
@@ -48,33 +66,42 @@ import hunt.redis.util.SafeEncoder;
 //     }
 //   };
 
-//   static Builder!(Long) LONG = new Builder!(Long)() {
-//     override
-//     Long build(Object data) {
-//       return (Long) data;
-//     }
+  static Builder!(Long) LONG() {
+    __gshared Long inst;
+    return initOnce!inst(new class Builder!(Long) {
+        override
+        Long build(Object data) {
+            return cast(Long) data;
+        }
 
-//     override
-//     string toString() {
-//       return "long";
-//     }
+        override
+        string toString() {
+            return "long";
+        }
+    });
+  }
+  
+  static Builder!(string) STRING() {
+    __gshared string inst;
+    return initOnce!inst(new class Builder!(string) {
+        override
+        string build(Object data) {
+            if(data is null) return null;
+            byte[] bytes = (cast(Bytes)data).value;
+            return SafeEncoder.encode(bytes);
+        }
 
-//   };
-//   static Builder!(string) STRING = new Builder!(string)() {
-//     override
-//     string build(Object data) {
-//       return data is null ? null : SafeEncoder.encode((byte[]) data);
-//     }
+        override
+        string toString() {
+            return "string";
+        }
+    });
+  }
 
-//     override
-//     string toString() {
-//       return "string";
-//     }
 
-//   };
 //   static Builder!(List!(string)) STRING_LIST = new Builder!(List!(string))() {
 //     override
-//     
+    
 //     List!(string) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -99,7 +126,7 @@ import hunt.redis.util.SafeEncoder;
 //   };
 //   static Builder!(Map!(string, string)) STRING_MAP = new Builder!(Map!(string, string))() {
 //     override
-//     
+    
 //     Map!(string, string) build(Object data) {
 //       List!(byte[]) flatHash = (List!(byte[])) data;
 //       Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
@@ -120,7 +147,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(Map!(string, string)) PUBSUB_NUMSUB_MAP = new Builder!(Map!(string, string))() {
 //     override
-//     
+    
 //     Map!(string, string) build(Object data) {
 //       List!(Object) flatHash = (List!(Object)) data;
 //       Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
@@ -142,7 +169,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(Set!(string)) STRING_SET = new Builder!(Set!(string))() {
 //     override
-//     
+    
 //     Set!(string) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -168,7 +195,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
 //     override
-//     
+    
 //     List!(byte[]) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -186,7 +213,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
 //     override
-//     
+    
 //     Set!(byte[]) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -210,7 +237,7 @@ import hunt.redis.util.SafeEncoder;
 //   };
 //   static Builder!(Map!(byte[], byte[])) BYTE_ARRAY_MAP = new Builder!(Map!(byte[], byte[]))() {
 //     override
-//     
+    
 //     Map!(byte[], byte[]) build(Object data) {
 //       List!(byte[]) flatHash = (List!(byte[])) data;
 //       Map!(byte[], byte[]) hash = new RedisByteHashMap();
@@ -231,7 +258,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(Set!(string)) STRING_ZSET = new Builder!(Set!(string))() {
 //     override
-//     
+    
 //     Set!(string) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -257,7 +284,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(Set!(Tuple)) TUPLE_ZSET = new Builder!(Set!(Tuple))() {
 //     override
-//     
+    
 //     Set!(Tuple) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -452,7 +479,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(List!(Long)) LONG_LIST = new Builder!(List!(Long))() {
 //     override
-//     
+    
 //     List!(Long) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -469,7 +496,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(StreamEntryID) STREAM_ENTRY_ID = new Builder!(StreamEntryID)() {
 //     override
-//     
+    
 //      StreamEntryID build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -487,7 +514,7 @@ import hunt.redis.util.SafeEncoder;
 
 //   static Builder!(List!(StreamEntry)) STREAM_ENTRY_LIST = new Builder!(List!(StreamEntry))() {
 //     override
-//     
+    
 //      List!(StreamEntry) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -523,7 +550,7 @@ import hunt.redis.util.SafeEncoder;
   
 //   static Builder!(List!(StreamPendingEntry)) STREAM_PENDING_ENTRY_LIST = new Builder!(List!(StreamPendingEntry))() {
 //     override
-//     
+    
 //      List!(StreamPendingEntry) build(Object data) {
 //       if (null == data) {
 //         return null;
@@ -565,4 +592,4 @@ import hunt.redis.util.SafeEncoder;
 //     throw new InstantiationError( "Must not instantiate this class" );
 //   }
 
-// }
+}

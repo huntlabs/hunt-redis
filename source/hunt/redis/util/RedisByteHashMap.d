@@ -8,8 +8,16 @@ import hunt.collection.Iterator;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-// class RedisByteHashMap : Map!(byte[], byte[]), Cloneable, Serializable {
-//   private Map!(ByteArrayWrapper, byte[]) internalMap = new HashMap!(ByteArrayWrapper, byte[])();
+import hunt.Byte;
+
+alias RedisByteHashMap = HashMap!(byte[], byte[]);
+
+// class RedisByteHashMap : Map!(byte[], byte[]), Cloneable { // , Serializable 
+//   private Map!(Bytes, byte[]) internalMap = new HashMap!(ByteArrayWrapper, byte[])();
+
+//   this() {
+//       internalMap = new HashMap!(Bytes, byte[])();
+//   }
 
 //   override
 //   void clear() {
@@ -17,32 +25,34 @@ import hunt.collection.Set;
 //   }
 
 //   override
-//   bool containsKey(Object key) {
-//     if (key instanceof byte[]) return internalMap.containsKey(new ByteArrayWrapper((byte[]) key));
-//     return internalMap.containsKey(key);
+//   bool containsKey(byte[] key) {
+//     // if (key instanceof byte[]) return internalMap.containsKey(new ByteArrayWrapper((byte[]) key));
+//     // return internalMap.containsKey(key);
+//     return internalMap.containsKey(new Bytes(key));
 //   }
 
 //   override
-//   bool containsValue(Object value) {
+//   bool containsValue(byte[] value) {
 //     return internalMap.containsValue(value);
 //   }
 
-//   override
-//   Set<hunt.collection.MapEntry!(byte[], byte[])> entrySet() {
-//     Iterator<hunt.collection.MapEntry!(ByteArrayWrapper, byte[])> iterator = internalMap.entrySet()
-//         .iterator();
-//     HashSet!(Entry!(byte[], byte[])) hashSet = new HashSet<hunt.collection.MapEntry!(byte[], byte[])>();
-//     while (iterator.hasNext()) {
-//       Entry!(ByteArrayWrapper, byte[]) entry = iterator.next();
-//       hashSet.add(new RedisByteEntry(entry.getKey().data, entry.getValue()));
-//     }
-//     return hashSet;
-//   }
+// //   override
+// //   Set<hunt.collection.MapEntry!(byte[], byte[])> entrySet() {
+// //     Iterator<hunt.collection.MapEntry!(ByteArrayWrapper, byte[])> iterator = internalMap.entrySet()
+// //         .iterator();
+// //     HashSet!(Entry!(byte[], byte[])) hashSet = new HashSet<hunt.collection.MapEntry!(byte[], byte[])>();
+// //     while (iterator.hasNext()) {
+// //       Entry!(ByteArrayWrapper, byte[]) entry = iterator.next();
+// //       hashSet.add(new RedisByteEntry(entry.getKey().data, entry.getValue()));
+// //     }
+// //     return hashSet;
+// //   }
 
 //   override
-//   byte[] get(Object key) {
-//     if (key instanceof byte[]) return internalMap.get(new ByteArrayWrapper((byte[]) key));
-//     return internalMap.get(key);
+//   byte[] get(byte[] key) {
+//     // if (key instanceof byte[]) return internalMap.get(new ByteArrayWrapper((byte[]) key));
+//     // return internalMap.get(key);
+//     return internalMap.get(new Bytes(key));
 //   }
 
 //   override
@@ -50,36 +60,43 @@ import hunt.collection.Set;
 //     return internalMap.isEmpty();
 //   }
 
-//   override
-//   Set!(byte[]) keySet() {
-//     Set!(byte[]) keySet = new HashSet!(byte[])();
-//     Iterator!(ByteArrayWrapper) iterator = internalMap.keySet().iterator();
-//     while (iterator.hasNext()) {
-//       keySet.add(iterator.next().data);
+
+// override InputRange!(byte[]) byKey() {
+//     return internalMap.byKey();
+// }
+
+// override InputRange!(byte[]) byValue() {
+//     return internalMap.byValue();
+// }
+
+//     override int opApply(scope int delegate(byte[], byte[]) dg) {
+//         int r = 0;
+//         foreach(Bytes key, byte[] value; internalMap) {
+//             r = dg(key.value, value);
+//         }
+
+//         return r;
 //     }
-//     return keySet;
-//   }
 
 //   override
 //   byte[] put(byte[] key, byte[] value) {
-//     return internalMap.put(new ByteArrayWrapper(key), value);
+//     return internalMap.put(new Bytes(key), value);
 //   }
 
-//   override
+// //   override
   
-//   void putAll(Map<? extends byte[], ? extends byte[]> m) {
-//     Iterator<?> iterator = m.entrySet().iterator();
-//     while (iterator.hasNext()) {
-//       Entry<? extends byte[], ? extends byte[]> next = (Entry<? extends byte[], ? extends byte[]>) iterator
-//           .next();
-//       internalMap.put(new ByteArrayWrapper(next.getKey()), next.getValue());
-//     }
-//   }
+// //   void putAll(Map<? extends byte[], ? extends byte[]> m) {
+// //     Iterator<?> iterator = m.entrySet().iterator();
+// //     while (iterator.hasNext()) {
+// //       Entry<? extends byte[], ? extends byte[]> next = (Entry<? extends byte[], ? extends byte[]>) iterator
+// //           .next();
+// //       internalMap.put(new ByteArrayWrapper(next.getKey()), next.getValue());
+// //     }
+// //   }
 
 //   override
-//   byte[] remove(Object key) {
-//     if (key instanceof byte[]) return internalMap.remove(new ByteArrayWrapper((byte[]) key));
-//     return internalMap.remove(key);
+//   byte[] remove(byte[] key) {
+//     return internalMap.remove(new Bytes(key));
 //   }
 
 //   override
@@ -88,59 +105,8 @@ import hunt.collection.Set;
 //   }
 
 //   override
-//   Collection!(byte[]) values() {
+//   byte[][] values() {
 //     return internalMap.values();
 //   }
 
-//   private static class ByteArrayWrapper {
-//     private byte[] data;
-
-//     ByteArrayWrapper(byte[] data) {
-//       if (data is null) {
-//         throw new NullPointerException();
-//       }
-//       this.data = data;
-//     }
-
-//     override
-//     bool opEquals(Object other) {
-//       if (other is null) return false;
-//       if (other is this) return true;
-//       if (!(other instanceof ByteArrayWrapper)) return false;
-
-//       return Arrays.equals(data, ((ByteArrayWrapper) other).data);
-//     }
-
-//     override
-//     size_t toHash() @trusted nothrow {
-//       return Arrays.hashCode(data);
-//     }
-//   }
-
-//   private static class RedisByteEntry : Entry!(byte[], byte[]) {
-//     private byte[] value;
-//     private byte[] key;
-
-//     RedisByteEntry(byte[] key, byte[] value) {
-//       this.key = key;
-//       this.value = value;
-//     }
-
-//     override
-//     byte[] getKey() {
-//       return this.key;
-//     }
-
-//     override
-//     byte[] getValue() {
-//       return this.value;
-//     }
-
-//     override
-//     byte[] setValue(byte[] value) {
-//       this.value = value;
-//       return value;
-//     }
-
-//   }
 // }

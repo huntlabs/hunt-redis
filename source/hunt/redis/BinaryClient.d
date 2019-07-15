@@ -265,17 +265,17 @@ class BinaryClient : Connection {
     sendCommand(Command.HSET, key, field, value);
   }
 
-  // void hset(byte[] key, Map!(byte[], byte[]) hash) {
-  //   byte[][] params = new byte[1 + hash.size() * 2][];
+  void hset(byte[] key, Map!(byte[], byte[]) hash) {
+    byte[][] params = new byte[][1 + hash.size() * 2];
 
-  //   int index = 0;
-  //   params[index++] = key;
-  //   foreach (Entry!(byte[], byte[]) entry ; hash.entrySet()) {
-  //     params[index++] = entry.getKey();
-  //     params[index++] = entry.getValue();
-  //   }
-  //   sendCommand(Command.HSET, params);
-  // }
+    int index = 0;
+    params[index++] = key;
+    foreach (byte[] key, byte[] value; hash) {
+      params[index++] = key;
+      params[index++] = value;
+    }
+    sendCommand(Command.HSET, params);
+  }
 
   void hget(byte[] key, byte[] field) {
     sendCommand(Command.HGET, key, field);

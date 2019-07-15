@@ -231,7 +231,6 @@ class Client : BinaryClient, Commands {
     }
     hset(SafeEncoder.encode(key), bhash);
   }
-  alias hset = BinaryClient.hset;
 
   override
   void hget(string key, string field) {
@@ -955,10 +954,12 @@ class Client : BinaryClient, Commands {
   void incrByFloat(string key, double increment) {
     incrByFloat(SafeEncoder.encode(key), increment);
   }
+  alias incrByFloat = BinaryClient.incrByFloat;
 
   void psetex(string key, long milliseconds, string value) {
     psetex(SafeEncoder.encode(key), milliseconds, SafeEncoder.encode(value));
   }
+  alias psetex = BinaryClient.psetex;
 
   void srandmember(string key, int count) {
     srandmember(SafeEncoder.encode(key), count);
@@ -988,6 +989,7 @@ class Client : BinaryClient, Commands {
   void hincrByFloat(string key, string field, double increment) {
     hincrByFloat(SafeEncoder.encode(key), SafeEncoder.encode(field), increment);
   }
+  alias hincrByFloat = BinaryClient.hincrByFloat;
 
   override
   void scan(string cursor, ScanParams params) {

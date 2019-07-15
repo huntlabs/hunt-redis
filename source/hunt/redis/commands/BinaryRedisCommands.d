@@ -108,7 +108,7 @@ interface BinaryRedisCommands {
 
   Double hincrByFloat(byte[] key, byte[] field, double value);
 
-  Boolean hexists(byte[] key, byte[] field);
+  bool hexists(byte[] key, byte[] field);
 
   Long hdel(byte[] key, byte[][] field...);
 
@@ -152,7 +152,7 @@ interface BinaryRedisCommands {
 
   Long scard(byte[] key);
 
-  Boolean sismember(byte[] key, byte[] member);
+  bool sismember(byte[] key, byte[] member);
 
   byte[] srandmember(byte[] key);
 

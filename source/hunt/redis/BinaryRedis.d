@@ -4,6 +4,7 @@ import hunt.redis.BinaryRedisPubSub;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
 import hunt.redis.Client;
+import hunt.redis.BuilderFactory;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
 import hunt.redis.GeoUnit;
@@ -46,6 +47,7 @@ import hunt.Double;
 import hunt.Long;
 
 import std.format;
+import std.range;
 
 
 /**
@@ -425,7 +427,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) keys(byte[] pattern) {
     checkIsInMultiOrPipeline();
     client.keys(pattern);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1059,7 +1061,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    *         not found or the field is not present.
    */
   override
-  Boolean hexists(byte[] key, byte[] field) {
+  bool hexists(byte[] key, byte[] field) {
     checkIsInMultiOrPipeline();
     client.hexists(key, field);
     return client.getIntegerReply() == 1;
@@ -1107,7 +1109,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) hkeys(byte[] key) {
     checkIsInMultiOrPipeline();
     client.hkeys(key);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1137,9 +1139,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.hgetAll(key);
     List!(byte[]) flatHash = client.getBinaryMultiBulkReply();
     Map!(byte[], byte[]) hash = new RedisByteHashMap();
-    Iterator!(byte[]) iterator = flatHash.iterator();
-    while (iterator.hasNext()) {
-      hash.put(iterator.next(), iterator.next());
+    InputRange!(byte[]) iterator = flatHash.iterator();
+    while(!iterator.empty()) {
+      byte[] k = iterator.front();
+      iterator.popFront();
+      byte[] v = iterator.front();
+      iterator.popFront();
+      hash.put(k, v);
     }
 
     return hash;
@@ -1432,7 +1438,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) smembers(byte[] key) {
     checkIsInMultiOrPipeline();
     client.smembers(key);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1476,7 +1482,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.spop(key, count);
     List!(byte[]) members = client.getBinaryMultiBulkReply();
     if (members is null) return null;
-    return SetFromList.of(members);
+    return new SetFromList!(byte[])(members);
   }
 
   /**
@@ -1529,7 +1535,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    *         is not a member of the set OR if the key does not exist
    */
   override
-  Boolean sismember(byte[] key, byte[] member) {
+  bool sismember(byte[] key, byte[] member) {
     checkIsInMultiOrPipeline();
     client.sismember(key, member);
     return client.getIntegerReply() == 1;
@@ -1554,7 +1560,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) sinter(byte[][] keys...) {
     checkIsInMultiOrPipeline();
     client.sinter(keys);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1590,7 +1596,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) sunion(byte[][] keys...) {
     checkIsInMultiOrPipeline();
     client.sunion(keys);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1634,7 +1640,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) sdiff(byte[][] keys...) {
     checkIsInMultiOrPipeline();
     client.sdiff(keys);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1723,7 +1729,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) zrange(byte[] key, long start, long stop) {
     checkIsInMultiOrPipeline();
     client.zrange(key, start, stop);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -1826,7 +1832,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) zrevrange(byte[] key, long start, long stop) {
     checkIsInMultiOrPipeline();
     client.zrevrange(key, start, stop);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2331,14 +2337,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) zrangeByScore(byte[] key, double min, double max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
   Set!(byte[]) zrangeByScore(byte[] key, byte[] min, byte[] max) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -2395,7 +2401,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2403,7 +2409,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByScore(key, min, max, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   /**
@@ -2549,14 +2555,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) zrevrangeByScore(byte[] key, double max, double min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
   Set!(byte[]) zrevrangeByScore(byte[] key, byte[] max, byte[] min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2564,7 +2570,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2572,7 +2578,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByScore(key, max, min, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2810,7 +2816,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   Set!(byte[]) zrangeByLex(byte[] key, byte[] min, byte[] max) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -2818,21 +2824,21 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrangeByLex(key, min, max, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
   Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
   Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min, int offset, int count) {
     checkIsInMultiOrPipeline();
     client.zrevrangeByLex(key, max, min, offset, count);
-    return SetFromList.of(client.getBinaryMultiBulkReply());
+    return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
   }
 
   override
@@ -4027,12 +4033,12 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     }
 
     override
-    bool contains(Object o) {
+    bool contains(E o) {
       return list.contains(o);
     }
 
     override
-    bool remove(Object o) {
+    bool remove(E o) {
       return list.remove(o);
     }
 
@@ -4047,7 +4053,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     // }
 
     override
-    Object[] toArray() {
+    E[] toArray() {
       return list.toArray();
     }
 
@@ -4063,7 +4069,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
 
     override
     size_t toHash() @trusted nothrow {
-      return list.hashCode();
+      return list.toHash();
     }
 
     override bool opEquals(Object o) {

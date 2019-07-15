@@ -94,7 +94,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Boolean exists(byte[] key) {
+  bool exists(byte[] key) {
     Redis j = getShard(key);
     return j.exists(key);
   }
@@ -292,7 +292,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Boolean hexists(byte[] key, byte[] field) {
+  bool hexists(byte[] key, byte[] field) {
     Redis j = getShard(key);
     return j.hexists(key, field);
   }
@@ -448,7 +448,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Boolean sismember(byte[] key, byte[] member) {
+  bool sismember(byte[] key, byte[] member) {
     Redis j = getShard(key);
     return j.sismember(key, member);
   }
