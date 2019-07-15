@@ -10,8 +10,8 @@ class ScanParams {
 
     private Map!(Protocol.Keyword, ByteBuffer) params;
 
-    static string SCAN_POINTER_START = string.valueOf(0);
-    static byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
+    enum string SCAN_POINTER_START = "0";
+    enum byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
 
     this() {
         params = new HashMap!(Protocol.Keyword, ByteBuffer); // new EnumMap!(Keyword, ByteBuffer)(Keyword.class);

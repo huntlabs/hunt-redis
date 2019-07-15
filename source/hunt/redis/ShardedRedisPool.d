@@ -17,6 +17,9 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.Boolean;
 
+import std.regex;
+alias Pattern = Regex!char;
+
 
 class ShardedRedisPool : Pool!(ShardedRedis) {
   this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {
@@ -77,13 +80,13 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
     }
 
     override
-    PooledObject!(ShardedRedis) makeObject() {
+    IPooledObject makeObject() {
       ShardedRedis jedis = new ShardedRedis(shards, algo, keyTagPattern);
       return new DefaultPooledObject!(ShardedRedis)(jedis);
     }
 
     override
-    void destroyObject(PooledObject!(ShardedRedis) pooledShardedRedis) {
+    void destroyObject(IPooledObject pooledShardedRedis) {
       ShardedRedis shardedRedis = pooledShardedRedis.getObject();
       foreach(Redis jedis ; shardedRedis.getAllShards()) {
         if (jedis.isConnected()) {
@@ -102,7 +105,7 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
     }
 
     override
-    bool validateObject(PooledObject!(ShardedRedis) pooledShardedRedis) {
+    bool validateObject(IPooledObject pooledShardedRedis) {
       try {
         ShardedRedis jedis = pooledShardedRedis.getObject();
         foreach(Redis shard ; jedis.getAllShards()) {
@@ -117,12 +120,12 @@ class ShardedRedisPool : Pool!(ShardedRedis) {
     }
 
     override
-    void activateObject(PooledObject!(ShardedRedis) p) {
+    void activateObject(IPooledObject p) {
 
     }
 
     override
-    void passivateObject(PooledObject!(ShardedRedis) p) {
+    void passivateObject(IPooledObject p) {
 
     }
   }

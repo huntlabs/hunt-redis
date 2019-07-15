@@ -33,6 +33,10 @@ import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
+import std.regex;
+alias Pattern = Regex!char;
+
+
 class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands {
   this(List!(RedisShardInfo) shards) {
     super(shards);

@@ -1,39 +1,38 @@
 module hunt.redis.util.Hashing;
 
-// import hunt.security.MessageDigest;
-// import hunt.security.NoSuchAlgorithmException;
+import hunt.Exceptions;
+import hunt.redis.util.MurmurHash;
 
-// interface Hashing {
-//   Hashing MURMUR_HASH = new MurmurHash();
-//   ThreadLocal!(MessageDigest) md5Holder = new ThreadLocal!(MessageDigest)();
+import std.concurrency : initOnce;
+import std.digest.md;
 
-//   Hashing MD5 = new class Hashing {
-//     override
-//     long hash(string key) {
-//       return hash(SafeEncoder.encode(key));
-//     }
+import object;
 
-//     override
-//     long hash(byte[] key) {
-//       try {
-//         if (md5Holder.get() is null) {
-//           md5Holder.set(MessageDigest.getInstance("MD5"));
-//         }
-//       } catch (NoSuchAlgorithmException e) {
-//         throw new IllegalStateException("++++ no md5 algorithm found");
-//       }
-//       MessageDigest md5 = md5Holder.get();
+interface Hashing {
+  static Hashing MURMUR_HASH() {
+    __gshared Hashing inst;
+    return initOnce!inst(new MurmurHash());
+  }
 
-//       md5.reset();
-//       md5.update(key);
-//       byte[] bKey = md5.digest();
-//       long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
-//           | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
-//       return res;
-//     }
-//   };
+  static Hashing MD5() {
+    __gshared Hashing inst;
+    return initOnce!inst(new class Hashing {
+        override long hash(string key) {
+            return cast(long)hashOf(key);
+        }
 
-//   long hash(string key);
+        override
+        long hash(byte[] key) {
+            ubyte[] bKey = md5Of(key);
+            long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
+                | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
+            return res;
+        }
+    });
+  } 
+  
 
-//   long hash(byte[] key);
-// }
+  long hash(string key);
+
+  long hash(byte[] key);
+}

@@ -48,6 +48,10 @@ import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
+import std.regex;
+alias Pattern = Regex!char;
+
+
 class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
 
   protected ShardedRedisPool dataSource = null;

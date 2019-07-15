@@ -11,6 +11,8 @@
 
 module hunt.redis.util.MurmurHash;
 
+import hunt.redis.util.Hashing;
+
 import hunt.collection.ByteBuffer;
 
 // import java.nio.ByteOrder;

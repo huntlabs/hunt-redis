@@ -2,7 +2,7 @@ module hunt.redis.Connection;
 
 import hunt.redis.commands.ProtocolCommand;
 import hunt.redis.Exceptions;
-import hunt.redis.Exceptions;
+import hunt.redis.Protocol;
 import hunt.redis.util.IOUtils;
 import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
@@ -26,9 +26,11 @@ import hunt.util.Common;
 
 import std.socket;
 
+alias Protocol = hunt.redis.Protocol.Protocol;
+
 class Connection : Closeable {
 
-  private enum byte[][] EMPTY_ARGS = new byte[0][];
+  private enum byte[][] EMPTY_ARGS = null;
 
   private string host = Protocol.DEFAULT_HOST;
   private int port = Protocol.DEFAULT_PORT;

@@ -1,27 +1,29 @@
 module hunt.redis.util.Sharded;
 
+import hunt.redis.util.Hashing;
 import hunt.redis.util.ShardInfo;
 
 import hunt.collection;
 import hunt.Long;
 
 import std.regex;
+alias Pattern = Regex!char;
 
 class Sharded(R, S) if(is(S : ShardInfo!(R))) {
 
   enum int DEFAULT_WEIGHT = 1;
   private TreeMap!(Long, S) nodes;
   private Hashing algo;
-  private Map!(ShardInfo!(R), R) resources = new LinkedHashMap!(ShardInfo!(R), R)();
+  private Map!(ShardInfo!(R), R) resources;
 
   /**
    * The default pattern used for extracting a key tag. The pattern must have a group (between
    * parenthesis), which delimits the tag to be hashed. A null pattern avoids applying the regular
    * expression for each lookup, improving performance a little bit is key tags aren't being used.
    */
-  private Pattern tagPattern = null;
+  private Regex!char tagPattern;
   // the tag is anything between {}
-  static Pattern DEFAULT_KEY_TAG_PATTERN = Pattern.compile("\\{(.+?)\\}");
+  enum DEFAULT_KEY_TAG_PATTERN = ctRegex!("\\{(.+?)\\}");
 
   this(List!(S) shards) {
     this(shards, Hashing.MURMUR_HASH); // MD5 is really not good as we works
@@ -46,6 +48,7 @@ class Sharded(R, S) if(is(S : ShardInfo!(R))) {
   }
 
   private void initialize(List!(S) shards) {
+    resources = new LinkedHashMap!(ShardInfo!(R), R)();
     nodes = new TreeMap!(Long, S)();
 
     for (int i = 0; i != shards.size(); ++i) {
