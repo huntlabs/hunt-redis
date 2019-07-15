@@ -1,9 +1,6 @@
 module hunt.redis.ShardedRedisPipeline;
 
-import hunt.collection.ArrayList;
-import hunt.collection.Linkedlist;
-import hunt.collection.List;
-import hunt.collection.Queue;
+import hunt.collection;
 
 
 private class FutureResult {

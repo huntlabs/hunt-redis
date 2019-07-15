@@ -1,12 +1,14 @@
 module hunt.redis.Tuple;
 
+import hunt.redis.util.ByteArrayComparator;
+import hunt.redis.util.SafeEncoder;
+
 import hunt.util.ArrayHelper;
 // import java.util.Objects;
 
+import hunt.util.Common;
 import hunt.Double;
 
-import hunt.redis.util.ByteArrayComparator;
-import hunt.redis.util.SafeEncoder;
 
 class Tuple : Comparable!(Tuple) {
   private byte[] element;
@@ -50,7 +52,7 @@ class Tuple : Comparable!(Tuple) {
   }
 
   override
-  int compareTo(Tuple other) {
+  int opCmp(Tuple other) {
     return compare(this, other);
   }
 

@@ -1,5 +1,7 @@
 module hunt.redis.GeoRadiusResponse;
 
+import hunt.redis.GeoCoordinate;
+
 import hunt.redis.util.SafeEncoder;
 
 class GeoRadiusResponse {

@@ -1,6 +1,8 @@
 module hunt.redis.commands.Commands;
 
+
 import hunt.collection.Map;
+import hunt.Double;
 
 import hunt.redis.BitOP;
 import hunt.redis.StreamEntryID;
@@ -368,7 +370,7 @@ public interface Commands {
   
   void xrevrange(string key, StreamEntryID end, StreamEntryID start, int count);
   
-  void xread(int count, long block, Entry!(string, StreamEntryID) streams...);
+  void xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...);
   
   void xack(string key, string group, StreamEntryID[] ids...);
   
@@ -384,7 +386,7 @@ public interface Commands {
 
   void xtrim(string key, long maxLen, bool approximateLength);
 
-  void xreadGroup(string groupname, string consumer, int count, long block, bool noAck, Entry!(string, StreamEntryID) streams...);
+  void xreadGroup(string groupname, string consumer, int count, long block, bool noAck, MapEntry!(string, StreamEntryID)[] streams...);
 
   void xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername);
 

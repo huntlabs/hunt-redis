@@ -1,6 +1,26 @@
 module hunt.redis.BinaryClient;
 
+
+import hunt.redis.BitOP;
+import hunt.redis.BitPosParams;
+import hunt.redis.Connection;
+import hunt.redis.ListPosition;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoUnit;
 import hunt.redis.Protocol;
+import hunt.redis.ScanParams;
+import hunt.redis.SortingParams;
+import hunt.redis.ZParams;
+
+// import hunt.redis.Protocol.Keyword;
+import hunt.redis.params.ClientKillParams;
+import hunt.redis.params.GeoRadiusParam;
+import hunt.redis.params.MigrateParams;
+import hunt.redis.params.SetParams;
+import hunt.redis.params.ZAddParams;
+import hunt.redis.params.ZIncrByParams;
+import hunt.redis.util.SafeEncoder;
+
 
 // import hunt.redis.Protocol.toByteArray;
 // import hunt.redis.Protocol.Command;
@@ -19,24 +39,17 @@ import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.collection.Map;
 
-// import hunt.redis.Protocol.Keyword;
-import hunt.redis.params.ClientKillParams;
-import hunt.redis.params.GeoRadiusParam;
-import hunt.redis.params.MigrateParams;
-import hunt.redis.params.SetParams;
-import hunt.redis.params.ZAddParams;
-import hunt.redis.params.ZIncrByParams;
-import hunt.redis.util.SafeEncoder;
+import hunt.Double;
 
 class BinaryClient : Connection {
 
-  private bool isInMulti;
+  private bool _isInMulti;
 
   private string password;
 
   private int db;
 
-  private bool isInWatch;
+  private bool _isInWatch;
 
   this() {
     super();
@@ -54,18 +67,18 @@ class BinaryClient : Connection {
     super(host, port, ssl);
   }
 
-  this(string host, int port, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   bool isInMulti() {
-    return isInMulti;
+    return _isInMulti;
   }
 
   bool isInWatch() {
-    return isInWatch;
+    return _isInWatch;
   }
 
   private byte[][] joinParameters(byte[] first, byte[][] rest) {
@@ -502,29 +515,29 @@ class BinaryClient : Connection {
 
   void multi() {
     sendCommand(MULTI);
-    isInMulti = true;
+    _isInMulti = true;
   }
 
   void discard() {
     sendCommand(DISCARD);
-    isInMulti = false;
-    isInWatch = false;
+    _isInMulti = false;
+    _isInWatch = false;
   }
 
   void exec() {
     sendCommand(EXEC);
-    isInMulti = false;
-    isInWatch = false;
+    _isInMulti = false;
+    _isInWatch = false;
   }
 
   void watch(byte[] keys...) {
     sendCommand(WATCH, keys);
-    isInWatch = true;
+    _isInWatch = true;
   }
 
   void unwatch() {
     sendCommand(UNWATCH);
-    isInWatch = false;
+    _isInWatch = false;
   }
 
   void sort(byte[] key) {

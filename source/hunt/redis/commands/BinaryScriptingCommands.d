@@ -1,8 +1,9 @@
 module hunt.redis.commands.BinaryScriptingCommands;
 
 import hunt.collection.List;
+import hunt.Long;
 
-public interface BinaryScriptingCommands {
+interface BinaryScriptingCommands {
 
   Object eval(byte[] script, byte[] keyCount, byte[] params...);
 

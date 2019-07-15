@@ -1,5 +1,6 @@
 module hunt.redis.commands.MultiKeyBinaryCommands;
 
+
 import hunt.redis.BinaryRedisPubSub;
 import hunt.redis.BitOP;
 import hunt.redis.SortingParams;
@@ -9,7 +10,9 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-public interface MultiKeyBinaryCommands {
+import hunt.Long;
+
+interface MultiKeyBinaryCommands {
   Long del(byte[] keys...);
 
   Long unlink(byte[] keys...);

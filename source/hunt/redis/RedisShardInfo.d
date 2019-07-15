@@ -1,9 +1,12 @@
 module hunt.redis.RedisShardInfo;
 
+import hunt.redis.Redis;
 import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.ShardInfo;
 import hunt.redis.util.Sharded;
+
+import hunt.net.util.HttpURI;
 
 class RedisShardInfo : ShardInfo!(Redis) {
 
@@ -16,13 +19,13 @@ class RedisShardInfo : ShardInfo!(Redis) {
   // Default Redis DB
   private int db = 0;
   private bool ssl;
-  private SSLSocketFactory sslSocketFactory;
-  private SSLParameters sslParameters;
-  private HostnameVerifier hostnameVerifier;
+  // private SSLSocketFactory sslSocketFactory;
+  // private SSLParameters sslParameters;
+  // private HostnameVerifier hostnameVerifier;
   
   this(string host) {
     super(Sharded.DEFAULT_WEIGHT);
-    URI uri = URI.create(host);
+    HttpURI uri = HttpURI.create(host);
     if (RedisURIHelper.isValid(uri)) {
       this.host = uri.getHost();
       this.port = uri.getPort();
@@ -154,11 +157,11 @@ class RedisShardInfo : ShardInfo!(Redis) {
     this.name = name;
   }
 
-  // this(URI uri) {
+  // this(HttpURI uri) {
   //   super(Sharded.DEFAULT_WEIGHT);
   //   if (!RedisURIHelper.isValid(uri)) {
   //     throw new InvalidURIException(string.format(
-  //       "Cannot open Redis connection due invalid URI. %s", uri.toString()));
+  //       "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
   //   }
 
   //   this.host = uri.getHost();
@@ -168,7 +171,7 @@ class RedisShardInfo : ShardInfo!(Redis) {
   //   this.ssl = RedisURIHelper.isRedisSSLScheme(uri);
   // }
 
-  // this(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  // this(HttpURI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
   //     HostnameVerifier hostnameVerifier) {
   //   this(uri);
   //   this.sslSocketFactory = sslSocketFactory;

@@ -1,5 +1,7 @@
 module hunt.redis.commands.BinaryRedisCommands;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.collection.Collection;
 import hunt.collection.List;
 import hunt.collection.Map;
@@ -17,6 +19,10 @@ import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 /**
  * Common interface for sharded and non-sharded BinaryRedis

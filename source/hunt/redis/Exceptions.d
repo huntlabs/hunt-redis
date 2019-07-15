@@ -2,6 +2,8 @@ module hunt.redis.Exceptions;
 
 import hunt.Exceptions;
 
+import hunt.redis.HostAndPort;
+
 class RedisException : RuntimeException {
     mixin BasicExceptionCtors;
 }
@@ -98,11 +100,11 @@ class RedisAskDataException : RedisRedirectionException {
         super(cause, targetHost, slot);
     }
 
-    this(String message, Throwable cause, HostAndPort targetHost, int slot) {
+    this(string message, Throwable cause, HostAndPort targetHost, int slot) {
         super(message, cause, targetHost, slot);
     }
 
-    this(String message, HostAndPort targetHost, int slot) {
+    this(string message, HostAndPort targetHost, int slot) {
         super(message, targetHost, slot);
     }
 }

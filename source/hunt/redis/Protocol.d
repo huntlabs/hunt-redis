@@ -198,7 +198,7 @@ final class Protocol {
     return read;
   }
 
-  private static Long processInteger(RedisInputStream inputStream) {
+  private static long processInteger(RedisInputStream inputStream) {
     return inputStream.readLongCrLf();
   }
 

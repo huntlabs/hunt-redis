@@ -1,5 +1,7 @@
 module hunt.redis.params.MigrateParams;
 
+import hunt.redis.params.Params;
+
 class MigrateParams : Params {
 
   private enum string COPY = "COPY";

@@ -1,18 +1,5 @@
 module hunt.redis.Connection;
 
-import hunt.util.Common;
-import hunt.Exceptions;
-// import java.net.InetSocketAddress;
-// import java.net.Socket;
-// import java.net.SocketException;
-import hunt.collection.ArrayList;
-import hunt.collection.List;
-
-// import javax.net.ssl.HostnameVerifier;
-// import javax.net.ssl.SSLParameters;
-// import javax.net.ssl.SSLSocket;
-// import javax.net.ssl.SSLSocketFactory;
-
 import hunt.redis.commands.ProtocolCommand;
 import hunt.redis.Exceptions;
 import hunt.redis.Exceptions;
@@ -20,6 +7,22 @@ import hunt.redis.util.IOUtils;
 import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
+
+// import java.net.InetSocketAddress;
+// import java.net.Socket;
+// import java.net.SocketException;
+import hunt.collection.ArrayList;
+import hunt.collection.List;
+import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
+import hunt.Long;
+import hunt.util.Common;
+
+// import javax.net.ssl.HostnameVerifier;
+// import javax.net.ssl.SSLParameters;
+// import javax.net.ssl.SSLSocket;
+// import javax.net.ssl.SSLSocketFactory;
+
 
 import std.socket;
 
@@ -36,9 +39,9 @@ class Connection : Closeable {
   private int soTimeout = Protocol.DEFAULT_TIMEOUT;
   private bool broken = false;
   private bool ssl;
-  private SSLSocketFactory sslSocketFactory;
-  private SSLParameters sslParameters;
-  private HostnameVerifier hostnameVerifier;
+  // private SSLSocketFactory sslSocketFactory;
+  // private SSLParameters sslParameters;
+  // private HostnameVerifier hostnameVerifier;
 
   this() {
   }
@@ -58,16 +61,16 @@ class Connection : Closeable {
     this.ssl = ssl;
   }
 
-  this(string host, int port, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    this.host = host;
-    this.port = port;
-    this.ssl = ssl;
-    this.sslSocketFactory = sslSocketFactory;
-    this.sslParameters = sslParameters;
-    this.hostnameVerifier = hostnameVerifier;
-  }
+  // this(string host, int port, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   this.host = host;
+  //   this.port = port;
+  //   this.ssl = ssl;
+  //   this.sslSocketFactory = sslSocketFactory;
+  //   this.sslParameters = sslParameters;
+  //   this.hostnameVerifier = hostnameVerifier;
+  // }
 
   Socket getSocket() {
     return socket;

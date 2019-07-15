@@ -1,5 +1,7 @@
 module hunt.redis.params.GeoRadiusParam;
 
+import hunt.redis.params.Params;
+
 import hunt.redis.Protocol;
 import hunt.redis.util.SafeEncoder;
 

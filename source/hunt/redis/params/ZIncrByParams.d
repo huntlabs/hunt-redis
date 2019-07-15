@@ -1,5 +1,6 @@
 module hunt.redis.params.ZIncrByParams;
 
+import hunt.redis.params.Params;
 import hunt.redis.util.SafeEncoder;
 
 import hunt.collection.ArrayList;

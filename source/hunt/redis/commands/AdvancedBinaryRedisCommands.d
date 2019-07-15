@@ -5,6 +5,8 @@ import hunt.collection.List;
 import hunt.redis.params.MigrateParams;
 import hunt.redis.params.ClientKillParams;
 
+import hunt.Long;
+
 public interface AdvancedBinaryRedisCommands {
 
   List!(byte[]) configGet(byte[] pattern);

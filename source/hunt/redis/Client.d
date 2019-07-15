@@ -1,11 +1,17 @@
 module hunt.redis.Client;
 
+import hunt.redis.BinaryClient;
+import hunt.redis.BitOP;
+import hunt.redis.BitPosParams;
+import hunt.redis.ClusterReset;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoUnit;
+import hunt.redis.ListPosition;
 import hunt.redis.Protocol;
-
-import hunt.collection.ArrayList;
-import hunt.collection.HashMap;
-import hunt.collection.List;
-import hunt.collection.Map;
+import hunt.redis.ScanParams;
+import hunt.redis.SortingParams;
+import hunt.redis.StreamEntryID;
+import hunt.redis.ZParams;
 
 import hunt.redis.commands.Commands;
 import hunt.redis.params.GeoRadiusParam;
@@ -14,6 +20,12 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
+
+import hunt.Double;
+import hunt.collection.ArrayList;
+import hunt.collection.HashMap;
+import hunt.collection.List;
+import hunt.collection.Map;
 
 class Client : BinaryClient, Commands {
 
@@ -33,11 +45,11 @@ class Client : BinaryClient, Commands {
     super(host, port, ssl);
   }
 
-  this(string host, int port, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   override
   void ping(string message) {
@@ -1180,7 +1192,7 @@ class Client : BinaryClient, Commands {
   }
   
   override
-  void xread(int count, long block, Entry!(string, StreamEntryID) streams...) {
+  void xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
     Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(streams.length);
     foreach(Entry!(string, StreamEntryID) entry ; streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), 
@@ -1236,9 +1248,9 @@ class Client : BinaryClient, Commands {
 
   override
   void xreadGroup(string groupname, string consumer, int count, long block, 
-                  bool noAck, Entry!(string, StreamEntryID) streams...) {
+                  bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
     Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(streams.length);
-    foreach(Entry!(string, StreamEntryID) entry ; streams) {
+    foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue() is null ? ">" : entry.getValue().toString()));
     }
     xreadGroup(SafeEncoder.encode(groupname), SafeEncoder.encode(consumer), count, block, noAck, bhash);    

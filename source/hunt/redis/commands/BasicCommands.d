@@ -2,7 +2,9 @@ module hunt.redis.commands.BasicCommands;
 
 import hunt.redis.DebugParams;
 
-public interface BasicCommands {
+import hunt.Long;
+
+interface BasicCommands {
 
   /**
    * This command is often used to test if a connection is still alive, or to measure latency.

@@ -1,5 +1,7 @@
 module hunt.redis.Transaction;
 
+import hunt.redis.Client;
+import hunt.redis.MultiKeyPipelineBase;
 import hunt.redis.Response;
 
 import hunt.util.Common;

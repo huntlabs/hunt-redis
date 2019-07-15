@@ -1,8 +1,12 @@
 module hunt.redis.BinaryRedis;
 
+import hunt.redis.Client;
+import hunt.redis.HostAndPort;
+import hunt.redis.Pipeline;
 import hunt.redis.Protocol;
+import hunt.redis.RedisShardInfo;
+import hunt.redis.Transaction;
 
-// import java.net.URI;
 import hunt.net.util.HttpURI;
 import hunt.collection;
 import hunt.Exceptions;
@@ -37,7 +41,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   this(string host) {
-    URI uri = URI.create(host);
+    HttpURI uri = HttpURI.create(host);
     if (RedisURIHelper.isValid(uri)) {
       initializeClientFromURI(uri);
     } else {
@@ -57,11 +61,11 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client = new Client(host, port, ssl);
   }
 
-  this(string host, int port, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(string host, int port, int timeout) {
     this(host, port, timeout, timeout);
@@ -71,11 +75,11 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     this(host, port, timeout, timeout, ssl);
   }
 
-  this(string host, int port, int timeout, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    this(host, port, timeout, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, int timeout, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   this(host, port, timeout, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(string host, int port, int connectionTimeout,
       int soTimeout) {
@@ -91,13 +95,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.setSoTimeout(soTimeout);
   }
 
-  this(string host, int port, int connectionTimeout,
-      int soTimeout, bool ssl, SSLSocketFactory sslSocketFactory,
-      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-    client.setConnectionTimeout(connectionTimeout);
-    client.setSoTimeout(soTimeout);
-  }
+  // this(string host, int port, int connectionTimeout,
+  //     int soTimeout, bool ssl, SSLSocketFactory sslSocketFactory,
+  //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
+  //   client = new Client(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  //   client.setConnectionTimeout(connectionTimeout);
+  //   client.setSoTimeout(soTimeout);
+  // }
 
   this(RedisShardInfo shardInfo) {
     client = new Client(shardInfo.getHost(), shardInfo.getPort(), shardInfo.getSsl(),
@@ -109,31 +113,31 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.setDb(shardInfo.getDb());
   }
 
-  this(URI uri) {
+  this(HttpURI uri) {
     initializeClientFromURI(uri);
   }
 
-  this(URI uri, SSLSocketFactory sslSocketFactory,
+  this(HttpURI uri, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  this(URI uri, int timeout) {
+  this(HttpURI uri, int timeout) {
     this(uri, timeout, timeout);
   }
 
-  this(URI uri, int timeout, SSLSocketFactory sslSocketFactory,
+  this(HttpURI uri, int timeout, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     this(uri, timeout, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
   }
 
-  this(URI uri, int connectionTimeout, int soTimeout) {
+  this(HttpURI uri, int connectionTimeout, int soTimeout) {
     initializeClientFromURI(uri);
     client.setConnectionTimeout(connectionTimeout);
     client.setSoTimeout(soTimeout);
   }
 
-  this(URI uri, int connectionTimeout, int soTimeout,
+  this(HttpURI uri, int connectionTimeout, int soTimeout,
       SSLSocketFactory sslSocketFactory,SSLParameters sslParameters,
       HostnameVerifier hostnameVerifier) {
     initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
@@ -141,15 +145,15 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.setSoTimeout(soTimeout);
   }
 
-  private void initializeClientFromURI(URI uri) {
+  private void initializeClientFromURI(HttpURI uri) {
     initializeClientFromURI(uri, null, null, null);
   }
 
-  private void initializeClientFromURI(URI uri, SSLSocketFactory sslSocketFactory,
+  private void initializeClientFromURI(HttpURI uri, SSLSocketFactory sslSocketFactory,
       SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     if (!RedisURIHelper.isValid(uri)) {
       throw new InvalidURIException(string.format(
-        "Cannot open Redis connection due invalid URI. %s", uri.toString()));
+        "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
     }
 
     client = new Client(uri.getHost(), uri.getPort(), RedisURIHelper.isRedisSSLScheme(uri),
