@@ -1,5 +1,7 @@
 module hunt.redis.commands.RedisPipeline;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.redis.StreamEntryID;
 import hunt.redis.BitPosParams;
 import hunt.redis.GeoCoordinate;
@@ -19,6 +21,10 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
+
 
 public interface RedisPipeline {
   Response!(Long) append(string key, string value);

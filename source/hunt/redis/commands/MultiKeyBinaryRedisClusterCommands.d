@@ -11,7 +11,9 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
-public interface MultiKeyBinaryRedisClusterCommands {
+import hunt.Long;
+
+interface MultiKeyBinaryRedisClusterCommands {
   Long del(byte[] keys...);
 
   Long unlink(byte[] keys...);

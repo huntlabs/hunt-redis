@@ -6,7 +6,9 @@ import hunt.redis.params.MigrateParams;
 import hunt.redis.params.ClientKillParams;
 import hunt.redis.util.Slowlog;
 
-public interface AdvancedRedisCommands {
+import hunt.Long;
+
+interface AdvancedRedisCommands {
   List!(string) configGet(string pattern);
 
   string configSet(string parameter, string value);

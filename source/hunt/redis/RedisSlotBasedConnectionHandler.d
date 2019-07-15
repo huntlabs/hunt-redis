@@ -1,11 +1,15 @@
 module hunt.redis.RedisSlotBasedConnectionHandler;
 
+import hunt.redis.RedisClusterConnectionHandler;
+
+import hunt.redis.Exceptions;
+import hunt.redis.Redis;
+import hunt.redis.HostAndPort;
+
 import hunt.collection.List;
 import hunt.collection.Set;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.Exceptions;
-import hunt.redis.Exceptions;
 
 class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
 
@@ -29,14 +33,14 @@ class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
     super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName);
   }
 
-  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, 
-        int soTimeout, string password, string clientName, 
-        bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
-        HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
+  // this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, 
+  //       int soTimeout, string password, string clientName, 
+  //       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
+  //       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
           
-    super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, 
-        sslSocketFactory, sslParameters, hostnameVerifier, portMap);
-  }
+  //   super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, 
+  //       sslSocketFactory, sslParameters, hostnameVerifier, portMap);
+  // }
 
   override
   Redis getConnection() {

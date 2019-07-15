@@ -1,5 +1,13 @@
 module hunt.redis.ShardedRedisPool;
 
+import hunt.redis.BinaryRedis;
+import hunt.redis.BinaryShardedRedis;
+import hunt.redis.RedisShardInfo;
+import hunt.redis.ShardedRedis;
+import hunt.redis.ShardedRedisPool;
+import hunt.redis.util.Hashing;
+import hunt.redis.util.Pool;
+
 import hunt.collection.List;
 
 import hunt.pool.PooledObject;
@@ -7,8 +15,8 @@ import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.DefaultPooledObject;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.util.Hashing;
-import hunt.redis.util.Pool;
+import hunt.Boolean;
+
 
 class ShardedRedisPool : Pool!(ShardedRedis) {
   this(GenericObjectPoolConfig poolConfig, List!(RedisShardInfo) shards) {

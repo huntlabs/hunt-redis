@@ -1,5 +1,11 @@
 module hunt.redis.RedisSentinelPool;
 
+import hunt.redis.Exceptions;
+import hunt.redis.HostAndPort;
+import hunt.redis.Redis;
+import hunt.redis.RedisFactory;
+import hunt.redis.RedisPoolAbstract;
+
 import hunt.util.ArrayHelper;
 import hunt.collection.HashSet;
 import hunt.collection.List;
@@ -8,8 +14,7 @@ import hunt.collection.Set;
 import hunt.logging.ConsoleLogger;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
-import hunt.redis.Exceptions;
-import hunt.redis.Exceptions;
+import hunt.concurrency.thread;
 
 
 /**
@@ -241,14 +246,14 @@ class RedisSentinelPool : RedisPoolAbstract {
     }
   }
 
-  protected class MasterListener : Thread {
+  protected class MasterListener : ThreadEx {
 
     protected string masterName;
     protected string host;
     protected int port;
     protected long subscribeRetryWaitTimeMillis = 5000;
     protected Redis j;
-    protected AtomicBoolean running = new AtomicBoolean(false);
+    protected shared bool running = false;
 
     protected this() {
     }

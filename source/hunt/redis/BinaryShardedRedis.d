@@ -1,5 +1,20 @@
 module hunt.redis.BinaryShardedRedis;
 
+import hunt.redis.Client;
+import hunt.redis.Exceptions;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.ListPosition;
+import hunt.redis.Redis;
+import hunt.redis.RedisShardInfo;
+import hunt.redis.ShardedRedisPipeline;
+import hunt.redis.ScanParams;
+import hunt.redis.ScanResult;
+import hunt.redis.SortingParams;
+import hunt.redis.Tuple;
+
+
 import hunt.collection.Collection;
 import hunt.collection.List;
 import hunt.collection.Map;
@@ -7,13 +22,16 @@ import hunt.collection.Set;
 
 import hunt.redis.commands.BinaryRedisCommands;
 import hunt.redis.commands.ProtocolCommand;
-import hunt.redis.Exceptions;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.Hashing;
 import hunt.redis.util.Sharded;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands {
   this(List!(RedisShardInfo) shards) {

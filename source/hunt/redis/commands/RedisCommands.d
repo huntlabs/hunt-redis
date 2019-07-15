@@ -1,8 +1,13 @@
 module hunt.redis.commands.RedisCommands;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 import hunt.redis.BitPosParams;
 import hunt.redis.StreamEntryID;

@@ -15,9 +15,9 @@ public interface ScriptingCommands {
 
   Object evalsha(string sha1, int keyCount, string[] params...);
 
-  Boolean scriptExists(string sha1);
+  bool scriptExists(string sha1);
 
-  List!(Boolean) scriptExists(string[] sha1...);
+  List!(bool) scriptExists(string[] sha1...);
 
   string scriptLoad(string script);
 }

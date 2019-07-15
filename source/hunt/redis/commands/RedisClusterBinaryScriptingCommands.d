@@ -1,6 +1,8 @@
 module hunt.redis.commands.RedisClusterBinaryScriptingCommands;
 
 import hunt.collection.List;
+import hunt.Double;
+import hunt.Long;
 
 public interface RedisClusterBinaryScriptingCommands {
   Object eval(byte[] script, byte[] keyCount, byte[] params...);

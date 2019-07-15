@@ -1,5 +1,33 @@
 module hunt.redis.Redis;
 
+import hunt.redis.BinaryRedis;
+import hunt.redis.BinaryRedisPubSub;
+import hunt.redis.BitOP;
+import hunt.redis.BitPosParams;
+import hunt.redis.Client;
+import hunt.redis.ClusterReset;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.HostAndPort;
+import hunt.redis.ListPosition;
+import hunt.redis.Module;
+import hunt.redis.Pipeline;
+import hunt.redis.Protocol;
+import hunt.redis.RedisMonitor;
+import hunt.redis.RedisPoolAbstract;
+import hunt.redis.RedisPubSub;
+import hunt.redis.RedisShardInfo;
+import hunt.redis.ScanParams;
+import hunt.redis.ScanResult;
+import hunt.redis.SortingParams;
+import hunt.redis.StreamEntry;
+import hunt.redis.StreamEntryID;
+import hunt.redis.StreamPendingEntry;
+import hunt.redis.Transaction;
+import hunt.redis.Tuple;
+import hunt.redis.ZParams;
+
 import hunt.redis.commands.AdvancedRedisCommands;
 import hunt.redis.commands.BasicCommands;
 import hunt.redis.commands.ClusterCommands;
@@ -17,10 +45,13 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
-
 import hunt.collection;
 import hunt.Exceptions;
+import hunt.net.util.HttpURI;
 
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 /**
 */
@@ -50,11 +81,11 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     super(host, port, ssl);
   }
 
-  this(string host, int port, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(string host, int port, int timeout) {
     super(host, port, timeout);
@@ -64,11 +95,11 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     super(host, port, timeout, ssl);
   }
 
-  this(string host, int port, int timeout, bool ssl,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(host, port, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(string host, int port, int timeout, bool ssl,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(host, port, timeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(string host, int port, int connectionTimeout, int soTimeout) {
     super(host, port, connectionTimeout, soTimeout);
@@ -79,44 +110,44 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     super(host, port, connectionTimeout, soTimeout, ssl);
   }
 
-  this(string host, int port, int connectionTimeout, int soTimeout,
-      bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(host, port, connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters,
-        hostnameVerifier);
-  }
+  // this(string host, int port, int connectionTimeout, int soTimeout,
+  //     bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(host, port, connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters,
+  //       hostnameVerifier);
+  // }
 
   this(RedisShardInfo shardInfo) {
     super(shardInfo);
   }
 
-  this(URI uri) {
+  this(HttpURI uri) {
     super(uri);
   }
 
-  this(URI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(uri, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(HttpURI uri, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(uri, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
-  this(URI uri, int timeout) {
+  this(HttpURI uri, int timeout) {
     super(uri, timeout);
   }
 
-  this(URI uri, int timeout, SSLSocketFactory sslSocketFactory,
-      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    super(uri, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(HttpURI uri, int timeout, SSLSocketFactory sslSocketFactory,
+  //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
+  //   super(uri, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
-  this(URI uri, int connectionTimeout, int soTimeout) {
+  this(HttpURI uri, int connectionTimeout, int soTimeout) {
     super(uri, connectionTimeout, soTimeout);
   }
 
-  this(URI uri, int connectionTimeout, int soTimeout,
-      SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    super(uri, connectionTimeout, soTimeout, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(HttpURI uri, int connectionTimeout, int soTimeout,
+  //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   super(uri, connectionTimeout, soTimeout, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   /**
    * Works same as <tt>ping()</tt> but returns argument message instead of <tt>PONG</tt>.
@@ -2870,24 +2901,26 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     return getEvalResult();
   }
 
-  override
-  Boolean scriptExists(string sha1) {
-    string[] a = new string[1];
-    a[0] = sha1;
-    return scriptExists(a).get(0);
-  }
+// FIXME: Needing refactor or cleanup -@zxp at 7/15/2019, 11:39:47 AM
+// 
+  // override
+  // Boolean scriptExists(string sha1) {
+  //   string[] a = new string[1];
+  //   a[0] = sha1;
+  //   return scriptExists(a).get(0);
+  // }
 
-  override
-  List!(Boolean) scriptExists(string[] sha1...) {
-    client.scriptExists(sha1);
-    List!(Long) result = client.getIntegerMultiBulkReply();
-    List!(Boolean) exists = new ArrayList!(Boolean)();
+  // override
+  // List!(Boolean) scriptExists(string[] sha1...) {
+  //   client.scriptExists(sha1);
+  //   List!(Long) result = client.getIntegerMultiBulkReply();
+  //   List!(Boolean) exists = new ArrayList!(Boolean)();
 
-    foreach(Long value ; result)
-      exists.add(value == 1);
+  //   foreach(Long value ; result)
+  //     exists.add(value == 1);
 
-    return exists;
-  }
+  //   return exists;
+  // }
 
   override
   string scriptLoad(string script) {
@@ -3718,7 +3751,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
    * {@inheritDoc}
    */
   override
-  List!(Entry!(string, List!(StreamEntry))) xread(int count, long block, Entry!(string, StreamEntryID) streams...) {
+  List!(MapEntry!(string, List!(StreamEntry))) xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
     checkIsInMultiOrPipeline();
     client.xread(count, block, streams);
     client.setTimeoutInfinite();
@@ -3801,8 +3834,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
    * {@inheritDoc}
    */
   override
-  List!(Entry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, int count, long block,
-      bool noAck, Entry!(string, StreamEntryID) streams...) {
+  List!(MapEntry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, int count, long block,
+      bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
     checkIsInMultiOrPipeline();
     client.xreadGroup(groupname, consumer, count, block, noAck, streams);
 

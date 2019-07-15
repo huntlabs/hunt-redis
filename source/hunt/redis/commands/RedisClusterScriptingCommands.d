@@ -1,6 +1,8 @@
 module hunt.redis.commands.RedisClusterScriptingCommands;
 
 import hunt.collection.List;
+import hunt.Boolean;
+
 
 public interface RedisClusterScriptingCommands {
   Object eval(string script, int keyCount, string[] params...);

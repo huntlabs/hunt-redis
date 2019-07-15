@@ -1,5 +1,7 @@
 module hunt.redis.commands.BinaryRedisClusterCommands;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
 import hunt.redis.GeoUnit;
@@ -18,6 +20,9 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
+import hunt.Double;
+import hunt.Long;
+
 public interface BinaryRedisClusterCommands {
   string set(byte[] key, byte[] value);
 
@@ -25,7 +30,7 @@ public interface BinaryRedisClusterCommands {
 
   byte[] get(byte[] key);
 
-  Boolean exists(byte[] key);
+  bool exists(byte[] key);
 
   Long persist(byte[] key);
 
@@ -49,11 +54,11 @@ public interface BinaryRedisClusterCommands {
 
   Long touch(byte[] key);
 
-  Boolean setbit(byte[] key, long offset, bool value);
+  bool setbit(byte[] key, long offset, bool value);
 
-  Boolean setbit(byte[] key, long offset, byte[] value);
+  bool setbit(byte[] key, long offset, byte[] value);
 
-  Boolean getbit(byte[] key, long offset);
+  bool getbit(byte[] key, long offset);
 
   Long setrange(byte[] key, long offset, byte[] value);
 
@@ -97,7 +102,7 @@ public interface BinaryRedisClusterCommands {
 
   Double hincrByFloat(byte[] key, byte[] field, double value);
 
-  Boolean hexists(byte[] key, byte[] field);
+  bool hexists(byte[] key, byte[] field);
 
   Long hdel(byte[] key, byte[] field...);
 
@@ -141,7 +146,7 @@ public interface BinaryRedisClusterCommands {
 
   Long scard(byte[] key);
 
-  Boolean sismember(byte[] key, byte[] member);
+  bool sismember(byte[] key, byte[] member);
 
   byte[] srandmember(byte[] key);
 

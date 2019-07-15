@@ -1,6 +1,7 @@
 module hunt.redis.commands.ClusterCommands;
 
 import hunt.collection.List;
+import hunt.Long;
 
 import hunt.redis.ClusterReset;
 

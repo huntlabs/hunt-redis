@@ -8,6 +8,7 @@ import hunt.redis.params.MigrateParams;
 
 import hunt.collection.List;
 import hunt.collection.Set;
+import hunt.Long;
 
 /**
  * Multikey related commands (these are split out because they are non-shardable)

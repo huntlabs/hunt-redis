@@ -1,6 +1,9 @@
 module hunt.redis.util.Sharded;
 
+import hunt.redis.util.ShardInfo;
+
 import hunt.collection;
+import hunt.Long;
 
 import std.regex;
 

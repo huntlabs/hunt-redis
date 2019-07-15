@@ -1,9 +1,35 @@
 module hunt.redis.ShardedRedis;
 
-import hunt.util.Common;
-import hunt.collection.List;
-import hunt.collection.Map;
-import hunt.collection.Set;
+
+import hunt.redis.BinaryRedis;
+import hunt.redis.BinaryRedisPubSub;
+import hunt.redis.BinaryShardedRedis;
+import hunt.redis.BitOP;
+import hunt.redis.BitPosParams;
+import hunt.redis.Client;
+import hunt.redis.ClusterReset;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.HostAndPort;
+import hunt.redis.ListPosition;
+import hunt.redis.Module;
+import hunt.redis.Pipeline;
+import hunt.redis.Protocol;
+import hunt.redis.RedisMonitor;
+import hunt.redis.RedisPoolAbstract;
+import hunt.redis.RedisPubSub;
+import hunt.redis.RedisShardInfo;
+import hunt.redis.ScanParams;
+import hunt.redis.ScanResult;
+import hunt.redis.ShardedRedisPool;
+import hunt.redis.SortingParams;
+import hunt.redis.StreamEntry;
+import hunt.redis.StreamEntryID;
+import hunt.redis.StreamPendingEntry;
+import hunt.redis.Transaction;
+import hunt.redis.Tuple;
+import hunt.redis.ZParams;
 
 import hunt.redis.commands.RedisCommands;
 import hunt.redis.commands.ProtocolCommand;
@@ -12,6 +38,15 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.Hashing;
+
+import hunt.util.Common;
+import hunt.collection.List;
+import hunt.collection.Map;
+import hunt.collection.Set;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
 
@@ -775,13 +810,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
   }
 
   override
-  ScanResult!(Entry!(string, string)) hscan(string key, string cursor) {
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor) {
     Redis j = getShard(key);
     return j.hscan(key, cursor);
   }
 
   override
-  ScanResult!(Entry!(string, string)) hscan(string key, string cursor, ScanParams params) {
+  ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor, ScanParams params) {
     Redis j = getShard(key);
     return j.hscan(key, cursor, params);
   }

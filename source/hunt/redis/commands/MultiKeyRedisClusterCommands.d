@@ -10,7 +10,9 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Set;
 
-public interface MultiKeyRedisClusterCommands {
+import hunt.Long;
+
+interface MultiKeyRedisClusterCommands {
   Long del(string[] keys...);
 
   Long unlink(string[] keys...);

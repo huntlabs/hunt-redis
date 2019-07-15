@@ -1,5 +1,7 @@
 module hunt.redis.StreamEntry;
 
+import hunt.redis.StreamEntryID;
+
 import hunt.Exceptions;
 import hunt.collection.Map;
 
@@ -27,13 +29,13 @@ class StreamEntry { // : Serializable
     return id ~ " " ~ fields;
   }
     
-  private void writeObject(ObjectOutputStream outputStream) {
-    outputStream.writeUnshared(this.id);
-    outputStream.writeUnshared(this.fields);
-  }
+  // private void writeObject(ObjectOutputStream outputStream) {
+  //   outputStream.writeUnshared(this.id);
+  //   outputStream.writeUnshared(this.fields);
+  // }
   
-  private void readObject(ObjectInputStream inputStream) {
-    this.id = cast(StreamEntryID) inputStream.readUnshared();
-    this.fields = cast(Map!(string, string)) inputStream.readUnshared();
-  }
+  // private void readObject(ObjectInputStream inputStream) {
+  //   this.id = cast(StreamEntryID) inputStream.readUnshared();
+  //   this.fields = cast(Map!(string, string)) inputStream.readUnshared();
+  // }
 }

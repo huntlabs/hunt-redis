@@ -1,6 +1,7 @@
 module hunt.redis.StreamPendingEntry;
 
 import hunt.Exceptions;
+import hunt.redis.StreamEntryID;
 
 class StreamPendingEntry { // : Serializable
   

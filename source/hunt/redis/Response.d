@@ -1,5 +1,6 @@
 module hunt.redis.Response;
 
+import hunt.redis.Builder;
 import hunt.redis.Exceptions;
 
 abstract class AbstractResponse {
@@ -51,7 +52,7 @@ class Response(T) : AbstractResponse {
     this.dependency = dependency;
   }
 
-  protected void build() {
+  override protected void build() {
     // check build state to prevent recursion
     if (building) {
       return;

@@ -1,5 +1,19 @@
 module hunt.redis.PipelineBase;
 
+import hunt.redis.BitPosParams;
+import hunt.redis.Client;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.ListPosition;
+import hunt.redis.Queable;
+import hunt.redis.Response;
+import hunt.redis.SortingParams;
+import hunt.redis.StreamEntry;
+import hunt.redis.StreamEntryID;
+import hunt.redis.StreamPendingEntry;
+import hunt.redis.Tuple;
+
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
@@ -11,6 +25,10 @@ import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 

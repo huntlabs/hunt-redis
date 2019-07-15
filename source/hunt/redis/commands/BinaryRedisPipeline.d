@@ -1,5 +1,7 @@
 module hunt.redis.commands.BinaryRedisPipeline;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.redis.BitPosParams;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
@@ -17,6 +19,10 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 public interface BinaryRedisPipeline {
   Response!(Long) append(byte[] key, byte[] value);

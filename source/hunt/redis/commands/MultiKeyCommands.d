@@ -12,6 +12,7 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+import hunt.Long;
 
 interface MultiKeyCommands {
   Long del(string[] keys...);

@@ -1,16 +1,24 @@
 module hunt.redis.BinaryRedis;
 
+import hunt.redis.BinaryRedisPubSub;
+import hunt.redis.BitOP;
+import hunt.redis.BitPosParams;
 import hunt.redis.Client;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
 import hunt.redis.HostAndPort;
+import hunt.redis.ListPosition;
 import hunt.redis.Pipeline;
 import hunt.redis.Protocol;
+import hunt.redis.RedisMonitor;
 import hunt.redis.RedisShardInfo;
+import hunt.redis.ScanParams;
+import hunt.redis.ScanResult;
+import hunt.redis.SortingParams;
 import hunt.redis.Transaction;
-
-import hunt.net.util.HttpURI;
-import hunt.collection;
-import hunt.Exceptions;
-import hunt.util.Common;
+import hunt.redis.Tuple;
+import hunt.redis.ZParams;
 
 import hunt.redis.commands.AdvancedBinaryRedisCommands;
 import hunt.redis.commands.BasicCommands;
@@ -18,8 +26,6 @@ import hunt.redis.commands.BinaryRedisCommands;
 import hunt.redis.commands.BinaryScriptingCommands;
 import hunt.redis.commands.MultiKeyBinaryCommands;
 import hunt.redis.commands.ProtocolCommand;
-import hunt.redis.Exceptions;
-import hunt.redis.Exceptions;
 import hunt.redis.Exceptions;
 import hunt.redis.params.ClientKillParams;
 import hunt.redis.params.GeoRadiusParam;
@@ -29,6 +35,15 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.RedisURIHelper;
+
+import hunt.net.util.HttpURI;
+import hunt.collection;
+import hunt.Exceptions;
+import hunt.util.Common;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     AdvancedBinaryRedisCommands, BinaryScriptingCommands, Closeable {
@@ -117,19 +132,19 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     initializeClientFromURI(uri);
   }
 
-  this(HttpURI uri, SSLSocketFactory sslSocketFactory,
-      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(HttpURI uri, SSLSocketFactory sslSocketFactory,
+  //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
+  //   initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(HttpURI uri, int timeout) {
     this(uri, timeout, timeout);
   }
 
-  this(HttpURI uri, int timeout, SSLSocketFactory sslSocketFactory,
-      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    this(uri, timeout, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
-  }
+  // this(HttpURI uri, int timeout, SSLSocketFactory sslSocketFactory,
+  //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
+  //   this(uri, timeout, timeout, sslSocketFactory, sslParameters, hostnameVerifier);
+  // }
 
   this(HttpURI uri, int connectionTimeout, int soTimeout) {
     initializeClientFromURI(uri);
@@ -137,41 +152,41 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     client.setSoTimeout(soTimeout);
   }
 
-  this(HttpURI uri, int connectionTimeout, int soTimeout,
-      SSLSocketFactory sslSocketFactory,SSLParameters sslParameters,
-      HostnameVerifier hostnameVerifier) {
-    initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
-    client.setConnectionTimeout(connectionTimeout);
-    client.setSoTimeout(soTimeout);
-  }
+  // this(HttpURI uri, int connectionTimeout, int soTimeout,
+  //     SSLSocketFactory sslSocketFactory,SSLParameters sslParameters,
+  //     HostnameVerifier hostnameVerifier) {
+  //   initializeClientFromURI(uri, sslSocketFactory, sslParameters, hostnameVerifier);
+  //   client.setConnectionTimeout(connectionTimeout);
+  //   client.setSoTimeout(soTimeout);
+  // }
 
   private void initializeClientFromURI(HttpURI uri) {
     initializeClientFromURI(uri, null, null, null);
   }
 
-  private void initializeClientFromURI(HttpURI uri, SSLSocketFactory sslSocketFactory,
-      SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    if (!RedisURIHelper.isValid(uri)) {
-      throw new InvalidURIException(string.format(
-        "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
-    }
+  // private void initializeClientFromURI(HttpURI uri, SSLSocketFactory sslSocketFactory,
+  //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
+  //   if (!RedisURIHelper.isValid(uri)) {
+  //     throw new InvalidURIException(string.format(
+  //       "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
+  //   }
 
-    client = new Client(uri.getHost(), uri.getPort(), RedisURIHelper.isRedisSSLScheme(uri),
-      sslSocketFactory, sslParameters, hostnameVerifier);
+  //   client = new Client(uri.getHost(), uri.getPort(), RedisURIHelper.isRedisSSLScheme(uri),
+  //     sslSocketFactory, sslParameters, hostnameVerifier);
 
-    string password = RedisURIHelper.getPassword(uri);
-    if (password !is null) {
-      client.auth(password);
-      client.getStatusCodeReply();
-    }
+  //   string password = RedisURIHelper.getPassword(uri);
+  //   if (password !is null) {
+  //     client.auth(password);
+  //     client.getStatusCodeReply();
+  //   }
 
-    int dbIndex = RedisURIHelper.getDBIndex(uri);
-    if (dbIndex > 0) {
-      client.select(dbIndex);
-      client.getStatusCodeReply();
-      client.setDb(dbIndex);
-    }
-  }
+  //   int dbIndex = RedisURIHelper.getDBIndex(uri);
+  //   if (dbIndex > 0) {
+  //     client.select(dbIndex);
+  //     client.getStatusCodeReply();
+  //     client.setDb(dbIndex);
+  //   }
+  // }
 
   override
   string ping() {

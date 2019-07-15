@@ -1,5 +1,7 @@
 module hunt.redis.RedisMonitor;
 
+import hunt.redis.Client;
+
 abstract class RedisMonitor {
   protected Client client;
 

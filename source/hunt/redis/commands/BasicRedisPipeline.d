@@ -4,6 +4,7 @@ import hunt.redis.Module;
 import hunt.redis.Response;
 
 import hunt.collection.List;
+import hunt.Long;
 
 /**
  * Pipelined responses for all of the low level, non key related commands

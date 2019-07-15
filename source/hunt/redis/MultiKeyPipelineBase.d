@@ -1,11 +1,27 @@
 module hunt.redis.MultiKeyPipelineBase;
 
 import hunt.redis.commands;
+import hunt.redis.Client;
+import hunt.redis.Response;
+import hunt.redis.BitOP;
+import hunt.redis.Client;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.ListPosition;
+import hunt.redis.Module;
+import hunt.redis.PipelineBase;
+import hunt.redis.SortingParams;
+import hunt.redis.ZParams;
 import hunt.redis.params.MigrateParams;
 
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
 abstract class MultiKeyPipelineBase : PipelineBase,
     MultiKeyBinaryRedisPipeline, MultiKeyCommandsPipeline, ClusterPipeline,

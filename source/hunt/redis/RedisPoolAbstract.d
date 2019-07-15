@@ -1,5 +1,7 @@
 module hunt.redis.RedisPoolAbstract;
 
+import hunt.redis.Redis;
+
 import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.GenericObjectPoolConfig;
 

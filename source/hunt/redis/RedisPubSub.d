@@ -1,5 +1,6 @@
 module hunt.redis.RedisPubSub;
 
+import hunt.redis.Client;
 import hunt.redis.Protocol;
 import hunt.redis.Exceptions;
 import hunt.redis.util.SafeEncoder;

@@ -1,5 +1,7 @@
 module hunt.redis.commands.RedisClusterCommands;
 
+import hunt.redis.commands.ProtocolCommand;
+
 import hunt.redis.StreamEntryID;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
@@ -18,6 +20,11 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
+
+import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
+
 
 public interface RedisClusterCommands {
   string set(string key, string value);

@@ -1,5 +1,9 @@
 module hunt.redis.ShardedRedisPipeline;
 
+import hunt.redis.Client;
+import hunt.redis.BinaryShardedRedis;
+import hunt.redis.PipelineBase;
+
 import hunt.collection;
 
 

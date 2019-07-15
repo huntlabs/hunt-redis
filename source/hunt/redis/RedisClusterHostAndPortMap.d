@@ -1,5 +1,7 @@
 module hunt.redis.RedisClusterHostAndPortMap;
 
-public interface RedisClusterHostAndPortMap {
+import hunt.redis.HostAndPort;
+
+interface RedisClusterHostAndPortMap {
   HostAndPort getSSLHostAndPort(string host, int port);
 }
