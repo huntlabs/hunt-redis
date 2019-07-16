@@ -27,6 +27,8 @@ import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;
 
+import std.conv;
+
 class Client : BinaryClient, Commands {
 
   this() {
@@ -225,8 +227,8 @@ class Client : BinaryClient, Commands {
   override
   void hset(string key, Map!(string, string) hash) {
     Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-    foreach(Entry!(string, string) entry ; hash.entrySet()) {
-      bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()));
+    foreach(string k, string v; hash) {
+      bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
     }
     hset(SafeEncoder.encode(key), bhash);
   }
@@ -246,8 +248,8 @@ class Client : BinaryClient, Commands {
   override
   void hmset(string key, Map!(string, string) hash) {
     Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-    foreach(Entry!(string, string) entry ; hash.entrySet()) {
-      bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue()));
+    foreach(string k, string v; hash) {
+      bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
     }
     hmset(SafeEncoder.encode(key), bhash);
   }
@@ -573,13 +575,13 @@ class Client : BinaryClient, Commands {
   alias blpop = BinaryClient.blpop;
 
   void blpop(int timeout, string[] keys...) {
-    int size = keys.length + 1;
-    List!(string) args = new ArrayList!(string)(size);
+    size_t size = keys.length + 1;
+    List!(string) args = new ArrayList!(string)(cast(int)size);
     foreach(string arg ; keys) {
       args.add(arg);
     }
-    args.add(string.valueOf(timeout));
-    blpop(args.toArray(new string[size]));
+    args.add(to!string(timeout));
+    blpop(args.toArray());
   }
 
   override
@@ -600,13 +602,13 @@ class Client : BinaryClient, Commands {
   alias brpop = BinaryClient.brpop;
 
   void brpop(int timeout, string[] keys...) {
-    int size = keys.length + 1;
-    List!(string) args = new ArrayList!(string)(size);
+    size_t size = keys.length + 1;
+    List!(string) args = new ArrayList!(string)(cast(int)size);
     foreach(string arg ; keys) {
       args.add(arg);
     }
-    args.add(string.valueOf(timeout));
-    brpop(args.toArray(new string[size]));
+    args.add(to!string(timeout));
+    brpop(args.toArray());
   }
 
   override
@@ -1085,7 +1087,7 @@ class Client : BinaryClient, Commands {
   alias zscan = BinaryClient.zscan;
 
   void cluster(string subcommand, int[] args...) {
-    byte[][] arg = new byte[args.length + 1][];
+    byte[][] arg = new byte[][args.length + 1];
     for (int i = 1; i < arg.length; i++) {
       arg[i] = toByteArray(args[i - 1]);
     }
@@ -1094,25 +1096,27 @@ class Client : BinaryClient, Commands {
   }
 
   void pubsub(string subcommand, string[] args...) {
-    byte[][] arg = new byte[args.length + 1][];
+    byte[][] arg = new byte[][args.length + 1];
     for (int i = 1; i < arg.length; i++) {
       arg[i] = SafeEncoder.encode(args[i - 1]);
     }
     arg[0] = SafeEncoder.encode(subcommand);
     pubsub(arg);
   }
+    alias pubsub = BinaryClient.pubsub;
 
   void cluster(string subcommand, string[] args...) {
-    byte[][] arg = new byte[args.length + 1][];
-    for (int i = 1; i < arg.length; i++) {
+    byte[][] arg = new byte[][args.length + 1];
+    for (size_t i = 1; i < arg.length; i++) {
       arg[i] = SafeEncoder.encode(args[i - 1]);
     }
     arg[0] = SafeEncoder.encode(subcommand);
     cluster(arg);
   }
+    alias cluster = BinaryClient.cluster;
 
   void cluster(string subcommand) {
-    byte[][] arg = new byte[1][];
+    byte[][] arg = new byte[][1];
     arg[0] = SafeEncoder.encode(subcommand);
     cluster(arg);
   }
@@ -1122,11 +1126,11 @@ class Client : BinaryClient, Commands {
   }
 
   void clusterMeet(string ip, int port) {
-    cluster(Protocol.CLUSTER_MEET, ip, string.valueOf(port));
+    cluster(Protocol.CLUSTER_MEET, ip, to!string(port));
   }
 
   void clusterReset(ClusterReset resetType) {
-    cluster(Protocol.CLUSTER_RESET, resetType.name());
+    cluster(Protocol.CLUSTER_RESET, resetType.to!string());
   }
 
   void clusterAddSlots(int[] slots...) {
@@ -1147,16 +1151,16 @@ class Client : BinaryClient, Commands {
   }
 
   void clusterSetSlotNode(int slot, string nodeId) {
-    cluster(Protocol.CLUSTER_SETSLOT, string.valueOf(slot), Protocol.CLUSTER_SETSLOT_NODE, nodeId);
+    cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_NODE, nodeId);
   }
 
   void clusterSetSlotMigrating(int slot, string nodeId) {
-    cluster(Protocol.CLUSTER_SETSLOT, string.valueOf(slot), Protocol.CLUSTER_SETSLOT_MIGRATING,
+    cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_MIGRATING,
       nodeId);
   }
 
   void clusterSetSlotImporting(int slot, string nodeId) {
-    cluster(Protocol.CLUSTER_SETSLOT, string.valueOf(slot), Protocol.CLUSTER_SETSLOT_IMPORTING,
+    cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_IMPORTING,
       nodeId);
   }
 
@@ -1180,7 +1184,7 @@ class Client : BinaryClient, Commands {
   alias pfmerge = BinaryClient.pfmerge;
 
   void clusterSetSlotStable(int slot) {
-    cluster(Protocol.CLUSTER_SETSLOT, string.valueOf(slot), Protocol.CLUSTER_SETSLOT_STABLE);
+    cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_STABLE);
   }
 
   void clusterForget(string nodeId) {
@@ -1196,7 +1200,7 @@ class Client : BinaryClient, Commands {
   }
 
   void clusterCountKeysInSlot(int slot) {
-    cluster(Protocol.CLUSTER_COUNTKEYINSLOT, string.valueOf(slot));
+    cluster(Protocol.CLUSTER_COUNTKEYINSLOT, to!string(slot));
   }
 
   void clusterSaveConfig() {
@@ -1331,8 +1335,8 @@ class Client : BinaryClient, Commands {
   override
   void xadd(string key,  StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
     Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-    foreach(string key, string value; hash.entrySet()) {
-      bhash.put(SafeEncoder.encode(key), SafeEncoder.encode(value));
+    foreach(string k, string v; hash) {
+      bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
     }
     xadd(SafeEncoder.encode(key), SafeEncoder.encode(id is null ? "*" : id.toString()), bhash, maxLen, approximateLength);
   }
@@ -1340,13 +1344,13 @@ class Client : BinaryClient, Commands {
   
   override
   void xlen(string key) {
-	  xlen(SafeEncoder.encode(key));
+      xlen(SafeEncoder.encode(key));
   }
   alias xlen = BinaryClient.xlen;
   
   override
   void xrange(string key, StreamEntryID start,  StreamEntryID end, long count) {
-	  xrange(SafeEncoder.encode(key), SafeEncoder.encode(start is null ? "-" : start.toString()), 
+      xrange(SafeEncoder.encode(key), SafeEncoder.encode(start is null ? "-" : start.toString()), 
       SafeEncoder.encode(end is null ? "+" : end.toString()), count);
   }
   alias xrange = BinaryClient.xrange;
@@ -1360,8 +1364,8 @@ class Client : BinaryClient, Commands {
   
   override
   void xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
-    Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(streams.length);
-    foreach(Entry!(string, StreamEntryID) entry ; streams) {
+    Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(cast(int)streams.length);
+    foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), 
       SafeEncoder.encode(entry.getValue() is null ? "0-0" : entry.getValue().toString()));
     }
@@ -1371,7 +1375,7 @@ class Client : BinaryClient, Commands {
   
   override
   void xack(string key, string group, StreamEntryID[] ids...) {
-    byte[][] bids = new byte[ids.length][];
+    byte[][] bids = new byte[][ids.length];
     for (int i=0 ; i< ids.length; ++i ) {
       StreamEntryID id = ids[i];
       bids[i] = SafeEncoder.encode(id is null ? "0-0" : id.toString()); 
@@ -1406,7 +1410,7 @@ class Client : BinaryClient, Commands {
 
   override
   void xdel(string key, StreamEntryID[] ids...) {
-    byte[][] bids = new byte[ids.length][];
+    byte[][] bids = new byte[][ids.length];
     for (int i=0 ; i< ids.length; ++i ) {
       StreamEntryID id = ids[i];
       bids[i] = SafeEncoder.encode(id is null ? "0-0" : id.toString()); 
@@ -1424,7 +1428,7 @@ class Client : BinaryClient, Commands {
   override
   void xreadGroup(string groupname, string consumer, int count, long block, 
                   bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
-    Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(streams.length);
+    Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(cast(int)streams.length);
     foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
       bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue() is null ? ">" : entry.getValue().toString()));
     }
@@ -1443,7 +1447,7 @@ class Client : BinaryClient, Commands {
   void xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime, int retries,
       bool force, StreamEntryID[] ids...) {
     
-    byte[][] bids = new byte[ids.length][];
+    byte[][] bids = new byte[][ids.length];
     for (int i = 0; i < ids.length; i++) {
       bids[i] = SafeEncoder.encode(ids[i].toString());
     }

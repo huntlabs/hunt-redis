@@ -15,21 +15,22 @@ import hunt.Long;
 import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
 
+import std.conv;
 import std.concurrency : initOnce;
 
 class BuilderFactory {
   static Builder!(Double) DOUBLE() {
-    __gshared Double inst;
+    __gshared Builder!(Double) inst;
     return initOnce!inst(new class Builder!(Double) {
         override
         Double build(Object data) {
-            string string = STRING.build(data);
-            if (string is null) return null;
+            string str = STRING.build(data);
+            if (str is null) return null;
             try {
-                return Double.valueOf(string);
+                return Double.valueOf(str.to!double);
             } catch (NumberFormatException e) {
-                if (string == "inf" || string == "+inf") return Double.POSITIVE_INFINITY;
-                if (string == "-inf") return Double.NEGATIVE_INFINITY;
+                if (str == "inf" || str == "+inf") return new Double(Double.POSITIVE_INFINITY);
+                if (str == "-inf") return new Double(Double.NEGATIVE_INFINITY);
                 throw e;
             }
         }
@@ -42,7 +43,7 @@ class BuilderFactory {
   } 
 
   static Builder!(Boolean) BOOLEAN() {
-    __gshared Boolean inst;
+    __gshared Builder!(Boolean) inst;
     return initOnce!inst(new class Builder!(Boolean) {
         override
         Boolean build(Object data) {
@@ -70,7 +71,7 @@ class BuilderFactory {
 //   };
 
   static Builder!(Long) LONG() {
-    __gshared Long inst;
+    __gshared Builder!(Long) inst;
     return initOnce!inst(new class Builder!(Long) {
         override
         Long build(Object data) {
@@ -85,7 +86,7 @@ class BuilderFactory {
   }
   
   static Builder!(string) STRING() {
-    __gshared string inst;
+    __gshared Builder!(string) inst;
     return initOnce!inst(new class Builder!(string) {
         override
         string build(Object data) {
@@ -389,8 +390,10 @@ private static List!(GeoCoordinate) interpretGeoposResult(List!(Object) response
             responseCoordinate.add(null);
         } else {
             List!(Object) respList = cast(List!(Object)) response;
-            GeoCoordinate coord = new GeoCoordinate(DOUBLE.build(respList.get(0)),
-                DOUBLE.build(respList.get(1)));
+            Double first = DOUBLE.build(respList.get(0));
+            Double second = DOUBLE.build(respList.get(1));
+            assert(first !is null && second !is null);
+            GeoCoordinate coord = new GeoCoordinate(first.value(), second.value());
             responseCoordinate.add(coord);
         }
     }

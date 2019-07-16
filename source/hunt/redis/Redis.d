@@ -279,6 +279,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.unlink(keys);
         return client.getIntegerReply();
     }
+    alias unlink = BinaryRedis.unlink;
 
     override
     Long unlink(string key) {
@@ -340,6 +341,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.rename(oldkey, newkey);
         return client.getStatusCodeReply();
     }
+    alias rename = BinaryRedis.rename;
 
     /**
      * Rename oldkey into newkey but fails if the destination key newkey already exists.
@@ -383,6 +385,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.expire(key, seconds);
         return client.getIntegerReply();
     }
+    alias expire = BinaryRedis.expire;
 
     /**
      * EXPIREAT works exactly like {@link #expire(string, int) EXPIRE} but instead to get the number of
@@ -413,6 +416,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.expireAt(key, unixTime);
         return client.getIntegerReply();
     }
+    alias expireAt = BinaryRedis.expireAt;
 
     /**
      * The TTL command returns the remaining time to live in seconds of a key that has an
@@ -430,6 +434,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.ttl(key);
         return client.getIntegerReply();
     }
+    alias ttl = BinaryRedis.ttl;
 
     /**
      * Alters the last access time of a key(s). A key is ignored if it does not exist.
@@ -443,6 +448,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.touch(keys);
         return client.getIntegerReply();
     }
+    alias touch = BinaryRedis.touch;
 
     override
     Long touch(string key) {
@@ -450,6 +456,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.touch(key);
         return client.getIntegerReply();
     }
+    alias touch = BinaryRedis.touch;
 
     /**
      * Move the specified key from the currently selected DB to the specified destination DB. Note
@@ -467,6 +474,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.move(key, dbIndex);
         return client.getIntegerReply();
     }
+    alias move = BinaryRedis.move;
 
     /**
      * GETSET is an atomic set this value and return the old value command. Set key to the string
@@ -484,6 +492,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.getSet(key, value);
         return client.getBulkReply();
     }
+    alias getSet = BinaryRedis.getSet;
 
     /**
      * Get the values of all the specified keys. If one or more keys don't exist or is not of type
@@ -500,6 +509,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.mget(keys);
         return client.getMultiBulkReply();
     }
+    alias mget = BinaryRedis.mget;
 
     /**
      * SETNX works exactly like {@link #set(string, string) SET} with the only difference that if the
@@ -516,6 +526,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.setnx(key, value);
         return client.getIntegerReply();
     }
+    alias setnx = BinaryRedis.setnx;
 
     /**
      * The command is exactly equivalent to the following group of commands:
@@ -534,6 +545,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.setex(key, seconds, value);
         return client.getStatusCodeReply();
     }
+    alias setex = BinaryRedis.setex;
 
     /**
      * Set the the respective keys to the respective values. MSET will replace old values with new
@@ -557,6 +569,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.mset(keysvalues);
         return client.getStatusCodeReply();
     }
+    alias mset = BinaryRedis.mset;
 
     /**
      * Set the the respective keys to the respective values. {@link #mset(string...) MSET} will
@@ -581,6 +594,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.msetnx(keysvalues);
         return client.getIntegerReply();
     }
+    alias msetnx = BinaryRedis.msetnx;
 
     /**
      * IDECRBY work just like {@link #decr(string) INCR} but instead to decrement by 1 the decrement
@@ -606,6 +620,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.decrBy(key, decrement);
         return client.getIntegerReply();
     }
+    alias decrBy = BinaryRedis.decrBy;
 
     /**
      * Decrement the number stored at key by one. If the key does not exist or contains a value of a
@@ -749,6 +764,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.substr(key, start, end);
         return client.getBulkReply();
     }
+    alias substr = BinaryRedis.substr;
 
     /**
      * Set the specified hash field to the specified value.
@@ -768,6 +784,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hset(key, field, value);
         return client.getIntegerReply();
     }
+    alias hset = BinaryRedis.hset;
 
     override
     Long hset(string key, Map!(string, string) hash) {
@@ -792,6 +809,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hget(key, field);
         return client.getBulkReply();
     }
+    alias hget = BinaryRedis.hget;
 
     /**
      * Set the specified hash field to the specified value if the field not exists. <b>Time
@@ -808,6 +826,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hsetnx(key, field, value);
         return client.getIntegerReply();
     }
+    alias hsetnx = BinaryRedis.hsetnx;
 
     /**
      * Set the respective fields to the respective values. HMSET replaces old values with new values.
@@ -825,6 +844,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hmset(key, hash);
         return client.getStatusCodeReply();
     }
+    alias hmset = BinaryRedis.hmset;
 
     /**
      * Retrieve the values associated to the specified fields.
@@ -844,6 +864,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hmget(key, fields);
         return client.getMultiBulkReply();
     }
+    alias hmget = BinaryRedis.hmget;
 
     /**
      * Increment the number stored at field in the hash at key by value. If key does not exist, a new
@@ -865,6 +886,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hincrBy(key, field, value);
         return client.getIntegerReply();
     }
+    alias hincrBy = BinaryRedis.hincrBy;
 
     /**
      * Increment the number stored at field in the hash at key by a double precision floating point
@@ -889,6 +911,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         string dval = client.getBulkReply();
         return (dval !is null ? new Double(dval) : null);
     }
+    alias hincrByFloat = BinaryRedis.hincrByFloat;
 
     /**
      * Test for existence of a specified field in a hash. <b>Time complexity:</b> O(1)
@@ -903,6 +926,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hexists(key, field);
         return client.getIntegerReply() == 1;
     }
+    alias hexists = BinaryRedis.hexists;
 
     /**
      * Remove the specified field from an hash stored at key.
@@ -919,6 +943,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hdel(key, fields);
         return client.getIntegerReply();
     }
+    alias hdel = BinaryRedis.hdel;
 
     /**
      * Return the number of items in a hash.
@@ -934,6 +959,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hlen(key);
         return client.getIntegerReply();
     }
+    alias hlen = BinaryRedis.hlen;
 
     /**
      * Return all the fields in a hash.
@@ -948,6 +974,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hkeys(key);
         return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
     }
+    alias hkeys = BinaryRedis.hkeys;
 
     /**
      * Return all the values in a hash.
@@ -963,6 +990,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) lresult = client.getMultiBulkReply();
         return lresult;
     }
+    alias hvals = BinaryRedis.hvals;
 
     /**
      * Return all the fields and associated values in a hash.
@@ -977,6 +1005,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hgetAll(key);
         return BuilderFactory.STRING_MAP.build(client.getBinaryMultiBulkReply());
     }
+    alias hgetAll = BinaryRedis.hgetAll;
 
     /**
      * Add the string value to the head (LPUSH) or tail (RPUSH) of the list stored at key. If the key
@@ -995,6 +1024,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.rpush(key, strings);
         return client.getIntegerReply();
     }
+    alias rpush = BinaryRedis.rpush;
 
     /**
      * Add the string value to the head (LPUSH) or tail (RPUSH) of the list stored at key. If the key
@@ -1013,6 +1043,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lpush(key, strings);
         return client.getIntegerReply();
     }
+    alias lpush = BinaryRedis.lpush;
 
     /**
      * Return the length of the list stored at the specified key. If the key does not exist zero is
@@ -1029,6 +1060,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.llen(key);
         return client.getIntegerReply();
     }
+    alias llen = BinaryRedis.llen;
 
     /**
      * Return the specified elements of the list stored at the specified key. Start and end are
@@ -1068,6 +1100,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lrange(key, start, stop);
         return client.getMultiBulkReply();
     }
+    alias lrange = BinaryRedis.lrange;
 
     /**
      * Trim an existing list so that it will contain only the specified range of elements specified.
@@ -1105,6 +1138,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.ltrim(key, start, stop);
         return client.getStatusCodeReply();
     }
+    alias ltrim = BinaryRedis.ltrim;
 
     /**
      * Return the specified element of the list stored at the specified key. 0 is the first element, 1
@@ -1128,6 +1162,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lindex(key, index);
         return client.getBulkReply();
     }
+    alias lindex = BinaryRedis.lindex;
 
     /**
      * Set a new value as the element at index position of the List at key.
@@ -1154,6 +1189,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lset(key, index, value);
         return client.getStatusCodeReply();
     }
+    alias lset = BinaryRedis.lset;
 
     /**
      * Remove the first count occurrences of the value element from the list. If count is zero all the
@@ -1176,6 +1212,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lrem(key, count, value);
         return client.getIntegerReply();
     }
+    alias lrem = BinaryRedis.lrem;
 
     /**
      * Atomically return and remove the first (LPOP) or last (RPOP) element of the list. For example
@@ -1193,6 +1230,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lpop(key);
         return client.getBulkReply();
     }
+    alias lpop = BinaryRedis.lpop;
 
     /**
      * Atomically return and remove the first (LPOP) or last (RPOP) element of the list. For example
@@ -1210,6 +1248,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.rpop(key);
         return client.getBulkReply();
     }
+    alias rpop = BinaryRedis.rpop;
 
     /**
      * Atomically return and remove the last (tail) element of the srckey list, and push the element
@@ -1232,6 +1271,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.rpoplpush(srckey, dstkey);
         return client.getBulkReply();
     }
+    alias rpoplpush = BinaryRedis.rpoplpush;
 
     /**
      * Add the specified member to the set value stored at key. If member is already a member of the
@@ -1250,6 +1290,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sadd(key, members);
         return client.getIntegerReply();
     }
+    alias sadd = BinaryRedis.sadd;
 
     /**
      * Return all the members (elements) of the set value stored at key. This is just syntax glue for
@@ -1266,6 +1307,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias smembers = BinaryRedis.smembers;
 
     /**
      * Remove the specified member from the set value stored at key. If member was not a member of the
@@ -1283,6 +1325,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.srem(key, members);
         return client.getIntegerReply();
     }
+    alias srem = BinaryRedis.srem;
 
     /**
      * Remove a random element from a Set returning it as return value. If the Set is empty or the key
@@ -1301,6 +1344,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.spop(key);
         return client.getBulkReply();
     }
+    alias spop = BinaryRedis.spop;
 
     override
     Set!(string) spop(string key, long count) {
@@ -1336,6 +1380,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.smove(srckey, dstkey, member);
         return client.getIntegerReply();
     }
+    alias smove = BinaryRedis.smove;
 
     /**
      * Return the set cardinality (number of elements). If the key does not exist 0 is returned, like
@@ -1350,6 +1395,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.scard(key);
         return client.getIntegerReply();
     }
+    alias scard = BinaryRedis.scard;
 
     /**
      * Return true if member is a member of the set stored at key, otherwise false is returned.
@@ -1366,6 +1412,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sismember(key, member);
         return client.getIntegerReply() == 1;
     }
+    alias sismember = BinaryRedis.sismember;
 
     /**
      * Return the members of a set resulting from the intersection of all the sets hold at the
@@ -1389,6 +1436,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias sinter = BinaryRedis.sinter;
 
     /**
      * This command works exactly like {@link #sinter(string...) SINTER} but instead of being returned
@@ -1406,6 +1454,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sinterstore(dstkey, keys);
         return client.getIntegerReply();
     }
+    alias sinterstore = BinaryRedis.sinterstore;
 
     /**
      * Return the members of a set resulting from the union of all the sets hold at the specified
@@ -1426,6 +1475,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias sunion = BinaryRedis.sunion;
 
     /**
      * This command works exactly like {@link #sunion(string...) SUNION} but instead of being returned
@@ -1442,6 +1492,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sunionstore(dstkey, keys);
         return client.getIntegerReply();
     }
+    alias sunionstore = BinaryRedis.sunionstore;
 
     /**
      * Return the difference between the Set stored at key1 and all the Sets key2, ..., keyN
@@ -1484,6 +1535,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sdiffstore(dstkey, keys);
         return client.getIntegerReply();
     }
+    alias sdiffstore = BinaryRedis.sdiffstore;
 
     /**
      * Return a random element from a Set, without removing the element. If the Set is empty or the
@@ -1501,6 +1553,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.srandmember(key);
         return client.getBulkReply();
     }
+    alias srandmember = BinaryRedis.srandmember;
 
     override
     List!(string) srandmember(string key, int count) {
@@ -1531,6 +1584,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zadd(key, score, member);
         return client.getIntegerReply();
     }
+    alias zadd = BinaryRedis.zadd;
 
     override
     Long zadd(string key, double score, string member,
@@ -1561,6 +1615,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrange = BinaryRedis.zrange;
 
     /**
      * Remove the specified member from the sorted set value stored at key. If member was not a member
@@ -1579,6 +1634,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrem(key, members);
         return client.getIntegerReply();
     }
+    alias zrem = BinaryRedis.zrem;
 
     /**
      * If member already exists in the sorted set adds the increment to its score and updates the
@@ -1604,6 +1660,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zincrby(key, increment, member);
         return BuilderFactory.DOUBLE.build(client.getOne());
     }
+    alias zincrby = BinaryRedis.zincrby;
 
     override
     Double zincrby(string key, double increment, string member, ZIncrByParams params) {
@@ -1634,6 +1691,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrank(key, member);
         return client.getIntegerReply();
     }
+    alias zrank = BinaryRedis.zrank;
 
     /**
      * Return the rank (or index) of member in the sorted set at key, with scores being ordered from
@@ -1657,6 +1715,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrevrank(key, member);
         return client.getIntegerReply();
     }
+    alias zrevrank = BinaryRedis.zrevrank;
 
     override
     Set!(string) zrevrange(string key, long start, long stop) {
@@ -1665,6 +1724,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrevrange = BinaryRedis.zrevrange;
 
     override
     Set!(Tuple) zrangeWithScores(string key, long start, long stop) {
@@ -1672,6 +1732,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrangeWithScores(key, start, stop);
         return getTupledSet();
     }
+    alias zrangeWithScores = BinaryRedis.zrangeWithScores;
 
     override
     Set!(Tuple) zrevrangeWithScores(string key, long start, long stop) {
@@ -1679,6 +1740,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrevrangeWithScores(key, start, stop);
         return getTupledSet();
     }
+    alias zrevrangeWithScores = BinaryRedis.zrevrangeWithScores;
 
     /**
      * Return the sorted set cardinality (number of elements). If the key does not exist 0 is
@@ -1694,6 +1756,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zcard(key);
         return client.getIntegerReply();
     }
+    alias zcard = BinaryRedis.zcard;
 
     /**
      * Return the score of the specified element of the sorted set at key. If the specified element
@@ -1711,12 +1774,14 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zscore(key, member);
         return BuilderFactory.DOUBLE.build(client.getOne());
     }
+    alias zscore = BinaryRedis.zscore;
 
     override
     string watch(string[] keys...) {
         client.watch(keys);
         return client.getStatusCodeReply();
     }
+    alias watch = BinaryRedis.watch;
 
     /**
      * Sort a Set or a List.
@@ -1737,6 +1802,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sort(key);
         return client.getMultiBulkReply();
     }
+    alias sort = BinaryRedis.sort;
 
     /**
      * Sort a Set or a List accordingly to the specified parameters.
@@ -1885,6 +1951,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(string) blpop(int timeout, string[] keys...) {
         return blpop(getArgsAddTimeout(timeout, keys));
     }
+    alias blpop = BinaryRedis.blpop;
 
     private string[] getArgsAddTimeout(int timeout, string[] keys) {
         int keyCount = keys.length;
@@ -1920,6 +1987,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             client.rollbackTimeout();
         }
     }
+    alias brpop = BinaryRedis.brpop;
 
     /**
      * Sort a Set or a List accordingly to the specified parameters and store the result at dstkey.
@@ -1937,6 +2005,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.sort(key, sortingParameters, dstkey);
         return client.getIntegerReply();
     }
+    alias sort = BinaryRedis.sort;
 
     /**
      * Sort a Set or a List and Store the Result at dstkey.
@@ -2024,6 +2093,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(string) brpop(int timeout, string[] keys...) {
         return brpop(getArgsAddTimeout(timeout, keys));
     }
+    alias brpop = BinaryRedis.brpop;
 
     override
     Long zcount(string key, double min, double max) {
@@ -2031,6 +2101,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zcount(key, min, max);
         return client.getIntegerReply();
     }
+    alias zcount = BinaryRedis.zcount;
 
     override
     Long zcount(string key, string min, string max) {
@@ -2094,6 +2165,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrangeByScore = BinaryRedis.zrangeByScore;
 
     override
     Set!(string) zrangeByScore(string key, string min, string max) {
@@ -2223,6 +2295,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrangeByScoreWithScores(key, min, max);
         return getTupledSet();
     }
+    alias zrangeByScoreWithScores = BinaryRedis.zrangeByScoreWithScores;
 
     override
     Set!(Tuple) zrangeByScoreWithScores(string key, string min, string max) {
@@ -2303,6 +2376,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrevrangeByScore = BinaryRedis.zrevrangeByScore;
 
     override
     Set!(string) zrevrangeByScore(string key, string max, string min) {
@@ -2327,6 +2401,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zrevrangeByScoreWithScores(key, max, min);
         return getTupledSet();
     }
+    alias zrevrangeByScoreWithScores = BinaryRedis.zrevrangeByScoreWithScores;
 
     override
     Set!(Tuple) zrevrangeByScoreWithScores(string key, double max,
@@ -2380,6 +2455,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zremrangeByRank(key, start, stop);
         return client.getIntegerReply();
     }
+    alias zremrangeByRank = BinaryRedis.zremrangeByRank;
 
     /**
      * Remove all the elements in the sorted set at key with a score between min and max (including
@@ -2400,6 +2476,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
     }
+    alias zremrangeByScore = BinaryRedis.zremrangeByScore;
 
     override
     Long zremrangeByScore(string key, string min, string max) {
@@ -2444,6 +2521,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zunionstore(dstkey, sets);
         return client.getIntegerReply();
     }
+    alias zunionstore = BinaryRedis.zunionstore;
 
     /**
      * Creates a union or intersection of N sorted sets given by keys k1 through kN, and stores it at
@@ -2519,6 +2597,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zinterstore(dstkey, sets);
         return client.getIntegerReply();
     }
+    alias zinterstore = BinaryRedis.zinterstore;
 
     /**
      * Creates a union or intersection of N sorted sets given by keys k1 through kN, and stores it at
@@ -2564,6 +2643,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zlexcount(key, min, max);
         return client.getIntegerReply();
     }
+    alias zlexcount = BinaryRedis.zlexcount;
 
     override
     Set!(string) zrangeByLex(string key, string min, string max) {
@@ -2572,6 +2652,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrangeByLex = BinaryRedis.zrangeByLex;
 
     override
     Set!(string) zrangeByLex(string key, string min, string max,
@@ -2589,6 +2670,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         List!(string) members = client.getMultiBulkReply();
         return SetFromList.of(members);
     }
+    alias zrevrangeByLex = BinaryRedis.zrevrangeByLex;
 
     override
     Set!(string) zrevrangeByLex(string key, string max, string min, int offset, int count) {
@@ -2604,6 +2686,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.zremrangeByLex(key, min, max);
         return client.getIntegerReply();
     }
+    alias zremrangeByLex = BinaryRedis.zremrangeByLex;
 
     override
     Long strlen(string key) {
@@ -2611,6 +2694,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.strlen(key);
         return client.getIntegerReply();
     }
+    alias strlen = BinaryRedis.strlen;
 
     override
     Long lpushx(string key, string[] string...) {
@@ -2618,6 +2702,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.lpushx(key, string);
         return client.getIntegerReply();
     }
+    alias lpushx = BinaryRedis.lpushx;
 
     /**
      * Undo a {@link #expire(string, int) expire} at turning the expire key into a normal key.
@@ -2632,6 +2717,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.persist(key);
         return client.getIntegerReply();
     }
+    alias persist = BinaryRedis.persist;
 
     override
     Long rpushx(string key, string[] string...) {
@@ -2639,6 +2725,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.rpushx(key, string);
         return client.getIntegerReply();
     }
+    alias rpushx = BinaryRedis.rpushx;
 
     override
     string echo(string string) {
@@ -2646,6 +2733,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.echo(string);
         return client.getBulkReply();
     }
+    alias echo = BinaryRedis.echo;
 
     override
     Long linsert(string key, ListPosition where, string pivot,
@@ -2654,6 +2742,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.linsert(key, where, pivot, value);
         return client.getIntegerReply();
     }
+    alias linsert = BinaryRedis.linsert;
 
     /**
      * Pop a value from a list, push it to another list and return it; or block until one is available
@@ -2672,6 +2761,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             client.rollbackTimeout();
         }
     }
+    alias brpoplpush = BinaryRedis.brpoplpush;
 
     /**
      * Sets or clears the bit at offset in the string value stored at key
@@ -2686,6 +2776,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
     }
+    alias setbit = BinaryRedis.setbit;
+
 
     override
     Boolean setbit(string key, long offset, string value) {
@@ -2693,7 +2785,6 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
     }
-
     /**
      * Returns the bit value at offset in the string value stored at key
      * @param key
@@ -2706,6 +2797,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.getbit(key, offset);
         return client.getIntegerReply() == 1;
     }
+    alias getbit = BinaryRedis.getbit;
 
     override
     Long setrange(string key, long offset, string value) {
@@ -2713,6 +2805,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.setrange(key, offset, value);
         return client.getIntegerReply();
     }
+    alias setrange = BinaryRedis.setrange;
 
     override
     string getrange(string key, long startOffset, long endOffset) {
@@ -2720,11 +2813,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.getrange(key, startOffset, endOffset);
         return client.getBulkReply();
     }
+    alias getrange = BinaryRedis.getrange;
 
     override
     Long bitpos(string key, bool value) {
         return bitpos(key, value, new BitPosParams());
     }
+    alias bitpos = BinaryRedis.bitpos;
 
     override
     Long bitpos(string key, bool value, BitPosParams params) {
@@ -2938,6 +3033,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.scriptLoad(script);
         return client.getBulkReply();
     }
+    alias scriptLoad = BinaryRedis.scriptLoad;
 
     override
     List!(Slowlog) slowlogGet() {
@@ -2956,18 +3052,21 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.objectRefcount(key);
         return client.getIntegerReply();
     }
+    alias objectRefcount = BinaryRedis.objectRefcount;
 
     override
     string objectEncoding(string key) {
         client.objectEncoding(key);
         return client.getBulkReply();
     }
+    alias objectEncoding = BinaryRedis.objectEncoding;
 
     override
     Long objectIdletime(string key) {
         client.objectIdletime(key);
         return client.getIntegerReply();
     }
+    alias objectIdletime = BinaryRedis.objectIdletime;
 
     override
     Long bitcount(string key) {
@@ -2975,6 +3074,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.bitcount(key);
         return client.getIntegerReply();
     }
+    alias bitcount = BinaryRedis.bitcount;
 
     override
     Long bitcount(string key, long start, long end) {
@@ -2989,6 +3089,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.bitop(op, destKey, srcKeys);
         return client.getIntegerReply();
     }
+    alias bitop = BinaryRedis.bitop;
 
     /**
      * <pre>
@@ -3220,7 +3321,6 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         this.client.clientKill(ipPort);
         return this.client.getStatusCodeReply();
     }
-    alias clientKill = BinaryRedis.clientKill;
 
     override
     string clientGetname() {
@@ -3263,6 +3363,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     ScanResult!(string) scan(string cursor) {
         return scan(cursor, new ScanParams());
     }
+    alias scan = BinaryRedis.scan;
 
     override
     ScanResult!(string) scan(string cursor, ScanParams params) {
@@ -3285,6 +3386,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor) {
         return hscan(key, cursor, new ScanParams());
     }
+    alias hscan = BinaryRedis.hscan;
 
     override
     ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor,
@@ -3310,6 +3412,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     ScanResult!(string) sscan(string key, string cursor) {
         return sscan(key, cursor, new ScanParams());
     }
+    alias sscan = BinaryRedis.sscan;
 
     override
     ScanResult!(string) sscan(string key, string cursor, ScanParams params) {
@@ -3332,6 +3435,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     ScanResult!(Tuple) zscan(string key, string cursor) {
         return zscan(key, cursor, new ScanParams());
     }
+    alias zscan = BinaryRedis.zscan;
 
     override
     ScanResult!(Tuple) zscan(string key, string cursor, ScanParams params) {
@@ -3546,6 +3650,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.pfadd(key, elements);
         return client.getIntegerReply();
     }
+    alias pfadd = BinaryRedis.pfadd;
 
     override
     long pfcount(string key) {
@@ -3553,6 +3658,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.pfcount(key);
         return client.getIntegerReply();
     }
+    alias pfcount = BinaryRedis.pfcount;
 
     override
     long pfcount(string[] keys...) {
@@ -3567,16 +3673,19 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.pfmerge(destkey, sourcekeys);
         return client.getStatusCodeReply();
     }
+    alias pfmerge = BinaryRedis.pfmerge;
 
     override
     List!(string) blpop(int timeout, string key) {
         return blpop(key, string.valueOf(timeout));
     }
+    alias blpop = BinaryRedis.blpop;
 
     override
     List!(string) brpop(int timeout, string key) {
         return brpop(key, string.valueOf(timeout));
     }
+    alias brpop = BinaryRedis.brpop;
 
     override
     Long geoadd(string key, double longitude, double latitude, string member) {
@@ -3584,6 +3693,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.geoadd(key, longitude, latitude, member);
         return client.getIntegerReply();
     }
+    alias geoadd = BinaryRedis.geoadd;
 
     override
     Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
@@ -3599,6 +3709,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         string dval = client.getBulkReply();
         return (dval !is null ? new Double(dval) : null);
     }
+    alias geodist = BinaryRedis.geodist;
 
     override
     Double geodist(string key, string member1, string member2, GeoUnit unit) {
@@ -3614,6 +3725,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.geohash(key, members);
         return client.getMultiBulkReply();
     }
+    alias geohash = BinaryRedis.geohash;
 
     override
     List!(GeoCoordinate) geopos(string key, string[] members...) {
@@ -3621,6 +3733,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.geopos(key, members);
         return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
     }
+    alias geopos = BinaryRedis.geopos;
 
     override
     List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude,
@@ -3629,6 +3742,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.georadius(key, longitude, latitude, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
     }
+    alias georadius = BinaryRedis.georadius;
 
     override
     List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude, double latitude,
@@ -3637,6 +3751,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.georadiusReadonly(key, longitude, latitude, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
     }
+    alias georadiusReadonly = BinaryRedis.georadiusReadonly;
 
     override
     List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude,
@@ -3645,6 +3760,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.georadius(key, longitude, latitude, radius, unit, param);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
     }
+    alias georadius = BinaryRedis.georadius;
 
     override
     List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude, double latitude,
@@ -3661,6 +3777,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.georadiusByMember(key, member, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
     }
+    alias georadiusByMember = BinaryRedis.georadiusByMember;
 
     override
     List!(GeoRadiusResponse) georadiusByMemberReadonly(string key, string member, double radius,
@@ -3669,6 +3786,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.georadiusByMemberReadonly(key, member, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
     }
+    alias georadiusByMemberReadonly = BinaryRedis.georadiusByMemberReadonly;
 
     override
     List!(GeoRadiusResponse) georadiusByMember(string key, string member, double radius,
@@ -3710,6 +3828,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.bitfield(key, arguments);
         return client.getIntegerMultiBulkReply();
     }
+    alias bitfield = BinaryRedis.bitfield;
 
     override
     Long hstrlen(string key, string field) {
@@ -3717,6 +3836,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.hstrlen(key, field);
         return client.getIntegerReply();
     }
+    alias hstrlen = BinaryRedis.hstrlen;
 
     override
     string memoryDoctor() {
@@ -3729,6 +3849,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash) {
         return xadd(key, id, hash, Long.MAX_VALUE, false);
     }
+    alias xadd = BinaryRedis.xadd;
     
     override
     StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
@@ -3744,6 +3865,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xlen(key);
         return client.getIntegerReply();
     }
+    alias xlen = BinaryRedis.xlen;
 
     /**
      * {@inheritDoc}
@@ -3754,6 +3876,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xrange(key, start, end, count);
         return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
     }
+    alias xrange = BinaryRedis.xrange;
     
     /**
      * {@inheritDoc}
@@ -3764,6 +3887,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xrevrange(key, end, start, count);
         return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
     }
+    alias xrevrange = BinaryRedis.xrevrange;
 
 
     /**
@@ -3796,6 +3920,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             client.rollbackTimeout();
         }
     }
+    alias xread = BinaryRedis.xread;
 
     /**
      * {@inheritDoc}
@@ -3806,6 +3931,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xack(key, group, ids);
         return client.getIntegerReply();
     }
+    alias xack = BinaryRedis.xack;
 
     override
     string xgroupCreate(string key, string groupname, StreamEntryID id, bool makeStream) {
@@ -3813,6 +3939,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xgroupCreate(key, groupname, id, makeStream);
         return client.getStatusCodeReply();
     }
+    alias xgroupCreate = BinaryRedis.xgroupCreate;
 
     override
     string xgroupSetID(string key, string groupname, StreamEntryID id) {
@@ -3820,6 +3947,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xgroupSetID(key, groupname, id);
         return client.getStatusCodeReply();
     }
+    alias xgroupSetID = BinaryRedis.xgroupSetID;
 
     override
     long xgroupDestroy(string key, string groupname) {
@@ -3827,6 +3955,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xgroupDestroy(key, groupname);
         return client.getIntegerReply();
     }
+    alias xgroupDestroy = BinaryRedis.xgroupDestroy;
 
     override
     string xgroupDelConsumer(string key, string groupname, string consumerName) {
@@ -3834,6 +3963,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xgroupDelConsumer(key, groupname, consumerName);
         return client.getStatusCodeReply();
     }
+    alias xgroupDelConsumer = BinaryRedis.xgroupDelConsumer;
 
     override
     long xdel(string key, StreamEntryID[] ids...) {
@@ -3841,6 +3971,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xdel(key, ids);
         return client.getIntegerReply();
     }
+    alias xdel = BinaryRedis.xdel;
 
     override
     long xtrim(string key, long maxLen, bool approximateLength) {
@@ -3848,6 +3979,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.xtrim(key, maxLen, approximateLength);
         return client.getIntegerReply();
     }
+    alias xtrim = BinaryRedis.xtrim;
 
     /**
      * {@inheritDoc}
@@ -3886,6 +4018,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         
         return BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(client.getObjectMultiBulkReply());
     }
+    alias xpending = BinaryRedis.xpending;
 
     override
     List!(StreamEntry) xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime,
@@ -3896,10 +4029,12 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         
         return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
     }
+    alias xclaim = BinaryRedis.xclaim;
 
     override
     Object sendCommand(ProtocolCommand cmd, string[] args...) {
         client.sendCommand(cmd, args);
         return client.getOne();
     }
+    alias sendCommand = BinaryRedis.sendCommand;
 }

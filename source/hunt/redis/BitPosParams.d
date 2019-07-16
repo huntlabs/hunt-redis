@@ -1,5 +1,7 @@
 module hunt.redis.BitPosParams;
 
+import hunt.redis.Protocol;
+
 import hunt.collection.ArrayList;
 import hunt.collection.Collection;
 import hunt.collection.Collections;

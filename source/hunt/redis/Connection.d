@@ -117,7 +117,7 @@ class Connection : Closeable {
   }
 
   void sendCommand(Command cmd, string[] args...) {
-    byte[][] bargs = new byte[args.length][];
+    byte[][] bargs = new byte[][args.length];
     for (int i = 0; i < args.length; i++) {
       bargs[i] = SafeEncoder.encode(args[i]);
     }
@@ -139,8 +139,8 @@ class Connection : Closeable {
        */
       try {
         string errorMessage = Protocol.readErrorLineIfPossible(inputStream);
-        if (errorMessage !is null && errorMessage.length() > 0) {
-          ex = new RedisConnectionException(errorMessage, ex.getCause());
+        if (errorMessage !is null && errorMessage.length > 0) {
+          ex = new RedisConnectionException(errorMessage, ex.next);
         }
       } catch (Exception e) {
         /*

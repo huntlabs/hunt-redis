@@ -32,6 +32,7 @@ import hunt.redis.util.Sharded;
 import hunt.Double;
 import hunt.Long;
 
+import std.conv;
 import std.regex;
 alias Pattern = Regex!char;
 
@@ -1058,7 +1059,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   override
   Object sendCommand(ProtocolCommand cmd, byte[][] args...) {
     // default since no sample key provided in RedisCommands interface
-    byte[] sampleKey = args.length > 0 ? args[0] : cmd.getRaw();
+    byte[] sampleKey = args.length > 0 ? args[0] : cast(byte[])(cmd.to!string());
     Redis j = getShard(args[0]);
     return j.sendCommand(cmd, args);
   }
