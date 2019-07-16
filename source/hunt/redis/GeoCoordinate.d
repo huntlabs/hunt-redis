@@ -1,5 +1,10 @@
 module hunt.redis.GeoCoordinate;
 
+import hunt.Double;
+import hunt.util.Comparator;
+
+import std.conv;
+
 class GeoCoordinate {
   private double longitude;
   private double latitude;
@@ -26,8 +31,8 @@ class GeoCoordinate {
     if(that is null)
       return false;
 
-    if (Double.compare(that.longitude, longitude) != 0) return false;
-    return Double.compare(that.latitude, latitude) == 0;
+    if (compare(that.longitude, longitude) != 0) return false;
+    return compare(that.latitude, latitude) == 0;
   }
 
   override
@@ -35,15 +40,15 @@ class GeoCoordinate {
     // follows IntelliJ default hashCode implementation
     int result;
     long temp;
-    temp = Double.doubleToLongBits(longitude);
+    temp = cast(long)longitude; // Double.doubleToLongBits(longitude);
     result = cast(int) (temp ^ (temp >>> 32));
-    temp = Double.doubleToLongBits(latitude);
+    temp = cast(long)latitude; // Double.doubleToLongBits(latitude);
     result = 31 * result + cast(int) (temp ^ (temp >>> 32));
     return result;
   }
 
   override
   string toString() {
-    return "(" ~ longitude ~ "," ~ latitude ~ ")";
+    return "(" ~ longitude.to!string() ~ "," ~ latitude.to!string() ~ ")";
   }
 }

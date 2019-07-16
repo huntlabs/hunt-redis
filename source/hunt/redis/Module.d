@@ -34,7 +34,7 @@ class Module {
 
   override
   size_t toHash() @trusted nothrow {
-    int result = name !is null ? name.hashCode() : 0;
+    size_t result = name !is null ? name.hashOf() : 0;
     result = 31 * result + ver;
     return result;
   }

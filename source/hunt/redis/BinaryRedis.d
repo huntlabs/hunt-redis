@@ -3338,7 +3338,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     return eval(script, Protocol.toByteArray(keys.size()), getParamsWithBinary(keys, args));
   }
 
-  protected static byte[][] getParamsWithBinary(List!(byte[]) keys, List!(byte[]) args) {
+  static byte[][] getParamsWithBinary(List!(byte[]) keys, List!(byte[]) args) {
     int keyCount = keys.size();
     int argCount = args.size();
     byte[][] params = new byte[][keyCount + argCount];

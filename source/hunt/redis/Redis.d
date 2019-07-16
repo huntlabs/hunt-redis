@@ -4,6 +4,7 @@ import hunt.redis.BinaryRedis;
 import hunt.redis.BinaryRedisPubSub;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
+import hunt.redis.BuilderFactory;
 import hunt.redis.Client;
 import hunt.redis.ClusterReset;
 import hunt.redis.GeoCoordinate;
@@ -1305,7 +1306,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.smembers(key);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias smembers = BinaryRedis.smembers;
 
@@ -1352,7 +1353,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.spop(key, count);
         List!(string) members = client.getMultiBulkReply();
         if (members is null) return null;
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     /**
@@ -1434,7 +1435,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.sinter(keys);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias sinter = BinaryRedis.sinter;
 
@@ -1473,7 +1474,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.sunion(keys);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias sunion = BinaryRedis.sunion;
 
@@ -1613,7 +1614,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrange(key, start, stop);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrange = BinaryRedis.zrange;
 
@@ -1722,7 +1723,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrange(key, start, stop);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrevrange = BinaryRedis.zrevrange;
 
@@ -2163,7 +2164,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrangeByScore = BinaryRedis.zrangeByScore;
 
@@ -2172,7 +2173,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     /**
@@ -2230,7 +2231,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2239,7 +2240,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     /**
@@ -2374,7 +2375,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrevrangeByScore = BinaryRedis.zrevrangeByScore;
 
@@ -2383,7 +2384,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2392,7 +2393,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2425,7 +2426,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2650,7 +2651,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrangeByLex = BinaryRedis.zrangeByLex;
 
@@ -2660,7 +2661,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2668,7 +2669,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
     alias zrevrangeByLex = BinaryRedis.zrevrangeByLex;
 
@@ -2677,7 +2678,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min, offset, count);
         List!(string) members = client.getMultiBulkReply();
-        return SetFromList.of(members);
+        return new SetFromList!string(members);
     }
 
     override
@@ -2943,7 +2944,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         }
     }
 
-    protected static string[] getParams(List!(string) keys, List!(string) args) {
+    static string[] getParams(List!(string) keys, List!(string) args) {
         int keyCount = keys.size();
         int argCount = args.size();
 

@@ -1,8 +1,9 @@
 module hunt.redis.MultiKeyPipelineBase;
 
 import hunt.redis.commands;
+import hunt.redis.BinaryRedis;
+import hunt.redis.BuilderFactory;
 import hunt.redis.Client;
-import hunt.redis.Response;
 import hunt.redis.BitOP;
 import hunt.redis.Client;
 import hunt.redis.GeoCoordinate;
@@ -11,6 +12,8 @@ import hunt.redis.GeoUnit;
 import hunt.redis.ListPosition;
 import hunt.redis.Module;
 import hunt.redis.PipelineBase;
+import hunt.redis.Redis;
+import hunt.redis.Response;
 import hunt.redis.SortingParams;
 import hunt.redis.ZParams;
 import hunt.redis.params.MigrateParams;

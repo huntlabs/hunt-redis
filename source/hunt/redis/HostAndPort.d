@@ -1,7 +1,15 @@
 module hunt.redis.HostAndPort;
 
+import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
+
+import hunt.text.Common;
+import hunt.text.StringUtils;
+
+import std.algorithm;
+import std.conv;
 import std.socket;
+import std.string;
 
 /**
 */
@@ -41,11 +49,11 @@ class HostAndPort { // : Serializable
     }
 
     override size_t toHash() @trusted nothrow {
-        return 31 * convertHost(host).hashCode() + port;
+        return 31 * convertHost(host).hashOf() + port;
     }
 
     override string toString() {
-        return host ~ ":" ~ port;
+        return host ~ ":" ~ port.to!string();
     }
 
     /**
@@ -56,7 +64,7 @@ class HostAndPort { // : Serializable
    * @return array of host and port strings
      */
     static string[] extractParts(string from) {
-        int idx = from.lastIndexOf(":");
+        int idx = cast(int)from.lastIndexOf(":");
         string host = idx != -1 ? from.substring(0, idx) : from;
         string port = idx != -1 ? from.substring(idx + 1) : "";
         return [host, port];
@@ -78,30 +86,35 @@ class HostAndPort { // : Serializable
         try {
             string[] parts = extractParts(from);
             string host = parts[0];
-            int port = Integer.parseInt(parts[1]);
+            int port = to!int(parts[1]);
             return new HostAndPort(convertHost(host), port);
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
             throw new IllegalArgumentException(ex);
         }
     }
 
-    static string convertHost(string host) {
+    static string convertHost(string host) @trusted nothrow {
         try {
             /*
-         * Validate the host name as an IPV4/IPV6 address.
-         * If this is an AWS ENDPOINT it will not parse.
-         * In that case accept host as is.
-         *
-         * Costs: If this is an IPV4/6 encoding, e.g. 127.0.0.1 then no DNS lookup
-         * is done.  If it is a name then a DNS lookup is done but it is normally cached.
-         * Secondarily, this class is typically used to create a connection once
-         * at the beginning of processing and then not used again.  So even if the DNS
-         * lookup needs to be done then the cost is miniscule.
-         */
-            InetAddress inetAddress = InetAddress.getByName(host);
+            * Validate the host name as an IPV4/IPV6 address.
+            * If this is an AWS ENDPOINT it will not parse.
+            * In that case accept host as is.
+            *
+            * Costs: If this is an IPV4/6 encoding, e.g. 127.0.0.1 then no DNS lookup
+            * is done.  If it is a name then a DNS lookup is done but it is normally cached.
+            * Secondarily, this class is typically used to create a connection once
+            * at the beginning of processing and then not used again.  So even if the DNS
+            * lookup needs to be done then the cost is miniscule.
+            */
+
+            // FIXME: Needing refactor or cleanup -@zxp at 7/16/2019, 6:35:54 PM
+            // 
+            Address inetAddress = parseAddress(host);
+            // InetAddress inetAddress = InetAddress.getByName(host);
+            // inetAddress.isLoopbackAddress() ||
 
             // isLoopbackAddress() handles both IPV4 and IPV6
-            if (inetAddress.isLoopbackAddress() || host.equals("0.0.0.0")
+            if (host == "0.0.0.0"
                     || host.startsWith("169.254"))
                 return getLocalhost();
             else
@@ -137,9 +150,11 @@ class HostAndPort { // : Serializable
     static string getLocalHostQuietly() {
         string localAddress;
         try {
-            localAddress = InetAddress.getLocalHost().getHostAddress();
+            // FIXME: Needing refactor or cleanup -@zxp at 7/16/2019, 6:34:32 PM
+            // 
+            localAddress = "localhost"; // InetAddress.getLocalHost().getHostAddress();
         } catch (Exception ex) {
-            log.error("{}.getLocalHostQuietly : cant resolve localhost address",
+            error("%s.getLocalHostQuietly : cant resolve localhost address",
                     HostAndPort.stringof, ex);
             localAddress = "localhost";
         }

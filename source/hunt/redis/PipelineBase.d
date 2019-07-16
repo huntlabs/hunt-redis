@@ -1,6 +1,7 @@
 module hunt.redis.PipelineBase;
 
 import hunt.redis.BitPosParams;
+import hunt.redis.BuilderFactory;
 import hunt.redis.Client;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
@@ -29,6 +30,8 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
+
+import std.conv;
 
 abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 
@@ -66,7 +69,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 
   override
   Response!(List!(byte[])) blpop(byte[] key) {
-    byte[][] temp = new byte[1][];
+    byte[][] temp = new byte[][1];
     temp[0] = key;
     getClient(key).blpop(temp);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
@@ -74,7 +77,7 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 
   override
   Response!(List!(byte[])) brpop(byte[] key) {
-    byte[][] temp = new byte[1][];
+    byte[][] temp = new byte[][1];
     temp[0] = key;
     getClient(key).brpop(temp);
     return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
@@ -1983,14 +1986,14 @@ abstract class PipelineBase : Queable, BinaryRedisPipeline, RedisPipeline {
 
   override
   Response!(Object) sendCommand(ProtocolCommand cmd, string[] args...){
-    string key = args.length > 0 ? args[0] : cmd.toString();
+    string key = args.length > 0 ? args[0] : cmd.to!string();
     getClient(key).sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);
   }
 
   override
   Response!(Object) sendCommand(ProtocolCommand cmd, byte[][] args...){
-    byte[] key = args.length > 0 ? args[0] : cmd.getRaw();
+    byte[] key = args.length > 0 ? args[0] : cast(byte[])(cmd.to!string());
     getClient(key).sendCommand(cmd, args);
     return getResponse(BuilderFactory.OBJECT);
   }
