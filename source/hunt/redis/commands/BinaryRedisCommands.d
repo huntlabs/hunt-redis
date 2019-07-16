@@ -20,7 +20,6 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 
-import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
@@ -60,11 +59,11 @@ interface BinaryRedisCommands {
 
   Long touch(byte[] key);
 
-  Boolean setbit(byte[] key, long offset, bool value);
+  bool setbit(byte[] key, long offset, bool value);
 
-  Boolean setbit(byte[] key, long offset, byte[] value);
+  bool setbit(byte[] key, long offset, byte[] value);
 
-  Boolean getbit(byte[] key, long offset);
+  bool getbit(byte[] key, long offset);
 
   Long setrange(byte[] key, long offset, byte[] value);
 
@@ -270,7 +269,7 @@ interface BinaryRedisCommands {
 
   Long pfadd(byte[] key, byte[][] elements...);
 
-  long pfcount(byte[] key);
+  Long pfcount(byte[] key);
 
   // Geo Commands
 

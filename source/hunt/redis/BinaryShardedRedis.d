@@ -29,7 +29,6 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.Hashing;
 import hunt.redis.util.Sharded;
 
-import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
@@ -762,19 +761,19 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  Boolean setbit(byte[] key, long offset, bool value) {
+  bool setbit(byte[] key, long offset, bool value) {
     Redis j = getShard(key);
     return j.setbit(key, offset, value);
   }
 
   override
-  Boolean setbit(byte[] key, long offset, byte[] value) {
+  bool setbit(byte[] key, long offset, byte[] value) {
     Redis j = getShard(key);
     return j.setbit(key, offset, value);
   }
 
   override
-  Boolean getbit(byte[] key, long offset) {
+  bool getbit(byte[] key, long offset) {
     Redis j = getShard(key);
     return j.getbit(key, offset);
   }
@@ -832,7 +831,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
   }
 
   override
-  long pfcount(byte[] key) {
+  Long pfcount(byte[] key) {
     Redis j = getShard(key);
     return j.pfcount(key);
   }

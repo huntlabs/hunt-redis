@@ -42,7 +42,7 @@ import hunt.collection;
 import hunt.Exceptions;
 import hunt.util.Common;
 
-import hunt.Boolean;
+import hunt.Byte;
 import hunt.Double;
 import hunt.Long;
 
@@ -311,7 +311,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * returned. Note that even keys set with an empty string as value will return true. Time
    * complexity: O(1)
    * @param key
-   * @return Boolean reply, true if the key exists, otherwise false
+   * @return bool reply, true if the key exists, otherwise false
    */
   override
   bool exists(byte[] key) {
@@ -1531,7 +1531,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * Time complexity O(1)
    * @param key
    * @param member
-   * @return Boolean reply, specifically: true if the element is a member of the set false if the element
+   * @return bool reply, specifically: true if the element is a member of the set false if the element
    *         is not a member of the set OR if the key does not exist
    */
   override
@@ -2110,8 +2110,8 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   private byte[][] getArgsAddTimeout(int timeout, byte[][] keys) {
-    int size = keys.length;
-    byte[][] args = new byte[size + 1][];
+    int size = cast(int)keys.length;
+    byte[][] args = new byte[][size + 1];
     for (int at = 0; at != size; ++at) {
       args[at] = keys[at];
     }
@@ -2541,12 +2541,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   protected Set!(Tuple) getTupledSet() {
     List!(byte[]) membersWithScores = client.getBinaryMultiBulkReply();
     if (membersWithScores.isEmpty()) {
-      return Collections.emptySet();
+      return Collections.emptySet!(Tuple)();
     }
     Set!(Tuple) set = new LinkedHashSet!(Tuple)(membersWithScores.size() / 2, 1.0f);
-    Iterator!(byte[]) iterator = membersWithScores.iterator();
-    while (iterator.hasNext()) {
-      set.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
+    InputRange!(byte[]) iterator = membersWithScores.iterator();
+    while (!iterator.empty()) {
+      byte[] first = iterator.front(); iterator.popFront();
+      byte[] second = iterator.front(); iterator.popFront();
+      set.add(new Tuple(first, BuilderFactory.DOUBLE.build(new Bytes(second))));
     }
     return set;
   }
@@ -3241,14 +3243,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return
    */
   override
-  Boolean setbit(byte[] key, long offset, bool value) {
+  bool setbit(byte[] key, long offset, bool value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
     return client.getIntegerReply() == 1;
   }
 
   override
-  Boolean setbit(byte[] key, long offset, byte[] value) {
+  bool setbit(byte[] key, long offset, byte[] value) {
     checkIsInMultiOrPipeline();
     client.setbit(key, offset, value);
     return client.getIntegerReply() == 1;
@@ -3261,7 +3263,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    * @return
    */
   override
-  Boolean getbit(byte[] key, long offset) {
+  bool getbit(byte[] key, long offset) {
     checkIsInMultiOrPipeline();
     client.getbit(key, offset);
     return client.getIntegerReply() == 1;
@@ -3333,13 +3335,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
    */
   override
   Object eval(byte[] script, List!(byte[]) keys, List!(byte[]) args) {
-    return eval(script, toByteArray(keys.size()), getParamsWithBinary(keys, args));
+    return eval(script, Protocol.toByteArray(keys.size()), getParamsWithBinary(keys, args));
   }
 
   protected static byte[][] getParamsWithBinary(List!(byte[]) keys, List!(byte[]) args) {
     int keyCount = keys.size();
     int argCount = args.size();
-    byte[][] params = new byte[keyCount + argCount][];
+    byte[][] params = new byte[][keyCount + argCount];
 
     for (int i = 0; i < keyCount; i++)
       params[i] = keys.get(i);
@@ -3363,7 +3365,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
 
   override
   Object eval(byte[] script, int keyCount, byte[][] params...) {
-    return eval(script, toByteArray(keyCount), params);
+    return eval(script, Protocol.toByteArray(keyCount), params);
   }
 
   override
@@ -3399,7 +3401,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   Long scriptExists(byte[] sha1) {
-    byte[][] a = new byte[1][];
+    byte[][] a = new byte[][1];
     a[0] = sha1;
     return scriptExists(a).get(0);
   }
@@ -3660,7 +3662,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   }
 
   override
-  long pfcount(byte[] key) {
+  Long pfcount(byte[] key) {
     checkIsInMultiOrPipeline();
     client.pfcount(key);
     return client.getIntegerReply();
@@ -3801,7 +3803,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
   List!(GeoCoordinate) geopos(byte[] key, byte[][] members...) {
     checkIsInMultiOrPipeline();
     client.geopos(key, members);
-    return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEO_COORDINATE_LIST.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3809,7 +3811,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       double radius, GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3817,7 +3819,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       double radius, GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3825,7 +3827,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       double radius, GeoUnit unit, GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadius(key, longitude, latitude, radius, unit, param);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3833,7 +3835,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       double radius, GeoUnit unit, GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusReadonly(key, longitude, latitude, radius, unit, param);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
   
   override
@@ -3841,7 +3843,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3849,7 +3851,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       GeoUnit unit) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3857,7 +3859,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       GeoUnit unit, GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMember(key, member, radius, unit, param);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
   override
@@ -3865,7 +3867,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
       GeoUnit unit, GeoRadiusParam param) {
     checkIsInMultiOrPipeline();
     client.georadiusByMemberReadonly(key, member, radius, unit, param);
-    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+    return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
   }
 
 

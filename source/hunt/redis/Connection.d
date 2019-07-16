@@ -307,7 +307,7 @@ class Connection : Closeable {
     return broken;
   }
 
-  protected void flush() {
+  void flush() {
     try {
       outputStream.flush();
     } catch (IOException ex) {

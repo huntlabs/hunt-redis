@@ -8,7 +8,7 @@ import hunt.collection.List;
 class BitPosParams {
   private List!(byte[]) params;
 
-  protected this() {
+  this() {
     params = new ArrayList!(byte[])();
   }
 

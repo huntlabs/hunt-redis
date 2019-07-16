@@ -30,7 +30,7 @@ class Queable {
     return lr;
   }
 
-  protected bool hasPipelinedResponse() {
+  bool hasPipelinedResponse() {
     return !pipelinedResponses.isEmpty();
   }
 

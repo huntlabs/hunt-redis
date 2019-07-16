@@ -1,11 +1,14 @@
 module hunt.redis.BuilderFactory;
 
 import hunt.redis.Builder;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
 
 import hunt.collection;
 import hunt.Boolean;
 import hunt.Byte;
 import hunt.Double;
+import hunt.Exceptions;
 import hunt.Integer;
 import hunt.Long;
 
@@ -363,35 +366,41 @@ class BuilderFactory {
 
 //   };
 
-//   static Builder!(List!(GeoCoordinate)) GEO_COORDINATE_LIST = new Builder!(List!(GeoCoordinate))() {
-//     override
-//     List!(GeoCoordinate) build(Object data) {
-//       if (null == data) {
-//         return null;
-//       }
-//       return interpretGeoposResult((List!(Object)) data);
-//     }
+  static Builder!(List!(GeoCoordinate)) GEO_COORDINATE_LIST() {
+    __gshared Builder!(List!(GeoCoordinate)) inst;
+    return initOnce!inst(new class Builder!(List!(GeoCoordinate)) {
+        override List!(GeoCoordinate) build(Object data) {
+            if (data is null) {
+                return null;
+            }
+            return interpretGeoposResult(cast(List!(Object)) data);
+        }
 
-//     override
-//     string toString() {
-//       return "List!(GeoCoordinate)";
-//     }
+        override string toString() {
+            return "List!(GeoCoordinate)";
+        }
+    });
+  } 
 
-//     private List!(GeoCoordinate) interpretGeoposResult(List!(Object) responses) {
-//       List!(GeoCoordinate) responseCoordinate = new ArrayList!(GeoCoordinate)(responses.size());
-//       foreach(Object response ; responses) {
-//         if (response is null) {
-//           responseCoordinate.add(null);
-//         } else {
-//           List!(Object) respList = (List!(Object)) response;
-//           GeoCoordinate coord = new GeoCoordinate(DOUBLE.build(respList.get(0)),
-//               DOUBLE.build(respList.get(1)));
-//           responseCoordinate.add(coord);
-//         }
-//       }
-//       return responseCoordinate;
-//     }
-//   };
+private static List!(GeoCoordinate) interpretGeoposResult(List!(Object) responses) {
+    List!(GeoCoordinate) responseCoordinate = new ArrayList!(GeoCoordinate)(responses.size());
+    foreach(Object response ; responses) {
+        if (response is null) {
+            responseCoordinate.add(null);
+        } else {
+            List!(Object) respList = cast(List!(Object)) response;
+            GeoCoordinate coord = new GeoCoordinate(DOUBLE.build(respList.get(0)),
+                DOUBLE.build(respList.get(1)));
+            responseCoordinate.add(coord);
+        }
+    }
+    return responseCoordinate;
+}
+
+static Builder!(List!(GeoRadiusResponse)) GEORADIUS_WITH_PARAMS_RESULT() {
+    implementationMissing();
+    return null;
+}
 
 //   static Builder!(List!(GeoRadiusResponse)) GEORADIUS_WITH_PARAMS_RESULT = new Builder!(List!(GeoRadiusResponse))() {
 //     override

@@ -6,7 +6,9 @@ import hunt.redis.util.ShardInfo;
 import hunt.collection;
 import hunt.Long;
 
+import std.conv;
 import std.regex;
+
 alias Pattern = Regex!char;
 
 class Sharded(R, S) if(is(S : ShardInfo!(R))) {
@@ -54,10 +56,13 @@ class Sharded(R, S) if(is(S : ShardInfo!(R))) {
     for (int i = 0; i != shards.size(); ++i) {
       S shardInfo = shards.get(i);
       if (shardInfo.getName() is null) for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
-        nodes.put(this.algo.hash("SHARD-" ~ i ~ "-NODE-" ~ n), shardInfo);
-      }
-      else for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
-        nodes.put(this.algo.hash(shardInfo.getName() ~ "*" ~ n), shardInfo);
+        long v = this.algo.hash("SHARD-" ~ i.to!string() ~ "-NODE-" ~ n.to!string());
+        nodes.put(new Long(v), shardInfo);
+      } else {
+         for (int n = 0; n < 160 * shardInfo.getWeight(); n++) {
+           long v = this.algo.hash(shardInfo.getName() ~ "*" ~ n.to!string());
+          nodes.put(new Long(v), shardInfo);
+        }
       }
       resources.put(shardInfo, shardInfo.createResource());
     }
