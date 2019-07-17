@@ -3,6 +3,7 @@ module hunt.redis.params.ClientKillParams;
 import hunt.redis.params.Params;
 
 import std.conv;
+import std.variant;
 
 class ClientKillParams : Params {
 
@@ -43,7 +44,7 @@ class ClientKillParams : Params {
     }
 
     ClientKillParams type(Type type) {
-        addParam(TYPE, type);
+        addParam(TYPE, Variant(type));
         return this;
     }
 
@@ -63,7 +64,7 @@ class ClientKillParams : Params {
     }
 
     ClientKillParams skipMe(SkipMe skipMe) {
-        addParam(SKIPME, skipMe);
+        addParam(SKIPME, Variant(skipMe));
         return this;
     }
 

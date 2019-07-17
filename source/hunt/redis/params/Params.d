@@ -12,10 +12,15 @@ import hunt.Byte;
 import hunt.Integer;
 
 import std.array;
+import std.variant;
 
 abstract class Params {
 
-    private Map!(string, Object) params;
+    private Map!(string, Variant) params;
+
+    this() {
+        params = new HashMap!(string, Variant)();
+    }
 
     T getParam(T)(string name) {
         if (params.empty())
@@ -57,38 +62,27 @@ abstract class Params {
     }
 
     protected void addParam(string name, string value) {
-        if (params is null) {
-            params = new HashMap!(string, Object)();
-        }
-        params.put(name, new String(value));
+        params.put(name, Variant(value));
     }
 
     protected void addParam(string name, int value) {
-        if (params is null) {
-            params = new HashMap!(string, Object)();
-        }
-        params.put(name, new Integer(value));
+        params.put(name, Variant(value));
     }
 
     protected void addParam(string name, byte[] value) {
-        if (params is null) {
-            params = new HashMap!(string, Object)();
-        }
-        params.put(name, new Bytes(value));
+        params.put(name, Variant(value));
     }
 
     protected void addParam(string name, Object value) {
-        if (params is null) {
-            params = new HashMap!(string, Object)();
-        }
+        params.put(name, Variant(value));
+    }
+
+    protected void addParam(string name, ref Variant value) {
         params.put(name, value);
     }
 
     protected void addParam(string name) {
-        if (params is null) {
-            params = new HashMap!(string, Object)();
-        }
-        params.put(name, null);
+        params.put(name, Variant(null));
     }
 
 }

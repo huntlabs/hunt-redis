@@ -6,6 +6,8 @@ import hunt.collection.ArrayList;
 
 import hunt.redis.util.SafeEncoder;
 
+import std.conv;
+
 class SetParams : Params {
 
   private enum string XX = "xx";
