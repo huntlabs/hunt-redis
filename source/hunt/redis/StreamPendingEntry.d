@@ -3,6 +3,8 @@ module hunt.redis.StreamPendingEntry;
 import hunt.Exceptions;
 import hunt.redis.StreamEntryID;
 
+import std.conv;
+
 class StreamPendingEntry { // : Serializable
   
   
@@ -36,7 +38,8 @@ class StreamPendingEntry { // : Serializable
   
   override
   string toString() {
-    return this.id ~ " " ~ this.consumerName ~ " idle:" ~ this.idleTime ~ " times:" ~ this.deliveredTimes;
+    return this.id.toString() ~ " " ~ this.consumerName ~ " idle:" ~ 
+        this.idleTime.to!string() ~ " times:" ~ this.deliveredTimes.to!string();
   }
   
   // private void writeObject(java.io.ObjectOutputStream out) {

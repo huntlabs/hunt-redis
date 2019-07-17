@@ -7,61 +7,88 @@ import hunt.Exceptions;
 
 import hunt.redis.util.SafeEncoder;
 
+import hunt.String;
+import hunt.Byte;
+import hunt.Integer;
+
 import std.array;
 
 abstract class Params {
 
-  private Map!(string, Object) params;
+    private Map!(string, Object) params;
 
-  
-  T getParam(T)(string name) {
-    if (params.empty()) return T.init;
+    T getParam(T)(string name) {
+        if (params.empty())
+            return T.init;
 
-    return cast(T) params.get(name);
-  }
-
-  byte[][] getByteParams() {
-    if (params is null) return new byte[0][];
-    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
-
-    // foreach(Entry!(string, Object) param ; params.entrySet()) {
-    //   byteParams.add(SafeEncoder.encode(param.getKey()));
-
-    //   Object value = param.getValue();
-    //   if (value !is null) {
-    //     if (value instanceof byte[]) {
-    //       byteParams.add((byte[]) value);
-    //     } else {
-    //       byteParams.add(SafeEncoder.encode(to!string(value)));
-    //     }
-    //   }
-    // }
-
-    // return byteParams.toArray(new byte[byteParams.size()][]);
-
-    implementationMissing();
-    return null;
-
-  }
-
-  protected bool contains(string name) {
-    if (params is null) return false;
-
-    return params.containsKey(name);
-  }
-
-  protected void addParam(string name, Object value) {
-    if (params is null) {
-      params = new HashMap!(string, Object)();
+        return cast(T) params.get(name);
     }
-    params.put(name, value);
-  }
 
-  protected void addParam(string name) {
-    if (params is null) {
-      params = new HashMap!(string, Object)();
+    byte[][] getByteParams() {
+        if (params is null)
+            return new byte[][0];
+        ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
+
+        // foreach(Entry!(string, Object) param ; params.entrySet()) {
+        //   byteParams.add(SafeEncoder.encode(param.getKey()));
+
+        //   Object value = param.getValue();
+        //   if (value !is null) {
+        //     if (value instanceof byte[]) {
+        //       byteParams.add((byte[]) value);
+        //     } else {
+        //       byteParams.add(SafeEncoder.encode(to!string(value)));
+        //     }
+        //   }
+        // }
+
+        // return byteParams.toArray(new byte[byteParams.size()][]);
+
+        implementationMissing();
+        return null;
+
     }
-    params.put(name, null);
-  }
+
+    protected bool contains(string name) {
+        if (params is null)
+            return false;
+
+        return params.containsKey(name);
+    }
+
+    protected void addParam(string name, string value) {
+        if (params is null) {
+            params = new HashMap!(string, Object)();
+        }
+        params.put(name, new String(value));
+    }
+
+    protected void addParam(string name, int value) {
+        if (params is null) {
+            params = new HashMap!(string, Object)();
+        }
+        params.put(name, new Integer(value));
+    }
+
+    protected void addParam(string name, byte[] value) {
+        if (params is null) {
+            params = new HashMap!(string, Object)();
+        }
+        params.put(name, new Bytes(value));
+    }
+
+    protected void addParam(string name, Object value) {
+        if (params is null) {
+            params = new HashMap!(string, Object)();
+        }
+        params.put(name, value);
+    }
+
+    protected void addParam(string name) {
+        if (params is null) {
+            params = new HashMap!(string, Object)();
+        }
+        params.put(name, null);
+    }
 
 }

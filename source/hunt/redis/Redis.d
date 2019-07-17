@@ -162,6 +162,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         client.ping(message);
         return client.getBulkReply();
     }
+    alias ping = BinaryRedis.ping;
+
 
     /**
      * Set the string value as value of the key. The string can't be longer than 1073741824 bytes (1

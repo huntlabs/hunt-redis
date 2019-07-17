@@ -26,7 +26,7 @@ class StreamEntry { // : Serializable
   
   override
   string toString() {
-    return id ~ " " ~ fields;
+    return id.toString() ~ " " ~ fields.toString();
   }
     
   // private void writeObject(ObjectOutputStream outputStream) {
