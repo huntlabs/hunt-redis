@@ -17,13 +17,11 @@ class RedisPoolAbstract : Pool!(Redis) {
     super(poolConfig, factory);
   }
 
-  override
-  protected void returnBrokenResource(Redis resource) {
+  override void returnBrokenResource(Redis resource) {
     super.returnBrokenResource(resource);
   }
 
-  override
-  protected void returnResource(Redis resource) {
+  override void returnResource(Redis resource) {
     super.returnResource(resource);
   }
 }

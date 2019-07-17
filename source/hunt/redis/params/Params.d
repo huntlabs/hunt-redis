@@ -32,7 +32,7 @@ abstract class Params {
     //     if (value instanceof byte[]) {
     //       byteParams.add((byte[]) value);
     //     } else {
-    //       byteParams.add(SafeEncoder.encode(string.valueOf(value)));
+    //       byteParams.add(SafeEncoder.encode(to!string(value)));
     //     }
     //   }
     // }

@@ -54,6 +54,8 @@ import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
+import std.conv;
+
 /**
 */
 class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
@@ -309,7 +311,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Set!(string) keys(string pattern) {
         checkIsInMultiOrPipeline();
         client.keys(pattern);
-        return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
+        return BuilderFactory.STRING_SET.build(cast(Object)client.getBinaryMultiBulkReply());
     }
     alias keys = BinaryRedis.keys;
 
@@ -973,7 +975,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Set!(string) hkeys(string key) {
         checkIsInMultiOrPipeline();
         client.hkeys(key);
-        return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
+        return BuilderFactory.STRING_SET.build(cast(Object)client.getBinaryMultiBulkReply());
     }
     alias hkeys = BinaryRedis.hkeys;
 
@@ -1004,7 +1006,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Map!(string, string) hgetAll(string key) {
         checkIsInMultiOrPipeline();
         client.hgetAll(key);
-        return BuilderFactory.STRING_MAP.build(client.getBinaryMultiBulkReply());
+        return BuilderFactory.STRING_MAP.build(cast(Object)client.getBinaryMultiBulkReply());
     }
     alias hgetAll = BinaryRedis.hgetAll;
 
@@ -1407,8 +1409,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
      * @return Boolean reply, specifically: true if the element is a member of the set false if the element
      *         is not a member of the set OR if the key does not exist
      */
-    override
-    Boolean sismember(string key, string member) {
+    bool sismember(string key, string member) {
         checkIsInMultiOrPipeline();
         client.sismember(key, member);
         return client.getIntegerReply() == 1;
@@ -1520,7 +1521,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Set!(string) sdiff(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiff(keys);
-        return BuilderFactory.STRING_SET.build(client.getBinaryMultiBulkReply());
+        return BuilderFactory.STRING_SET.build(cast(Object)client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -1659,7 +1660,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Double zincrby(string key, double increment, string member) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        return BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
     }
     alias zincrby = BinaryRedis.zincrby;
 
@@ -1667,7 +1668,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Double zincrby(string key, double increment, string member, ZIncrByParams params) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member, params);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        return BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
     }
 
     /**
@@ -1773,7 +1774,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Double zscore(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zscore(key, member);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        return BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
     }
     alias zscore = BinaryRedis.zscore;
 
@@ -1955,13 +1956,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     alias blpop = BinaryRedis.blpop;
 
     private string[] getArgsAddTimeout(int timeout, string[] keys) {
-        int keyCount = keys.length;
+        int keyCount = cast(int)keys.length;
         string[] args = new string[keyCount + 1];
         for (int at = 0; at != keyCount; ++at) {
             args[at] = keys[at];
         }
 
-        args[keyCount] = string.valueOf(timeout);
+        args[keyCount] = to!string(timeout);
         return args;
     }
 
@@ -2771,8 +2772,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
      * @param value
      * @return
      */
-    override
-    Boolean setbit(string key, long offset, bool value) {
+    bool setbit(string key, long offset, bool value) {
         checkIsInMultiOrPipeline();
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
@@ -2780,8 +2780,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     alias setbit = BinaryRedis.setbit;
 
 
-    override
-    Boolean setbit(string key, long offset, string value) {
+    bool setbit(string key, long offset, string value) {
         checkIsInMultiOrPipeline();
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
@@ -2792,15 +2791,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
      * @param offset
      * @return
      */
-    override
-    Boolean getbit(string key, long offset) {
+    bool getbit(string key, long offset) {
         checkIsInMultiOrPipeline();
         client.getbit(key, offset);
         return client.getIntegerReply() == 1;
     }
     alias getbit = BinaryRedis.getbit;
 
-    override
     Long setrange(string key, long offset, string value) {
         checkIsInMultiOrPipeline();
         client.setrange(key, offset, value);
@@ -2808,7 +2805,6 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     }
     alias setrange = BinaryRedis.setrange;
 
-    override
     string getrange(string key, long startOffset, long endOffset) {
         checkIsInMultiOrPipeline();
         client.getrange(key, startOffset, endOffset);
@@ -2816,7 +2812,6 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     }
     alias getrange = BinaryRedis.getrange;
 
-    override
     Long bitpos(string key, bool value) {
         return bitpos(key, value, new BitPosParams());
     }
@@ -3149,7 +3144,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(string) sentinelGetMasterAddrByName(string masterName) {
         client.sentinel(Protocol.SENTINEL_GET_MASTER_ADDR_BY_NAME, masterName);
         List!(Object) reply = client.getObjectMultiBulkReply();
-        return BuilderFactory.STRING_LIST.build(reply);
+        return BuilderFactory.STRING_LIST.build(cast(Object)reply);
     }
 
     /**
@@ -3223,8 +3218,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
 
     override
     string sentinelMonitor(string masterName, string ip, int port, int quorum) {
-        client.sentinel(Protocol.SENTINEL_MONITOR, masterName, ip, string.valueOf(port),
-            string.valueOf(quorum));
+        client.sentinel(Protocol.SENTINEL_MONITOR, masterName, ip, to!string(port),
+            to!string(quorum));
         return client.getStatusCodeReply();
     }
 
@@ -3242,9 +3237,9 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
 
         params[index++] = Protocol.SENTINEL_SET;
         params[index++] = masterName;
-        foreach(Entry!(string, string) entry ; parameterMap.entrySet()) {
-            params[index++] = entry.getKey();
-            params[index++] = entry.getValue();
+        foreach(string key, string value ; parameterMap) {
+            params[index++] = key;
+            params[index++] = value;
         }
 
         client.sentinel(params);
@@ -3623,7 +3618,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     Map!(string, string) pubsubNumSub(string[] channels...) {
         checkIsInMultiOrPipeline();
         client.pubsubNumSub(channels);
-        return BuilderFactory.PUBSUB_NUMSUB_MAP.build(client.getBinaryMultiBulkReply());
+        return BuilderFactory.PUBSUB_NUMSUB_MAP.build(cast(Object)client.getBinaryMultiBulkReply());
     }
 
     override
@@ -3645,27 +3640,24 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         this.dataSource = jedisPool;
     }
 
-    override
-    Long pfadd(string key, string[] elements...) {
+    long pfadd(string key, string[] elements...) {
         checkIsInMultiOrPipeline();
         client.pfadd(key, elements);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias pfadd = BinaryRedis.pfadd;
 
-    override
     long pfcount(string key) {
         checkIsInMultiOrPipeline();
         client.pfcount(key);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias pfcount = BinaryRedis.pfcount;
 
-    override
     long pfcount(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.pfcount(keys);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
 
     override
@@ -3678,13 +3670,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
 
     override
     List!(string) blpop(int timeout, string key) {
-        return blpop(key, string.valueOf(timeout));
+        return blpop(key, to!string(timeout));
     }
     alias blpop = BinaryRedis.blpop;
 
     override
     List!(string) brpop(int timeout, string key) {
-        return brpop(key, string.valueOf(timeout));
+        return brpop(key, to!string(timeout));
     }
     alias brpop = BinaryRedis.brpop;
 
@@ -3732,7 +3724,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(GeoCoordinate) geopos(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.geopos(key, members);
-        return BuilderFactory.GEO_COORDINATE_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEO_COORDINATE_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias geopos = BinaryRedis.geopos;
 
@@ -3741,7 +3733,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             double radius, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadius(key, longitude, latitude, radius, unit);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias georadius = BinaryRedis.georadius;
 
@@ -3750,7 +3742,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             double radius, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusReadonly(key, longitude, latitude, radius, unit);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias georadiusReadonly = BinaryRedis.georadiusReadonly;
 
@@ -3759,7 +3751,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             double radius, GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadius(key, longitude, latitude, radius, unit, param);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias georadius = BinaryRedis.georadius;
 
@@ -3768,7 +3760,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             double radius, GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusReadonly(key, longitude, latitude, radius, unit, param);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
     override
@@ -3776,7 +3768,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusByMember(key, member, radius, unit);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias georadiusByMember = BinaryRedis.georadiusByMember;
 
@@ -3785,7 +3777,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusByMemberReadonly(key, member, radius, unit);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias georadiusByMemberReadonly = BinaryRedis.georadiusByMemberReadonly;
 
@@ -3794,7 +3786,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusByMember(key, member, radius, unit, param);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
     override
@@ -3802,7 +3794,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusByMemberReadonly(key, member, radius, unit, param);
-        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
     override
@@ -3820,7 +3812,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     override
     List!(Module) moduleList() {
         client.moduleList();
-        return BuilderFactory.MODULE_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.MODULE_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
     override
@@ -3875,7 +3867,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(StreamEntry) xrange(string key, StreamEntryID start, StreamEntryID end, int count) {
         checkIsInMultiOrPipeline();
         client.xrange(key, start, end, count);
-        return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias xrange = BinaryRedis.xrange;
     
@@ -3886,7 +3878,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     List!(StreamEntry) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
         checkIsInMultiOrPipeline();
         client.xrevrange(key, end, start, count);
-        return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias xrevrange = BinaryRedis.xrevrange;
 
@@ -3903,11 +3895,11 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         try {
             List!(Object) streamsEntries = client.getObjectMultiBulkReply();
             if(streamsEntries is null) {
-                return new ArrayList!(Entry!(string, List!(StreamEntry)))();
+                return new ArrayList!(MapEntry!(string, List!(StreamEntry)))();
             }
             
-            List!(Entry!(string, List!(StreamEntry))) result = 
-                new ArrayList!(Entry!(string, List!(StreamEntry)))(streamsEntries.size());
+            List!(MapEntry!(string, List!(StreamEntry))) result = 
+                new ArrayList!(MapEntry!(string, List!(StreamEntry)))(streamsEntries.size());
 
             // foreach(Object streamObj ; streamsEntries) {
             //   List!(Object) stream = cast(List!(Object))streamObj;
@@ -3926,15 +3918,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     /**
      * {@inheritDoc}
      */
-    override
     long xack(string key, string group, StreamEntryID[] ids...) {
         checkIsInMultiOrPipeline();
         client.xack(key, group, ids);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias xack = BinaryRedis.xack;
 
-    override
     string xgroupCreate(string key, string groupname, StreamEntryID id, bool makeStream) {
         checkIsInMultiOrPipeline();
         client.xgroupCreate(key, groupname, id, makeStream);
@@ -3942,7 +3932,6 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     }
     alias xgroupCreate = BinaryRedis.xgroupCreate;
 
-    override
     string xgroupSetID(string key, string groupname, StreamEntryID id) {
         checkIsInMultiOrPipeline();
         client.xgroupSetID(key, groupname, id);
@@ -3950,11 +3939,10 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     }
     alias xgroupSetID = BinaryRedis.xgroupSetID;
 
-    override
     long xgroupDestroy(string key, string groupname) {
         checkIsInMultiOrPipeline();
         client.xgroupDestroy(key, groupname);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias xgroupDestroy = BinaryRedis.xgroupDestroy;
 
@@ -3970,7 +3958,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     long xdel(string key, StreamEntryID[] ids...) {
         checkIsInMultiOrPipeline();
         client.xdel(key, ids);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias xdel = BinaryRedis.xdel;
 
@@ -3978,7 +3966,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     long xtrim(string key, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xtrim(key, maxLen, approximateLength);
-        return client.getIntegerReply();
+        return client.getIntegerReply().value();
     }
     alias xtrim = BinaryRedis.xtrim;
 
@@ -3996,8 +3984,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             return null;
         }
         
-        List!(Entry!(string, List!(StreamEntry))) result = 
-            new ArrayList!(Entry!(string, List!(StreamEntry)))(streamsEntries.size());
+        List!(MapEntry!(string, List!(StreamEntry))) result = 
+            new ArrayList!(MapEntry!(string, List!(StreamEntry)))(streamsEntries.size());
 
         // foreach(Object streamObj ; streamsEntries) {
         //   List!(Object) stream = (List!(Object))streamObj;
@@ -4017,7 +4005,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
 
         // TODO handle consumername == NULL case
         
-        return BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias xpending = BinaryRedis.xpending;
 
@@ -4028,7 +4016,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         checkIsInMultiOrPipeline();
         client.xclaim( key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
         
-        return BuilderFactory.STREAM_ENTRY_LIST.build(client.getObjectMultiBulkReply());
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
     alias xclaim = BinaryRedis.xclaim;
 

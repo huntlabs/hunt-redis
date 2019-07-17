@@ -1,8 +1,5 @@
 module hunt.redis.Protocol;
 
-import hunt.Exceptions;
-import hunt.collection.ArrayList;
-import hunt.collection.List;
 // import java.util.Locale;
 
 // import hunt.redis.commands.Command;
@@ -12,6 +9,11 @@ import hunt.redis.util.RedisInputStream;
 import hunt.redis.util.RedisOutputStream;
 import hunt.redis.util.SafeEncoder;
 
+import hunt.Byte;
+import hunt.Exceptions;
+import hunt.collection.ArrayList;
+import hunt.collection.List;
+import hunt.Long;
 import hunt.text.StringUtils;
 
 import std.conv;
@@ -160,13 +162,13 @@ final class Protocol {
         byte b = inputStream.readByte();
         switch(b) {
         case PLUS_BYTE:
-            return processStatusCodeReply(inputStream);
+            return new Bytes(processStatusCodeReply(inputStream));
         case DOLLAR_BYTE:
-            return processBulkReply(inputStream);
+            return new Bytes(processBulkReply(inputStream));
         case ASTERISK_BYTE:
-            return processMultiBulkReply(inputStream);
+            return cast(Object)processMultiBulkReply(inputStream);
         case COLON_BYTE:
-            return processInteger(inputStream);
+            return new Long(processInteger(inputStream));
         case MINUS_BYTE:
             processError(inputStream);
             return null;

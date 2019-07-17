@@ -4,12 +4,15 @@ import hunt.pool.PooledObject;
 import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.DefaultPooledObject;
 
+import hunt.redis.BinaryRedis;
 import hunt.redis.Exceptions;
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.util.RedisURIHelper;
 
 import hunt.net.util.HttpURI;
+
+import std.format;
 
 /**
  * PoolableObjectFactory custom impl.
@@ -58,7 +61,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     this(HttpURI uri, int connectionTimeout, int soTimeout, string clientName) {
         // this(uri, connectionTimeout, soTimeout, clientName, null, null, null);
         if (!RedisURIHelper.isValid(uri)) {
-            throw new InvalidURIException(string.format(
+            throw new InvalidURIException(format(
                     "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
         }
 
@@ -75,7 +78,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     //     string clientName, SSLSocketFactory sslSocketFactory,
     //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
     //   if (!RedisURIHelper.isValid(uri)) {
-    //     throw new InvalidURIException(string.format(
+    //     throw new InvalidURIException(format(
     //       "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
     //   }
 
@@ -92,10 +95,10 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     // }
 
     void setHostAndPort(HostAndPort hostAndPort) {
-        this.hostAndPort.set(hostAndPort);
+        this.hostAndPort = hostAndPort;
     }
 
-    override void activateObject(IPooledObject pooledRedis) {
+    void activateObject(IPooledObject pooledRedis) {
         BinaryRedis jedis = pooledRedis.getObject();
         if (jedis.getDB() != database) {
             jedis.select(database);
@@ -103,7 +106,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     }
 
-    override void destroyObject(IPooledObject pooledRedis) {
+    void destroyObject(IPooledObject pooledRedis) {
         BinaryRedis jedis = pooledRedis.getObject();
         if (jedis.isConnected()) {
             try {
@@ -119,11 +122,13 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     }
 
-    override IPooledObject makeObject() {
-        HostAndPort hostAndPort = this.hostAndPort.get();
+    IPooledObject makeObject() {
+        HostAndPort hostAndPort = this.hostAndPort;
+        // Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
+        //         connectionTimeout, soTimeout, ssl, sslSocketFactory,
+        //         sslParameters, hostnameVerifier);
         Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
-                connectionTimeout, soTimeout, ssl, sslSocketFactory,
-                sslParameters, hostnameVerifier);
+                connectionTimeout, soTimeout, ssl);
 
         try {
             jedis.connect();
@@ -145,20 +150,20 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     }
 
-    override void passivateObject(IPooledObject pooledRedis) {
+    void passivateObject(IPooledObject pooledRedis) {
         // TODO maybe should select db 0? Not sure right now.
     }
 
-    override bool validateObject(IPooledObject pooledRedis) {
+    bool validateObject(IPooledObject pooledRedis) {
         BinaryRedis jedis = pooledRedis.getObject();
         try {
-            HostAndPort hostAndPort = this.hostAndPort.get();
+            HostAndPort hostAndPort = this.hostAndPort;
 
             string connectionHost = jedis.getClient().getHost();
             int connectionPort = jedis.getClient().getPort();
 
             return hostAndPort.getHost() == connectionHost && hostAndPort.getPort() == connectionPort
-                && jedis.isConnected() && jedis.ping().equals("PONG");
+                && jedis.isConnected() && jedis.ping() == "PONG";
         } catch (Exception e) {
             return false;
         }

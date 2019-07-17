@@ -28,7 +28,7 @@ class RedisURIHelper {
       if (dbIndexStr.isEmpty()) {
         return DEFAULT_DB;
       }
-      return Integer.parseInt(dbIndexStr);
+      return to!int(dbIndexStr);
     } else {
       return DEFAULT_DB;
     }

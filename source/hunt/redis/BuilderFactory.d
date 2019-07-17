@@ -184,7 +184,7 @@ class BuilderFactory {
     //          Iterator!(Object) iterator = flatHash.iterator();
     //          while (iterator.hasNext()) {
     //              hash.put(SafeEncoder.encode((byte[]) iterator.next()),
-    //                  string.valueOf((Long) iterator.next()));
+    //                  to!string((Long) iterator.next()));
     //          }
 
     //          return hash;

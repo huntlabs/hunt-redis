@@ -5,6 +5,7 @@ import hunt.redis.Protocol;
 import hunt.redis.Exceptions;
 import hunt.redis.util.SafeEncoder;
 
+import hunt.Exceptions;
 import hunt.util.ArrayHelper;
 import hunt.collection.List;
 

@@ -24,7 +24,7 @@ abstract class RedisClusterConnectionHandler : Closeable {
       GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout, string password, string clientName) {
     // this(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, false, null, null, null, null);
 
-    this.cache = new RedisClusterInfoCache(poolConfig, connectionTimeout, soTimeout, password, clientName, false);
+    this.cache = new RedisClusterInfoCache(poolConfig, connectionTimeout, soTimeout, password, clientName);
     initializeSlotsCache(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, false);    
   }
 

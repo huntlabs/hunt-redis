@@ -1332,7 +1332,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //       Object execute(Redis connection) {
 //         return connection.eval(script, keyCount, params);
 //       }
-//     }.runBinary(Integer.parseInt(SafeEncoder.encode(keyCount)), params);
+//     }.runBinary(to!int(SafeEncoder.encode(keyCount)), params);
 //   }
 
 //   override
