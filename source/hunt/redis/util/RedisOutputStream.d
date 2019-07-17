@@ -65,7 +65,7 @@ class RedisOutputStream : FilterOutputStream {
 
   override
   void write(byte[] b) {
-    write(b, 0, b.length);
+    write(b, 0, cast(int)b.length);
   }
 
   override

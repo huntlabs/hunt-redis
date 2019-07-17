@@ -23,10 +23,10 @@ abstract class Params {
     }
 
     T getParam(T)(string name) {
-        if (params.empty())
+        if (params is null || params.isEmpty())
             return T.init;
-
-        return cast(T) params.get(name);
+        Variant v = params.get(name);
+        return v.get!T();
     }
 
     byte[][] getByteParams() {
@@ -69,6 +69,10 @@ abstract class Params {
         params.put(name, Variant(value));
     }
 
+    protected void addParam(string name, long value) {
+        params.put(name, Variant(value));
+    }
+
     protected void addParam(string name, byte[] value) {
         params.put(name, Variant(value));
     }
@@ -77,7 +81,7 @@ abstract class Params {
         params.put(name, Variant(value));
     }
 
-    protected void addParam(string name, ref Variant value) {
+    protected void addParam(string name, Variant value) {
         params.put(name, value);
     }
 

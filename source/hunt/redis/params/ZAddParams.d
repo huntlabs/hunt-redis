@@ -65,7 +65,7 @@ class ZAddParams : Params {
       byteParams.add(arg);
     }
 
-    return byteParams.toArray(new byte[byteParams.size()][]);
+    return byteParams.toArray();
   }
 
 }

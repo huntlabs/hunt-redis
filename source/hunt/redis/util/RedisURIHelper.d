@@ -2,6 +2,12 @@ module hunt.redis.util.RedisURIHelper;
 
 import hunt.net.util.HttpURI;
 
+import hunt.Exceptions;
+
+import std.array;
+import std.conv;
+import std.string;
+
 class RedisURIHelper {
 
   private enum int DEFAULT_DB = 0;
@@ -14,18 +20,18 @@ class RedisURIHelper {
   }
 
   static string getPassword(HttpURI uri) {
-    string userInfo = uri.getUserInfo();
+    string userInfo = uri.getUser();
     if (userInfo !is null) {
-      return userInfo.split(":", 2)[1];
+      return userInfo.split(":")[1];
     }
     return null;
   }
 
   static int getDBIndex(HttpURI uri) {
-    string[] pathSplit = uri.getPath().split("/", 2);
+    string[] pathSplit = uri.getPath().split("/");
     if (pathSplit.length > 1) {
       string dbIndexStr = pathSplit[1];
-      if (dbIndexStr.isEmpty()) {
+      if (dbIndexStr.empty()) {
         return DEFAULT_DB;
       }
       return to!int(dbIndexStr);
@@ -43,7 +49,7 @@ class RedisURIHelper {
   }
 
   private static bool isEmpty(string value) {
-    return value is null || value.trim().length() == 0;
+    return value.empty();
   }
 
   static bool isRedisScheme(HttpURI uri) {

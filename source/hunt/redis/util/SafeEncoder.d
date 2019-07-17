@@ -19,8 +19,8 @@ class SafeEncoder {
   }
 
   static byte[][] encodeMany(string[] strs...) {
-    byte[][] many = new byte[strs.length][];
-    for (int i = 0; i < strs.length; i++) {
+    byte[][] many = new byte[][strs.length];
+    for (size_t i = 0; i < strs.length; i++) {
       many[i] = encode(strs[i]);
     }
     return many;

@@ -1,8 +1,10 @@
 module hunt.redis.util.Slowlog;
 
+import hunt.redis.util.SafeEncoder;
+
 import hunt.collection.ArrayList;
 import hunt.collection.List;
-
+import hunt.Long;
 import hunt.text.StringBuilder;
 
 /**
@@ -16,10 +18,9 @@ class Slowlog {
 
   
   private this(List!(Object) properties) {
-    super();
-    this.id = cast(Long) properties.get(0);
-    this.timeStamp = cast(Long) properties.get(1);
-    this.executionTime = cast(Long) properties.get(2);
+    this.id = (cast(Long)properties.get(0)).value();
+    this.timeStamp = (cast(Long) properties.get(1)).value();
+    this.executionTime = (cast(Long) properties.get(2)).value();
 
     List!(byte[]) bargs = cast(List!(byte[])) properties.get(3);
     this.args = new ArrayList!(string)(bargs.size());
@@ -59,6 +60,9 @@ class Slowlog {
   override
   string toString() {
     return new StringBuilder().append(id).append(COMMA).append(timeStamp).append(COMMA)
-        .append(executionTime).append(COMMA).append(args).toString();
+        .append(executionTime)
+        .append(COMMA)
+        .append((cast(Object)args).toString())
+        .toString();
   }
 }

@@ -23,7 +23,7 @@ interface Hashing {
 
         override
         long hash(byte[] key) {
-            ubyte[] bKey = md5Of(key);
+            ubyte[] bKey = md5Of(key).dup;
             long res = (cast(long) (bKey[3] & 0xFF) << 24) | (cast(long) (bKey[2] & 0xFF) << 16)
                 | (cast(long) (bKey[1] & 0xFF) << 8) | cast(long) (bKey[0] & 0xFF);
             return res;

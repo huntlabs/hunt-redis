@@ -11,11 +11,13 @@
 
 module hunt.redis.util.MurmurHash;
 
+import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Hashing;
 
 import hunt.collection.ByteBuffer;
+import hunt.collection.BufferUtils;
+import hunt.Byte;
 
-// import java.nio.ByteOrder;
 
 /**
  * This is a very fast, non-cryptographic hash suitable for general hash-based lookup. See
@@ -33,7 +35,7 @@ class MurmurHash : Hashing {
    * @return The 32 bit hash of the bytes in question.
    */
     static int hash(byte[] data, int seed) {
-        return hash(ByteBuffer.wrap(data), seed);
+        return hash(BufferUtils.toBuffer(data), seed);
     }
 
     /**
@@ -45,7 +47,7 @@ class MurmurHash : Hashing {
    * @return The 32-bit hash of the data in question.
    */
     static int hash(byte[] data, int offset, int length, int seed) {
-        return hash(ByteBuffer.wrap(data, offset, length), seed);
+        return hash(BufferUtils.toBuffer(data, offset, length), seed);
     }
 
     /**
@@ -57,7 +59,7 @@ class MurmurHash : Hashing {
     static int hash(ByteBuffer buf, int seed) {
         // save byte order for later restoration
         ByteOrder byteOrder = buf.order();
-        buf.order(ByteOrder.LITTLE_ENDIAN);
+        buf.order(ByteOrder.LittleEndian);
 
         int m = 0x5bd1e995;
         int r = 24;
@@ -77,7 +79,7 @@ class MurmurHash : Hashing {
         }
 
         if (buf.remaining() > 0) {
-            ByteBuffer finish = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
+            ByteBuffer finish = BufferUtils.allocate(4).order(ByteOrder.LittleEndian);
             // for big-endian version, use this first:
             // finish.position(4-buf.remaining());
             finish.put(buf).rewind();
@@ -94,16 +96,16 @@ class MurmurHash : Hashing {
     }
 
     static long hash64A(byte[] data, int seed) {
-        return hash64A(ByteBuffer.wrap(data), seed);
+        return hash64A(BufferUtils.toBuffer(data), seed);
     }
 
     static long hash64A(byte[] data, int offset, int length, int seed) {
-        return hash64A(ByteBuffer.wrap(data, offset, length), seed);
+        return hash64A(BufferUtils.toBuffer(data, offset, length), seed);
     }
 
     static long hash64A(ByteBuffer buf, int seed) {
         ByteOrder byteOrder = buf.order();
-        buf.order(ByteOrder.LITTLE_ENDIAN);
+        buf.order(ByteOrder.LittleEndian);
 
         long m = 0xc6a4a7935bd1e995L;
         int r = 47;
@@ -123,7 +125,7 @@ class MurmurHash : Hashing {
         }
 
         if (buf.remaining() > 0) {
-            ByteBuffer finish = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN);
+            ByteBuffer finish = BufferUtils.allocate(8).order(ByteOrder.LittleEndian);
             // for big-endian version, do this first:
             // finish.position(8-buf.remaining());
             finish.put(buf).rewind();

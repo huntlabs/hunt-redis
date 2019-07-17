@@ -48,7 +48,7 @@ abstract class Pool(T) : Closeable {
         try {
             return internalPool.borrowObject();
         } catch (NoSuchElementException nse) {
-            if (null == nse.getCause()) { // The exception was caused by an exhausted pool
+            if (nse.next is null) { // The exception was caused by an exhausted pool
                 throw new RedisExhaustedPoolException(
                         "Could not get a resource since the pool is exhausted", nse);
             }

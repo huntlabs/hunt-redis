@@ -70,7 +70,7 @@ class GeoRadiusParam : Params {
 
         if (contains(COUNT)) {
             byteParams.add(SafeEncoder.encode(COUNT));
-            byteParams.add(Protocol.toByteArray(cast(Integer) getParam(COUNT)));
+            byteParams.add(Protocol.toByteArray(getParam!int(COUNT)));
         }
 
         if (contains(ASC)) {

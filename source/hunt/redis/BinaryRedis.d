@@ -2548,7 +2548,8 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
         while (!iterator.empty()) {
             byte[] first = iterator.front(); iterator.popFront();
             byte[] second = iterator.front(); iterator.popFront();
-            set.add(new Tuple(first, BuilderFactory.DOUBLE.build(new Bytes(second))));
+            Double d = BuilderFactory.DOUBLE.build(new Bytes(second));
+            set.add(new Tuple(first, d.value()));
         }
         return set;
     }
