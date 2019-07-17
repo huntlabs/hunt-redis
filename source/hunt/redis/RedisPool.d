@@ -194,7 +194,7 @@ class RedisPool : RedisPoolAbstract {
             string clientName, bool ssl) {
         // this(poolConfig, host, port, connectionTimeout, soTimeout, password, database, clientName, ssl,
         //     null, null, null);
-        this(poolConfig, host, port, connectionTimeout, soTimeout, password, database, clientName, ssl);    
+        this(poolConfig, host, port, connectionTimeout, soTimeout, password, database, clientName);    
     }
 
     this(GenericObjectPoolConfig poolConfig, HttpURI uri) {

@@ -6,6 +6,8 @@ import hunt.redis.util.SafeEncoder;
 import hunt.collection;
 import hunt.Integer;
 
+import std.conv;
+
 class ScanParams {
 
     private Map!(Protocol.Keyword, ByteBuffer) params;
@@ -18,7 +20,7 @@ class ScanParams {
     }
 
     ScanParams match(byte[] pattern) {
-        params.put(Protocol.Keyword.MATCH, ByteBuffer.wrap(pattern));
+        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(pattern));
         return this;
     }
 
@@ -29,7 +31,7 @@ class ScanParams {
    * @return 
    */
     ScanParams match(string pattern) {
-        params.put(Protocol.Keyword.MATCH, ByteBuffer.wrap(SafeEncoder.encode(pattern)));
+        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(SafeEncoder.encode(pattern)));
         return this;
     }
 
@@ -39,8 +41,8 @@ class ScanParams {
    * @param count
    * @return 
    */
-    ScanParams count(Integer count) {
-        params.put(Protocol.Keyword.COUNT, ByteBuffer.wrap(Protocol.toByteArray(count)));
+    ScanParams count(int count) {
+        params.put(Protocol.Keyword.COUNT, BufferUtils.toBuffer(Protocol.toByteArray(count)));
         return this;
     }
 
@@ -50,7 +52,8 @@ class ScanParams {
             paramsList.add(cast(byte[])key.to!string());
             paramsList.add(value.array());
         }
-        return Collections.unmodifiableCollection(paramsList);
+        // return Collections.unmodifiableCollection(paramsList);
+        return paramsList;
     }
 
     byte[] binaryMatch() {
@@ -62,8 +65,8 @@ class ScanParams {
     }
 
     string match() {
-        if (params.containsKey(MATCH)) {
-            return new string(params.get(Protocol.Keyword.MATCH).array());
+        if (params.containsKey(Protocol.Keyword.MATCH)) {
+            return cast(string)(params.get(Protocol.Keyword.MATCH).array());
         } else {
             return null;
         }
@@ -71,7 +74,7 @@ class ScanParams {
 
     Integer count() {
         if (params.containsKey(Protocol.Keyword.COUNT)) {
-            return params.get(Protocol.Keyword.COUNT).getInt();
+            return new Integer(params.get(Protocol.Keyword.COUNT).getInt());
         } else {
             return null;
         }

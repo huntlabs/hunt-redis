@@ -11,9 +11,12 @@ import std.regex;
 
 alias Pattern = Regex!char;
 
+enum int DEFAULT_WEIGHT = 1;
+  // the tag is anything between {}
+enum DEFAULT_KEY_TAG_PATTERN = ctRegex!("\\{(.+?)\\}");
+
 class Sharded(R, S) if(is(S : ShardInfo!(R))) {
 
-  enum int DEFAULT_WEIGHT = 1;
   private TreeMap!(Long, S) nodes;
   private Hashing algo;
   private Map!(ShardInfo!(R), R) resources;
@@ -24,8 +27,6 @@ class Sharded(R, S) if(is(S : ShardInfo!(R))) {
    * expression for each lookup, improving performance a little bit is key tags aren't being used.
    */
   private Regex!char tagPattern;
-  // the tag is anything between {}
-  enum DEFAULT_KEY_TAG_PATTERN = ctRegex!("\\{(.+?)\\}");
 
   this(List!(S) shards) {
     this(shards, Hashing.MURMUR_HASH); // MD5 is really not good as we works

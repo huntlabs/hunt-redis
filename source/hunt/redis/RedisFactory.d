@@ -99,7 +99,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     }
 
     void activateObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = pooledRedis.getObject();
+        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
         if (jedis.getDB() != database) {
             jedis.select(database);
         }
@@ -107,7 +107,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     }
 
     void destroyObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = pooledRedis.getObject();
+        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
         if (jedis.isConnected()) {
             try {
                 try {
@@ -155,7 +155,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     }
 
     bool validateObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = pooledRedis.getObject();
+        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
         try {
             HostAndPort hostAndPort = this.hostAndPort;
 

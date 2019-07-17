@@ -1,13 +1,16 @@
 module hunt.redis.RedisShardInfo;
 
-import hunt.redis.HostAndPort;
-import hunt.redis.Redis;
 import hunt.redis.Exceptions;
+import hunt.redis.HostAndPort;
+import hunt.redis.Protocol;
+import hunt.redis.Redis;
 import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.ShardInfo;
 import hunt.redis.util.Sharded;
 
 import hunt.net.util.HttpURI;
+
+import std.conv;
 
 class RedisShardInfo : ShardInfo!(Redis) {
 
@@ -25,8 +28,8 @@ class RedisShardInfo : ShardInfo!(Redis) {
     // private HostnameVerifier hostnameVerifier;
     
     this(string host) {
-        super(Sharded.DEFAULT_WEIGHT);
-        HttpURI uri = HttpURI.create(host);
+        super(DEFAULT_WEIGHT);
+        HttpURI uri = new HttpURI(host);
         if (RedisURIHelper.isValid(uri)) {
             this.host = uri.getHost();
             this.port = uri.getPort();
@@ -83,27 +86,27 @@ class RedisShardInfo : ShardInfo!(Redis) {
     // }
 
     this(string host, int port, int timeout) {
-        this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT);
+        this(host, port, timeout, timeout, DEFAULT_WEIGHT);
     }
 
     this(string host, int port, int timeout, bool ssl) {
-        this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl);
+        this(host, port, timeout, timeout, DEFAULT_WEIGHT, ssl);
     }
 
     // this(string host, int port, int timeout, bool ssl,
     //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
     //     HostnameVerifier hostnameVerifier) {
-    //   this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl, sslSocketFactory,
+    //   this(host, port, timeout, timeout, DEFAULT_WEIGHT, ssl, sslSocketFactory,
     //       sslParameters, hostnameVerifier);
     // }
 
     this(string host, int port, int timeout, string name) {
-        this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT);
+        this(host, port, timeout, timeout, DEFAULT_WEIGHT);
         this.name = name;
     }
 
     this(string host, int port, int timeout, string name, bool ssl) {
-        this(host, port, timeout, timeout, Sharded.DEFAULT_WEIGHT, ssl);
+        this(host, port, timeout, timeout, DEFAULT_WEIGHT, ssl);
         this.name = name;
     }
 
@@ -159,7 +162,7 @@ class RedisShardInfo : ShardInfo!(Redis) {
     // }
 
     // this(HttpURI uri) {
-    //   super(Sharded.DEFAULT_WEIGHT);
+    //   super(DEFAULT_WEIGHT);
     //   if (!RedisURIHelper.isValid(uri)) {
     //     throw new InvalidURIException(format(
     //       "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
@@ -182,7 +185,7 @@ class RedisShardInfo : ShardInfo!(Redis) {
 
     override
     string toString() {
-        return host ~ ":" ~ port ~ "*" ~ getWeight();
+        return host ~ ":" ~ port.to!string() ~ "*" ~ getWeight().to!string();
     }
 
     string getHost() {

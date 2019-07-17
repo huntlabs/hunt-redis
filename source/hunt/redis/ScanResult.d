@@ -1,5 +1,7 @@
 module hunt.redis.ScanResult;
 
+import hunt.redis.ScanParams;
+
 import hunt.collection.List;
 
 import hunt.redis.util.SafeEncoder;
