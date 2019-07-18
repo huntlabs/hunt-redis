@@ -1,9 +1,9 @@
 module hunt.redis.ShardedRedis;
 
 
-import hunt.redis.BinaryRedis;
-import hunt.redis.BinaryRedisPubSub;
-import hunt.redis.BinaryShardedRedis;
+import hunt.redis.Redis;
+import hunt.redis.RedisPubSub;
+import hunt.redis.ShardedRedis;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
 import hunt.redis.Client;

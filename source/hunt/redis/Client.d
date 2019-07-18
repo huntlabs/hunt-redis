@@ -1,19 +1,18 @@
 module hunt.redis.Client;
 
-import hunt.redis.BinaryClient;
+import hunt.redis.AbstractClient;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
-import hunt.redis.ClusterReset;
+import hunt.redis.ListPosition;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoUnit;
-import hunt.redis.ListPosition;
 import hunt.redis.Protocol;
 import hunt.redis.ScanParams;
 import hunt.redis.SortingParams;
-import hunt.redis.StreamEntryID;
 import hunt.redis.ZParams;
 
-import hunt.redis.commands.Commands;
+// import hunt.redis.Protocol.Keyword;
+import hunt.redis.params.ClientKillParams;
 import hunt.redis.params.GeoRadiusParam;
 import hunt.redis.params.MigrateParams;
 import hunt.redis.params.SetParams;
@@ -21,15 +20,26 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-import hunt.Double;
 import hunt.collection.ArrayList;
-import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;
+import hunt.Double;
 
 import std.conv;
 
-class Client : BinaryClient, Commands {
+alias Keyword = Protocol.Keyword;
+alias Command = Protocol.Command;
+alias toByteArray = Protocol.toByteArray;
+
+class Client : AbstractClient { 
+
+    private bool _isInMulti;
+
+    private string password;
+
+    private int db;
+
+    private bool _isInWatch;
 
     this() {
         super();
@@ -53,1412 +63,1398 @@ class Client : BinaryClient, Commands {
     //   super(host, port, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
     // }
 
+    bool isInMulti() {
+        return _isInMulti;
+    }
+
+    bool isInWatch() {
+        return _isInWatch;
+    }
+
+    private string[] joinParameters(string first, string[] rest) {
+        string[] result = new string[rest.length + 1];
+        result[0] = first;
+        // System.arraycopy(rest, 0, result, 1, rest.length);
+        result[1 .. $] = rest[0 .. $];
+        return result;
+    }
+
+    private string[] joinParameters(string first, string second, string[] rest) {
+        string[] result = new string[rest.length + 2];
+        result[0] = first;
+        result[1] = second;
+        // System.arraycopy(rest, 0, result, 2, rest.length);
+        result[2 .. $] = rest[0 .. $];
+        return result;
+    }
+
+    void setPassword(string password) {
+        this.password = password;
+    }
+
+    void setDb(int db) {
+        this.db = db;
+    }
+
     override
+    void connect() {
+        if (!isConnected()) {
+            super.connect();
+            if (password !is null) {
+                auth(password);
+                getStatusCodeReply();
+            }
+            if (db > 0) {
+                select(db);
+                getStatusCodeReply();
+            }
+        }
+    }
+
+    void ping() {
+        sendCommand(Command.PING);
+    }
+
     void ping(string message) {
-        ping(SafeEncoder.encode(message));
+        sendCommand(Command.PING, message);
     }
-    alias ping = BinaryClient.ping;
-    
-    override
+
     void set(string key, string value) {
-        set(SafeEncoder.encode(key), SafeEncoder.encode(value));
+        sendCommand(Command.SET, key, value);
     }
-    alias set = BinaryClient.set;
 
-    override
     void set(string key, string value, SetParams params) {
-        set(SafeEncoder.encode(key), SafeEncoder.encode(value), params);
+        sendCommand(Command.SET, params.getByteParams(key, value));
     }
 
-    override
     void get(string key) {
-        get(SafeEncoder.encode(key));
+        sendCommand(Command.GET, key);
     }
-    alias get = BinaryClient.get;
 
-    override
+    void quit() {
+        db = 0;
+        sendCommand(Command.QUIT);
+    }
+
     void exists(string[] keys...) {
-        exists(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.EXISTS, keys);
     }
-    alias exists = BinaryClient.exists;
 
-    override
     void del(string[] keys...) {
-        del(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.DEL, keys);
     }
-    alias del = BinaryClient.del;
 
-    override
     void unlink(string[] keys...) {
-        unlink(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.UNLINK, keys);
     }
-    alias unlink = BinaryClient.unlink;
 
-    override
     void type(string key) {
-        type(SafeEncoder.encode(key));
+        sendCommand(Command.TYPE, key);
     }
-    alias type = BinaryClient.type;
 
-    override
+    void flushDB() {
+        sendCommand(Command.FLUSHDB);
+    }
+
     void keys(string pattern) {
-        keys(SafeEncoder.encode(pattern));
+        sendCommand(Command.KEYS, pattern);
     }
-    alias keys = BinaryClient.keys;
 
-    override
-    void rename(string oldkey, string newkey) {
-        rename(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
+    void randomKey() {
+        sendCommand(Command.RANDOMKEY);
     }
-    alias rename = BinaryClient.rename;
+
+    void rename(string oldkey, string newkey) {
+        sendCommand(Command.RENAME, oldkey, newkey);
+    }
 
     void renamenx(string oldkey, string newkey) {
-        renamenx(SafeEncoder.encode(oldkey), SafeEncoder.encode(newkey));
+        sendCommand(Command.RENAMENX, oldkey, newkey);
     }
-    alias renamenx = BinaryClient.renamenx;
+
+    void dbSize() {
+        sendCommand(Command.DBSIZE);
+    }
 
     void expire(string key, int seconds) {
-        expire(SafeEncoder.encode(key), seconds);
+        sendCommand(Command.EXPIRE, key, toByteArray(seconds));
     }
-    alias expire = BinaryClient.expire;
 
-    // override
     void expireAt(string key, long unixTime) {
-        expireAt(SafeEncoder.encode(key), unixTime);
+        sendCommand(Command.EXPIREAT, key, toByteArray(unixTime));
     }
-    alias expireAt = BinaryClient.expireAt;
-
 
     void ttl(string key) {
-        ttl(SafeEncoder.encode(key));
+        sendCommand(Command.TTL, key);
     }
-    alias ttl = BinaryClient.ttl;
 
-    override
     void touch(string[] keys...) {
-        touch(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.TOUCH, keys);
     }
-    alias touch = BinaryClient.touch;
 
-    override
+    void select(int index) {
+        sendCommand(Command.SELECT, toByteArray(index));
+    }
+
+    void swapDB(int index1, int index2) {
+        sendCommand(Command.SWAPDB, toByteArray(index1), toByteArray(index2));
+    }
+
     void move(string key, int dbIndex) {
-        move(SafeEncoder.encode(key), dbIndex);
+        sendCommand(Command.MOVE, key, toByteArray(dbIndex));
     }
-    alias move = BinaryClient.move;
 
-    override
+    void flushAll() {
+        sendCommand(Command.FLUSHALL);
+    }
+
     void getSet(string key, string value) {
-        getSet(SafeEncoder.encode(key), SafeEncoder.encode(value));
+        sendCommand(Command.GETSET, key, value);
     }
-    alias getSet = BinaryClient.getSet;
 
-    override
     void mget(string[] keys...) {
-        mget(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.MGET, keys);
     }
-    alias mget = BinaryClient.mget;
 
-    override
     void setnx(string key, string value) {
-        setnx(SafeEncoder.encode(key), SafeEncoder.encode(value));
+        sendCommand(Command.SETNX, key, value);
     }
-    alias setnx = BinaryClient.setnx;
 
-    override
     void setex(string key, int seconds, string value) {
-        setex(SafeEncoder.encode(key), seconds, SafeEncoder.encode(value));
+        sendCommand(Command.SETEX, key, toByteArray(seconds), value);
     }
-    alias setex = BinaryClient.setex;
 
-    override
     void mset(string[] keysvalues...) {
-        mset(SafeEncoder.encodeMany(keysvalues));
+        sendCommand(Command.MSET, keysvalues);
     }
-    alias mset = BinaryClient.mset;
 
-    override
     void msetnx(string[] keysvalues...) {
-        msetnx(SafeEncoder.encodeMany(keysvalues));
+        sendCommand(Command.MSETNX, keysvalues);
     }
-    alias msetnx = BinaryClient.msetnx;
 
-    override
     void decrBy(string key, long decrement) {
-        decrBy(SafeEncoder.encode(key), decrement);
+        sendCommand(Command.DECRBY, key, toByteArray(decrement));
     }
-    alias decrBy = BinaryClient.decrBy;
 
-    override
     void decr(string key) {
-        decr(SafeEncoder.encode(key));
+        sendCommand(Command.DECR, key);
     }
-    alias decr = BinaryClient.decr;
 
-    override
     void incrBy(string key, long increment) {
-        incrBy(SafeEncoder.encode(key), increment);
+        sendCommand(Command.INCRBY, key, toByteArray(increment));
     }
-    alias incrBy = BinaryClient.incrBy;
 
-    override
+    void incrByFloat(string key, double increment) {
+        sendCommand(Command.INCRBYFLOAT, key, toByteArray(increment));
+    }
+
     void incr(string key) {
-        incr(SafeEncoder.encode(key));
+        sendCommand(Command.INCR, key);
     }
-    alias incr = BinaryClient.incr;
 
-    override
     void append(string key, string value) {
-        append(SafeEncoder.encode(key), SafeEncoder.encode(value));
+        sendCommand(Command.APPEND, key, value);
     }
-    alias append = BinaryClient.append;
 
-    override
     void substr(string key, int start, int end) {
-        substr(SafeEncoder.encode(key), start, end);
+        sendCommand(Command.SUBSTR, key, toByteArray(start), toByteArray(end));
     }
-    alias substr = BinaryClient.substr;
 
-    override
     void hset(string key, string field, string value) {
-        hset(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
+        sendCommand(Command.HSET, key, field, value);
     }
-    alias hset = BinaryClient.hset;
 
-    override
     void hset(string key, Map!(string, string) hash) {
-        Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-        foreach(string k, string v; hash) {
-            bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
+        string[] params = new string[1 + hash.size() * 2];
+
+        int index = 0;
+        params[index++] = key;
+        foreach (string key, string value; hash) {
+            params[index++] = key;
+            params[index++] = value;
         }
-        hset(SafeEncoder.encode(key), bhash);
+        sendCommand(Command.HSET, params);
     }
 
-    override
     void hget(string key, string field) {
-        hget(SafeEncoder.encode(key), SafeEncoder.encode(field));
+        sendCommand(Command.HGET, key, field);
     }
-    alias hget = BinaryClient.hget;
 
-    override
     void hsetnx(string key, string field, string value) {
-        hsetnx(SafeEncoder.encode(key), SafeEncoder.encode(field), SafeEncoder.encode(value));
+        sendCommand(Command.HSETNX, key, field, value);
     }
-    alias hsetnx = BinaryClient.hsetnx;
 
-    override
     void hmset(string key, Map!(string, string) hash) {
-        Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-        foreach(string k, string v; hash) {
-            bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
+        List!(string) params = new ArrayList!(string)();
+        params.add(key);
+
+        foreach(string key, string value ; hash) {
+            params.add(key);
+            params.add(value);
         }
-        hmset(SafeEncoder.encode(key), bhash);
+        sendCommand(Command.HMSET, params.toArray());
     }
-    alias hmset = BinaryClient.hmset;
 
-    override
     void hmget(string key, string[] fields...) {
-        hmget(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
+        sendCommand(Command.HMGET, joinParameters(key, fields));
     }
-    alias hmget = BinaryClient.hmget;
 
-    override
     void hincrBy(string key, string field, long value) {
-        hincrBy(SafeEncoder.encode(key), SafeEncoder.encode(field), value);
+        sendCommand(Command.HINCRBY, key, field, toByteArray(value));
     }
-    alias hincrBy = BinaryClient.hincrBy;
 
-    override
     void hexists(string key, string field) {
-        hexists(SafeEncoder.encode(key), SafeEncoder.encode(field));
+        sendCommand(Command.HEXISTS, key, field);
     }
-    alias hexists = BinaryClient.hexists;
 
-    override
     void hdel(string key, string[] fields...) {
-        hdel(SafeEncoder.encode(key), SafeEncoder.encodeMany(fields));
+        sendCommand(Command.HDEL, joinParameters(key, fields));
     }
-    alias hdel = BinaryClient.hdel;
 
-    override
     void hlen(string key) {
-        hlen(SafeEncoder.encode(key));
+        sendCommand(Command.HLEN, key);
     }
-    alias hlen = BinaryClient.hlen;
 
-    override
     void hkeys(string key) {
-        hkeys(SafeEncoder.encode(key));
+        sendCommand(Command.HKEYS, key);
     }
-    alias hkeys = BinaryClient.hkeys;
 
-    override
     void hvals(string key) {
-        hvals(SafeEncoder.encode(key));
+        sendCommand(Command.HVALS, key);
     }
-    alias hvals = BinaryClient.hvals;
 
-    override
     void hgetAll(string key) {
-        hgetAll(SafeEncoder.encode(key));
+        sendCommand(Command.HGETALL, key);
     }
-    alias hgetAll = BinaryClient.hgetAll;
 
-    override
-    void rpush(string key, string[] string...) {
-        rpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
+    void rpush(string key, string[] strings...) {
+        sendCommand(Command.RPUSH, joinParameters(key, strings));
     }
-    alias rpush = BinaryClient.rpush;
 
-    override
-    void lpush(string key, string[] string...) {
-        lpush(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
+    void lpush(string key, string[] strings...) {
+        sendCommand(Command.LPUSH, joinParameters(key, strings));
     }
-    alias lpush = BinaryClient.lpush;
 
-    override
     void llen(string key) {
-        llen(SafeEncoder.encode(key));
+        sendCommand(Command.LLEN, key);
     }
-    alias llen = BinaryClient.llen;
 
-    override
     void lrange(string key, long start, long stop) {
-        lrange(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.LRANGE, key, toByteArray(start), toByteArray(stop));
     }
-    alias lrange = BinaryClient.lrange;
 
-    override
     void ltrim(string key, long start, long stop) {
-        ltrim(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.LTRIM, key, toByteArray(start), toByteArray(stop));
     }
-    alias ltrim = BinaryClient.ltrim;
 
-    override
     void lindex(string key, long index) {
-        lindex(SafeEncoder.encode(key), index);
+        sendCommand(Command.LINDEX, key, toByteArray(index));
     }
-    alias lindex = BinaryClient.lindex;
 
-    override
     void lset(string key, long index, string value) {
-        lset(SafeEncoder.encode(key), index, SafeEncoder.encode(value));
+        sendCommand(Command.LSET, key, toByteArray(index), value);
     }
-    alias lset = BinaryClient.lset;
 
-    override
     void lrem(string key, long count, string value) {
-        lrem(SafeEncoder.encode(key), count, SafeEncoder.encode(value));
+        sendCommand(Command.LREM, key, toByteArray(count), value);
     }
-    alias lrem = BinaryClient.lrem;
 
-    override
     void lpop(string key) {
-        lpop(SafeEncoder.encode(key));
+        sendCommand(Command.LPOP, key);
     }
-    alias lpop = BinaryClient.lpop;
 
-    override
     void rpop(string key) {
-        rpop(SafeEncoder.encode(key));
+        sendCommand(Command.RPOP, key);
     }
-    alias rpop = BinaryClient.rpop;
 
-    override
     void rpoplpush(string srckey, string dstkey) {
-        rpoplpush(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey));
+        sendCommand(Command.RPOPLPUSH, srckey, dstkey);
     }
-    alias rpoplpush = BinaryClient.rpoplpush;
 
-    override
     void sadd(string key, string[] members...) {
-        sadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
+        sendCommand(Command.SADD, joinParameters(key, members));
     }
-    alias sadd = BinaryClient.sadd;
 
-    override
     void smembers(string key) {
-        smembers(SafeEncoder.encode(key));
+        sendCommand(Command.SMEMBERS, key);
     }
-    alias smembers = BinaryClient.smembers;
 
-    override
     void srem(string key, string[] members...) {
-        srem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
+        sendCommand(Command.SREM, joinParameters(key, members));
     }
-    alias srem = BinaryClient.srem;
 
-    override
     void spop(string key) {
-        spop(SafeEncoder.encode(key));
+        sendCommand(Command.SPOP, key);
     }
-    alias spop = BinaryClient.spop;
 
-    override
     void spop(string key, long count) {
-        spop(SafeEncoder.encode(key), count);
+        sendCommand(Command.SPOP, key, toByteArray(count));
     }
-    alias spop = BinaryClient.spop;
 
-    override
     void smove(string srckey, string dstkey, string member) {
-        smove(SafeEncoder.encode(srckey), SafeEncoder.encode(dstkey), SafeEncoder.encode(member));
+        sendCommand(Command.SMOVE, srckey, dstkey, member);
     }
-    alias smove = BinaryClient.smove;
 
-    override
     void scard(string key) {
-        scard(SafeEncoder.encode(key));
+        sendCommand(Command.SCARD, key);
     }
-    alias scard = BinaryClient.scard;
 
-    override
     void sismember(string key, string member) {
-        sismember(SafeEncoder.encode(key), SafeEncoder.encode(member));
+        sendCommand(Command.SISMEMBER, key, member);
     }
-    alias sismember = BinaryClient.sismember;
 
-    override
     void sinter(string[] keys...) {
-        sinter(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SINTER, keys);
     }
-    alias sinter = BinaryClient.sinter;
 
-    override
     void sinterstore(string dstkey, string[] keys...) {
-        sinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SINTERSTORE, joinParameters(dstkey, keys));
     }
-    alias sinterstore = BinaryClient.sinterstore;
 
-    override
     void sunion(string[] keys...) {
-        sunion(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SUNION, keys);
     }
-    alias sunion = BinaryClient.sunion;
 
-    override
     void sunionstore(string dstkey, string[] keys...) {
-        sunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SUNIONSTORE, joinParameters(dstkey, keys));
     }
-    alias sunionstore = BinaryClient.sunionstore;
 
-    override
     void sdiff(string[] keys...) {
-        sdiff(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SDIFF, keys);
     }
-    alias sdiff = BinaryClient.sdiff;
 
-    override
     void sdiffstore(string dstkey, string[] keys...) {
-        sdiffstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(keys));
+        sendCommand(Command.SDIFFSTORE, joinParameters(dstkey, keys));
     }
-    alias sdiffstore = BinaryClient.sdiffstore;
 
-    override
     void srandmember(string key) {
-        srandmember(SafeEncoder.encode(key));
+        sendCommand(Command.SRANDMEMBER, key);
     }
-    alias srandmember = BinaryClient.srandmember;
 
-    override
     void zadd(string key, double score, string member) {
-        zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member));
+        sendCommand(Command.ZADD, key, toByteArray(score), member);
     }
-    alias zadd = BinaryClient.zadd;
 
-    override
     void zadd(string key, double score, string member,
             ZAddParams params) {
-        zadd(SafeEncoder.encode(key), score, SafeEncoder.encode(member), params);
+        sendCommand(Command.ZADD, params.getByteParams(key, toByteArray(score), member));
     }
-    alias zadd = BinaryClient.zadd;
 
-    override
     void zadd(string key, Map!(string, Double) scoreMembers) {
-        HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
-        zadd(SafeEncoder.encode(key), binaryScoreMembers);
-    }
-    alias zadd = BinaryClient.zadd;
+        ArrayList!(string) args = new ArrayList!(string)(scoreMembers.size() * 2 + 1);
+        args.add(key);
+        args.addAll(convertScoreMembersToByteArrays(scoreMembers));
 
-    override
+        string[] argsArray = args.toArray();
+
+        sendCommand(Command.ZADD, argsArray);
+    }
+
     void zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
-        HashMap!(byte[], Double) binaryScoreMembers = convertScoreMembersToBinary(scoreMembers);
-        zadd(SafeEncoder.encode(key), binaryScoreMembers, params);
-    }
-    alias zadd = BinaryClient.zadd;
+        ArrayList!(string) args = convertScoreMembersToByteArrays(scoreMembers);
+        string[] argsArray = args.toArray();
 
-    override
+        sendCommand(Command.ZADD, params.getByteParams(key, argsArray));
+    }
+
     void zrange(string key, long start, long stop) {
-        zrange(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop));
     }
-    alias zrange = BinaryClient.zrange;
 
-    override
     void zrem(string key, string[] members...) {
-        zrem(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
+        sendCommand(Command.ZREM, joinParameters(key, members));
     }
-    alias zrem = BinaryClient.zrem;
 
-    override
     void zincrby(string key, double increment, string member) {
-        zincrby(SafeEncoder.encode(key), increment, SafeEncoder.encode(member));
-    }
-    alias zincrby = BinaryClient.zincrby;
-
-    override
-    void zincrby(string key, double increment, string member, ZIncrByParams params) {
-        zincrby(SafeEncoder.encode(key), increment, SafeEncoder.encode(member), params);
+        sendCommand(Command.ZINCRBY, key, toByteArray(increment), member);
     }
 
-    override
+    void zincrby(string key, double increment, string member,
+            ZIncrByParams params) {
+        // Note that it actually calls ZADD with INCR option, so it requires Redis 3.0.2 or upper.
+        sendCommand(Command.ZADD, params.getByteParams(key, toByteArray(increment), member));
+    }
+
     void zrank(string key, string member) {
-        zrank(SafeEncoder.encode(key), SafeEncoder.encode(member));
+        sendCommand(Command.ZRANK, key, member);
     }
-    alias zrank = BinaryClient.zrank;
 
-    override
     void zrevrank(string key, string member) {
-        zrevrank(SafeEncoder.encode(key), SafeEncoder.encode(member));
+        sendCommand(Command.ZREVRANK, key, member);
     }
-    alias zrevrank = BinaryClient.zrevrank;
 
-    override
     void zrevrange(string key, long start, long stop) {
-        zrevrange(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop));
     }
-    alias zrevrange = BinaryClient.zrevrange;
 
-    override
     void zrangeWithScores(string key, long start, long stop) {
-        zrangeWithScores(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop), cast(string)to!string(Keyword.WITHSCORES));
     }
-    alias zrangeWithScores = BinaryClient.zrangeWithScores;
 
-    override
     void zrevrangeWithScores(string key, long start, long stop) {
-        zrevrangeWithScores(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop), cast(string)to!string(Keyword.WITHSCORES));
     }
-    alias zrevrangeWithScores = BinaryClient.zrevrangeWithScores;
 
-    override
     void zcard(string key) {
-        zcard(SafeEncoder.encode(key));
+        sendCommand(Command.ZCARD, key);
     }
-    alias zcard = BinaryClient.zcard;
 
-    override
     void zscore(string key, string member) {
-        zscore(SafeEncoder.encode(key), SafeEncoder.encode(member));
+        sendCommand(Command.ZSCORE, key, member);
     }
-    alias zscore = BinaryClient.zscore;
 
-    override
+    void multi() {
+        sendCommand(Command.MULTI);
+        _isInMulti = true;
+    }
+
+    void discard() {
+        sendCommand(Command.DISCARD);
+        _isInMulti = false;
+        _isInWatch = false;
+    }
+
+    void exec() {
+        sendCommand(Command.EXEC);
+        _isInMulti = false;
+        _isInWatch = false;
+    }
+
     void watch(string[] keys...) {
-        watch(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.WATCH, keys);
+        _isInWatch = true;
     }
-    alias watch = BinaryClient.watch;
 
-    override
+    void unwatch() {
+        sendCommand(Command.UNWATCH);
+        _isInWatch = false;
+    }
+
     void sort(string key) {
-        sort(SafeEncoder.encode(key));
+        sendCommand(Command.SORT, key);
     }
-    alias sort = BinaryClient.sort;
 
-    override
     void sort(string key, SortingParams sortingParameters) {
-        sort(SafeEncoder.encode(key), sortingParameters);
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.addAll(sortingParameters.getParams());
+        sendCommand(Command.SORT, args.toArray());
     }
 
-    override
     void blpop(string[] args) {
-        blpop(SafeEncoder.encodeMany(args));
+        sendCommand(Command.BLPOP, args);
     }
-    alias blpop = BinaryClient.blpop;
 
     void blpop(int timeout, string[] keys...) {
-        size_t size = keys.length + 1;
-        List!(string) args = new ArrayList!(string)(cast(int)size);
+        List!(string) args = new ArrayList!(string)();
         foreach(string arg ; keys) {
             args.add(arg);
         }
-        args.add(to!string(timeout));
+        args.add(Protocol.toByteArray(timeout));
         blpop(args.toArray());
     }
 
-    override
     void sort(string key, SortingParams sortingParameters, string dstkey) {
-        sort(SafeEncoder.encode(key), sortingParameters, SafeEncoder.encode(dstkey));
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.addAll(sortingParameters.getParams());
+        args.add(cast(string)to!string(Keyword.STORE));
+        args.add(dstkey);
+        sendCommand(Command.SORT, args.toArray());
     }
-    alias sort = BinaryClient.sort;
 
-    override
     void sort(string key, string dstkey) {
-        sort(SafeEncoder.encode(key), SafeEncoder.encode(dstkey));
+        sendCommand(Command.SORT, key, cast(string)to!string(Keyword.STORE), dstkey);
     }
 
-    override
     void brpop(string[] args) {
-        brpop(SafeEncoder.encodeMany(args));
+        sendCommand(Command.BRPOP, args);
     }
-    alias brpop = BinaryClient.brpop;
 
     void brpop(int timeout, string[] keys...) {
-        size_t size = keys.length + 1;
-        List!(string) args = new ArrayList!(string)(cast(int)size);
+        List!(string) args = new ArrayList!(string)();
         foreach(string arg ; keys) {
             args.add(arg);
         }
-        args.add(to!string(timeout));
+        args.add(Protocol.toByteArray(timeout));
         brpop(args.toArray());
     }
 
-    override
+    void auth(string password) {
+        setPassword(password);
+        sendCommand(Command.AUTH, password);
+    }
+
+    void subscribe(string[] channels...) {
+        sendCommand(Command.SUBSCRIBE, channels);
+    }
+
+    void publish(string channel, string message) {
+        sendCommand(Command.PUBLISH, channel, message);
+    }
+
+    void unsubscribe() {
+        sendCommand(Command.UNSUBSCRIBE);
+    }
+
+    void unsubscribe(string[] channels...) {
+        sendCommand(Command.UNSUBSCRIBE, channels);
+    }
+
+    void psubscribe(string[] patterns...) {
+        sendCommand(Command.PSUBSCRIBE, patterns);
+    }
+
+    void punsubscribe() {
+        sendCommand(Command.PUNSUBSCRIBE);
+    }
+
+    void punsubscribe(string[] patterns...) {
+        sendCommand(Command.PUNSUBSCRIBE, patterns);
+    }
+
+    void pubsub(string[] args...) {
+        sendCommand(Command.PUBSUB, args);
+    }
+
     void zcount(string key, double min, double max) {
-        zcount(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
+        sendCommand(Command.ZCOUNT, key, toByteArray(min), toByteArray(max));
     }
-    alias zcount = BinaryClient.zcount;
 
-    override
     void zcount(string key, string min, string max) {
-        zcount(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZCOUNT, key, min, max);
     }
 
-    override
     void zrangeByScore(string key, double min, double max) {
-        zrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
     }
-    alias zrangeByScore = BinaryClient.zrangeByScore;
 
-    override
     void zrangeByScore(string key, string min, string max) {
-        zrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max);
     }
 
-    override
+    void zrevrangeByScore(string key, double max, double min) {
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min));
+    }
+
+    void zrevrangeByScore(string key, string max, string min) {
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min);
+    }
+
     void zrangeByScore(string key, double min, double max, int offset,
             int count) {
-        zrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max), offset, count);
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count));
     }
 
-    override
-    void zrangeByScoreWithScores(string key, double min, double max) {
-        zrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
-    }
-    alias zrangeByScoreWithScores = BinaryClient.zrangeByScoreWithScores;
-
-    override
-    void zrangeByScoreWithScores(string key, double min, double max,
-            int offset, int count) {
-        zrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(min), toByteArray(max), offset,
-            count);
-    }
-
-    override
-    void zrevrangeByScore(string key, double max, double min) {
-        zrevrangeByScore(SafeEncoder.encode(key), toByteArray(max), toByteArray(min));
-    }
-    alias zrevrangeByScore = BinaryClient.zrevrangeByScore;
-
-    override
-    void zrangeByScore(string key, string min, string max, int offset,
-            int count) {
-        zrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max),
-            offset, count);
-    }
-
-    override
-    void zrangeByScoreWithScores(string key, string min, string max) {
-        zrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(min),
-            SafeEncoder.encode(max));
-    }
-    alias zrangeByScoreWithScores = BinaryClient.zrangeByScoreWithScores;
-
-    override
-    void zrangeByScoreWithScores(string key, string min, string max,
-            int offset, int count) {
-        zrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(min),
-            SafeEncoder.encode(max), offset, count);
-    }
-
-    override
-    void zrevrangeByScore(string key, string max, string min) {
-        zrevrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min));
-    }
-    alias zrevrangeByScore = BinaryClient.zrevrangeByScore;
-
-    override
     void zrevrangeByScore(string key, double max, double min,
             int offset, int count) {
-        zrevrangeByScore(SafeEncoder.encode(key), toByteArray(max), toByteArray(min), offset, count);
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count));
     }
 
-    override
-    void zrevrangeByScore(string key, string max, string min,
-            int offset, int count) {
-        zrevrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min),
-            offset, count);
+    void zrangeByScoreWithScores(string key, double min, double max) {
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.WITHSCORES));
     }
 
-
-    override
     void zrevrangeByScoreWithScores(string key, double max, double min) {
-        zrevrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(max), toByteArray(min));
-    }
-    alias zrevrangeByScoreWithScores = BinaryClient.zrevrangeByScoreWithScores;
-
-    override
-    void zrevrangeByScoreWithScores(string key, string max, string min) {
-        zrevrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(max),
-            SafeEncoder.encode(min));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.WITHSCORES));
     }
 
-    override
+    void zrangeByScoreWithScores(string key, double min, double max,
+            int offset, int count) {
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
+    }
+
     void zrevrangeByScoreWithScores(string key, double max, double min,
             int offset, int count) {
-        zrevrangeByScoreWithScores(SafeEncoder.encode(key), toByteArray(max), toByteArray(min), offset,
-            count);
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
     }
 
-    override
+    void zrangeByScore(string key, string min, string max, int offset,
+            int count) {
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+    }
+
+    void zrevrangeByScore(string key, string max, string min,
+            int offset, int count) {
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+    }
+
+    void zrangeByScoreWithScores(string key, string min, string max) {
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.WITHSCORES));
+    }
+
+    void zrevrangeByScoreWithScores(string key, string max, string min) {
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.WITHSCORES));
+    }
+
+    void zrangeByScoreWithScores(string key, string min, string max,
+            int offset, int count) {
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count),
+            cast(string)to!string(Keyword.WITHSCORES));
+    }
+
     void zrevrangeByScoreWithScores(string key, string max, string min,
             int offset, int count) {
-        zrevrangeByScoreWithScores(SafeEncoder.encode(key), SafeEncoder.encode(max),
-            SafeEncoder.encode(min), offset, count);
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
     }
 
-    override
     void zremrangeByRank(string key, long start, long stop) {
-        zremrangeByRank(SafeEncoder.encode(key), start, stop);
+        sendCommand(Command.ZREMRANGEBYRANK, key, toByteArray(start), toByteArray(stop));
     }
-    alias zremrangeByRank = BinaryClient.zremrangeByRank;
 
-    override
     void zremrangeByScore(string key, double min, double max) {
-        zremrangeByScore(SafeEncoder.encode(key), toByteArray(min), toByteArray(max));
+        sendCommand(Command.ZREMRANGEBYSCORE, key, toByteArray(min), toByteArray(max));
     }
-    alias zremrangeByScore = BinaryClient.zremrangeByScore;
 
-    override
     void zremrangeByScore(string key, string min, string max) {
-        zremrangeByScore(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZREMRANGEBYSCORE, key, min, max);
     }
 
-    override
     void zunionstore(string dstkey, string[] sets...) {
-        zunionstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
+        sendCommand(Command.ZUNIONSTORE, joinParameters(dstkey, toByteArray(sets.length), sets));
     }
-    alias zunionstore = BinaryClient.zunionstore;
 
-    override
     void zunionstore(string dstkey, ZParams params, string[] sets...) {
-        zunionstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
+        List!(string) args = new ArrayList!(string)();
+        args.add(dstkey);
+        args.add(Protocol.toByteArray(sets.length));
+        foreach(string set ; sets) {
+            args.add(set);
+        }
+        args.addAll(params.getParams());
+        sendCommand(Command.ZUNIONSTORE, args.toArray());
     }
 
-    override
     void zinterstore(string dstkey, string[] sets...) {
-        zinterstore(SafeEncoder.encode(dstkey), SafeEncoder.encodeMany(sets));
+        sendCommand(Command.ZINTERSTORE, joinParameters(dstkey, Protocol.toByteArray(sets.length), sets));
     }
-    alias zinterstore = BinaryClient.zinterstore;
 
-    override
     void zinterstore(string dstkey, ZParams params, string[] sets...) {
-        zinterstore(SafeEncoder.encode(dstkey), params, SafeEncoder.encodeMany(sets));
+        List!(string) args = new ArrayList!(string)();
+        args.add(dstkey);
+        args.add(Protocol.toByteArray(sets.length));
+        foreach(string set ; sets) {
+            args.add(set);
+        }
+        args.addAll(params.getParams());
+        sendCommand(Command.ZINTERSTORE, args.toArray());
     }
 
     void zlexcount(string key, string min, string max) {
-        zlexcount(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZLEXCOUNT, key, min, max);
     }
-    alias zlexcount = BinaryClient.zlexcount;
 
     void zrangeByLex(string key, string min, string max) {
-        zrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZRANGEBYLEX, key, min, max);
     }
-    alias zrangeByLex = BinaryClient.zrangeByLex;
 
     void zrangeByLex(string key, string min, string max, int offset,
             int count) {
-        zrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max), offset,
-            count);
+        sendCommand(Command.ZRANGEBYLEX, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zrevrangeByLex(string key, string max, string min) {
-        zrevrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min));
+        sendCommand(Command.ZREVRANGEBYLEX, key, max, min);
     }
-    alias zrevrangeByLex = BinaryClient.zrevrangeByLex;
 
-    void zrevrangeByLex(string key, string max, string min, int offset, int count) {
-        zrevrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(max), SafeEncoder.encode(min),
-            offset, count);
+    void zrevrangeByLex(string key, string max, string min,
+            int offset, int count) {
+        sendCommand(Command.ZREVRANGEBYLEX, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zremrangeByLex(string key, string min, string max) {
-        zremrangeByLex(SafeEncoder.encode(key), SafeEncoder.encode(min), SafeEncoder.encode(max));
+        sendCommand(Command.ZREMRANGEBYLEX, key, min, max);
     }
-    alias zremrangeByLex = BinaryClient.zremrangeByLex;
 
-    override
+    void save() {
+        sendCommand(Command.SAVE);
+    }
+
+    void bgsave() {
+        sendCommand(Command.BGSAVE);
+    }
+
+    void bgrewriteaof() {
+        sendCommand(Command.BGREWRITEAOF);
+    }
+
+    void lastsave() {
+        sendCommand(Command.LASTSAVE);
+    }
+
+    void shutdown() {
+        sendCommand(Command.SHUTDOWN);
+    }
+
+    void info() {
+        sendCommand(Command.INFO);
+    }
+
+    void info(string section) {
+        sendCommand(Command.INFO, section);
+    }
+
+    void monitor() {
+        sendCommand(Command.MONITOR);
+    }
+
+    void slaveof(string host, int port) {
+        sendCommand(Command.SLAVEOF, host, port.to!string);
+    }
+
+    void slaveofNoOne() {
+        sendCommand(Command.SLAVEOF, cast(string)to!string(Keyword.NO), cast(string)to!string(Keyword.ONE));
+    }
+
+    void configGet(string pattern) {
+        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.GET), pattern);
+    }
+
+    void configSet(string parameter, string value) {
+        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.SET), parameter, value);
+    }
+
     void strlen(string key) {
-        strlen(SafeEncoder.encode(key));
+        sendCommand(Command.STRLEN, key);
     }
-    alias strlen = BinaryClient.strlen;
 
-    override
-    void lpushx(string key, string[] string...) {
-        lpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
+    void sync() {
+        sendCommand(Command.SYNC);
     }
-    alias lpushx = BinaryClient.lpushx;
 
-    override
+    void lpushx(string key, string[] strings...) {
+        sendCommand(Command.LPUSHX, joinParameters(key, strings));
+    }
+
     void persist(string key) {
-        persist(SafeEncoder.encode(key));
+        sendCommand(Command.PERSIST, key);
     }
-    alias persist = BinaryClient.persist;
 
-    override
-    void rpushx(string key, string[] string...) {
-        rpushx(SafeEncoder.encode(key), SafeEncoder.encodeMany(string));
+    void rpushx(string key, string[] strings...) {
+        sendCommand(Command.RPUSHX, joinParameters(key, strings));
     }
-    alias rpushx = BinaryClient.rpushx;
 
-    override
-    void echo(string string) {
-        echo(SafeEncoder.encode(string));
+    void echo(string strings) {
+        sendCommand(Command.ECHO, strings);
     }
-    alias echo = BinaryClient.echo;
 
-    override
     void linsert(string key, ListPosition where, string pivot,
             string value) {
-        linsert(SafeEncoder.encode(key), where, SafeEncoder.encode(pivot), SafeEncoder.encode(value));
+        sendCommand(Command.LINSERT, key, cast(string)to!string(where), pivot, value);
     }
-    alias linsert = BinaryClient.linsert;
 
-    override
+    // void debug(DebugParams params) {
+    //   sendCommand(Command.DEBUG, params.getCommand());
+    // }
+
     void brpoplpush(string source, string destination, int timeout) {
-        brpoplpush(SafeEncoder.encode(source), SafeEncoder.encode(destination), timeout);
+        sendCommand(Command.BRPOPLPUSH, source, destination, toByteArray(timeout));
     }
-    alias brpoplpush = BinaryClient.brpoplpush;
 
-    override
-    void setbit(string key, long offset, bool value) {
-        setbit(SafeEncoder.encode(key), offset, value);
+    void configResetStat() {
+        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.RESETSTAT));
     }
-    alias setbit = BinaryClient.setbit;
 
-    override
+    void configRewrite() {
+        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.REWRITE));
+    }
+
     void setbit(string key, long offset, string value) {
-        setbit(SafeEncoder.encode(key), offset, SafeEncoder.encode(value));
+        sendCommand(Command.SETBIT, key, toByteArray(offset), value);
     }
-    alias setbit = BinaryClient.setbit;
 
-    override
-    void getbit(string key, long offset) {
-        getbit(SafeEncoder.encode(key), offset);
+    void setbit(string key, long offset, bool value) {
+        sendCommand(Command.SETBIT, key, toByteArray(offset), toByteArray(value));
     }
-    alias getbit = BinaryClient.getbit;
+
+    void getbit(string key, long offset) {
+        sendCommand(Command.GETBIT, key, toByteArray(offset));
+    }
 
     void bitpos(string key, bool value, BitPosParams params) {
-        bitpos(SafeEncoder.encode(key), value, params);
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.add(toByteArray(value));
+        args.addAll(params.getParams());
+        sendCommand(Command.BITPOS, args.toArray());
     }
-    alias bitpos = BinaryClient.bitpos;
 
-    override
     void setrange(string key, long offset, string value) {
-        setrange(SafeEncoder.encode(key), offset, SafeEncoder.encode(value));
+        sendCommand(Command.SETRANGE, key, toByteArray(offset), value);
     }
-    alias setrange = BinaryClient.setrange;
 
-    override
     void getrange(string key, long startOffset, long endOffset) {
-        getrange(SafeEncoder.encode(key), startOffset, endOffset);
-    }
-    alias getrange = BinaryClient.getrange;
-
-    void publish(string channel, string message) {
-        publish(SafeEncoder.encode(channel), SafeEncoder.encode(message));
-    }
-    alias publish = BinaryClient.publish;
-
-    void unsubscribe(string[] channels...) {
-        unsubscribe(SafeEncoder.encodeMany(channels));
-    }
-    alias unsubscribe = BinaryClient.unsubscribe;
-
-    void psubscribe(string[] patterns...) {
-        psubscribe(SafeEncoder.encodeMany(patterns));
-    }
-    alias psubscribe = BinaryClient.psubscribe;
-
-    void punsubscribe(string[] patterns...) {
-        punsubscribe(SafeEncoder.encodeMany(patterns));
-    }
-    alias punsubscribe = BinaryClient.punsubscribe;
-
-    void subscribe(string[] channels...) {
-        subscribe(SafeEncoder.encodeMany(channels));
-    }
-    alias subscribe = BinaryClient.subscribe;
-
-    void pubsubChannels(string pattern) {
-        pubsub(Protocol.PUBSUB_CHANNELS, pattern);
+        sendCommand(Command.GETRANGE, key, toByteArray(startOffset), toByteArray(endOffset));
     }
 
-    void pubsubNumPat() {
-        pubsub(Protocol.PUBSUB_NUM_PAT);
-    }
-
-    void pubsubNumSub(string[] channels...) {
-        pubsub(Protocol.PUBSUB_NUMSUB, channels);
+    int getDB() {
+        return db;
     }
 
     override
-    void configSet(string parameter, string value) {
-        configSet(SafeEncoder.encode(parameter), SafeEncoder.encode(value));
+    void disconnect() {
+        db = 0;
+        super.disconnect();
     }
-    alias configSet = BinaryClient.configSet;
 
     override
-    void configGet(string pattern) {
-        configGet(SafeEncoder.encode(pattern));
+    void close() {
+        db = 0;
+        super.close();
     }
-    alias configGet = BinaryClient.configGet;
+
+    void resetState() {
+        if (isInWatch()) {
+            unwatch();
+            getStatusCodeReply();
+        }
+    }
+
+    void eval(string script, string keyCount, string[] params) {
+        sendCommand(Command.EVAL, joinParameters(script, keyCount, params));
+    }
 
     void eval(string script, int keyCount, string[] params...) {
-        eval(SafeEncoder.encode(script), toByteArray(keyCount), SafeEncoder.encodeMany(params));
+        sendCommand(Command.EVAL, joinParameters(script, toByteArray(keyCount), params));
     }
-    alias eval = BinaryClient.eval;
+
+    void evalsha(string sha1, string keyCount, string[] params...) {
+        sendCommand(Command.EVALSHA, joinParameters(sha1, keyCount, params));
+    }
 
     void evalsha(string sha1, int keyCount, string[] params...) {
-        evalsha(SafeEncoder.encode(sha1), toByteArray(keyCount), SafeEncoder.encodeMany(params));
+        sendCommand(Command.EVALSHA, joinParameters(sha1, toByteArray(keyCount), params));
     }
-    alias evalsha = BinaryClient.evalsha;
+
+    void scriptFlush() {
+        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.FLUSH));
+    }
 
     void scriptExists(string[] sha1...) {
-        scriptExists(SafeEncoder.encodeMany(sha1));
+        sendCommand(Command.SCRIPT, joinParameters(cast(string)to!string(Keyword.EXISTS), sha1));
     }
-    alias scriptExists = BinaryClient.scriptExists;
 
     void scriptLoad(string script) {
-        scriptLoad(SafeEncoder.encode(script));
+        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.LOAD), script);
     }
-    alias scriptLoad = BinaryClient.scriptLoad;
 
-    override
+    void scriptKill() {
+        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.KILL));
+    }
+
+    void slowlogGet() {
+        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.GET));
+    }
+
+    void slowlogGet(long entries) {
+        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.GET), toByteArray(entries));
+    }
+
+    void slowlogReset() {
+        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.RESET));
+    }
+
+    void slowlogLen() {
+        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.LEN));
+    }
+
     void objectRefcount(string key) {
-        objectRefcount(SafeEncoder.encode(key));
+        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.REFCOUNT), key);
     }
-    alias objectRefcount = BinaryClient.objectRefcount;
 
-    override
     void objectIdletime(string key) {
-        objectIdletime(SafeEncoder.encode(key));
+        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.IDLETIME), key);
     }
-    alias objectIdletime = BinaryClient.objectIdletime;
 
-    override
     void objectEncoding(string key) {
-        objectEncoding(SafeEncoder.encode(key));
+        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.ENCODING), key);
     }
-    alias objectEncoding = BinaryClient.objectEncoding;
 
-    override
     void bitcount(string key) {
-        bitcount(SafeEncoder.encode(key));
+        sendCommand(Command.BITCOUNT, key);
     }
-    alias bitcount = BinaryClient.bitcount;
 
-    override
     void bitcount(string key, long start, long end) {
-        bitcount(SafeEncoder.encode(key), start, end);
+        sendCommand(Command.BITCOUNT, key, toByteArray(start), toByteArray(end));
     }
-    alias bitcount = BinaryClient.bitcount;
 
-    override
     void bitop(BitOP op, string destKey, string[] srcKeys...) {
-        bitop(op, SafeEncoder.encode(destKey), SafeEncoder.encodeMany(srcKeys));
+        sendCommand(Command.BITOP, joinParameters(cast(string)to!string(op), destKey, srcKeys));
     }
-    alias bitop = BinaryClient.bitop;
 
     void sentinel(string[] args...) {
-        sentinel(SafeEncoder.encodeMany(args));
+        sendCommand(Command.SENTINEL, args);
     }
-    alias sentinel = BinaryClient.sentinel;
 
-    override
     void dump(string key) {
-        dump(SafeEncoder.encode(key));
+        sendCommand(Command.DUMP, key);
     }
-    alias dump = BinaryClient.dump;
 
-    override
-    void restore(string key, int ttl, byte[] serializedValue) {
-        restore(SafeEncoder.encode(key), ttl, serializedValue);
+    void restore(string key, int ttl, string serializedValue) {
+        sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue);
     }
-    alias restore = BinaryClient.restore;
 
-    override
-    void restoreReplace(string key, int ttl, byte[] serializedValue) {
-        restoreReplace(SafeEncoder.encode(key), ttl, serializedValue);
+    void restoreReplace(string key, int ttl, string serializedValue) {
+        sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue, cast(string)to!string(Keyword.REPLACE));
     }
-    alias restoreReplace = BinaryClient.restoreReplace;
 
     void pexpire(string key, long milliseconds) {
-        pexpire(SafeEncoder.encode(key), milliseconds);
+        sendCommand(Command.PEXPIRE, key, toByteArray(milliseconds));
     }
-    alias pexpire = BinaryClient.pexpire;
 
     void pexpireAt(string key, long millisecondsTimestamp) {
-        pexpireAt(SafeEncoder.encode(key), millisecondsTimestamp);
+        sendCommand(Command.PEXPIREAT, key, toByteArray(millisecondsTimestamp));
     }
-    alias pexpireAt = BinaryClient.pexpireAt;
 
-    override
     void pttl(string key) {
-        pttl(SafeEncoder.encode(key));
+        sendCommand(Command.PTTL, key);
     }
-    alias pttl = BinaryClient.pttl;
-
-    override
-    void incrByFloat(string key, double increment) {
-        incrByFloat(SafeEncoder.encode(key), increment);
-    }
-    alias incrByFloat = BinaryClient.incrByFloat;
 
     void psetex(string key, long milliseconds, string value) {
-        psetex(SafeEncoder.encode(key), milliseconds, SafeEncoder.encode(value));
+        sendCommand(Command.PSETEX, key, toByteArray(milliseconds), value);
     }
-    alias psetex = BinaryClient.psetex;
 
     void srandmember(string key, int count) {
-        srandmember(SafeEncoder.encode(key), count);
+        sendCommand(Command.SRANDMEMBER, key, toByteArray(count));
     }
-    alias srandmember = BinaryClient.srandmember;
+
+    void memoryDoctor() {
+        sendCommand(Command.MEMORY, cast(string)to!string(Keyword.DOCTOR));
+    }
 
     void clientKill(string ipPort) {
-        clientKill(SafeEncoder.encode(ipPort));
+        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.KILL), ipPort);
     }
-    alias clientKill = BinaryClient.clientKill;
+
+    void clientKill(string ip, int port) {
+        sendCommand(Command.CLIENT, Keyword.KILL.to!string(), ip ~ ":" ~ port.to!string);
+    }
+
+    void clientKill(ClientKillParams params) {
+        sendCommand(Command.CLIENT, joinParameters(cast(string)to!string(Keyword.KILL), params.getByteParams()));
+    }
+
+    void clientGetname() {
+        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.GETNAME));
+    }
+
+    void clientList() {
+        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.LIST));
+    }
 
     void clientSetname(string name) {
-        clientSetname(SafeEncoder.encode(name));
+        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.SETNAME), name);
     }
-    alias clientSetname = BinaryClient.clientSetname;
 
-    override
-    void migrate(string host, int port, string key,
-            int destinationDb, int timeout) {
-        migrate(host, port, SafeEncoder.encode(key), destinationDb, timeout);
+    void clientPause(long timeout) {
+        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.PAUSE), toByteArray(timeout));
     }
-    alias migrate = BinaryClient.migrate;
 
-    override
+    void time() {
+        sendCommand(Command.TIME);
+    }
+
+    void migrate(string host, int port, string key, int destinationDb,
+            int timeout) {
+        sendCommand(Command.MIGRATE, SafeEncoder.encode(host), toByteArray(port), key,
+                toByteArray(destinationDb), toByteArray(timeout));
+    }
+
     void migrate(string host, int port, int destinationDB,
             int timeout, MigrateParams params, string[] keys...) {
-        migrate(host, port, destinationDB, timeout, params, SafeEncoder.encodeMany(keys));
+        string[] bparams = params.getByteParams();
+        int len = cast(int)(5 + bparams.length + 1 + keys.length);
+        string[] args = new string[len];
+        int i = 0;
+        args[i++] = SafeEncoder.encode(host);
+        args[i++] = toByteArray(port);
+        args[i++] = new byte[0];
+        args[i++] = toByteArray(destinationDB);
+        args[i++] = toByteArray(timeout);
+        // System.arraycopy(bparams, 0, args, i, bparams.length);
+        args[i .. i+bparams.length] = bparams[0 .. $];
+        i += bparams.length;
+        args[i++] = cast(string)to!string(Keyword.KEYS);
+        // System.arraycopy(keys, 0, args, i, keys.length);
+        args[i .. i+keys.length] = keys[0 .. $];
+        sendCommand(Command.MIGRATE, args);
     }
 
-    override
     void hincrByFloat(string key, string field, double increment) {
-        hincrByFloat(SafeEncoder.encode(key), SafeEncoder.encode(field), increment);
+        sendCommand(Command.HINCRBYFLOAT, key, field, toByteArray(increment));
     }
-    alias hincrByFloat = BinaryClient.hincrByFloat;
 
-    override
     void scan(string cursor, ScanParams params) {
-        scan(SafeEncoder.encode(cursor), params);
+        List!(string) args = new ArrayList!(string)();
+        args.add(cursor);
+        args.addAll(params.getParams());
+        sendCommand(Command.SCAN, args.toArray());
     }
-    alias scan = BinaryClient.scan;
 
-    override
     void hscan(string key, string cursor, ScanParams params) {
-        hscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.add(cursor);
+        args.addAll(params.getParams());
+        sendCommand(Command.HSCAN, args.toArray());
     }
-    alias hscan = BinaryClient.hscan;
 
-    override
     void sscan(string key, string cursor, ScanParams params) {
-        sscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.add(cursor);
+        args.addAll(params.getParams());
+        sendCommand(Command.SSCAN, args.toArray());
     }
-    alias sscan = BinaryClient.sscan;
 
-    override
     void zscan(string key, string cursor, ScanParams params) {
-        zscan(SafeEncoder.encode(key), SafeEncoder.encode(cursor), params);
-    }
-    alias zscan = BinaryClient.zscan;
-
-    void cluster(string subcommand, int[] args...) {
-        byte[][] arg = new byte[][args.length + 1];
-        for (int i = 1; i < arg.length; i++) {
-            arg[i] = toByteArray(args[i - 1]);
-        }
-        arg[0] = SafeEncoder.encode(subcommand);
-        cluster(arg);
+        List!(string) args = new ArrayList!(string)();
+        args.add(key);
+        args.add(cursor);
+        args.addAll(params.getParams());
+        sendCommand(Command.ZSCAN, args.toArray());
     }
 
-    void pubsub(string subcommand, string[] args...) {
-        byte[][] arg = new byte[][args.length + 1];
-        for (int i = 1; i < arg.length; i++) {
-            arg[i] = SafeEncoder.encode(args[i - 1]);
-        }
-        arg[0] = SafeEncoder.encode(subcommand);
-        pubsub(arg);
-    }
-        alias pubsub = BinaryClient.pubsub;
-
-    void cluster(string subcommand, string[] args...) {
-        byte[][] arg = new byte[][args.length + 1];
-        for (size_t i = 1; i < arg.length; i++) {
-            arg[i] = SafeEncoder.encode(args[i - 1]);
-        }
-        arg[0] = SafeEncoder.encode(subcommand);
-        cluster(arg);
-    }
-        alias cluster = BinaryClient.cluster;
-
-    void cluster(string subcommand) {
-        byte[][] arg = new byte[][1];
-        arg[0] = SafeEncoder.encode(subcommand);
-        cluster(arg);
+    void waitReplicas(int replicas, long timeout) {
+        sendCommand(Command.WAIT, toByteArray(replicas), toByteArray(timeout));
     }
 
-    void clusterNodes() {
-        cluster(Protocol.CLUSTER_NODES);
+    void cluster(string[] args...) {
+        sendCommand(Command.CLUSTER, args);
     }
 
-    void clusterMeet(string ip, int port) {
-        cluster(Protocol.CLUSTER_MEET, ip, to!string(port));
-    }
-
-    void clusterReset(ClusterReset resetType) {
-        cluster(Protocol.CLUSTER_RESET, resetType.to!string());
-    }
-
-    void clusterAddSlots(int[] slots...) {
-        cluster(Protocol.CLUSTER_ADDSLOTS, slots);
-    }
-
-    void clusterDelSlots(int[] slots...) {
-        cluster(Protocol.CLUSTER_DELSLOTS, slots);
-    }
-
-    void clusterInfo() {
-        cluster(Protocol.CLUSTER_INFO);
-    }
-
-    void clusterGetKeysInSlot(int slot, int count) {
-        int[] args = [slot, count];
-        cluster(Protocol.CLUSTER_GETKEYSINSLOT, args);
-    }
-
-    void clusterSetSlotNode(int slot, string nodeId) {
-        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_NODE, nodeId);
-    }
-
-    void clusterSetSlotMigrating(int slot, string nodeId) {
-        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_MIGRATING,
-            nodeId);
-    }
-
-    void clusterSetSlotImporting(int slot, string nodeId) {
-        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_IMPORTING,
-            nodeId);
+    void asking() {
+        sendCommand(Command.ASKING);
     }
 
     void pfadd(string key, string[] elements...) {
-        pfadd(SafeEncoder.encode(key), SafeEncoder.encodeMany(elements));
+        sendCommand(Command.PFADD, joinParameters(key, elements));
     }
-    alias pfadd = BinaryClient.pfadd;
 
     void pfcount(string key) {
-        pfcount(SafeEncoder.encode(key));
+        sendCommand(Command.PFCOUNT, key);
     }
-    alias pfcount = BinaryClient.pfcount;
 
     void pfcount(string[] keys...) {
-        pfcount(SafeEncoder.encodeMany(keys));
+        sendCommand(Command.PFCOUNT, keys);
     }
-
-    void pfmerge(string[] keys...) {
-        pfcount(SafeEncoder.encodeMany(keys));
-    }
-    alias pfmerge = BinaryClient.pfmerge;
 
     void pfmerge(string destkey, string[] sourcekeys...) {
-        pfmerge(SafeEncoder.encode(destkey), SafeEncoder.encodeMany(sourcekeys));
+        sendCommand(Command.PFMERGE, joinParameters(destkey, sourcekeys));
     }
 
-    void clusterSetSlotStable(int slot) {
-        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_STABLE);
-    }
-
-    void clusterForget(string nodeId) {
-        cluster(Protocol.CLUSTER_FORGET, nodeId);
-    }
-
-    void clusterFlushSlots() {
-        cluster(Protocol.CLUSTER_FLUSHSLOT);
-    }
-
-    void clusterKeySlot(string key) {
-        cluster(Protocol.CLUSTER_KEYSLOT, key);
-    }
-
-    void clusterCountKeysInSlot(int slot) {
-        cluster(Protocol.CLUSTER_COUNTKEYINSLOT, to!string(slot));
-    }
-
-    void clusterSaveConfig() {
-        cluster(Protocol.CLUSTER_SAVECONFIG);
-    }
-
-    void clusterReplicate(string nodeId) {
-        cluster(Protocol.CLUSTER_REPLICATE, nodeId);
-    }
-
-    void clusterSlaves(string nodeId) {
-        cluster(Protocol.CLUSTER_SLAVES, nodeId);
-    }
-
-    void clusterFailover() {
-        cluster(Protocol.CLUSTER_FAILOVER);
-    }
-
-    void clusterSlots() {
-        cluster(Protocol.CLUSTER_SLOTS);
+    void readonly() {
+        sendCommand(Command.READONLY);
     }
 
     void geoadd(string key, double longitude, double latitude, string member) {
-        geoadd(SafeEncoder.encode(key), longitude, latitude, SafeEncoder.encode(member));
+        sendCommand(Command.GEOADD, key, toByteArray(longitude), toByteArray(latitude), member);
     }
-    alias geoadd = BinaryClient.geoadd;
 
     void geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
-        geoadd(SafeEncoder.encode(key), convertMemberCoordinateMapToBinary(memberCoordinateMap));
+        List!(string) args = new ArrayList!(string)(memberCoordinateMap.size() * 3 + 1);
+        args.add(key);
+        args.addAll(convertGeoCoordinateMapToByteArrays(memberCoordinateMap));
+
+        string[] argsArray = args.toArray();
+
+        sendCommand(Command.GEOADD, argsArray);
     }
 
     void geodist(string key, string member1, string member2) {
-        geodist(SafeEncoder.encode(key), SafeEncoder.encode(member1), SafeEncoder.encode(member2));
+        sendCommand(Command.GEODIST, key, member1, member2);
     }
-    alias geodist = BinaryClient.geodist;
 
     void geodist(string key, string member1, string member2, GeoUnit unit) {
-        geodist(SafeEncoder.encode(key), SafeEncoder.encode(member1), SafeEncoder.encode(member2), unit);
+        sendCommand(Command.GEODIST, key, member1, member2, cast(string)to!string(unit));
     }
 
     void geohash(string key, string[] members...) {
-        geohash(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
+        sendCommand(Command.GEOHASH, joinParameters(key, members));
     }
-    alias geohash = BinaryClient.geohash;
 
     void geopos(string key, string[] members) {
-        geopos(SafeEncoder.encode(key), SafeEncoder.encodeMany(members));
+        sendCommand(Command.GEOPOS, joinParameters(key, members));
     }
-    alias geopos = BinaryClient.geopos;
 
     void georadius(string key, double longitude, double latitude, double radius, GeoUnit unit) {
-        georadius(SafeEncoder.encode(key), longitude, latitude, radius, unit);
+        sendCommand(Command.GEORADIUS, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
+            cast(string)to!string(unit));
     }
-    alias georadius = BinaryClient.georadius;
 
     void georadiusReadonly(string key, double longitude, double latitude, double radius, GeoUnit unit) {
-        georadiusReadonly(SafeEncoder.encode(key), longitude, latitude, radius, unit);
+        sendCommand(Command.GEORADIUS_RO, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
+            cast(string)to!string(unit));
     }
-    alias georadiusReadonly = BinaryClient.georadiusReadonly;
 
     void georadius(string key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        georadius(SafeEncoder.encode(key), longitude, latitude, radius, unit, param);
+        sendCommand(Command.GEORADIUS, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
+            toByteArray(radius), cast(string)to!string(unit)));
     }
 
     void georadiusReadonly(string key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        georadiusReadonly(SafeEncoder.encode(key), longitude, latitude, radius, unit, param);
+        sendCommand(Command.GEORADIUS_RO, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
+            toByteArray(radius), cast(string)to!string(unit)));
     }
 
     void georadiusByMember(string key, string member, double radius, GeoUnit unit) {
-        georadiusByMember(SafeEncoder.encode(key), SafeEncoder.encode(member), radius, unit);
+        sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), cast(string)to!string(unit));
     }
-    alias georadiusByMember = BinaryClient.georadiusByMember;
 
     void georadiusByMemberReadonly(string key, string member, double radius, GeoUnit unit) {
-        georadiusByMemberReadonly(SafeEncoder.encode(key), SafeEncoder.encode(member), radius, unit);
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), cast(string)to!string(unit));
     }
-    alias georadiusByMemberReadonly = BinaryClient.georadiusByMemberReadonly;
 
     void georadiusByMember(string key, string member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        georadiusByMember(SafeEncoder.encode(key), SafeEncoder.encode(member), radius, unit, param);
+        sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), cast(string)to!string(unit)));
     }
-    alias georadiusByMember = BinaryClient.georadiusByMember;
 
     void georadiusByMemberReadonly(string key, string member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        georadiusByMemberReadonly(SafeEncoder.encode(key), SafeEncoder.encode(member), radius, unit, param);
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), cast(string)to!string(unit)));
     }
-    alias georadiusByMemberReadonly = BinaryClient.georadiusByMemberReadonly;
 
     void moduleLoad(string path) {
-        moduleLoad(SafeEncoder.encode(path));
+        sendCommand(Command.MODULE, cast(string)to!string(Keyword.LOAD), path);
     }
-    alias moduleLoad = BinaryClient.moduleLoad;
+
+    void moduleList() {
+        sendCommand(Command.MODULE, cast(string)to!string(Keyword.LIST));
+    }
 
     void moduleUnload(string name) {
-        moduleUnload(SafeEncoder.encode(name));
+        sendCommand(Command.MODULE, cast(string)to!string(Keyword.UNLOAD), name);
     }
-    alias moduleUnload = BinaryClient.moduleUnload;
 
-    private HashMap!(byte[], Double) convertScoreMembersToBinary(Map!(string, Double) scoreMembers) {
-        HashMap!(byte[], Double) binaryScoreMembers = new HashMap!(byte[], Double)();
-        foreach(string key, Double value; scoreMembers) {
-            binaryScoreMembers.put(SafeEncoder.encode(key), value);
+    private ArrayList!(string) convertScoreMembersToByteArrays(Map!(string, Double) scoreMembers) {
+        ArrayList!(string) args = new ArrayList!(string)(scoreMembers.size() * 2);
+
+        foreach(string key, Double value ; scoreMembers) {
+            args.add(toByteArray(value.value()));
+            args.add(key);
         }
-        return binaryScoreMembers;
+
+        return args;
     }
 
-    private HashMap!(byte[], GeoCoordinate) convertMemberCoordinateMapToBinary(
+    private List!(string) convertGeoCoordinateMapToByteArrays(
             Map!(string, GeoCoordinate) memberCoordinateMap) {
-        HashMap!(byte[], GeoCoordinate) binaryMemberCoordinateMap = new HashMap!(byte[], GeoCoordinate)();
-        foreach(string key, GeoCoordinate value; memberCoordinateMap) {
-            binaryMemberCoordinateMap.put(SafeEncoder.encode(key), value);
+        List!(string) args = new ArrayList!(string)(memberCoordinateMap.size() * 3);
+
+        foreach(string key, GeoCoordinate coordinate ; memberCoordinateMap) {
+            args.add(toByteArray(coordinate.getLongitude()));
+            args.add(toByteArray(coordinate.getLatitude()));
+            args.add(key);
         }
-        return binaryMemberCoordinateMap;
+
+        return args;
     }
 
-    override
-    void bitfield(string key, string[] arguments...) {
-        bitfield(SafeEncoder.encode(key), SafeEncoder.encodeMany(arguments));
+    void bitfield(string key, string[] value...) {
+        sendCommand(Command.BITFIELD, joinParameters(key, value));
     }
-    alias bitfield = BinaryClient.bitfield;
 
-    override
     void hstrlen(string key, string field) {
-        hstrlen(SafeEncoder.encode(key), SafeEncoder.encode(field));
+        sendCommand(Command.HSTRLEN, key, field);
     }
-    alias hstrlen = BinaryClient.hstrlen;
-
-    override
-    void xadd(string key,  StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
-        Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(hash.size());
-        foreach(string k, string v; hash) {
-            bhash.put(SafeEncoder.encode(k), SafeEncoder.encode(v));
-        }
-        xadd(SafeEncoder.encode(key), SafeEncoder.encode(id is null ? "*" : id.toString()), bhash, maxLen, approximateLength);
-    }
-    alias xadd = BinaryClient.xadd;
     
-    override
-    void xlen(string key) {
-            xlen(SafeEncoder.encode(key));
-    }
-    alias xlen = BinaryClient.xlen;
-    
-    override
-    void xrange(string key, StreamEntryID start,  StreamEntryID end, long count) {
-            xrange(SafeEncoder.encode(key), SafeEncoder.encode(start is null ? "-" : start.toString()), 
-            SafeEncoder.encode(end is null ? "+" : end.toString()), count);
-    }
-    alias xrange = BinaryClient.xrange;
-    
-    override
-    void xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
-        xrevrange(SafeEncoder.encode(key), SafeEncoder.encode(end is null ? "+" : end.toString()), 
-            SafeEncoder.encode(start is null ? "-" : start.toString()), count);
-    }
-    alias xrevrange = BinaryClient.xrevrange;
-    
-    override
-    void xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
-        Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(cast(int)streams.length);
-        foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
-            bhash.put(SafeEncoder.encode(entry.getKey()), 
-            SafeEncoder.encode(entry.getValue() is null ? "0-0" : entry.getValue().toString()));
-        }
-        xread(count, block, bhash);
-    }
-    alias xread = BinaryClient.xread;
-    
-    override
-    void xack(string key, string group, StreamEntryID[] ids...) {
-        byte[][] bids = new byte[][ids.length];
-        for (int i=0 ; i< ids.length; ++i ) {
-            StreamEntryID id = ids[i];
-            bids[i] = SafeEncoder.encode(id is null ? "0-0" : id.toString()); 
-        }
-        xack(SafeEncoder.encode(key), SafeEncoder.encode(group), bids);
-    }
-    alias xack = BinaryClient.xack;
-    
-    override
-    void xgroupCreate(string key, string groupname, StreamEntryID id, bool makeStream) {
-        xgroupCreate(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(id is null ? "0-0" : id.toString()), makeStream);
-    }
-    alias xgroupCreate = BinaryClient.xgroupCreate;
-
-    override
-    void xgroupSetID(string key, string groupname, StreamEntryID id) {
-        xgroupSetID(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(id is null ? "0-0" : id.toString()));    
-    }
-    alias xgroupSetID = BinaryClient.xgroupSetID;
-
-    override
-    void xgroupDestroy(string key, string groupname) {
-        xgroupDestroy(SafeEncoder.encode(key), SafeEncoder.encode(groupname));    
-    }
-    alias xgroupDestroy = BinaryClient.xgroupDestroy;
-
-    override
-    void xgroupDelConsumer(string key, string groupname, string consumerName) {
-        xgroupDelConsumer(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(consumerName));    
-    }
-    alias xgroupDelConsumer = BinaryClient.xgroupDelConsumer;
-
-    override
-    void xdel(string key, StreamEntryID[] ids...) {
-        byte[][] bids = new byte[][ids.length];
-        for (int i=0 ; i< ids.length; ++i ) {
-            StreamEntryID id = ids[i];
-            bids[i] = SafeEncoder.encode(id is null ? "0-0" : id.toString()); 
-        }
-        xdel(SafeEncoder.encode(key), bids);    
-    }
-    alias xdel = BinaryClient.xdel;
-
-    override
-    void xtrim(string key, long maxLen, bool approximateLength) {
-        xtrim(SafeEncoder.encode(key), maxLen, approximateLength);    
-    }
-    alias xtrim = BinaryClient.xtrim;
-
-    override
-    void xreadGroup(string groupname, string consumer, int count, long block, 
-                                    bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
-        Map!(byte[], byte[]) bhash = new HashMap!(byte[], byte[])(cast(int)streams.length);
-        foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
-            bhash.put(SafeEncoder.encode(entry.getKey()), SafeEncoder.encode(entry.getValue() is null ? ">" : entry.getValue().toString()));
-        }
-        xreadGroup(SafeEncoder.encode(groupname), SafeEncoder.encode(consumer), count, block, noAck, bhash);    
-    }
-    alias xreadGroup = BinaryClient.xreadGroup;
-
-    override
-    void xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername) {
-        xpending(SafeEncoder.encode(key), SafeEncoder.encode(groupname), SafeEncoder.encode(start is null ? "-" : start.toString()),
-                SafeEncoder.encode(end is null ? "+" : end.toString()), count, consumername is null? null : SafeEncoder.encode(consumername));    
-    }
-    alias xpending = BinaryClient.xpending;
-
-    override
-    void xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime, int retries,
-            bool force, StreamEntryID[] ids...) {
+    void xadd(string key, string id, Map!(string, string) hash, long maxLen, bool approximateLength) {
+            int maxLexArgs = 0;
+            if(maxLen < long.max) { // optional arguments
+                if(approximateLength) {
+                    maxLexArgs = 3; // e.g. MAXLEN ~ 1000 
+                } else {
+                    maxLexArgs = 2; // e.g. MAXLEN 1000
+                }
+            }
         
-        byte[][] bids = new byte[][ids.length];
-        for (int i = 0; i < ids.length; i++) {
-            bids[i] = SafeEncoder.encode(ids[i].toString());
+        string[] params = new string[2 + maxLexArgs + hash.size() * 2];
+        int index = 0;
+        params[index++] = key;
+        if(maxLen < long.max) {
+            params[index++] = cast(string)to!string(Keyword.MAXLEN);
+            if(approximateLength) {
+                params[index++] = Protocol.BYTES_TILDE;
+            }
+            params[index++] = toByteArray(maxLen);
         }
-        xclaim(SafeEncoder.encode(key), SafeEncoder.encode(group), SafeEncoder.encode(consumername), 
-            minIdleTime, newIdleTime, retries, force, bids);    
+        
+        params[index++] = id;
+        foreach(string key, string value ; hash) {
+            params[index++] = key;
+            params[index++] = value;
+        }
+        sendCommand(Command.XADD, params);
     }
-    alias xclaim = BinaryClient.xclaim;
+    
+    void xlen(string key) {
+         sendCommand(Command.XLEN, key);
+    }
+    
+    void xrange(string key, string start, string end, long count) { 
+         sendCommand(Command.XRANGE, key, start, end, cast(string)to!string(Keyword.COUNT), toByteArray(count));
+    }
+    
+    void xrevrange(string key, string end, string start, int count) {
+        sendCommand(Command.XREVRANGE, key, end, start, cast(string)to!string(Keyword.COUNT), toByteArray(count));
+    }
 
- 
+    void xread(int count, long block, Map!(string, string) streams) {
+        string[] params = new string[3 + streams.size() * 2 + (block > 0 ? 2 : 0)];
+
+        int streamsIndex = 0;
+        params[streamsIndex++] = cast(string)to!string(Keyword.COUNT);
+        params[streamsIndex++] = toByteArray(count);
+        if(block > 0) {
+            params[streamsIndex++] = cast(string)to!string(Keyword.BLOCK);
+            params[streamsIndex++] = toByteArray(block);
+        }
+        
+        params[streamsIndex++] = cast(string)to!string(Keyword.STREAMS);
+        int idsIndex = streamsIndex + streams.size();
+
+        foreach(string key, string value; streams) {
+            params[streamsIndex++] = key;
+            params[idsIndex++] = value;
+        }
+        
+        sendCommand(Command.XREAD, params);
+ }
+    
+    void xack(string key, string group, string[] ids...) {
+        string[] params = new string[2 + ids.length];
+        int index = 0;
+        params[index++] = key;
+        params[index++] = group;
+        foreach(string id ; ids) {
+            params[index++] = id;
+        }
+        sendCommand(Command.XACK, params);
+    }
+     
+    void xgroupCreate(string key, string groupname, string id, bool makeStream) {
+        if(makeStream) {
+            sendCommand(Command.XGROUP, cast(string)to!string(Keyword.CREATE), key, groupname, id, cast(string)to!string(Keyword.MKSTREAM));  
+        } else {
+            sendCommand(Command.XGROUP, cast(string)to!string(Keyword.CREATE), key, groupname, id);  
+        }
+    }
+
+    void xgroupSetID(string key, string groupname, string id) {
+        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.SETID), key, groupname, id);    
+    }
+
+    void xgroupDestroy(string key, string groupname) {
+        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.DESTROY), key, groupname);    
+    }
+
+    void xgroupDelConsumer(string key, string groupname, string consumerName) {
+        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.DELCONSUMER), key, groupname, consumerName);    
+    }
+     
+    void xdel(string key, string[] ids...) {
+        string[] params = new string[1 + ids.length];
+        int index = 0;
+        params[index++] = key;
+        foreach(string id ; ids) {
+            params[index++] = id;
+        }
+        sendCommand(Command.XDEL, params);
+    }
+    
+    void xtrim(string key, long maxLen, bool approximateLength) {
+        if(approximateLength) {
+            sendCommand(Command.XTRIM, key, cast(string)to!string(Keyword.MAXLEN), Protocol.BYTES_TILDE ,toByteArray(maxLen));
+        } else {
+            sendCommand(Command.XTRIM, key, cast(string)to!string(Keyword.MAXLEN), toByteArray(maxLen));
+        }
+    }
+    
+    void xreadGroup(string groupname, string consumer, int count, long block, bool noAck, Map!(string, string) streams) {
+        
+        int optional = 0;
+        if(count>0) {
+            optional += 2;
+        }
+        if(block > 0) {
+            optional += 2;
+        }
+        if(noAck) {
+            optional += 1;
+        }
+        
+        
+        string[] params = new string[4 + optional + streams.size() * 2];
+
+        int streamsIndex = 0;
+        params[streamsIndex++] = cast(string)to!string(Keyword.GROUP);
+        params[streamsIndex++] = groupname;
+        params[streamsIndex++] = consumer;
+        if(count>0) {
+            params[streamsIndex++] = cast(string)to!string(Keyword.COUNT);
+            params[streamsIndex++] = toByteArray(count);
+        }
+        if(block > 0) {
+            params[streamsIndex++] = cast(string)to!string(Keyword.BLOCK);
+            params[streamsIndex++] = toByteArray(block);
+        }
+        if(noAck) {
+            params[streamsIndex++] = cast(string)to!string(Keyword.NOACK);
+        }
+        params[streamsIndex++] = cast(string)to!string(Keyword.STREAMS);
+        
+        int idsIndex = streamsIndex + streams.size();
+        foreach(string key, string value ; streams) {
+            params[streamsIndex++] = key;
+            params[idsIndex++] = value;
+        }
+        
+        sendCommand(Command.XREADGROUP, params);
+    }
+
+    
+    void xpending(string key, string groupname, string start, 
+                                string end, int count, string consumername) {
+        if(consumername is null) {
+            sendCommand(Command.XPENDING, key, groupname, start, end, toByteArray(count));
+        } else {
+            sendCommand(Command.XPENDING, key, groupname, start, end, toByteArray(count), consumername);
+        }
+    }
+
+    void xclaim(string key, string groupname, string consumername, long minIdleTime, 
+                            long newIdleTime, int retries, bool force, string[] ids) {
+            
+            ArrayList!(string) arguments = new ArrayList!(string)(cast(int)(10 + ids.length));
+
+            arguments.add(key);
+            arguments.add(groupname);
+            arguments.add(consumername);
+            arguments.add(toByteArray(minIdleTime));
+            
+            foreach(string id ; ids) {
+                arguments.add(id);  
+            }
+            if(newIdleTime > 0) {
+                arguments.add(cast(string)to!string(Keyword.IDLE));
+                arguments.add(toByteArray(newIdleTime));
+            }
+            if(retries > 0) {
+                arguments.add(cast(string)to!string(Keyword.RETRYCOUNT));
+                arguments.add(toByteArray(retries));        
+            }
+            if(force) {
+                arguments.add(cast(string)to!string(Keyword.FORCE));        
+            }
+            sendCommand(Command.XCLAIM, arguments.toArray());
+    }
+
 }

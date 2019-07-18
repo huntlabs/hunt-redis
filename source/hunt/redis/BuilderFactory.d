@@ -17,7 +17,7 @@ import hunt.Exceptions;
 import hunt.Integer;
 import hunt.Long;
 
-import hunt.redis.util.RedisByteHashMap;
+// import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
 
 import std.conv;

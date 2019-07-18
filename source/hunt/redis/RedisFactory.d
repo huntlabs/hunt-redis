@@ -4,7 +4,7 @@ import hunt.pool.PooledObject;
 import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.DefaultPooledObject;
 
-import hunt.redis.BinaryRedis;
+import hunt.redis.Redis;
 import hunt.redis.Exceptions;
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;

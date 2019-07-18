@@ -1,7 +1,7 @@
 module hunt.redis.ShardedRedisPool;
 
-import hunt.redis.BinaryRedis;
-import hunt.redis.BinaryShardedRedis;
+import hunt.redis.Redis;
+import hunt.redis.ShardedRedis;
 import hunt.redis.RedisShardInfo;
 import hunt.redis.ShardedRedis;
 import hunt.redis.ShardedRedisPool;
