@@ -3,14 +3,13 @@ module hunt.redis.commands.SentinelCommands;
 import hunt.collection.List;
 import hunt.collection.Map;
 
-import hunt.Long;
 
 interface SentinelCommands {
   List!(Map!(string, string)) sentinelMasters();
 
   List!(string) sentinelGetMasterAddrByName(string masterName);
 
-  Long sentinelReset(string pattern);
+  long sentinelReset(string pattern);
 
   List!(Map!(string, string)) sentinelSlaves(string masterName);
 

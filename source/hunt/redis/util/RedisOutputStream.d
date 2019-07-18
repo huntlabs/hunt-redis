@@ -75,6 +75,7 @@ class RedisOutputStream : FilterOutputStream {
         buf[count++] = b;
     }
 
+    alias write = FilterOutputStream.write;
     alias write = OutputStream.write;
 
     override void write(byte[] b) {

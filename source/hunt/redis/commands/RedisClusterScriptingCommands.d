@@ -1,7 +1,6 @@
 module hunt.redis.commands.RedisClusterScriptingCommands;
 
 import hunt.collection.List;
-import hunt.Boolean;
 
 
 interface RedisClusterScriptingCommands {
@@ -32,14 +31,14 @@ interface RedisClusterScriptingCommands {
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  Boolean scriptExists(string sha1, string sampleKey);
+  bool scriptExists(string sha1, string sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @param sha1
    * @return 
    */
-  List!(Boolean) scriptExists(string sampleKey, string[] sha1...);
+  bool[] scriptExists(string sampleKey, string[] sha1...);
 
   /**
    * @param script

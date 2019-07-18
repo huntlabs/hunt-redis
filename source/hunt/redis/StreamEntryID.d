@@ -107,6 +107,8 @@ class StreamEntryID : Comparable!(StreamEntryID) { // , Serializable
         int timeComapre = compare(this.time, other.time);
         return timeComapre != 0 ? timeComapre : compare(this.sequence, other.sequence);
     }
+    
+    alias opCmp = Object.opCmp;
 
     long getTime() {
         return time;

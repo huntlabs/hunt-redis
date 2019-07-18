@@ -2,13 +2,15 @@ module hunt.redis.Redis;
 
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
-import hunt.redis.Client;
 import hunt.redis.BuilderFactory;
+import hunt.redis.Client;
+import hunt.redis.ClusterReset;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoRadiusResponse;
 import hunt.redis.GeoUnit;
 import hunt.redis.HostAndPort;
 import hunt.redis.ListPosition;
+import hunt.redis.Module;
 import hunt.redis.Pipeline;
 import hunt.redis.Protocol;
 import hunt.redis.RedisMonitor;
@@ -40,7 +42,7 @@ import hunt.util.Common;
 
 import hunt.Byte;
 import hunt.Double;
-import hunt.Long;
+import hunt.String;
 
 import std.array;
 import std.conv;
@@ -804,11 +806,12 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param increment the value to increment by
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    Double incrByFloat(string key, double increment) {
+    double incrByFloat(string key, double increment) {
         checkIsInMultiOrPipeline();
         client.incrByFloat(key, increment);
         string dval = client.getBulkReply();
-        return (dval !is null ? new Double(dval) : null);
+        Double d = BuilderFactory.DOUBLE.build(new String(dval));
+        return d.value();
     }
 
     /**
@@ -999,11 +1002,12 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Double precision floating point reply The new value at field after the increment
      *         operation.
      */
-    Double hincrByFloat(string key, string field, double value) {
+    double hincrByFloat(string key, string field, double value) {
         checkIsInMultiOrPipeline();
         client.hincrByFloat(key, field, value);
         string dval = client.getBulkReply();
-        return (dval !is null ? new Double(dval) : null);
+        Double d = BuilderFactory.DOUBLE.build(new String(dval));
+        return d.value();
     }
 
     /**
@@ -1629,13 +1633,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    long zadd(string key, Map!(string, Double) scoreMembers) {
+    long zadd(string key, Map!(string, double) scoreMembers) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers);
         return client.getIntegerReply();
     }
 
-    long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+    long zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers, params);
         return client.getIntegerReply();
@@ -1682,16 +1686,18 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param member
      * @return The new score
      */
-    Double zincrby(string key, double increment, string member) {
+    double zincrby(string key, double increment, string member) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        Double d = BuilderFactory.DOUBLE.build(client.getOne());
+        return d.value();
     }
 
-    Double zincrby(string key, double increment, string member, ZIncrByParams params) {
+    double zincrby(string key, double increment, string member, ZIncrByParams params) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member, params);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        Double d = BuilderFactory.DOUBLE.build(client.getOne());
+        return d.value();
     }
 
     /**
@@ -1780,11 +1786,12 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param member
      * @return the score
      */
-    Double zscore(string key, string member) {
+    double zscore(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zscore(key, member);
         string score = client.getBulkReply();
-        return (score !is null ? new Double(score) : null);
+        Double d = BuilderFactory.DOUBLE.build(new String(score));
+        return d.value();
     }
 
     Transaction multi() {
@@ -1837,10 +1844,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string unwatch() {
         client.unwatch();
         return client.getStatusCodeReply();
-    }
-
-    void close() {
-        client.close();
     }
 
     /**
@@ -2008,6 +2011,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return blpop(getArgsAddTimeout(timeout, keys));
     }
 
+    override
+    List!(string) blpop(int timeout, string key) {
+        return blpop(key, to!string(timeout));
+    }
+
     private string[] getArgsAddTimeout(int timeout, string[] keys) {
         int size = cast(int)keys.length;
         string[] args = new string[size + 1];
@@ -2118,6 +2126,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) brpop(int timeout, string[] keys...) {
         return brpop(getArgsAddTimeout(timeout, keys));
     }
+    
+    override
+    List!(string) brpop(int timeout, string key) {
+        return brpop(key, to!string(timeout));
+    }    
 
     List!(string) blpop(string[] args...) {
         checkIsInMultiOrPipeline();
@@ -2431,8 +2444,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         while (!iterator.empty()) {
             string first = iterator.front(); iterator.popFront();
             string second = iterator.front(); iterator.popFront();
-            // Double d = BuilderFactory.DOUBLE.build(new Bytes(second));
-            set.add(new Tuple(first, second.to!double()));
+            Double d = BuilderFactory.DOUBLE.build(new String(second));
+
+            set.add(new Tuple(first, d.value()));
         }
         return set;
     }
@@ -3234,12 +3248,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     bool[] scriptExists(string[] sha1...) {
       client.scriptExists(sha1);
-      List!(Long) result = client.getIntegerMultiBulkReply();
+      List!(long) result = client.getIntegerMultiBulkReply();
       Array!bool exists;
-    //   List!(bool) exists = new ArrayList!(bool)();
 
-      foreach(Long r ; result)
-        exists.insertBack(r.value() == 1);
+      foreach(long r ; result)
+        exists.insertBack(r == 1);
 
       return exists.array;
     }
@@ -3308,6 +3321,167 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.bitop(op, destKey, srcKeys);
         return client.getIntegerReply();
     }
+
+
+    /**
+     * <pre>
+     * redis 127.0.0.1:26381&gt; sentinel masters
+     * 1)  1) "name"
+     *     2) "mymaster"
+     *     3) "ip"
+     *     4) "127.0.0.1"
+     *     5) "port"
+     *     6) "6379"
+     *     7) "runid"
+     *     8) "93d4d4e6e9c06d0eea36e27f31924ac26576081d"
+     *     9) "flags"
+     *    10) "master"
+     *    11) "pending-commands"
+     *    12) "0"
+     *    13) "last-ok-ping-reply"
+     *    14) "423"
+     *    15) "last-ping-reply"
+     *    16) "423"
+     *    17) "info-refresh"
+     *    18) "6107"
+     *    19) "num-slaves"
+     *    20) "1"
+     *    21) "num-other-sentinels"
+     *    22) "2"
+     *    23) "quorum"
+     *    24) "2"
+     * 
+     * </pre>
+     * @return
+     */
+    override
+    List!(Map!(string, string)) sentinelMasters() {
+        client.sentinel(Protocol.SENTINEL_MASTERS);
+        List!(Object) reply = client.getObjectMultiBulkReply();
+
+        List!(Map!(string, string)) masters = new ArrayList!(Map!(string, string))();
+        // foreach(Object obj ; reply) {
+        //   masters.add(BuilderFactory.STRING_MAP.build((List) obj));
+        // }
+        implementationMissing(false);
+        return masters;
+    }
+
+    /**
+     * <pre>
+     * redis 127.0.0.1:26381&gt; sentinel get-master-addr-by-name mymaster
+     * 1) "127.0.0.1"
+     * 2) "6379"
+     * </pre>
+     * @param masterName
+     * @return two elements list of strings : host and port.
+     */
+    override
+    List!(string) sentinelGetMasterAddrByName(string masterName) {
+        client.sentinel(Protocol.SENTINEL_GET_MASTER_ADDR_BY_NAME, masterName);
+        List!(Object) reply = client.getObjectMultiBulkReply();
+        return BuilderFactory.STRING_LIST.build(cast(Object)reply);
+    }
+
+    /**
+     * <pre>
+     * redis 127.0.0.1:26381&gt; sentinel reset mymaster
+     * (integer) 1
+     * </pre>
+     * @param pattern
+     * @return
+     */
+    override
+    long sentinelReset(string pattern) {
+        client.sentinel(Protocol.SENTINEL_RESET, pattern);
+        return client.getIntegerReply();
+    }
+
+    /**
+     * <pre>
+     * redis 127.0.0.1:26381&gt; sentinel slaves mymaster
+     * 1)  1) "name"
+     *     2) "127.0.0.1:6380"
+     *     3) "ip"
+     *     4) "127.0.0.1"
+     *     5) "port"
+     *     6) "6380"
+     *     7) "runid"
+     *     8) "d7f6c0ca7572df9d2f33713df0dbf8c72da7c039"
+     *     9) "flags"
+     *    10) "slave"
+     *    11) "pending-commands"
+     *    12) "0"
+     *    13) "last-ok-ping-reply"
+     *    14) "47"
+     *    15) "last-ping-reply"
+     *    16) "47"
+     *    17) "info-refresh"
+     *    18) "657"
+     *    19) "master-link-down-time"
+     *    20) "0"
+     *    21) "master-link-status"
+     *    22) "ok"
+     *    23) "master-host"
+     *    24) "localhost"
+     *    25) "master-port"
+     *    26) "6379"
+     *    27) "slave-priority"
+     *    28) "100"
+     * </pre>
+     * @param masterName
+     * @return
+     */
+    override
+    
+    List!(Map!(string, string)) sentinelSlaves(string masterName) {
+        client.sentinel(Protocol.SENTINEL_SLAVES, masterName);
+        List!(Object) reply = client.getObjectMultiBulkReply();
+
+        List!(Map!(string, string)) slaves = new ArrayList!(Map!(string, string))();
+        // foreach(Object obj ; reply) {
+        //   slaves.add(BuilderFactory.STRING_MAP.build((List) obj));
+        // }
+        implementationMissing(false);
+        return slaves;
+    }
+
+    override
+    string sentinelFailover(string masterName) {
+        client.sentinel(Protocol.SENTINEL_FAILOVER, masterName);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string sentinelMonitor(string masterName, string ip, int port, int quorum) {
+        client.sentinel(Protocol.SENTINEL_MONITOR, masterName, ip, to!string(port),
+            to!string(quorum));
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string sentinelRemove(string masterName) {
+        client.sentinel(Protocol.SENTINEL_REMOVE, masterName);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string sentinelSet(string masterName, Map!(string, string) parameterMap) {
+        int index = 0;
+        int paramsLength = parameterMap.size() * 2 + 2;
+        string[] params = new string[paramsLength];
+
+        params[index++] = Protocol.SENTINEL_SET;
+        params[index++] = masterName;
+        foreach(string key, string value ; parameterMap) {
+            params[index++] = key;
+            params[index++] = value;
+        }
+
+        client.sentinel(params);
+        return client.getStatusCodeReply();
+    }
+
 
     string dump(string key) {
         checkIsInMultiOrPipeline();
@@ -3561,6 +3735,192 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return null;
     }
 
+    override
+    string clusterNodes() {
+        checkIsInMultiOrPipeline();
+        client.clusterNodes();
+        return client.getBulkReply();
+    }
+
+    override
+    string readonly() {
+        client.readonly();
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterMeet(string ip, int port) {
+        checkIsInMultiOrPipeline();
+        client.clusterMeet(ip, port);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterReset(ClusterReset resetType) {
+        checkIsInMultiOrPipeline();
+        client.clusterReset(resetType);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterAddSlots(int[] slots...) {
+        checkIsInMultiOrPipeline();
+        client.clusterAddSlots(slots);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterDelSlots(int[] slots...) {
+        checkIsInMultiOrPipeline();
+        client.clusterDelSlots(slots);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterInfo() {
+        checkIsInMultiOrPipeline();
+        client.clusterInfo();
+        return client.getStatusCodeReply();
+    }
+
+    override
+    List!(string) clusterGetKeysInSlot(int slot, int count) {
+        checkIsInMultiOrPipeline();
+        client.clusterGetKeysInSlot(slot, count);
+        return client.getMultiBulkReply();
+    }
+
+    override
+    string clusterSetSlotNode(int slot, string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterSetSlotNode(slot, nodeId);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterSetSlotMigrating(int slot, string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterSetSlotMigrating(slot, nodeId);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterSetSlotImporting(int slot, string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterSetSlotImporting(slot, nodeId);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterSetSlotStable(int slot) {
+        checkIsInMultiOrPipeline();
+        client.clusterSetSlotStable(slot);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterForget(string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterForget(nodeId);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterFlushSlots() {
+        checkIsInMultiOrPipeline();
+        client.clusterFlushSlots();
+        return client.getStatusCodeReply();
+    }
+
+    override
+    long clusterKeySlot(string key) {
+        checkIsInMultiOrPipeline();
+        client.clusterKeySlot(key);
+        return client.getIntegerReply();
+    }
+
+    override
+    long clusterCountKeysInSlot(int slot) {
+        checkIsInMultiOrPipeline();
+        client.clusterCountKeysInSlot(slot);
+        return client.getIntegerReply();
+    }
+
+    override
+    string clusterSaveConfig() {
+        checkIsInMultiOrPipeline();
+        client.clusterSaveConfig();
+        return client.getStatusCodeReply();
+    }
+
+    override
+    string clusterReplicate(string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterReplicate(nodeId);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    List!(string) clusterSlaves(string nodeId) {
+        checkIsInMultiOrPipeline();
+        client.clusterSlaves(nodeId);
+        return client.getMultiBulkReply();
+    }
+
+    override
+    string clusterFailover() {
+        checkIsInMultiOrPipeline();
+        client.clusterFailover();
+        return client.getStatusCodeReply();
+    }
+
+    override
+    List!(Object) clusterSlots() {
+        checkIsInMultiOrPipeline();
+        client.clusterSlots();
+        return client.getObjectMultiBulkReply();
+    }
+
+    string asking() {
+        checkIsInMultiOrPipeline();
+        client.asking();
+        return client.getStatusCodeReply();
+    }
+
+    List!(string) pubsubChannels(string pattern) {
+        checkIsInMultiOrPipeline();
+        client.pubsubChannels(pattern);
+        return client.getMultiBulkReply();
+    }
+
+    long pubsubNumPat() {
+        checkIsInMultiOrPipeline();
+        client.pubsubNumPat();
+        return client.getIntegerReply();
+    }
+
+    Map!(string, string) pubsubNumSub(string[] channels...) {
+        checkIsInMultiOrPipeline();
+        client.pubsubNumSub(channels);
+// FIXME: Needing refactor or cleanup -@zxp at 7/18/2019, 6:41:06 PM        
+// 
+        return BuilderFactory.PUBSUB_NUMSUB_MAP.build(cast(Object)client.getObjectMultiBulkReply());
+    }
+
+    void close() {
+        if (dataSource !is null) {
+            RedisPoolAbstract pool = this.dataSource;
+            this.dataSource = null;
+            if (client.isBroken()) {
+                pool.returnBrokenResource(this);
+            } else {
+                pool.returnResource(this);
+            }
+        } else {
+            client.close();
+        }
+    }
+
     long geoadd(string key, double longitude, double latitude, string member) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, longitude, latitude, member);
@@ -3573,18 +3933,22 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    Double geodist(string key, string member1, string member2) {
+    double geodist(string key, string member1, string member2) {
         checkIsInMultiOrPipeline();
         client.geodist(key, member1, member2);
         string dval = client.getBulkReply();
-        return (dval !is null ? new Double(dval) : null);
+        // Double d = BuilderFactory.DOUBLE.build(new String(dval));
+        // return d.value();
+        return to!double(dval);
     }
 
-    Double geodist(string key, string member1, string member2, GeoUnit unit) {
+    double geodist(string key, string member1, string member2, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.geodist(key, member1, member2, unit);
         string dval = client.getBulkReply();
-        return (dval !is null ? new Double(dval) : null);
+        // Double d = BuilderFactory.DOUBLE.build(new String(dval));
+        // return d.value();
+        return to!double(dval);
     }
 
     List!(string) geohash(string key, string[] members...) {
@@ -3655,8 +4019,25 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
+    override
+    string moduleLoad(string path) {
+        client.moduleLoad(path);
+        return client.getStatusCodeReply();
+    }
 
-    List!(Long) bitfield(string key, string[] arguments...) {
+    override
+    string moduleUnload(string name) {
+        client.moduleUnload(name);
+        return client.getStatusCodeReply();
+    }
+
+    override
+    List!(Module) moduleList() {
+        client.moduleList();
+        return BuilderFactory.MODULE_LIST.build(cast(Object)client.getObjectMultiBulkReply());
+    }
+
+    List!(long) bitfield(string key, string[] arguments...) {
         checkIsInMultiOrPipeline();
         client.bitfield(key, arguments);
         return client.getIntegerMultiBulkReply();
@@ -3668,24 +4049,81 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    List!(string) xread(int count, long block, Map!(string, string) streams) {
+    // List!(string) xread(int count, long block, Map!(string, string) streams) {
+    //     checkIsInMultiOrPipeline();
+    //     client.xread(count, block, streams);
+    //     return client.getMultiBulkReply();
+    // }
+
+    List!(MapEntry!(string, List!(StreamEntry))) xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
         checkIsInMultiOrPipeline();
         client.xread(count, block, streams);
-        return client.getMultiBulkReply();
-    }
+        client.setTimeoutInfinite();
+        
+        try {
+            List!(Object) streamsEntries = client.getObjectMultiBulkReply();
+            if(streamsEntries is null) {
+                return new ArrayList!(MapEntry!(string, List!(StreamEntry)))();
+            }
+            
+            List!(MapEntry!(string, List!(StreamEntry))) result = 
+                new ArrayList!(MapEntry!(string, List!(StreamEntry)))(streamsEntries.size());
 
-    List!(string) xreadGroup(string groupname, string consumer, int count, long block, bool noAck,
-            Map!(string, string) streams) {
+            // foreach(Object streamObj ; streamsEntries) {
+            //   List!(Object) stream = cast(List!(Object))streamObj;
+            //   string streamId = SafeEncoder.encode((byte[])stream.get(0));
+            //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+            //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+            // }
+            implementationMissing(false);      
+            return result;
+        } finally {
+            client.rollbackTimeout();
+        }
+    }    
+
+    // List!(string) xreadGroup(string groupname, string consumer, int count, long block, bool noAck,
+    //         Map!(string, string) streams) {
+    //     checkIsInMultiOrPipeline();
+    //     client.xreadGroup(groupname, consumer, count, block, noAck, streams);
+    //     return client.getMultiBulkReply();  
+    // }
+
+
+    List!(MapEntry!(string, List!(StreamEntry))) xreadGroup(string groupname, string consumer, int count, long block,
+            bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
         checkIsInMultiOrPipeline();
         client.xreadGroup(groupname, consumer, count, block, noAck, streams);
-        return client.getMultiBulkReply();  
+
+        List!(Object) streamsEntries = client.getObjectMultiBulkReply();
+        if(streamsEntries is null) {
+            return null;
+        }
+        
+        List!(MapEntry!(string, List!(StreamEntry))) result = 
+            new ArrayList!(MapEntry!(string, List!(StreamEntry)))(streamsEntries.size());
+
+        // foreach(Object streamObj ; streamsEntries) {
+        //   List!(Object) stream = (List!(Object))streamObj;
+        //   string streamId = SafeEncoder.encode((byte[])stream.get(0));
+        //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+        //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+        // }
+        implementationMissing(false);
+        return result;
     }
 
-    string xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
+
+    StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash) {
+        return xadd(key, id, hash, long.max, false);
+    }
+    
+    StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xadd(key, id, hash, maxLen, approximateLength);
-        return client.getBulkReply();  
-    }
+        string result = client.getBulkReply();
+        return new StreamEntryID(result);
+    }    
 
     long xlen(string key) {
         checkIsInMultiOrPipeline();
@@ -3693,16 +4131,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();  
     }
 
-    List!(string) xrange(string key, StreamEntryID start, StreamEntryID end, long count) {
+    List!(StreamEntry) xrange(string key, StreamEntryID start, StreamEntryID end, int count) {
         checkIsInMultiOrPipeline();
         client.xrange(key, start, end, count);
-        return client.getMultiBulkReply();  
-    }
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
+    }    
 
-    List!(string) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
+    List!(StreamEntry) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
         checkIsInMultiOrPipeline();
         client.xrevrange(key, end, start, count);
-        return client.getMultiBulkReply();  
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
     long xack(string key, string group, StreamEntryID[] ids...) {

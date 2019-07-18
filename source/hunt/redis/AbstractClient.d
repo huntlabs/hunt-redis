@@ -331,9 +331,16 @@ class AbstractClient : Closeable {
     }
 
     
-    List!(Long) getIntegerMultiBulkReply() {
+    List!(long) getIntegerMultiBulkReply() {
         flush();
-        return cast(List!(Long)) readProtocolWithCheckingBroken();
+        List!(Long) items = cast(List!(Long)) readProtocolWithCheckingBroken();
+        
+        List!(long) r = new ArrayList!long();
+        foreach(Long v; items) {
+            r.add(v.value());
+        }
+
+        return r;
     }
 
     Object getOne() {

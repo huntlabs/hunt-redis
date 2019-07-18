@@ -12,14 +12,14 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import hunt.Long;
+// import hunt.Long;
 
 interface MultiKeyCommands {
-  Long del(string[] keys...);
+  long del(string[] keys...);
 
-  Long unlink(string[] keys...);
+  long unlink(string[] keys...);
 
-  Long exists(string[] keys...);
+  long exists(string[] keys...);
 
   List!(string) blpop(int timeout, string[] keys...);
 
@@ -63,47 +63,47 @@ interface MultiKeyCommands {
 
   string mset(string[] keysvalues...);
 
-  Long msetnx(string[] keysvalues...);
+  long msetnx(string[] keysvalues...);
 
   string rename(string oldkey, string newkey);
 
-  Long renamenx(string oldkey, string newkey);
+  long renamenx(string oldkey, string newkey);
 
   string rpoplpush(string srckey, string dstkey);
 
   Set!(string) sdiff(string[] keys...);
 
-  Long sdiffstore(string dstkey, string[] keys...);
+  long sdiffstore(string dstkey, string[] keys...);
 
   Set!(string) sinter(string[] keys...);
 
-  Long sinterstore(string dstkey, string[] keys...);
+  long sinterstore(string dstkey, string[] keys...);
 
-  Long smove(string srckey, string dstkey, string member);
+  long smove(string srckey, string dstkey, string member);
 
-  Long sort(string key, SortingParams sortingParameters, string dstkey);
+  long sort(string key, SortingParams sortingParameters, string dstkey);
 
-  Long sort(string key, string dstkey);
+  long sort(string key, string dstkey);
 
   Set!(string) sunion(string[] keys...);
 
-  Long sunionstore(string dstkey, string[] keys...);
+  long sunionstore(string dstkey, string[] keys...);
 
   string watch(string[] keys...);
 
   string unwatch();
 
-  Long zinterstore(string dstkey, string[] sets...);
+  long zinterstore(string dstkey, string[] sets...);
 
-  Long zinterstore(string dstkey, ZParams params, string[] sets...);
+  long zinterstore(string dstkey, ZParams params, string[] sets...);
 
-  Long zunionstore(string dstkey, string[] sets...);
+  long zunionstore(string dstkey, string[] sets...);
 
-  Long zunionstore(string dstkey, ZParams params, string[] sets...);
+  long zunionstore(string dstkey, ZParams params, string[] sets...);
 
   string brpoplpush(string source, string destination, int timeout);
 
-  Long publish(string channel, string message);
+  long publish(string channel, string message);
 
   void subscribe(RedisPubSub jedisPubSub, string[] channels...);
 
@@ -111,7 +111,7 @@ interface MultiKeyCommands {
 
   string randomKey();
 
-  Long bitop(BitOP op, string destKey, string[] srcKeys...);
+  long bitop(BitOP op, string destKey, string[] srcKeys...);
 
   /**
    * @see #scan(string, ScanParams)
@@ -168,7 +168,7 @@ interface MultiKeyCommands {
 
   long pfcount(string[] keys...);
 
-  Long touch(string[] keys...);
+  long touch(string[] keys...);
   
   /**
    * XREAD [COUNT count] [BLOCK milliseconds] STREAMS key [key ...] ID [ID ...]

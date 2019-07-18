@@ -167,9 +167,9 @@ interface RedisPipeline {
 
   Response!(Long) zadd(string key, double score, string member, ZAddParams params);
 
-  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers);
+  Response!(Long) zadd(string key, Map!(string, double) scoreMembers);
 
-  Response!(Long) zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params);
+  Response!(Long) zadd(string key, Map!(string, double) scoreMembers, ZAddParams params);
 
   Response!(Long) zcard(string key);
 
@@ -262,9 +262,9 @@ interface RedisPipeline {
 
   Response!(string) dump(string key);
 
-  Response!(string) restore(string key, int ttl, byte[] serializedValue);
+  Response!(string) restore(string key, int ttl, string serializedValue);
 
-  Response!(string) restoreReplace(string key, int ttl, byte[] serializedValue);
+  Response!(string) restoreReplace(string key, int ttl, string serializedValue);
 
   Response!(string) migrate(string host, int port, string key, int destinationDB, int timeout);
 

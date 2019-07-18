@@ -5,8 +5,6 @@ module hunt.redis.commands.RedisCommands;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import hunt.Double;
-import hunt.Long;
 
 import hunt.redis.BitPosParams;
 import hunt.redis.StreamEntryID;
@@ -39,29 +37,29 @@ interface RedisCommands {
 
   bool exists(string key);
 
-  Long persist(string key);
+  long persist(string key);
 
   string type(string key);
 
-  byte[] dump(string key);
+  string dump(string key);
 
-  string restore(string key, int ttl, byte[] serializedValue);
+  string restore(string key, int ttl, string serializedValue);
 
-  string restoreReplace(string key, int ttl, byte[] serializedValue);
+  string restoreReplace(string key, int ttl, string serializedValue);
 
-  Long expire(string key, int seconds);
+  long expire(string key, int seconds);
 
-  Long pexpire(string key, long milliseconds);
+  long pexpire(string key, long milliseconds);
 
-  Long expireAt(string key, long unixTime);
+  long expireAt(string key, long unixTime);
 
-  Long pexpireAt(string key, long millisecondsTimestamp);
+  long pexpireAt(string key, long millisecondsTimestamp);
 
-  Long ttl(string key);
+  long ttl(string key);
 
-  Long pttl(string key);
+  long pttl(string key);
 
-  Long touch(string key);
+  long touch(string key);
 
   bool setbit(string key, long offset, bool value);
 
@@ -69,53 +67,53 @@ interface RedisCommands {
 
   bool getbit(string key, long offset);
 
-  Long setrange(string key, long offset, string value);
+  long setrange(string key, long offset, string value);
 
   string getrange(string key, long startOffset, long endOffset);
 
   string getSet(string key, string value);
 
-  Long setnx(string key, string value);
+  long setnx(string key, string value);
 
   string setex(string key, int seconds, string value);
 
   string psetex(string key, long milliseconds, string value);
 
-  Long decrBy(string key, long decrement);
+  long decrBy(string key, long decrement);
 
-  Long decr(string key);
+  long decr(string key);
 
-  Long incrBy(string key, long increment);
+  long incrBy(string key, long increment);
 
-  Double incrByFloat(string key, double increment);
+  double incrByFloat(string key, double increment);
 
-  Long incr(string key);
+  long incr(string key);
 
-  Long append(string key, string value);
+  long append(string key, string value);
 
   string substr(string key, int start, int end);
 
-  Long hset(string key, string field, string value);
+  long hset(string key, string field, string value);
 
-  Long hset(string key, Map!(string, string) hash);
+  long hset(string key, Map!(string, string) hash);
 
   string hget(string key, string field);
 
-  Long hsetnx(string key, string field, string value);
+  long hsetnx(string key, string field, string value);
 
   string hmset(string key, Map!(string, string) hash);
 
   List!(string) hmget(string key, string[] fields...);
 
-  Long hincrBy(string key, string field, long value);
+  long hincrBy(string key, string field, long value);
 
-  Double hincrByFloat(string key, string field, double value);
+  double hincrByFloat(string key, string field, double value);
 
   bool hexists(string key, string field);
 
-  Long hdel(string key, string[] field...);
+  long hdel(string key, string[] field...);
 
-  Long hlen(string key);
+  long hlen(string key);
 
   Set!(string) hkeys(string key);
 
@@ -123,11 +121,11 @@ interface RedisCommands {
 
   Map!(string, string) hgetAll(string key);
 
-  Long rpush(string key, string[] string...);
+  long rpush(string key, string[] string...);
 
-  Long lpush(string key, string[] string...);
+  long lpush(string key, string[] string...);
 
-  Long llen(string key);
+  long llen(string key);
 
   List!(string) lrange(string key, long start, long stop);
 
@@ -137,23 +135,23 @@ interface RedisCommands {
 
   string lset(string key, long index, string value);
 
-  Long lrem(string key, long count, string value);
+  long lrem(string key, long count, string value);
 
   string lpop(string key);
 
   string rpop(string key);
 
-  Long sadd(string key, string[] member...);
+  long sadd(string key, string[] member...);
 
   Set!(string) smembers(string key);
 
-  Long srem(string key, string[] member...);
+  long srem(string key, string[] member...);
 
   string spop(string key);
 
   Set!(string) spop(string key, long count);
 
-  Long scard(string key);
+  long scard(string key);
 
   bool sismember(string key, string member);
 
@@ -161,27 +159,27 @@ interface RedisCommands {
 
   List!(string) srandmember(string key, int count);
 
-  Long strlen(string key);
+  long strlen(string key);
 
-  Long zadd(string key, double score, string member);
+  long zadd(string key, double score, string member);
 
-  Long zadd(string key, double score, string member, ZAddParams params);
+  long zadd(string key, double score, string member, ZAddParams params);
 
-  Long zadd(string key, Map!(string, Double) scoreMembers);
+  long zadd(string key, Map!(string, double) scoreMembers);
 
-  Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params);
+  long zadd(string key, Map!(string, double) scoreMembers, ZAddParams params);
 
   Set!(string) zrange(string key, long start, long stop);
 
-  Long zrem(string key, string[] members...);
+  long zrem(string key, string[] members...);
 
-  Double zincrby(string key, double increment, string member);
+  double zincrby(string key, double increment, string member);
 
-  Double zincrby(string key, double increment, string member, ZIncrByParams params);
+  double zincrby(string key, double increment, string member, ZIncrByParams params);
 
-  Long zrank(string key, string member);
+  long zrank(string key, string member);
 
-  Long zrevrank(string key, string member);
+  long zrevrank(string key, string member);
 
   Set!(string) zrevrange(string key, long start, long stop);
 
@@ -189,17 +187,17 @@ interface RedisCommands {
 
   Set!(Tuple) zrevrangeWithScores(string key, long start, long stop);
 
-  Long zcard(string key);
+  long zcard(string key);
 
-  Double zscore(string key, string member);
+  double zscore(string key, string member);
 
   List!(string) sort(string key);
 
   List!(string) sort(string key, SortingParams sortingParameters);
 
-  Long zcount(string key, double min, double max);
+  long zcount(string key, double min, double max);
 
-  Long zcount(string key, string min, string max);
+  long zcount(string key, string min, string max);
 
   Set!(string) zrangeByScore(string key, double min, double max);
 
@@ -233,13 +231,13 @@ interface RedisCommands {
 
   Set!(Tuple) zrevrangeByScoreWithScores(string key, string max, string min, int offset, int count);
 
-  Long zremrangeByRank(string key, long start, long stop);
+  long zremrangeByRank(string key, long start, long stop);
 
-  Long zremrangeByScore(string key, double min, double max);
+  long zremrangeByScore(string key, double min, double max);
 
-  Long zremrangeByScore(string key, string min, string max);
+  long zremrangeByScore(string key, string min, string max);
 
-  Long zlexcount(string key, string min, string max);
+  long zlexcount(string key, string min, string max);
 
   Set!(string) zrangeByLex(string key, string min, string max);
 
@@ -251,33 +249,33 @@ interface RedisCommands {
   Set!(string) zrevrangeByLex(string key, string max, string min,
       int offset, int count);
 
-  Long zremrangeByLex(string key, string min, string max);
+  long zremrangeByLex(string key, string min, string max);
 
-  Long linsert(string key, ListPosition where, string pivot, string value);
+  long linsert(string key, ListPosition where, string pivot, string value);
 
-  Long lpushx(string key, string[] string...);
+  long lpushx(string key, string[] string...);
 
-  Long rpushx(string key, string[] string...);
+  long rpushx(string key, string[] string...);
 
   List!(string) blpop(int timeout, string key);
 
   List!(string) brpop(int timeout, string key);
 
-  Long del(string key);
+  long del(string key);
 
-  Long unlink(string key);
+  long unlink(string key);
 
   string echo(string string);
 
-  Long move(string key, int dbIndex);
+  long move(string key, int dbIndex);
 
-  Long bitcount(string key);
+  long bitcount(string key);
 
-  Long bitcount(string key, long start, long end);
+  long bitcount(string key, long start, long end);
 
-  Long bitpos(string key, bool value);
+  long bitpos(string key, bool value);
 
-  Long bitpos(string key, bool value, BitPosParams params);
+  long bitpos(string key, bool value, BitPosParams params);
 
   ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor);
 
@@ -292,19 +290,19 @@ interface RedisCommands {
 
   ScanResult!(string) sscan(string key, string cursor, ScanParams params);
 
-  Long pfadd(string key, string[] elements...);
+  long pfadd(string key, string[] elements...);
 
   long pfcount(string key);
 
   // Geo Commands
 
-  Long geoadd(string key, double longitude, double latitude, string member);
+  long geoadd(string key, double longitude, double latitude, string member);
 
-  Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap);
+  long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap);
 
-  Double geodist(string key, string member1, string member2);
+  double geodist(string key, string member1, string member2);
 
-  Double geodist(string key, string member1, string member2, GeoUnit unit);
+  double geodist(string key, string member1, string member2, GeoUnit unit);
 
   List!(string) geohash(string key, string[] members...);
 
@@ -338,7 +336,7 @@ interface RedisCommands {
    * @param arguments
    * @return 
    */
-  List!(Long) bitfield(string key, string[] arguments...);
+  List!(long) bitfield(string key, string[] arguments...);
 
   /**
    * Used for HSTRLEN Redis command
@@ -346,7 +344,7 @@ interface RedisCommands {
    * @param field
    * @return length of the value for key
    */
-  Long hstrlen(string key, string field);
+  long hstrlen(string key, string field);
 
   /**
    * XADD key ID field string [field string ...]
@@ -376,7 +374,7 @@ interface RedisCommands {
    * @param key
    * @return
    */
-  Long xlen(string key);
+  long xlen(string key);
 
   /**
    * XRANGE key start end [COUNT count]

@@ -1,50 +1,49 @@
 module hunt.redis.commands.ClusterCommands;
 
 import hunt.collection.List;
-import hunt.Long;
 
 import hunt.redis.ClusterReset;
 
 interface ClusterCommands {
-  string clusterNodes();
+    string clusterNodes();
 
-  string clusterMeet(string ip, int port);
+    string clusterMeet(string ip, int port);
 
-  string clusterAddSlots(int[] slots...);
+    string clusterAddSlots(int[] slots...);
 
-  string clusterDelSlots(int[] slots...);
+    string clusterDelSlots(int[] slots...);
 
-  string clusterInfo();
+    string clusterInfo();
 
-  List!(string) clusterGetKeysInSlot(int slot, int count);
+    List!(string) clusterGetKeysInSlot(int slot, int count);
 
-  string clusterSetSlotNode(int slot, string nodeId);
+    string clusterSetSlotNode(int slot, string nodeId);
 
-  string clusterSetSlotMigrating(int slot, string nodeId);
+    string clusterSetSlotMigrating(int slot, string nodeId);
 
-  string clusterSetSlotImporting(int slot, string nodeId);
+    string clusterSetSlotImporting(int slot, string nodeId);
 
-  string clusterSetSlotStable(int slot);
+    string clusterSetSlotStable(int slot);
 
-  string clusterForget(string nodeId);
+    string clusterForget(string nodeId);
 
-  string clusterFlushSlots();
+    string clusterFlushSlots();
 
-  Long clusterKeySlot(string key);
+    long clusterKeySlot(string key);
 
-  Long clusterCountKeysInSlot(int slot);
+    long clusterCountKeysInSlot(int slot);
 
-  string clusterSaveConfig();
+    string clusterSaveConfig();
 
-  string clusterReplicate(string nodeId);
+    string clusterReplicate(string nodeId);
 
-  List!(string) clusterSlaves(string nodeId);
+    List!(string) clusterSlaves(string nodeId);
 
-  string clusterFailover();
+    string clusterFailover();
 
-  List!(Object) clusterSlots();
+    List!(Object) clusterSlots();
 
-  string clusterReset(ClusterReset resetType);
+    string clusterReset(ClusterReset resetType);
 
-  string readonly();
+    string readonly();
 }

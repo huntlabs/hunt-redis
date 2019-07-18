@@ -17,7 +17,7 @@ interface ScriptingCommands {
 
   bool scriptExists(string sha1);
 
-  List!(bool) scriptExists(string[] sha1...);
+  bool[] scriptExists(string[] sha1...);
 
   string scriptLoad(string script);
 }

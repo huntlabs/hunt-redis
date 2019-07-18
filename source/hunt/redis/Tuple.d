@@ -55,6 +55,7 @@ class Tuple : Comparable!(Tuple) {
     override int opCmp(Tuple other) {
         return compare(this, other);
     }
+    alias opCmp = Object.opCmp;
 
     static int compare(Tuple t1, Tuple t2) {
         int compScore = hunt.util.Comparator.compare(t1.score, t2.score);

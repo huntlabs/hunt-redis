@@ -172,9 +172,9 @@ interface Commands {
 
   void zadd(string key, double score, string member, ZAddParams params);
 
-  void zadd(string key, Map!(string, Double) scoreMembers);
+  void zadd(string key, Map!(string, double) scoreMembers);
 
-  void zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params);
+  void zadd(string key, Map!(string, double) scoreMembers, ZAddParams params);
 
   void zrange(string key, long start, long stop);
 

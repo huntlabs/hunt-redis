@@ -810,7 +810,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zadd(string key, Map!(string, Double) scoreMembers) {
+//   Long zadd(string key, Map!(string, double) scoreMembers) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {
@@ -820,7 +820,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+//   Long zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
 //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
 //       override
 //       Long execute(Redis connection) {

@@ -534,13 +534,13 @@ alias Pattern = Regex!char;
 //     }
 
 //     override
-//     Long zadd(string key, Map!(string, Double) scoreMembers) {
+//     Long zadd(string key, Map!(string, double) scoreMembers) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers);
 //     }
 
 //     override
-//     Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+//     Long zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers, params);
 //     }

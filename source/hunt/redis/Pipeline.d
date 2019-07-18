@@ -10,9 +10,6 @@ import hunt.redis.Response;
 import hunt.util.Common;
 import hunt.collection;
 
-import hunt.Boolean;
-import hunt.Double;
-import hunt.Long;
 
 import std.conv;
 

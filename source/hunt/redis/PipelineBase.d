@@ -467,13 +467,13 @@ abstract class PipelineBase : Queable, RedisPipeline {
     }
 
     override
-    Response!(Long) zadd(string key, Map!(string, Double) scoreMembers) {
+    Response!(Long) zadd(string key, Map!(string, double) scoreMembers) {
         getClient(key).zadd(key, scoreMembers);
         return getResponse(BuilderFactory.LONG);
     }
 
     override
-    Response!(Long) zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+    Response!(Long) zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
         getClient(key).zadd(key, scoreMembers, params);
         return getResponse(BuilderFactory.LONG);
     }
@@ -775,6 +775,18 @@ abstract class PipelineBase : Queable, RedisPipeline {
     Response!(Long) pttl(string key) {
         getClient(key).pttl(key);
         return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(string) restore(string key, int ttl, string serializedValue) {
+        getClient(key).restore(key, ttl, serializedValue);
+        return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(string) restoreReplace(string key, int ttl, string serializedValue) {
+        getClient(key).restoreReplace(key, ttl, serializedValue);
+        return getResponse(BuilderFactory.STRING);
     }
 
     override

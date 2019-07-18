@@ -22,9 +22,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-import hunt.collection.ArrayList;
-import hunt.collection.List;
-import hunt.collection.Map;
+import hunt.collection;
 import hunt.Double;
 
 import std.conv;
@@ -442,7 +440,7 @@ class Client : AbstractClient {
         sendCommand(Command.ZADD, params.getByteParams(key, toByteArray(score), member));
     }
 
-    void zadd(string key, Map!(string, Double) scoreMembers) {
+    void zadd(string key, Map!(string, double) scoreMembers) {
         ArrayList!(string) args = new ArrayList!(string)(scoreMembers.size() * 2 + 1);
         args.add(key);
         args.addAll(convertScoreMembersToByteArrays(scoreMembers));
@@ -452,7 +450,7 @@ class Client : AbstractClient {
         sendCommand(Command.ZADD, argsArray);
     }
 
-    void zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+    void zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
         ArrayList!(string) args = convertScoreMembersToByteArrays(scoreMembers);
         string[] argsArray = args.toArray();
 
@@ -619,6 +617,18 @@ class Client : AbstractClient {
         sendCommand(Command.PUBSUB, args);
     }
 
+    void pubsubChannels(string pattern) {
+        pubsub(Protocol.PUBSUB_CHANNELS, pattern);
+    }
+
+    void pubsubNumPat() {
+        pubsub([Protocol.PUBSUB_NUM_PAT]);
+    }
+
+    void pubsubNumSub(string[] channels...) {
+        pubsub(Protocol.PUBSUB_NUMSUB, channels);
+    }
+    
     void zcount(string key, double min, double max) {
         sendCommand(Command.ZCOUNT, key, toByteArray(min), toByteArray(max));
     }
@@ -1126,6 +1136,10 @@ class Client : AbstractClient {
         sendCommand(Command.WAIT, toByteArray(replicas), toByteArray(timeout));
     }
 
+    void cluster(string arg) {
+        sendCommand(Command.CLUSTER, [arg]);
+    }
+
     void cluster(string[] args) {
         sendCommand(Command.CLUSTER, args);
     }
@@ -1226,6 +1240,46 @@ class Client : AbstractClient {
         sendCommand(Command.PFMERGE, joinParameters(destkey, sourcekeys));
     }
 
+    void clusterSetSlotStable(int slot) {
+        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_STABLE);
+    }
+
+    void clusterForget(string nodeId) {
+        cluster(Protocol.CLUSTER_FORGET, nodeId);
+    }
+
+    void clusterFlushSlots() {
+        cluster([Protocol.CLUSTER_FLUSHSLOT]);
+    }
+
+    void clusterKeySlot(string key) {
+        cluster(Protocol.CLUSTER_KEYSLOT, key);
+    }
+
+    void clusterCountKeysInSlot(int slot) {
+        cluster(Protocol.CLUSTER_COUNTKEYINSLOT, to!string(slot));
+    }
+
+    void clusterSaveConfig() {
+        cluster([Protocol.CLUSTER_SAVECONFIG]);
+    }
+
+    void clusterReplicate(string nodeId) {
+        cluster(Protocol.CLUSTER_REPLICATE, nodeId);
+    }
+
+    void clusterSlaves(string nodeId) {
+        cluster(Protocol.CLUSTER_SLAVES, nodeId);
+    }
+
+    void clusterFailover() {
+        cluster([Protocol.CLUSTER_FAILOVER]);
+    }
+
+    void clusterSlots() {
+        cluster(Protocol.CLUSTER_SLOTS);
+    }
+
     void readonly() {
         sendCommand(Command.READONLY);
     }
@@ -1312,11 +1366,11 @@ class Client : AbstractClient {
         sendCommand(Command.MODULE, to!string(Keyword.UNLOAD), name);
     }
 
-    private ArrayList!(string) convertScoreMembersToByteArrays(Map!(string, Double) scoreMembers) {
+    private ArrayList!(string) convertScoreMembersToByteArrays(Map!(string, double) scoreMembers) {
         ArrayList!(string) args = new ArrayList!(string)(scoreMembers.size() * 2);
 
-        foreach(string key, Double value ; scoreMembers) {
-            args.add(toByteArray(value.value()));
+        foreach(string key, double value ; scoreMembers) {
+            args.add(toByteArray(value));
             args.add(key);
         }
 
@@ -1384,6 +1438,16 @@ class Client : AbstractClient {
     void xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
         sendCommand(Command.XREVRANGE, key, end.toString(), start.toString(), to!string(Keyword.COUNT), to!string(count));
     }
+    
+    void xread(int count, long block, MapEntry!(string, StreamEntryID)[] streams...) {
+        Map!(string, string) bhash = new HashMap!(string, string)(cast(int)streams.length);
+        foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
+            bhash.put(entry.getKey(), 
+                entry.getValue() is null ? "0-0" : entry.getValue().toString());
+        }
+        xread(count, block, bhash);
+    }
+
 
     void xread(int count, long block, Map!(string, string) streams) {
         string[] params = new string[3 + streams.size() * 2 + (block > 0 ? 2 : 0)];
@@ -1457,7 +1521,17 @@ class Client : AbstractClient {
         }
     }
     
-    void xreadGroup(string groupname, string consumer, int count, long block, bool noAck, Map!(string, string) streams) {
+    void xreadGroup(string groupname, string consumer, int count, long block, 
+                                    bool noAck, MapEntry!(string, StreamEntryID)[] streams...) {
+        Map!(string, string) bhash = new HashMap!(string, string)(cast(int)streams.length);
+        foreach(MapEntry!(string, StreamEntryID) entry ; streams) {
+            bhash.put(entry.getKey(), entry.getValue() is null ? ">" : entry.getValue().toString());
+        }
+        xreadGroup(groupname, consumer, count, block, noAck, bhash);    
+    }
+
+    void xreadGroup(string groupname, string consumer, int count, long block, 
+            bool noAck, Map!(string, string) streams) {
         
         int optional = 0;
         if(count>0) {

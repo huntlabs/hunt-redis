@@ -15,6 +15,8 @@ class SetParams : Params {
     private enum string NX = "nx";
     private enum string PX = "px";
     private enum string EX = "ex";
+    
+    alias getByteParams = Params.getByteParams;
 
     this() {
     }

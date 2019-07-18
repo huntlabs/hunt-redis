@@ -20,6 +20,7 @@ class GeoRadiusParam : Params {
     private enum string COUNT = "count";
 
     alias addParam = Params.addParam;
+    alias getByteParams = Params.getByteParams;
 
     this() {
     }
