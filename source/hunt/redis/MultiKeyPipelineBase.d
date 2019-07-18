@@ -12,6 +12,7 @@ import hunt.redis.GeoUnit;
 import hunt.redis.ListPosition;
 import hunt.redis.Module;
 import hunt.redis.PipelineBase;
+import hunt.redis.Protocol;
 import hunt.redis.Redis;
 import hunt.redis.Response;
 import hunt.redis.SortingParams;
@@ -445,11 +446,11 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         return getResponse(BuilderFactory.STRING);
     }
 
-    override
-    Response!(string) randomKeyBinary() {
-        client.randomKey();
-        return getResponse(BuilderFactory.BYTE_ARRAY);
-    }
+    // override
+    // Response!(string) randomKeyBinary() {
+    //     client.randomKey();
+    //     return getResponse(BuilderFactory.BYTE_ARRAY);
+    // }
 
     override
     Response!(string) flushDB() {
@@ -612,11 +613,11 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         return this.eval(script, 0);
     }
 
-    override
-    Response!(Object) eval(string script, string keyCount, string[] params...) {
-        getClient(script).eval(script, keyCount, params);
-        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
-    }
+    // override
+    // Response!(Object) eval(string script, string keyCount, string[] params...) {
+    //     getClient(script).eval(script, keyCount, params);
+    //     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+    // }
 
     override
     Response!(Object) eval(string script, List!(string) keys, List!(string) args) {

@@ -62,11 +62,11 @@ class BuilderFactory {
         });
     }
 
-    static Builder!(byte[]) BYTE_ARRAY() {
+    // static Builder!(byte[]) BYTE_ARRAY() {
 
-        implementationMissing();
-        return null;
-    }
+    //     implementationMissing();
+    //     return null;
+    // }
     //  static Builder!(byte[]) BYTE_ARRAY = new Builder!(byte[])() {
     //      override
     //      byte[] build(Object data) {
@@ -228,11 +228,11 @@ class BuilderFactory {
 
     //  };
 
-    static Builder!(List!(byte[])) BYTE_ARRAY_LIST() {
+    // static Builder!(List!(byte[])) BYTE_ARRAY_LIST() {
 
-        implementationMissing();
-        return null;
-    }
+    //     implementationMissing();
+    //     return null;
+    // }
     //  static Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
     //      override
         
@@ -251,11 +251,11 @@ class BuilderFactory {
     //      }
     //  };
 
-    static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET() {
+    // static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET() {
 
-        implementationMissing();
-        return null;
-    }
+    //     implementationMissing();
+    //     return null;
+    // }
     //  static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
     //      override
         
