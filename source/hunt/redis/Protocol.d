@@ -107,7 +107,7 @@ final class Protocol {
             os.write(command);
             os.writeCrLf();
 
-            foreach (byte[] arg ; args) {
+            foreach (string arg ; args) {
                 os.write(DOLLAR_BYTE);
                 os.writeIntCrLf(cast(int)arg.length);
                 os.write(arg);

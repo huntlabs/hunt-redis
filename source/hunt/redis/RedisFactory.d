@@ -99,22 +99,22 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     }
 
     void activateObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
-        if (jedis.getDB() != database) {
-            jedis.select(database);
+        Redis redis = cast(Redis)pooledRedis.getObject();
+        if (redis.getDB() != database) {
+            redis.select(database);
         }
 
     }
 
     void destroyObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
-        if (jedis.isConnected()) {
+        Redis redis = cast(Redis)pooledRedis.getObject();
+        if (redis.isConnected()) {
             try {
                 try {
-                    jedis.quit();
+                    redis.quit();
                 } catch (Exception e) {
                 }
-                jedis.disconnect();
+                redis.disconnect();
             } catch (Exception e) {
 
             }
@@ -124,29 +124,29 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     IPooledObject makeObject() {
         HostAndPort hostAndPort = this.hostAndPort;
-        // Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
+        // Redis redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
         //         connectionTimeout, soTimeout, ssl, sslSocketFactory,
         //         sslParameters, hostnameVerifier);
-        Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
+        Redis redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
                 connectionTimeout, soTimeout, ssl);
 
         try {
-            jedis.connect();
+            redis.connect();
             if (password !is null) {
-                jedis.auth(password);
+                redis.auth(password);
             }
             if (database != 0) {
-                jedis.select(database);
+                redis.select(database);
             }
             if (clientName !is null) {
-                jedis.clientSetname(clientName);
+                redis.clientSetname(clientName);
             }
         } catch (RedisException je) {
-            jedis.close();
+            redis.close();
             throw je;
         }
 
-        return new DefaultPooledObject!(Redis)(jedis);
+        return new DefaultPooledObject!(Redis)(redis);
 
     }
 
@@ -155,15 +155,15 @@ class RedisFactory : PooledObjectFactory!(Redis) {
     }
 
     bool validateObject(IPooledObject pooledRedis) {
-        BinaryRedis jedis = cast(BinaryRedis)pooledRedis.getObject();
+        Redis redis = cast(Redis)pooledRedis.getObject();
         try {
             HostAndPort hostAndPort = this.hostAndPort;
 
-            string connectionHost = jedis.getClient().getHost();
-            int connectionPort = jedis.getClient().getPort();
+            string connectionHost = redis.getClient().getHost();
+            int connectionPort = redis.getClient().getPort();
 
             return hostAndPort.getHost() == connectionHost && hostAndPort.getPort() == connectionPort
-                && jedis.isConnected() && jedis.ping() == "PONG";
+                && redis.isConnected() && redis.ping() == "PONG";
         } catch (Exception e) {
             return false;
         }

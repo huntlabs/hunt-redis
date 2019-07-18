@@ -12,6 +12,7 @@ import hunt.redis.ListPosition;
 import hunt.redis.Pipeline;
 import hunt.redis.Protocol;
 import hunt.redis.RedisMonitor;
+import hunt.redis.RedisPoolAbstract;
 import hunt.redis.RedisPubSub;
 import hunt.redis.RedisShardInfo;
 import hunt.redis.ScanParams;
@@ -53,6 +54,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     protected Client client = null;
     protected Transaction transaction = null;
     protected Pipeline pipeline = null;
+    protected RedisPoolAbstract dataSource = null;
 
     this() {
         client = new Client();
@@ -225,7 +227,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string ping(string message) {
         checkIsInMultiOrPipeline();
         client.ping(message);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -269,7 +271,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string get(string key) {
         checkIsInMultiOrPipeline();
         client.get(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -290,7 +292,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: an integer greater than 0 if one or more keys exist,
      *         0 if none of the specified keys exist.
      */
-    Long exists(string[] keys...) {
+    long exists(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.exists(keys);
         return client.getIntegerReply();
@@ -316,13 +318,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: an integer greater than 0 if one or more keys were removed
      *         0 if none of the specified key existed
      */
-    Long del(string[] keys...) {
+    long del(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.del(keys);
         return client.getIntegerReply();
     }
 
-    Long del(string key) {
+    long del(string key) {
         checkIsInMultiOrPipeline();
         client.del(key);
         return client.getIntegerReply();
@@ -341,13 +343,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Integer reply: The number of keys that were unlinked
      */
-    Long unlink(string[] keys...) {
+    long unlink(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.unlink(keys);
         return client.getIntegerReply();
     }
 
-    Long unlink(string key) {
+    long unlink(string key) {
         checkIsInMultiOrPipeline();
         client.unlink(key);
         return client.getIntegerReply();
@@ -409,7 +411,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) keys(string pattern) {
         checkIsInMultiOrPipeline();
         client.keys(pattern);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
       /**
@@ -448,7 +450,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param newkey
      * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
      */
-    Long renamenx(string oldkey, string newkey) {
+    long renamenx(string oldkey, string newkey) {
         checkIsInMultiOrPipeline();
         client.renamenx(oldkey, newkey);
         return client.getIntegerReply();
@@ -458,7 +460,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Return the number of keys in the currently selected database.
      * @return Integer reply
      */
-    Long dbSize() {
+    long dbSize() {
         checkIsInMultiOrPipeline();
         client.dbSize();
         return client.getIntegerReply();
@@ -485,7 +487,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions &lt;
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    Long expire(string key, int seconds) {
+    long expire(string key, int seconds) {
         checkIsInMultiOrPipeline();
         client.expire(key, seconds);
         return client.getIntegerReply();
@@ -514,7 +516,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions &lt;
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    Long expireAt(string key, long unixTime) {
+    long expireAt(string key, long unixTime) {
         checkIsInMultiOrPipeline();
         client.expireAt(key, unixTime);
         return client.getIntegerReply();
@@ -529,7 +531,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         EXPIRE. If the Key does not exists or does not have an associated expire, -1 is
      *         returned.
      */
-    Long ttl(string key) {
+    long ttl(string key) {
         checkIsInMultiOrPipeline();
         client.ttl(key);
         return client.getIntegerReply();
@@ -541,13 +543,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Integer reply: The number of keys that were touched.
      */
-    Long touch(string[] keys...) {
+    long touch(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.touch(keys);
         return client.getIntegerReply();
     }
 
-    Long touch(string key) {
+    long touch(string key) {
         checkIsInMultiOrPipeline();
         client.touch(key);
         return client.getIntegerReply();
@@ -584,7 +586,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the key was moved 0 if the key was not moved because
      *         already present on the target DB or was not found in the current DB.
      */
-    Long move(string key, int dbIndex) {
+    long move(string key, int dbIndex) {
         checkIsInMultiOrPipeline();
         client.move(key, dbIndex);
         return client.getIntegerReply();
@@ -614,7 +616,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string getSet(string key, string value) {
         checkIsInMultiOrPipeline();
         client.getSet(key, value);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -629,7 +631,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) mget(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.mget(keys);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -641,7 +643,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply, specifically: 1 if the key was set 0 if the key was not set
      */
-    Long setnx(string key, string value) {
+    long setnx(string key, string value) {
         checkIsInMultiOrPipeline();
         client.setnx(key, value);
         return client.getIntegerReply();
@@ -703,7 +705,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the all the keys were set 0 if no key was set (at
      *         least one key already existed)
      */
-    Long msetnx(string[] keysvalues...) {
+    long msetnx(string[] keysvalues...) {
         checkIsInMultiOrPipeline();
         client.msetnx(keysvalues);
         return client.getIntegerReply();
@@ -727,7 +729,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param decrement
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    Long decrBy(string key, long decrement) {
+    long decrBy(string key, long decrement) {
         checkIsInMultiOrPipeline();
         client.decrBy(key, decrement);
         return client.getIntegerReply();
@@ -750,7 +752,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    Long decr(string key) {
+    long decr(string key) {
         checkIsInMultiOrPipeline();
         client.decr(key);
         return client.getIntegerReply();
@@ -774,7 +776,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param increment
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    Long incrBy(string key, long increment) {
+    long incrBy(string key, long increment) {
         checkIsInMultiOrPipeline();
         client.incrBy(key, increment);
         return client.getIntegerReply();
@@ -823,7 +825,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    Long incr(string key) {
+    long incr(string key) {
         checkIsInMultiOrPipeline();
         client.incr(key);
         return client.getIntegerReply();
@@ -841,7 +843,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply, specifically the total length of the string after the append operation.
      */
-    Long append(string key, string value) {
+    long append(string key, string value) {
         checkIsInMultiOrPipeline();
         client.append(key, value);
         return client.getIntegerReply();
@@ -866,7 +868,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string substr(string key, int start, int end) {
         checkIsInMultiOrPipeline();
         client.substr(key, start, end);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -881,13 +883,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field already exists, and the HSET just produced an update of the value, 0 is
      *         returned, otherwise if a new field is created 1 is returned.
      */
-    Long hset(string key, string field, string value) {
+    long hset(string key, string field, string value) {
         checkIsInMultiOrPipeline();
         client.hset(key, field, value);
         return client.getIntegerReply();
     }
 
-    Long hset(string key, Map!(string, string) hash) {
+    long hset(string key, Map!(string, string) hash) {
         checkIsInMultiOrPipeline();
         client.hset(key, hash);
         return client.getIntegerReply();
@@ -906,7 +908,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string hget(string key, string field) {
         checkIsInMultiOrPipeline();
         client.hget(key, field);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -918,7 +920,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field already exists, 0 is returned, otherwise if a new field is created 1 is
      *         returned.
      */
-    Long hsetnx(string key, string field, string value) {
+    long hsetnx(string key, string field, string value) {
         checkIsInMultiOrPipeline();
         client.hsetnx(key, field, value);
         return client.getIntegerReply();
@@ -955,7 +957,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) hmget(string key, string[] fields...) {
         checkIsInMultiOrPipeline();
         client.hmget(key, fields);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -972,7 +974,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply The new value at field after the increment operation.
      */
-    Long hincrBy(string key, string field, long value) {
+    long hincrBy(string key, string field, long value) {
         checkIsInMultiOrPipeline();
         client.hincrBy(key, field, value);
         return client.getIntegerReply();
@@ -1023,7 +1025,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field was present in the hash it is deleted and 1 is returned, otherwise 0 is
      *         returned and no operation is performed.
      */
-    Long hdel(string key, string[] fields...) {
+    long hdel(string key, string[] fields...) {
         checkIsInMultiOrPipeline();
         client.hdel(key, fields);
         return client.getIntegerReply();
@@ -1037,7 +1039,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return The number of entries (fields) contained in the hash stored at key. If the specified
      *         key does not exist, 0 is returned assuming an empty hash.
      */
-    Long hlen(string key) {
+    long hlen(string key) {
         checkIsInMultiOrPipeline();
         client.hlen(key);
         return client.getIntegerReply();
@@ -1053,7 +1055,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) hkeys(string key) {
         checkIsInMultiOrPipeline();
         client.hkeys(key);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1066,7 +1068,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) hvals(string key) {
         checkIsInMultiOrPipeline();
         client.hvals(key);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -1079,8 +1081,8 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Map!(string, string) hgetAll(string key) {
         checkIsInMultiOrPipeline();
         client.hgetAll(key);
-        List!(string) flatHash = client.getBinaryMultiBulkReply();
-        Map!(string, string) hash = new RedisByteHashMap();
+        List!(string) flatHash = client.getMultiBulkReply();
+        Map!(string, string) hash = new HashMap!(string, string)();
         InputRange!(string) iterator = flatHash.iterator();
         while(!iterator.empty()) {
             string k = iterator.front();
@@ -1105,7 +1107,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically, the number of elements inside the list after the push
      *         operation.
      */
-    Long rpush(string key, string[] strings...) {
+    long rpush(string key, string[] strings...) {
         checkIsInMultiOrPipeline();
         client.rpush(key, strings);
         return client.getIntegerReply();
@@ -1123,7 +1125,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically, the number of elements inside the list after the push
      *         operation.
      */
-    Long lpush(string key, string[] strings...) {
+    long lpush(string key, string[] strings...) {
         checkIsInMultiOrPipeline();
         client.lpush(key, strings);
         return client.getIntegerReply();
@@ -1138,7 +1140,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return The length of the list.
      */
-    Long llen(string key) {
+    long llen(string key) {
         checkIsInMultiOrPipeline();
         client.llen(key);
         return client.getIntegerReply();
@@ -1179,7 +1181,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) lrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.lrange(key, start, stop);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -1237,7 +1239,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string lindex(string key, long index) {
         checkIsInMultiOrPipeline();
         client.lindex(key, index);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -1280,7 +1282,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer Reply, specifically: The number of removed elements if the operation succeeded
      */
-    Long lrem(string key, long count, string value) {
+    long lrem(string key, long count, string value) {
         checkIsInMultiOrPipeline();
         client.lrem(key, count, value);
         return client.getIntegerReply();
@@ -1299,7 +1301,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string lpop(string key) {
         checkIsInMultiOrPipeline();
         client.lpop(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -1315,7 +1317,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string rpop(string key) {
         checkIsInMultiOrPipeline();
         client.rpop(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -1336,7 +1338,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string rpoplpush(string srckey, string dstkey) {
         checkIsInMultiOrPipeline();
         client.rpoplpush(srckey, dstkey);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     /**
@@ -1350,7 +1352,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
      *         already a member of the set
      */
-    Long sadd(string key, string[] members...) {
+    long sadd(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.sadd(key, members);
         return client.getIntegerReply();
@@ -1367,7 +1369,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) smembers(string key) {
         checkIsInMultiOrPipeline();
         client.smembers(key);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1380,7 +1382,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
      *         not a member of the set
      */
-    Long srem(string key, string[] member...) {
+    long srem(string key, string[] member...) {
         checkIsInMultiOrPipeline();
         client.srem(key, member);
         return client.getIntegerReply();
@@ -1400,13 +1402,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string spop(string key) {
         checkIsInMultiOrPipeline();
         client.spop(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     Set!(string) spop(string key, long count) {
         checkIsInMultiOrPipeline();
         client.spop(key, count);
-        List!(string) members = client.getBinaryMultiBulkReply();
+        List!(string) members = client.getMultiBulkReply();
         if (members is null) return null;
         return new SetFromList!(string)(members);
     }
@@ -1430,7 +1432,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the element was moved 0 if the element was not found
      *         on the first set and no operation was performed
      */
-    Long smove(string srckey, string dstkey, string member) {
+    long smove(string srckey, string dstkey, string member) {
         checkIsInMultiOrPipeline();
         client.smove(srckey, dstkey, member);
         return client.getIntegerReply();
@@ -1443,7 +1445,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: the cardinality (number of elements) of the set as an
      *         integer.
      */
-    Long scard(string key) {
+    long scard(string key) {
         checkIsInMultiOrPipeline();
         client.scard(key);
         return client.getIntegerReply();
@@ -1482,7 +1484,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) sinter(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sinter(keys);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1495,7 +1497,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Status code reply
      */
-    Long sinterstore(string dstkey, string[] keys...) {
+    long sinterstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sinterstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1516,7 +1518,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) sunion(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sunion(keys);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1528,7 +1530,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Status code reply
      */
-    Long sunionstore(string dstkey, string[] keys...) {
+    long sunionstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sunionstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1558,7 +1560,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) sdiff(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiff(keys);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1568,7 +1570,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Status code reply
      */
-    Long sdiffstore(string dstkey, string[] keys...) {
+    long sdiffstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiffstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1587,13 +1589,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string srandmember(string key) {
         checkIsInMultiOrPipeline();
         client.srandmember(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     List!(string) srandmember(string key, int count) {
         checkIsInMultiOrPipeline();
         client.srandmember(key, count);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -1612,25 +1614,25 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
      *         already a member of the sorted set and the score was updated
      */
-    Long zadd(string key, double score, string member) {
+    long zadd(string key, double score, string member) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member);
         return client.getIntegerReply();
     }
 
-    Long zadd(string key, double score, string member, ZAddParams params) {
+    long zadd(string key, double score, string member, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member, params);
         return client.getIntegerReply();
     }
 
-    Long zadd(string key, Map!(string, Double) scoreMembers) {
+    long zadd(string key, Map!(string, Double) scoreMembers) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers);
         return client.getIntegerReply();
     }
 
-    Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+    long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers, params);
         return client.getIntegerReply();
@@ -1639,7 +1641,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) zrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrange(key, start, stop);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -1653,7 +1655,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
      *         not a member of the set
      */
-    Long zrem(string key, string[] members...) {
+    long zrem(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.zrem(key, members);
         return client.getIntegerReply();
@@ -1705,7 +1707,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
-    Long zrank(string key, string member) {
+    long zrank(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zrank(key, member);
         return client.getIntegerReply();
@@ -1727,7 +1729,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
-    Long zrevrank(string key, string member) {
+    long zrevrank(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zrevrank(key, member);
         return client.getIntegerReply();
@@ -1736,7 +1738,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) zrevrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrevrange(key, start, stop);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(Tuple) zrangeWithScores(string key, long start, long stop) {
@@ -1759,7 +1761,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return the cardinality (number of elements) of the set as an integer.
      */
-    Long zcard(string key) {
+    long zcard(string key) {
         checkIsInMultiOrPipeline();
         client.zcard(key);
         return client.getIntegerReply();
@@ -1854,7 +1856,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) sort(string key) {
         checkIsInMultiOrPipeline();
         client.sort(key);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -1934,7 +1936,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) sort(string key, SortingParams sortingParameters) {
         checkIsInMultiOrPipeline();
         client.sort(key, sortingParameters);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -2023,7 +2025,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param dstkey
      * @return The number of elements of the list at dstkey.
      */
-    Long sort(string key, SortingParams sortingParameters, string dstkey) {
+    long sort(string key, SortingParams sortingParameters, string dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, sortingParameters, dstkey);
         return client.getIntegerReply();
@@ -2042,7 +2044,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param dstkey
      * @return The number of elements of the list at dstkey.
      */
-    Long sort(string key, string dstkey) {
+    long sort(string key, string dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, dstkey);
         return client.getIntegerReply();
@@ -2119,7 +2121,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.blpop(args);
         client.setTimeoutInfinite();
         try {
-            return client.getBinaryMultiBulkReply();
+            return client.getMultiBulkReply();
         } finally {
             client.rollbackTimeout();
         }
@@ -2130,7 +2132,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.brpop(args);
         client.setTimeoutInfinite();
         try {
-            return client.getBinaryMultiBulkReply();
+            return client.getMultiBulkReply();
         } finally {
             client.rollbackTimeout();
         }
@@ -2160,13 +2162,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return pipeline;
     }
 
-    Long zcount(string key, double min, double max) {
+    long zcount(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
     }
 
-    Long zcount(string key, string min, string max) {
+    long zcount(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
@@ -2222,13 +2224,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) zrangeByScore(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrangeByScore(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -2284,14 +2286,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrangeByScore(string key, string min, string max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     /**
@@ -2417,7 +2419,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     }
 
     protected Set!(Tuple) getTupledSet() {
-        List!(string) membersWithScores = client.getBinaryMultiBulkReply();
+        List!(string) membersWithScores = client.getMultiBulkReply();
         if (membersWithScores.isEmpty()) {
             return Collections.emptySet!(Tuple)();
         }
@@ -2426,8 +2428,8 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         while (!iterator.empty()) {
             string first = iterator.front(); iterator.popFront();
             string second = iterator.front(); iterator.popFront();
-            Double d = BuilderFactory.DOUBLE.build(new Bytes(second));
-            set.add(new Tuple(first, d.value()));
+            // Double d = BuilderFactory.DOUBLE.build(new Bytes(second));
+            set.add(new Tuple(first, second.to!double()));
         }
         return set;
     }
@@ -2435,27 +2437,27 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) zrevrangeByScore(string key, double max, double min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrevrangeByScore(string key, string max, string min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrevrangeByScore(string key, double max, double min,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrevrangeByScore(string key, string max, string min,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(Tuple) zrevrangeByScoreWithScores(string key, double max, double min) {
@@ -2498,7 +2500,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param stop
      * @return
      */
-    Long zremrangeByRank(string key, long start, long stop) {
+    long zremrangeByRank(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zremrangeByRank(key, start, stop);
         return client.getIntegerReply();
@@ -2517,13 +2519,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param max
      * @return Integer reply, specifically the number of elements removed.
      */
-    Long zremrangeByScore(string key, double min, double max) {
+    long zremrangeByScore(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
     }
 
-    Long zremrangeByScore(string key, string min, string max) {
+    long zremrangeByScore(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
@@ -2558,7 +2560,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param sets
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    Long zunionstore(string dstkey, string[] sets...) {
+    long zunionstore(string dstkey, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2594,7 +2596,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param params
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    Long zunionstore(string dstkey, ZParams params, string[] sets...) {
+    long zunionstore(string dstkey, ZParams params, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, params, sets);
         return client.getIntegerReply();
@@ -2629,7 +2631,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param sets
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    Long zinterstore(string dstkey, string[] sets...) {
+    long zinterstore(string dstkey, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2665,13 +2667,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param params
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    Long zinterstore(string dstkey, ZParams params, string[] sets...) {
+    long zinterstore(string dstkey, ZParams params, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, params, sets);
         return client.getIntegerReply();
     }
 
-    Long zlexcount(string key, string min, string max) {
+    long zlexcount(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zlexcount(key, min, max);
         return client.getIntegerReply();
@@ -2680,29 +2682,29 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     Set!(string) zrangeByLex(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrangeByLex(string key, string min, string max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrevrangeByLex(string key, string max, string min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
     Set!(string) zrevrangeByLex(string key, string max, string min, int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min, offset, count);
-        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getMultiBulkReply());
     }
 
-    Long zremrangeByLex(string key, string min, string max) {
+    long zremrangeByLex(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByLex(key, min, max);
         return client.getIntegerReply();
@@ -2766,7 +2768,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * command and checking at regular intervals every N seconds if LASTSAVE changed.
      * @return Integer reply, specifically an UNIX time stamp.
      */
-    Long lastsave() {
+    long lastsave() {
         client.lastsave();
         return client.getIntegerReply();
     }
@@ -2920,7 +2922,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) configGet(string pattern) {
         checkIsInMultiOrPipeline();
         client.configGet(pattern);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     /**
@@ -2991,14 +2993,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string configSet(string parameter, string value) {
         checkIsInMultiOrPipeline();
         client.configSet(parameter, value);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     bool isConnected() {
         return client.isConnected();
     }
 
-    Long strlen(string key) {
+    long strlen(string key) {
         checkIsInMultiOrPipeline();
         client.strlen(key);
         return client.getIntegerReply();
@@ -3008,7 +3010,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.sync();
     }
 
-    Long lpushx(string key, string[] string...) {
+    long lpushx(string key, string[] string...) {
         checkIsInMultiOrPipeline();
         client.lpushx(key, string);
         return client.getIntegerReply();
@@ -3022,12 +3024,12 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1: the key is now persist. 0: the key is not persist (only
      *         happens when key not set).
      */
-    Long persist(string key) {
+    long persist(string key) {
         client.persist(key);
         return client.getIntegerReply();
     }
 
-    Long rpushx(string key, string[] string...) {
+    long rpushx(string key, string[] string...) {
         checkIsInMultiOrPipeline();
         client.rpushx(key, string);
         return client.getIntegerReply();
@@ -3036,10 +3038,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string echo(string string) {
         checkIsInMultiOrPipeline();
         client.echo(string);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    Long linsert(string key, ListPosition where, string pivot,
+    long linsert(string key, ListPosition where, string pivot,
             string value) {
         checkIsInMultiOrPipeline();
         client.linsert(key, where, pivot, value);
@@ -3067,7 +3069,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.brpoplpush(source, destination, timeout);
         client.setTimeoutInfinite();
         try {
-            return client.getBinaryBulkReply();
+            return client.getBulkReply();
         } finally {
             client.rollbackTimeout();
         }
@@ -3104,17 +3106,17 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply() == 1;
     }
 
-    Long bitpos(string key, bool value) {
+    long bitpos(string key, bool value) {
         return bitpos(key, value, new BitPosParams());
     }
 
-    Long bitpos(string key, bool value, BitPosParams params) {
+    long bitpos(string key, bool value, BitPosParams params) {
         checkIsInMultiOrPipeline();
         client.bitpos(key, value, params);
         return client.getIntegerReply();
     }
 
-    Long setrange(string key, long offset, string value) {
+    long setrange(string key, long offset, string value) {
         checkIsInMultiOrPipeline();
         client.setrange(key, offset, value);
         return client.getIntegerReply();
@@ -3123,10 +3125,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     string getrange(string key, long startOffset, long endOffset) {
         checkIsInMultiOrPipeline();
         client.getrange(key, startOffset, endOffset);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    Long publish(string channel, string message) {
+    long publish(string channel, string message) {
         checkIsInMultiOrPipeline();
         client.publish(channel, message);
         return client.getIntegerReply();
@@ -3240,7 +3242,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     string scriptLoad(string script) {
         client.scriptLoad(script);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     // override
@@ -3254,7 +3256,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getBulkReply();
     }
 
-    Long slowlogLen() {
+    long slowlogLen() {
         client.slowlogLen();
         return client.getIntegerReply();
     }
@@ -3270,34 +3272,34 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     }
 
 
-    Long objectRefcount(string key) {
+    long objectRefcount(string key) {
         client.objectRefcount(key);
         return client.getIntegerReply();
     }
 
     string objectEncoding(string key) {
         client.objectEncoding(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    Long objectIdletime(string key) {
+    long objectIdletime(string key) {
         client.objectIdletime(key);
         return client.getIntegerReply();
     }
 
-    Long bitcount(string key) {
+    long bitcount(string key) {
         checkIsInMultiOrPipeline();
         client.bitcount(key);
         return client.getIntegerReply();
     }
 
-    Long bitcount(string key, long start, long end) {
+    long bitcount(string key, long start, long end) {
         checkIsInMultiOrPipeline();
         client.bitcount(key, start, end);
         return client.getIntegerReply();
     }
 
-    Long bitop(BitOP op, string destKey, string[] srcKeys...) {
+    long bitop(BitOP op, string destKey, string[] srcKeys...) {
         checkIsInMultiOrPipeline();
         client.bitop(op, destKey, srcKeys);
         return client.getIntegerReply();
@@ -3306,7 +3308,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     byte[] dump(string key) {
         checkIsInMultiOrPipeline();
         client.dump(key);
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
     string restore(string key, int ttl, byte[] serializedValue) {
@@ -3342,19 +3344,19 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions <
      *         2.1.3, Redis >= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    Long pexpire(string key, long milliseconds) {
+    long pexpire(string key, long milliseconds) {
         checkIsInMultiOrPipeline();
         client.pexpire(key, milliseconds);
         return client.getIntegerReply();
     }
 
-    Long pexpireAt(string key, long millisecondsTimestamp) {
+    long pexpireAt(string key, long millisecondsTimestamp) {
         checkIsInMultiOrPipeline();
         client.pexpireAt(key, millisecondsTimestamp);
         return client.getIntegerReply();
     }
 
-    Long pttl(string key) {
+    long pttl(string key) {
         checkIsInMultiOrPipeline();
         client.pttl(key);
         return client.getIntegerReply();
@@ -3392,7 +3394,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return this.client.getStatusCodeReply();
     }
 
-    Long clientKill(ClientKillParams params) {
+    long clientKill(ClientKillParams params) {
         checkIsInMultiOrPipeline();
         this.client.clientKill(params);
         return this.client.getIntegerReply();
@@ -3452,6 +3454,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.waitReplicas(replicas, timeout);
         return client.getIntegerReply();
     }
+
+    void setDataSource(RedisPoolAbstract jedisPool) {
+        this.dataSource = jedisPool;
+    }    
 
     long pfadd(string key, string[] elements...) {
         checkIsInMultiOrPipeline();
@@ -3551,13 +3557,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return null;
     }
 
-    Long geoadd(string key, double longitude, double latitude, string member) {
+    long geoadd(string key, double longitude, double latitude, string member) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, longitude, latitude, member);
         return client.getIntegerReply();
     }
 
-    Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
+    long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, memberCoordinateMap);
         return client.getIntegerReply();
@@ -3580,7 +3586,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) geohash(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.geohash(key, members);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     List!(GeoCoordinate) geopos(string key, string[] members...) {
@@ -3652,7 +3658,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerMultiBulkReply();
     }
 
-    Long hstrlen(string key, string field) {
+    long hstrlen(string key, string field) {
         checkIsInMultiOrPipeline();
         client.hstrlen(key, field);
         return client.getIntegerReply();
@@ -3661,23 +3667,23 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) xread(int count, long block, Map!(string, string) streams) {
         checkIsInMultiOrPipeline();
         client.xread(count, block, streams);
-        return client.getBinaryMultiBulkReply();
+        return client.getMultiBulkReply();
     }
 
     List!(string) xreadGroup(string groupname, string consumer, int count, long block, bool noAck,
             Map!(string, string) streams) {
         checkIsInMultiOrPipeline();
         client.xreadGroup(groupname, consumer, count, block, noAck, streams);
-        return client.getBinaryMultiBulkReply();  
+        return client.getMultiBulkReply();  
     }
 
     string xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xadd(key, id, hash, maxLen, approximateLength);
-        return client.getBinaryBulkReply();  
+        return client.getBulkReply();  
     }
 
-    Long xlen(string key) {
+    long xlen(string key) {
         checkIsInMultiOrPipeline();
         client.xlen(key);
         return client.getIntegerReply();  
@@ -3686,16 +3692,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     List!(string) xrange(string key, StreamEntryID start, StreamEntryID end, long count) {
         checkIsInMultiOrPipeline();
         client.xrange(key, start, end, count);
-        return client.getBinaryMultiBulkReply();  
+        return client.getMultiBulkReply();  
     }
 
     List!(string) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
         checkIsInMultiOrPipeline();
         client.xrevrange(key, end, start, count);
-        return client.getBinaryMultiBulkReply();  
+        return client.getMultiBulkReply();  
     }
 
-    Long xack(string key, string group, StreamEntryID[] ids...) {
+    long xack(string key, string group, StreamEntryID[] ids...) {
         checkIsInMultiOrPipeline();
         client.xack(key, group, ids);
         return client.getIntegerReply();
@@ -3725,13 +3731,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getStatusCodeReply();  
     }
 
-    Long xdel(string key, string[] ids...) {
+    long xdel(string key, string[] ids...) {
         checkIsInMultiOrPipeline();
         client.xdel(key, ids);
         return client.getIntegerReply();
     }
 
-    Long xtrim(string key, long maxLen, bool approximateLength) {
+    long xtrim(string key, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xtrim(key, maxLen, approximateLength);
         return client.getIntegerReply();

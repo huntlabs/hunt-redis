@@ -298,19 +298,22 @@ class AbstractClient : Closeable {
     //     return bytesObj.value();
     // }
 
-    Long getIntegerReply() {
+    long getIntegerReply() {
         flush();
-        return cast(Long) readProtocolWithCheckingBroken();
+        return (cast(Long) readProtocolWithCheckingBroken()).value();
     }
 
     List!(string) getMultiBulkReply() {
-        return BuilderFactory.STRING_LIST.build(cast(Object)getBinaryMultiBulkReply());
-    }
-
-    List!(byte[]) getBinaryMultiBulkReply() {
         flush();
-        return cast(List!(byte[])) readProtocolWithCheckingBroken();
+
+        return BuilderFactory.STRING_LIST.build(readProtocolWithCheckingBroken());
     }
+    
+
+    // List!(byte[]) getBinaryMultiBulkReply() {
+    //     flush();
+    //     return cast(List!(byte[])) readProtocolWithCheckingBroken();
+    // }
 
     // deprecated("")
     // List!(Object) getRawObjectMultiBulkReply() {
