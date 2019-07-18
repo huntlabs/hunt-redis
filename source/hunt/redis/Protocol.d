@@ -14,6 +14,7 @@ import hunt.Exceptions;
 import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.Long;
+import hunt.String;
 import hunt.text.StringUtils;
 
 import std.conv;
@@ -79,25 +80,25 @@ final class Protocol {
     enum string PUBSUB_NUMSUB = "numsub";
     enum string PUBSUB_NUM_PAT = "numpat";
 
-    enum byte[] BYTES_TRUE = toByteArray(1);
-    enum byte[] BYTES_FALSE = toByteArray(0);
-    enum byte[] BYTES_TILDE = SafeEncoder.encode("~");
+    enum string BYTES_TRUE = "1";
+    enum string BYTES_FALSE = "0";
+    enum string BYTES_TILDE = "~";
 
-    enum byte[] POSITIVE_INFINITY_BYTES = StringUtils.getBytes("+inf");
-    enum byte[] NEGATIVE_INFINITY_BYTES = StringUtils.getBytes("-inf");
+    enum string POSITIVE_INFINITY_BYTES = "+inf";
+    enum string NEGATIVE_INFINITY_BYTES = "-inf";
 
     private this() {
         // this prevent the class from instantiation
     }
 
     static void sendCommand(RedisOutputStream os, Command command,
-            byte[][] args...) {
+            string[] args...) {
         // sendCommand(os, command.getRaw(), args);
-        sendCommand(os, cast(byte[])command.to!string(), args);
+        sendCommand(os, command.to!string(), args);
     }
 
-    private static void sendCommand(RedisOutputStream os, byte[] command,
-            byte[][] args...) {
+    private static void sendCommand(RedisOutputStream os, string command,
+            string[] args...) {
         try {
             os.write(ASTERISK_BYTE);
             os.writeIntCrLf(cast(int)args.length + 1);
@@ -162,9 +163,9 @@ final class Protocol {
         byte b = inputStream.readByte();
         switch(b) {
         case PLUS_BYTE:
-            return new Bytes(processStatusCodeReply(inputStream));
+            return new String(cast(string)processStatusCodeReply(inputStream));
         case DOLLAR_BYTE:
-            return new Bytes(processBulkReply(inputStream));
+            return new String(cast(string)processBulkReply(inputStream));
         case ASTERISK_BYTE:
             return cast(Object)processMultiBulkReply(inputStream);
         case COLON_BYTE:
@@ -173,7 +174,7 @@ final class Protocol {
             processError(inputStream);
             return null;
         default:
-            throw new RedisConnectionException(format("Unknown reply: %c", cast(char) b));
+            throw new RedisConnectionException(format("Unknown reply: %s", cast(char) b));
         }
     }
 
@@ -227,27 +228,49 @@ final class Protocol {
         return process(inputStream);
     }
 
-    static byte[] toByteArray(bool value) {
+    // static byte[] toByteArray(bool value) {
+    //     return value ? BYTES_TRUE : BYTES_FALSE;
+    // }
+
+    // static byte[] toByteArray(int value) {
+    //     return SafeEncoder.encode(to!string(value));
+    // }
+
+    // static byte[] toByteArray(long value) {
+    //     return SafeEncoder.encode(to!string(value));
+    // }
+
+    // static byte[] toByteArray(double value) {
+    //     if (value == double.infinity) {
+    //         return POSITIVE_INFINITY_BYTES;
+    //     } else if (value == -double.infinity) {
+    //         return NEGATIVE_INFINITY_BYTES;
+    //     } else {
+    //         return SafeEncoder.encode(to!string(value));
+    //     }
+    // }
+
+    static string toByteArray(bool value) {
         return value ? BYTES_TRUE : BYTES_FALSE;
     }
 
-    static byte[] toByteArray(int value) {
-        return SafeEncoder.encode(to!string(value));
+    static string toByteArray(int value) {
+        return to!string(value);
     }
 
-    static byte[] toByteArray(long value) {
-        return SafeEncoder.encode(to!string(value));
+    static string toByteArray(long value) {
+        return to!string(value);
     }
 
-    static byte[] toByteArray(double value) {
+    static string toByteArray(double value) {
         if (value == double.infinity) {
             return POSITIVE_INFINITY_BYTES;
         } else if (value == -double.infinity) {
             return NEGATIVE_INFINITY_BYTES;
         } else {
-            return SafeEncoder.encode(to!string(value));
+            return to!string(value);
         }
-    }
+    }    
 
     static enum Command {
         PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,

@@ -17,25 +17,20 @@ import hunt.redis.RedisShardInfo;
 import hunt.redis.ScanParams;
 import hunt.redis.ScanResult;
 import hunt.redis.SortingParams;
+import hunt.redis.StreamEntry;
+import hunt.redis.StreamEntryID;
+import hunt.redis.StreamPendingEntry;
 import hunt.redis.Transaction;
 import hunt.redis.Tuple;
 import hunt.redis.ZParams;
 
-import hunt.redis.commands.AdvancedRedisCommands;
-import hunt.redis.commands.BasicCommands;
-import hunt.redis.commands.MultiKeyCommands;
-import hunt.redis.commands.RedisCommands;
-import hunt.redis.commands.ScriptingCommands;
+import hunt.redis.commands;
 import hunt.redis.Protocol;
 import hunt.redis.Exceptions;
-import hunt.redis.params.ClientKillParams;
-import hunt.redis.params.GeoRadiusParam;
-import hunt.redis.params.MigrateParams;
-import hunt.redis.params.SetParams;
-import hunt.redis.params.ZAddParams;
-import hunt.redis.params.ZIncrByParams;
+import hunt.redis.params;
 // import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.RedisURIHelper;
+import hunt.redis.util.Slowlog;
 
 import hunt.net.util.HttpURI;
 import hunt.collection;
@@ -53,7 +48,7 @@ import std.range;
 /**
 */
 class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
-        AdvancedRedisCommands, ScriptingCommands, BasicCommands, 
+        AdvancedRedisCommands, ScriptingCommands, 
         ClusterCommands, SentinelCommands, ModuleCommands, Closeable {
     protected Client client = null;
     protected Transaction transaction = null;
@@ -216,7 +211,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     //   }
     // }
 
-    override
     string ping() {
         checkIsInMultiOrPipeline();
         client.ping();
@@ -228,7 +222,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param message
      * @return message
      */
-    byte[] ping(byte[] message) {
+    string ping(string message) {
         checkIsInMultiOrPipeline();
         client.ping(message);
         return client.getBinaryBulkReply();
@@ -243,8 +237,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Status code reply
      */
-    override
-    string set(byte[] key, byte[] value) {
+    string set(string key, string value) {
         checkIsInMultiOrPipeline();
         client.set(key, value);
         return client.getStatusCodeReply();
@@ -258,8 +251,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param params
      * @return Status code reply
      */
-    override
-    string set(byte[] key, byte[] value, SetParams params) {
+    string set(string key, string value, SetParams params) {
         checkIsInMultiOrPipeline();
         client.set(key, value, params);
         return client.getStatusCodeReply();
@@ -274,8 +266,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return Bulk reply
      */
-    override
-    byte[] get(byte[] key) {
+    string get(string key) {
         checkIsInMultiOrPipeline();
         client.get(key);
         return client.getBinaryBulkReply();
@@ -284,7 +275,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     /**
      * Ask the server to silently close the connection.
      */
-    override
     string quit() {
         checkIsInMultiOrPipeline();
         client.quit();
@@ -300,8 +290,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: an integer greater than 0 if one or more keys exist,
      *         0 if none of the specified keys exist.
      */
-    override
-    Long exists(byte[][] keys...) {
+    Long exists(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.exists(keys);
         return client.getIntegerReply();
@@ -314,8 +303,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return bool reply, true if the key exists, otherwise false
      */
-    override
-    bool exists(byte[] key) {
+    bool exists(string key) {
         checkIsInMultiOrPipeline();
         client.exists(key);
         return client.getIntegerReply() == 1;
@@ -328,15 +316,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: an integer greater than 0 if one or more keys were removed
      *         0 if none of the specified key existed
      */
-    override
-    Long del(byte[][] keys...) {
+    Long del(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.del(keys);
         return client.getIntegerReply();
     }
 
-    override
-    Long del(byte[] key) {
+    Long del(string key) {
         checkIsInMultiOrPipeline();
         client.del(key);
         return client.getIntegerReply();
@@ -355,15 +341,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Integer reply: The number of keys that were unlinked
      */
-    override
-    Long unlink(byte[][] keys...) {
+    Long unlink(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.unlink(keys);
         return client.getIntegerReply();
     }
 
-    override
-    Long unlink(byte[] key) {
+    Long unlink(string key) {
         checkIsInMultiOrPipeline();
         client.unlink(key);
         return client.getIntegerReply();
@@ -378,8 +362,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         contains a Set value "zset" if the key contains a Sorted Set value "hash" if the key
      *         contains a Hash value
      */
-    override
-    string type(byte[] key) {
+    string type(string key) {
         checkIsInMultiOrPipeline();
         client.type(key);
         return client.getStatusCodeReply();
@@ -389,7 +372,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Delete all the keys of the currently selected DB. This command never fails.
      * @return Status code reply
      */
-    override
     string flushDB() {
         checkIsInMultiOrPipeline();
         client.flushDB();
@@ -424,27 +406,25 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param pattern
      * @return Multi bulk reply
      */
-    override
-    Set!(byte[]) keys(byte[] pattern) {
+    Set!(string) keys(string pattern) {
         checkIsInMultiOrPipeline();
         client.keys(pattern);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    /**
+      /**
      * Return a randomly selected key from the currently selected DB.
      * <p>
      * Time complexity: O(1)
-     * @return Single line reply, specifically the randomly selected key or an empty string is the
+     * @return Singe line reply, specifically the randomly selected key or an empty string is the
      *         database is empty
      */
-    override
-    byte[] randomBinaryKey() {
+    string randomKey() {
         checkIsInMultiOrPipeline();
         client.randomKey();
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
-
+    
     /**
      * Atomically renames the key oldkey to newkey. If the source and destination name are the same an
      * error is returned. If newkey already exists it is overwritten.
@@ -454,8 +434,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param newkey
      * @return Status code repy
      */
-    override
-    string rename(byte[] oldkey, byte[] newkey) {
+    string rename(string oldkey, string newkey) {
         checkIsInMultiOrPipeline();
         client.rename(oldkey, newkey);
         return client.getStatusCodeReply();
@@ -469,8 +448,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param newkey
      * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
      */
-    override
-    Long renamenx(byte[] oldkey, byte[] newkey) {
+    Long renamenx(string oldkey, string newkey) {
         checkIsInMultiOrPipeline();
         client.renamenx(oldkey, newkey);
         return client.getIntegerReply();
@@ -480,7 +458,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Return the number of keys in the currently selected database.
      * @return Integer reply
      */
-    override
     Long dbSize() {
         checkIsInMultiOrPipeline();
         client.dbSize();
@@ -498,7 +475,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * Since Redis 2.1.3 you can update the value of the timeout of a key already having an expire
      * set. It is also possible to undo the expire at all turning the key into a normal key using the
-     * {@link #persist(byte[]) PERSIST} command.
+     * {@link #persist(string) PERSIST} command.
      * <p>
      * Time complexity: O(1)
      * @see <a href="http://redis.io/commands/expire">Expire Command</a>
@@ -508,15 +485,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions &lt;
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    override
-    Long expire(byte[] key, int seconds) {
+    Long expire(string key, int seconds) {
         checkIsInMultiOrPipeline();
         client.expire(key, seconds);
         return client.getIntegerReply();
     }
 
     /**
-     * EXPIREAT works exactly like {@link #expire(byte[], int) EXPIRE} but instead to get the number of
+     * EXPIREAT works exactly like {@link #expire(string, int) EXPIRE} but instead to get the number of
      * seconds representing the Time To Live of the key as a second argument (that is a relative way
      * of specifying the TTL), it takes an absolute one in the form of a UNIX timestamp (Number of
      * seconds elapsed since 1 Gen 1970).
@@ -528,7 +504,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * Since Redis 2.1.3 you can update the value of the timeout of a key already having an expire
      * set. It is also possible to undo the expire at all turning the key into a normal key using the
-     * {@link #persist(byte[]) PERSIST} command.
+     * {@link #persist(string) PERSIST} command.
      * <p>
      * Time complexity: O(1)
      * @see <a href="http://redis.io/commands/expire">Expire Command</a>
@@ -538,8 +514,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions &lt;
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    override
-    Long expireAt(byte[] key, long unixTime) {
+    Long expireAt(string key, long unixTime) {
         checkIsInMultiOrPipeline();
         client.expireAt(key, unixTime);
         return client.getIntegerReply();
@@ -547,15 +522,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * The TTL command returns the remaining time to live in seconds of a key that has an
-     * {@link #expire(byte[], int) EXPIRE} set. This introspection capability allows a Redis client to
+     * {@link #expire(string, int) EXPIRE} set. This introspection capability allows a Redis client to
      * check how many seconds a given key will continue to be part of the dataset.
      * @param key
      * @return Integer reply, returns the remaining time to live in seconds of a key that has an
      *         EXPIRE. If the Key does not exists or does not have an associated expire, -1 is
      *         returned.
      */
-    override
-    Long ttl(byte[] key) {
+    Long ttl(string key) {
         checkIsInMultiOrPipeline();
         client.ttl(key);
         return client.getIntegerReply();
@@ -567,15 +541,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Integer reply: The number of keys that were touched.
      */
-    override
-    Long touch(byte[][] keys...) {
+    Long touch(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.touch(keys);
         return client.getIntegerReply();
     }
 
-    override
-    Long touch(byte[] key) {
+    Long touch(string key) {
         checkIsInMultiOrPipeline();
         client.touch(key);
         return client.getIntegerReply();
@@ -587,7 +559,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param index
      * @return Status code reply
      */
-    override
     string select(int index) {
         checkIsInMultiOrPipeline();
         client.select(index);
@@ -597,7 +568,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return statusCodeReply;
     }
 
-    override
     string swapDB(int index1, int index2) {
         checkIsInMultiOrPipeline();
         client.swapDB(index1, index2);
@@ -614,8 +584,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the key was moved 0 if the key was not moved because
      *         already present on the target DB or was not found in the current DB.
      */
-    override
-    Long move(byte[] key, int dbIndex) {
+    Long move(string key, int dbIndex) {
         checkIsInMultiOrPipeline();
         client.move(key, dbIndex);
         return client.getIntegerReply();
@@ -626,7 +595,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * command never fails.
      * @return Status code reply
      */
-    override
     string flushAll() {
         checkIsInMultiOrPipeline();
         client.flushAll();
@@ -643,8 +611,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Bulk reply
      */
-    override
-    byte[] getSet(byte[] key, byte[] value) {
+    string getSet(string key, string value) {
         checkIsInMultiOrPipeline();
         client.getSet(key, value);
         return client.getBinaryBulkReply();
@@ -659,15 +626,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Multi bulk reply
      */
-    override
-    List!(byte[]) mget(byte[][] keys...) {
+    List!(string) mget(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.mget(keys);
         return client.getBinaryMultiBulkReply();
     }
 
     /**
-     * SETNX works exactly like {@link #set(byte[], byte[]) SET} with the only difference that if the
+     * SETNX works exactly like {@link #set(string, string) SET} with the only difference that if the
      * key already exists no operation is performed. SETNX actually means "SET if Not eXists".
      * <p>
      * Time complexity: O(1)
@@ -675,8 +641,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply, specifically: 1 if the key was set 0 if the key was not set
      */
-    override
-    Long setnx(byte[] key, byte[] value) {
+    Long setnx(string key, string value) {
         checkIsInMultiOrPipeline();
         client.setnx(key, value);
         return client.getIntegerReply();
@@ -684,7 +649,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * The command is exactly equivalent to the following group of commands:
-     * {@link #set(byte[], byte[]) SET} + {@link #expire(byte[], int) EXPIRE}. The operation is
+     * {@link #set(string, string) SET} + {@link #expire(string, int) EXPIRE}. The operation is
      * atomic.
      * <p>
      * Time complexity: O(1)
@@ -693,8 +658,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Status code reply
      */
-    override
-    string setex(byte[] key, int seconds, byte[] value) {
+    string setex(string key, int seconds, string value) {
         checkIsInMultiOrPipeline();
         client.setex(key, seconds, value);
         return client.getStatusCodeReply();
@@ -702,7 +666,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * Set the the respective keys to the respective values. MSET will replace old values with new
-     * values, while {@link #msetnx(byte[]...) MSETNX} will not perform any operation at all even if
+     * values, while {@link #msetnx(string...) MSETNX} will not perform any operation at all even if
      * just a single key already exists.
      * <p>
      * Because of this semantic MSETNX can be used in order to set different keys representing
@@ -712,19 +676,18 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Both MSET and MSETNX are atomic operations. This means that for instance if the keys A and B
      * are modified, another client talking to Redis can either see the changes to both A and B at
      * once, or no modification at all.
-     * @see #msetnx(byte[]...)
+     * @see #msetnx(string...)
      * @param keysvalues
      * @return Status code reply Basically +OK as MSET can't fail
      */
-    override
-    string mset(byte[][] keysvalues...) {
+    string mset(string[] keysvalues...) {
         checkIsInMultiOrPipeline();
         client.mset(keysvalues);
         return client.getStatusCodeReply();
     }
 
     /**
-     * Set the the respective keys to the respective values. {@link #mset(byte[]...) MSET} will
+     * Set the the respective keys to the respective values. {@link #mset(string...) MSET} will
      * replace old values with new values, while MSETNX will not perform any operation at all even if
      * just a single key already exists.
      * <p>
@@ -735,20 +698,19 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Both MSET and MSETNX are atomic operations. This means that for instance if the keys A and B
      * are modified, another client talking to Redis can either see the changes to both A and B at
      * once, or no modification at all.
-     * @see #mset(byte[]...)
+     * @see #mset(string...)
      * @param keysvalues
      * @return Integer reply, specifically: 1 if the all the keys were set 0 if no key was set (at
      *         least one key already existed)
      */
-    override
-    Long msetnx(byte[][] keysvalues...) {
+    Long msetnx(string[] keysvalues...) {
         checkIsInMultiOrPipeline();
         client.msetnx(keysvalues);
         return client.getIntegerReply();
     }
 
     /**
-     * DECRBY work just like {@link #decr(byte[]) INCR} but instead to decrement by 1 the decrement is
+     * DECRBY work just like {@link #decr(string) INCR} but instead to decrement by 1 the decrement is
      * integer.
      * <p>
      * INCR commands are limited to 64 bit signed integers.
@@ -758,15 +720,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * and then converted back as a string.
      * <p>
      * Time complexity: O(1)
-     * @see #incr(byte[])
-     * @see #decr(byte[])
-     * @see #incrBy(byte[], long)
+     * @see #incr(string)
+     * @see #decr(string)
+     * @see #incrBy(string, long)
      * @param key
      * @param decrement
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    override
-    Long decrBy(byte[] key, long decrement) {
+    Long decrBy(string key, long decrement) {
         checkIsInMultiOrPipeline();
         client.decrBy(key, decrement);
         return client.getIntegerReply();
@@ -783,21 +744,20 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * and then converted back as a string.
      * <p>
      * Time complexity: O(1)
-     * @see #incr(byte[])
-     * @see #incrBy(byte[], long)
-     * @see #decrBy(byte[], long)
+     * @see #incr(string)
+     * @see #incrBy(string, long)
+     * @see #decrBy(string, long)
      * @param key
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    override
-    Long decr(byte[] key) {
+    Long decr(string key) {
         checkIsInMultiOrPipeline();
         client.decr(key);
         return client.getIntegerReply();
     }
 
     /**
-     * INCRBY work just like {@link #incr(byte[]) INCR} but instead to increment by 1 the increment is
+     * INCRBY work just like {@link #incr(string) INCR} but instead to increment by 1 the increment is
      * integer.
      * <p>
      * INCR commands are limited to 64 bit signed integers.
@@ -807,22 +767,21 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * and then converted back as a string.
      * <p>
      * Time complexity: O(1)
-     * @see #incr(byte[])
-     * @see #decr(byte[])
-     * @see #decrBy(byte[], long)
+     * @see #incr(string)
+     * @see #decr(string)
+     * @see #decrBy(string, long)
      * @param key
      * @param increment
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    override
-    Long incrBy(byte[] key, long increment) {
+    Long incrBy(string key, long increment) {
         checkIsInMultiOrPipeline();
         client.incrBy(key, increment);
         return client.getIntegerReply();
     }
 
     /**
-     * INCRBYFLOAT work just like {@link #incrBy(byte[], long)} INCRBY} but increments by floats
+     * INCRBYFLOAT work just like {@link #incrBy(string, long)} INCRBY} but increments by floats
      * instead of integers.
      * <p>
      * INCRBYFLOAT commands are limited to double precision floating point values.
@@ -833,15 +792,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * negative value will work as expected.
      * <p>
      * Time complexity: O(1)
-     * @see #incr(byte[])
-     * @see #decr(byte[])
-     * @see #decrBy(byte[], long)
+     * @see #incr(string)
+     * @see #decr(string)
+     * @see #decrBy(string, long)
      * @param key the key to increment
      * @param increment the value to increment by
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    override
-    Double incrByFloat(byte[] key, double increment) {
+    Double incrByFloat(string key, double increment) {
         checkIsInMultiOrPipeline();
         client.incrByFloat(key, increment);
         string dval = client.getBulkReply();
@@ -859,14 +817,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * and then converted back as a string.
      * <p>
      * Time complexity: O(1)
-     * @see #incrBy(byte[], long)
-     * @see #decr(byte[])
-     * @see #decrBy(byte[], long)
+     * @see #incrBy(string, long)
+     * @see #decr(string)
+     * @see #decrBy(string, long)
      * @param key
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
-    override
-    Long incr(byte[] key) {
+    Long incr(string key) {
         checkIsInMultiOrPipeline();
         client.incr(key);
         return client.getIntegerReply();
@@ -884,8 +841,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply, specifically the total length of the string after the append operation.
      */
-    override
-    Long append(byte[] key, byte[] value) {
+    Long append(string key, string value) {
         checkIsInMultiOrPipeline();
         client.append(key, value);
         return client.getIntegerReply();
@@ -907,8 +863,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param end
      * @return Bulk reply
      */
-    override
-    byte[] substr(byte[] key, int start, int end) {
+    string substr(string key, int start, int end) {
         checkIsInMultiOrPipeline();
         client.substr(key, start, end);
         return client.getBinaryBulkReply();
@@ -926,15 +881,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field already exists, and the HSET just produced an update of the value, 0 is
      *         returned, otherwise if a new field is created 1 is returned.
      */
-    override
-    Long hset(byte[] key, byte[] field, byte[] value) {
+    Long hset(string key, string field, string value) {
         checkIsInMultiOrPipeline();
         client.hset(key, field, value);
         return client.getIntegerReply();
     }
 
-    override
-    Long hset(byte[] key, Map!(byte[], byte[]) hash) {
+    Long hset(string key, Map!(string, string) hash) {
         checkIsInMultiOrPipeline();
         client.hset(key, hash);
         return client.getIntegerReply();
@@ -950,8 +903,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param field
      * @return Bulk reply
      */
-    override
-    byte[] hget(byte[] key, byte[] field) {
+    string hget(string key, string field) {
         checkIsInMultiOrPipeline();
         client.hget(key, field);
         return client.getBinaryBulkReply();
@@ -966,8 +918,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field already exists, 0 is returned, otherwise if a new field is created 1 is
      *         returned.
      */
-    override
-    Long hsetnx(byte[] key, byte[] field, byte[] value) {
+    Long hsetnx(string key, string field, string value) {
         checkIsInMultiOrPipeline();
         client.hsetnx(key, field, value);
         return client.getIntegerReply();
@@ -983,8 +934,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param hash
      * @return Always OK because HMSET can't fail
      */
-    override
-    string hmset(byte[] key, Map!(byte[], byte[]) hash) {
+    string hmset(string key, Map!(string, string) hash) {
         checkIsInMultiOrPipeline();
         client.hmset(key, hash);
         return client.getStatusCodeReply();
@@ -1002,8 +952,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Multi Bulk Reply specifically a list of all the values associated with the specified
      *         fields, in the same order of the request.
      */
-    override
-    List!(byte[]) hmget(byte[] key, byte[][] fields...) {
+    List!(string) hmget(string key, string[] fields...) {
         checkIsInMultiOrPipeline();
         client.hmget(key, fields);
         return client.getBinaryMultiBulkReply();
@@ -1023,8 +972,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer reply The new value at field after the increment operation.
      */
-    override
-    Long hincrBy(byte[] key, byte[] field, long value) {
+    Long hincrBy(string key, string field, long value) {
         checkIsInMultiOrPipeline();
         client.hincrBy(key, field, value);
         return client.getIntegerReply();
@@ -1046,8 +994,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Double precision floating point reply The new value at field after the increment
      *         operation.
      */
-    override
-    Double hincrByFloat(byte[] key, byte[] field, double value) {
+    Double hincrByFloat(string key, string field, double value) {
         checkIsInMultiOrPipeline();
         client.hincrByFloat(key, field, value);
         string dval = client.getBulkReply();
@@ -1061,8 +1008,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Return true if the hash stored at key contains the specified field. Return false if the key is
      *         not found or the field is not present.
      */
-    override
-    bool hexists(byte[] key, byte[] field) {
+    bool hexists(string key, string field) {
         checkIsInMultiOrPipeline();
         client.hexists(key, field);
         return client.getIntegerReply() == 1;
@@ -1077,8 +1023,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return If the field was present in the hash it is deleted and 1 is returned, otherwise 0 is
      *         returned and no operation is performed.
      */
-    override
-    Long hdel(byte[] key, byte[][] fields...) {
+    Long hdel(string key, string[] fields...) {
         checkIsInMultiOrPipeline();
         client.hdel(key, fields);
         return client.getIntegerReply();
@@ -1092,8 +1037,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return The number of entries (fields) contained in the hash stored at key. If the specified
      *         key does not exist, 0 is returned assuming an empty hash.
      */
-    override
-    Long hlen(byte[] key) {
+    Long hlen(string key) {
         checkIsInMultiOrPipeline();
         client.hlen(key);
         return client.getIntegerReply();
@@ -1106,11 +1050,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return All the fields names contained into a hash.
      */
-    override
-    Set!(byte[]) hkeys(byte[] key) {
+    Set!(string) hkeys(string key) {
         checkIsInMultiOrPipeline();
         client.hkeys(key);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -1120,8 +1063,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return All the fields values contained into a hash.
      */
-    override
-    List!(byte[]) hvals(byte[] key) {
+    List!(string) hvals(string key) {
         checkIsInMultiOrPipeline();
         client.hvals(key);
         return client.getBinaryMultiBulkReply();
@@ -1134,17 +1076,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return All the fields and values contained into a hash.
      */
-    override
-    Map!(byte[], byte[]) hgetAll(byte[] key) {
+    Map!(string, string) hgetAll(string key) {
         checkIsInMultiOrPipeline();
         client.hgetAll(key);
-        List!(byte[]) flatHash = client.getBinaryMultiBulkReply();
-        Map!(byte[], byte[]) hash = new RedisByteHashMap();
-        InputRange!(byte[]) iterator = flatHash.iterator();
+        List!(string) flatHash = client.getBinaryMultiBulkReply();
+        Map!(string, string) hash = new RedisByteHashMap();
+        InputRange!(string) iterator = flatHash.iterator();
         while(!iterator.empty()) {
-            byte[] k = iterator.front();
+            string k = iterator.front();
             iterator.popFront();
-            byte[] v = iterator.front();
+            string v = iterator.front();
             iterator.popFront();
             hash.put(k, v);
         }
@@ -1158,14 +1099,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * is not a List an error is returned.
      * <p>
      * Time complexity: O(1)
-     * @see BinaryRedis#rpush(byte[], byte[]...)
+     * @see BinaryRedis#rpush(string, string...)
      * @param key
      * @param strings
      * @return Integer reply, specifically, the number of elements inside the list after the push
      *         operation.
      */
-    override
-    Long rpush(byte[] key, byte[][] strings...) {
+    Long rpush(string key, string[] strings...) {
         checkIsInMultiOrPipeline();
         client.rpush(key, strings);
         return client.getIntegerReply();
@@ -1177,14 +1117,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * is not a List an error is returned.
      * <p>
      * Time complexity: O(1)
-     * @see BinaryRedis#rpush(byte[], byte[]...)
+     * @see BinaryRedis#rpush(string, string...)
      * @param key
      * @param strings
      * @return Integer reply, specifically, the number of elements inside the list after the push
      *         operation.
      */
-    override
-    Long lpush(byte[] key, byte[][] strings...) {
+    Long lpush(string key, string[] strings...) {
         checkIsInMultiOrPipeline();
         client.lpush(key, strings);
         return client.getIntegerReply();
@@ -1199,8 +1138,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return The length of the list.
      */
-    override
-    Long llen(byte[] key) {
+    Long llen(string key) {
         checkIsInMultiOrPipeline();
         client.llen(key);
         return client.getIntegerReply();
@@ -1238,8 +1176,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param stop
      * @return Multi bulk reply, specifically a list of elements in the specified range.
      */
-    override
-    List!(byte[]) lrange(byte[] key, long start, long stop) {
+    List!(string) lrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.lrange(key, start, stop);
         return client.getBinaryMultiBulkReply();
@@ -1275,8 +1212,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param stop
      * @return Status code reply
      */
-    override
-    string ltrim(byte[] key, long start, long stop) {
+    string ltrim(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.ltrim(key, start, stop);
         return client.getStatusCodeReply();
@@ -1298,8 +1234,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param index
      * @return Bulk reply, specifically the requested element
      */
-    override
-    byte[] lindex(byte[] key, long index) {
+    string lindex(string key, long index) {
         checkIsInMultiOrPipeline();
         client.lindex(key, index);
         return client.getBinaryBulkReply();
@@ -1318,14 +1253,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * O(N) (with N being the length of the list), setting the first or last elements of the list is
      * O(1).
-     * @see #lindex(byte[], long)
+     * @see #lindex(string, long)
      * @param key
      * @param index
      * @param value
      * @return Status code reply
      */
-    override
-    string lset(byte[] key, long index, byte[] value) {
+    string lset(string key, long index, string value) {
         checkIsInMultiOrPipeline();
         client.lset(key, index, value);
         return client.getStatusCodeReply();
@@ -1346,8 +1280,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Integer Reply, specifically: The number of removed elements if the operation succeeded
      */
-    override
-    Long lrem(byte[] key, long count, byte[] value) {
+    Long lrem(string key, long count, string value) {
         checkIsInMultiOrPipeline();
         client.lrem(key, count, value);
         return client.getIntegerReply();
@@ -1359,12 +1292,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * "b","c".
      * <p>
      * If the key does not exist or the list is already empty the special value 'nil' is returned.
-     * @see #rpop(byte[])
+     * @see #rpop(string)
      * @param key
      * @return Bulk reply
      */
-    override
-    byte[] lpop(byte[] key) {
+    string lpop(string key) {
         checkIsInMultiOrPipeline();
         client.lpop(key);
         return client.getBinaryBulkReply();
@@ -1376,12 +1308,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * "b","c".
      * <p>
      * If the key does not exist or the list is already empty the special value 'nil' is returned.
-     * @see #lpop(byte[])
+     * @see #lpop(string)
      * @param key
      * @return Bulk reply
      */
-    override
-    byte[] rpop(byte[] key) {
+    string rpop(string key) {
         checkIsInMultiOrPipeline();
         client.rpop(key);
         return client.getBinaryBulkReply();
@@ -1402,8 +1333,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param dstkey
      * @return Bulk reply
      */
-    override
-    byte[] rpoplpush(byte[] srckey, byte[] dstkey) {
+    string rpoplpush(string srckey, string dstkey) {
         checkIsInMultiOrPipeline();
         client.rpoplpush(srckey, dstkey);
         return client.getBinaryBulkReply();
@@ -1420,8 +1350,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
      *         already a member of the set
      */
-    override
-    Long sadd(byte[] key, byte[][] members...) {
+    Long sadd(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.sadd(key, members);
         return client.getIntegerReply();
@@ -1429,17 +1358,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * Return all the members (elements) of the set value stored at key. This is just syntax glue for
-     * {@link #sinter(byte[]...)} SINTER}.
+     * {@link #sinter(string...)} SINTER}.
      * <p>
      * Time complexity O(N)
      * @param key the key of the set
      * @return Multi bulk reply
      */
-    override
-    Set!(byte[]) smembers(byte[] key) {
+    Set!(string) smembers(string key) {
         checkIsInMultiOrPipeline();
         client.smembers(key);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -1452,8 +1380,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
      *         not a member of the set
      */
-    override
-    Long srem(byte[] key, byte[][] member...) {
+    Long srem(string key, string[] member...) {
         checkIsInMultiOrPipeline();
         client.srem(key, member);
         return client.getIntegerReply();
@@ -1463,27 +1390,25 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Remove a random element from a Set returning it as return value. If the Set is empty or the key
      * does not exist, a nil object is returned.
      * <p>
-     * The {@link #srandmember(byte[])} command does a similar work but the returned element is not
+     * The {@link #srandmember(string)} command does a similar work but the returned element is not
      * removed from the Set.
      * <p>
      * Time complexity O(1)
      * @param key
      * @return Bulk reply
      */
-    override
-    byte[] spop(byte[] key) {
+    string spop(string key) {
         checkIsInMultiOrPipeline();
         client.spop(key);
         return client.getBinaryBulkReply();
     }
 
-    override
-    Set!(byte[]) spop(byte[] key, long count) {
+    Set!(string) spop(string key, long count) {
         checkIsInMultiOrPipeline();
         client.spop(key, count);
-        List!(byte[]) members = client.getBinaryMultiBulkReply();
+        List!(string) members = client.getBinaryMultiBulkReply();
         if (members is null) return null;
-        return new SetFromList!(byte[])(members);
+        return new SetFromList!(string)(members);
     }
 
     /**
@@ -1505,8 +1430,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the element was moved 0 if the element was not found
      *         on the first set and no operation was performed
      */
-    override
-    Long smove(byte[] srckey, byte[] dstkey, byte[] member) {
+    Long smove(string srckey, string dstkey, string member) {
         checkIsInMultiOrPipeline();
         client.smove(srckey, dstkey, member);
         return client.getIntegerReply();
@@ -1519,8 +1443,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: the cardinality (number of elements) of the set as an
      *         integer.
      */
-    override
-    Long scard(byte[] key) {
+    Long scard(string key) {
         checkIsInMultiOrPipeline();
         client.scard(key);
         return client.getIntegerReply();
@@ -1535,8 +1458,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return bool reply, specifically: true if the element is a member of the set false if the element
      *         is not a member of the set OR if the key does not exist
      */
-    override
-    bool sismember(byte[] key, byte[] member) {
+    bool sismember(string key, string member) {
         checkIsInMultiOrPipeline();
         client.sismember(key, member);
         return client.getIntegerReply() == 1;
@@ -1544,10 +1466,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * Return the members of a set resulting from the intersection of all the sets hold at the
-     * specified keys. Like in {@link #lrange(byte[], long, long)} LRANGE} the result is sent to the
+     * specified keys. Like in {@link #lrange(string, long, long)} LRANGE} the result is sent to the
      * client as a multi-bulk reply (see the protocol specification for more information). If just a
      * single key is specified, then this command produces the same result as
-     * {@link #smembers(byte[]) SMEMBERS}. Actually SMEMBERS is just syntax sugar for SINTER.
+     * {@link #smembers(string) SMEMBERS}. Actually SMEMBERS is just syntax sugar for SINTER.
      * <p>
      * Non existing keys are considered like empty sets, so if one of the keys is missing an empty set
      * is returned (since the intersection with an empty set always is an empty set).
@@ -1557,15 +1479,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Multi bulk reply, specifically the list of common elements.
      */
-    override
-    Set!(byte[]) sinter(byte[][] keys...) {
+    Set!(string) sinter(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sinter(keys);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
-     * This commanad works exactly like {@link #sinter(byte[]...) SINTER} but instead of being returned
+     * This commanad works exactly like {@link #sinter(string...) SINTER} but instead of being returned
      * the resulting set is stored as dstkey.
      * <p>
      * Time complexity O(N*M) worst case where N is the cardinality of the smallest set and M the
@@ -1574,8 +1495,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Status code reply
      */
-    override
-    Long sinterstore(byte[] dstkey, byte[][] keys...) {
+    Long sinterstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sinterstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1583,9 +1503,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * Return the members of a set resulting from the union of all the sets hold at the specified
-     * keys. Like in {@link #lrange(byte[], long, long)} LRANGE} the result is sent to the client as a
+     * keys. Like in {@link #lrange(string, long, long)} LRANGE} the result is sent to the client as a
      * multi-bulk reply (see the protocol specification for more information). If just a single key is
-     * specified, then this command produces the same result as {@link #smembers(byte[]) SMEMBERS}.
+     * specified, then this command produces the same result as {@link #smembers(string) SMEMBERS}.
      * <p>
      * Non existing keys are considered like empty sets.
      * <p>
@@ -1593,15 +1513,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Multi bulk reply, specifically the list of common elements.
      */
-    override
-    Set!(byte[]) sunion(byte[][] keys...) {
+    Set!(string) sunion(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sunion(keys);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
-     * This command works exactly like {@link #sunion(byte[]...) SUNION} but instead of being returned
+     * This command works exactly like {@link #sunion(string...) SUNION} but instead of being returned
      * the resulting set is stored as dstkey. Any existing value in dstkey will be over-written.
      * <p>
      * Time complexity O(N) where N is the total number of elements in all the provided sets
@@ -1609,8 +1528,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param keys
      * @return Status code reply
      */
-    override
-    Long sunionstore(byte[] dstkey, byte[][] keys...) {
+    Long sunionstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sunionstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1637,22 +1555,20 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Return the members of a set resulting from the difference between the first set
      *         provided and all the successive sets.
      */
-    override
-    Set!(byte[]) sdiff(byte[][] keys...) {
+    Set!(string) sdiff(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiff(keys);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
-     * This command works exactly like {@link #sdiff(byte[]...) SDIFF} but instead of being returned
+     * This command works exactly like {@link #sdiff(string...) SDIFF} but instead of being returned
      * the resulting set is stored in dstkey.
      * @param dstkey
      * @param keys
      * @return Status code reply
      */
-    override
-    Long sdiffstore(byte[] dstkey, byte[][] keys...) {
+    Long sdiffstore(string dstkey, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiffstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1668,15 +1584,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return Bulk reply
      */
-    override
-    byte[] srandmember(byte[] key) {
+    string srandmember(string key) {
         checkIsInMultiOrPipeline();
         client.srandmember(key);
         return client.getBinaryBulkReply();
     }
 
-    override
-    List!(byte[]) srandmember(byte[] key, int count) {
+    List!(string) srandmember(string key, int count) {
         checkIsInMultiOrPipeline();
         client.srandmember(key, count);
         return client.getBinaryMultiBulkReply();
@@ -1698,39 +1612,34 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was added 0 if the element was
      *         already a member of the sorted set and the score was updated
      */
-    override
-    Long zadd(byte[] key, double score, byte[] member) {
+    Long zadd(string key, double score, string member) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member);
         return client.getIntegerReply();
     }
 
-    override
-    Long zadd(byte[] key, double score, byte[] member, ZAddParams params) {
+    Long zadd(string key, double score, string member, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member, params);
         return client.getIntegerReply();
     }
 
-    override
-    Long zadd(byte[] key, Map!(byte[], Double) scoreMembers) {
+    Long zadd(string key, Map!(string, Double) scoreMembers) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers);
         return client.getIntegerReply();
     }
 
-    override
-    Long zadd(byte[] key, Map!(byte[], Double) scoreMembers, ZAddParams params) {
+    Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers, params);
         return client.getIntegerReply();
     }
 
-    override
-    Set!(byte[]) zrange(byte[] key, long start, long stop) {
+    Set!(string) zrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrange(key, start, stop);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -1744,8 +1653,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Integer reply, specifically: 1 if the new element was removed 0 if the new element was
      *         not a member of the set
      */
-    override
-    Long zrem(byte[] key, byte[][] members...) {
+    Long zrem(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.zrem(key, members);
         return client.getIntegerReply();
@@ -1769,15 +1677,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param member
      * @return The new score
      */
-    override
-    Double zincrby(byte[] key, double increment, byte[] member) {
+    Double zincrby(string key, double increment, string member) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member);
         return BuilderFactory.DOUBLE.build(client.getOne());
     }
 
-    override
-    Double zincrby(byte[] key, double increment, byte[] member, ZIncrByParams params) {
+    Double zincrby(string key, double increment, string member, ZIncrByParams params) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member, params);
         return BuilderFactory.DOUBLE.build(client.getOne());
@@ -1793,14 +1699,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <b>Time complexity:</b>
      * <p>
      * O(log(N))
-     * @see #zrevrank(byte[], byte[])
+     * @see #zrevrank(string, string)
      * @param key
      * @param member
      * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
-    override
-    Long zrank(byte[] key, byte[] member) {
+    Long zrank(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zrank(key, member);
         return client.getIntegerReply();
@@ -1816,35 +1721,31 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <b>Time complexity:</b>
      * <p>
      * O(log(N))
-     * @see #zrank(byte[], byte[])
+     * @see #zrank(string, string)
      * @param key
      * @param member
      * @return Integer reply or a nil bulk reply, specifically: the rank of the element as an integer
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
-    override
-    Long zrevrank(byte[] key, byte[] member) {
+    Long zrevrank(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zrevrank(key, member);
         return client.getIntegerReply();
     }
 
-    override
-    Set!(byte[]) zrevrange(byte[] key, long start, long stop) {
+    Set!(string) zrevrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrevrange(key, start, stop);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(Tuple) zrangeWithScores(byte[] key, long start, long stop) {
+    Set!(Tuple) zrangeWithScores(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrangeWithScores(key, start, stop);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrevrangeWithScores(byte[] key, long start, long stop) {
+    Set!(Tuple) zrevrangeWithScores(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrevrangeWithScores(key, start, stop);
         return getTupledSet();
@@ -1858,8 +1759,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param key
      * @return the cardinality (number of elements) of the set as an integer.
      */
-    override
-    Long zcard(byte[] key) {
+    Long zcard(string key) {
         checkIsInMultiOrPipeline();
         client.zcard(key);
         return client.getIntegerReply();
@@ -1875,8 +1775,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param member
      * @return the score
      */
-    override
-    Double zscore(byte[] key, byte[] member) {
+    Double zscore(string key, string member) {
         checkIsInMultiOrPipeline();
         client.zscore(key, member);
         string score = client.getBulkReply();
@@ -1925,19 +1824,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         pipeline = null;
     }
 
-    override
-    string watch(byte[][] keys...) {
+    string watch(string[] keys...) {
         client.watch(keys);
         return client.getStatusCodeReply();
     }
 
-    override
     string unwatch() {
         client.unwatch();
         return client.getStatusCodeReply();
     }
 
-    override
     void close() {
         client.close();
     }
@@ -1948,15 +1844,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Sort the elements contained in the List, Set, or Sorted Set value at key. By default sorting is
      * numeric with elements being compared as double precision floating point numbers. This is the
      * simplest form of SORT.
-     * @see #sort(byte[], byte[])
-     * @see #sort(byte[], SortingParams)
-     * @see #sort(byte[], SortingParams, byte[])
+     * @see #sort(string, string)
+     * @see #sort(string, SortingParams)
+     * @see #sort(string, SortingParams, string)
      * @param key
      * @return Assuming the Set/List at key contains a list of numbers, the return value will be the
      *         list of numbers ordered from the smallest to the biggest number.
      */
-    override
-    List!(byte[]) sort(byte[] key) {
+    List!(string) sort(string key) {
         checkIsInMultiOrPipeline();
         client.sort(key);
         return client.getBinaryMultiBulkReply();
@@ -2030,14 +1925,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * sort(x, sp.by(w*).get(#).get(k*))
      * -&gt; [3, x, 2, y, 1, z]
      * </pre>
-     * @see #sort(byte[])
-     * @see #sort(byte[], SortingParams, byte[])
+     * @see #sort(string)
+     * @see #sort(string, SortingParams, string)
      * @param key
      * @param sortingParameters
      * @return a list of sorted elements.
      */
-    override
-    List!(byte[]) sort(byte[] key, SortingParams sortingParameters) {
+    List!(string) sort(string key, SortingParams sortingParameters) {
         checkIsInMultiOrPipeline();
         client.sort(key, sortingParameters);
         return client.getBinaryMultiBulkReply();
@@ -2095,7 +1989,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * it like if inside MULTI/EXEC the time will flow at infinite speed :)
      * <p>
      * Time complexity: O(1)
-     * @see #brpop(int, byte[]...)
+     * @see #brpop(int, string...)
      * @param timeout
      * @param keys
      * @return BLPOP returns a two-elements array via a multi bulk reply in order to return both the
@@ -2105,14 +1999,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         value is a nil multi bulk reply. Most client values will return false or nil
      *         accordingly to the programming language used.
      */
-    override
-    List!(byte[]) blpop(int timeout, byte[][] keys...) {
+    List!(string) blpop(int timeout, string[] keys...) {
         return blpop(getArgsAddTimeout(timeout, keys));
     }
 
-    private byte[][] getArgsAddTimeout(int timeout, byte[][] keys) {
+    private string[] getArgsAddTimeout(int timeout, string[] keys) {
         int size = cast(int)keys.length;
-        byte[][] args = new byte[][size + 1];
+        string[] args = new string[size + 1];
         for (int at = 0; at != size; ++at) {
             args[at] = keys[at];
         }
@@ -2122,16 +2015,15 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
 
     /**
      * Sort a Set or a List accordingly to the specified parameters and store the result at dstkey.
-     * @see #sort(byte[], SortingParams)
-     * @see #sort(byte[])
-     * @see #sort(byte[], byte[])
+     * @see #sort(string, SortingParams)
+     * @see #sort(string)
+     * @see #sort(string, string)
      * @param key
      * @param sortingParameters
      * @param dstkey
      * @return The number of elements of the list at dstkey.
      */
-    override
-    Long sort(byte[] key, SortingParams sortingParameters, byte[] dstkey) {
+    Long sort(string key, SortingParams sortingParameters, string dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, sortingParameters, dstkey);
         return client.getIntegerReply();
@@ -2143,15 +2035,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Sort the elements contained in the List, Set, or Sorted Set value at key and store the result
      * at dstkey. By default sorting is numeric with elements being compared as double precision
      * floating point numbers. This is the simplest form of SORT.
-     * @see #sort(byte[])
-     * @see #sort(byte[], SortingParams)
-     * @see #sort(byte[], SortingParams, byte[])
+     * @see #sort(string)
+     * @see #sort(string, SortingParams)
+     * @see #sort(string, SortingParams, string)
      * @param key
      * @param dstkey
      * @return The number of elements of the list at dstkey.
      */
-    override
-    Long sort(byte[] key, byte[] dstkey) {
+    Long sort(string key, string dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, dstkey);
         return client.getIntegerReply();
@@ -2209,7 +2100,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * it like if inside MULTI/EXEC the time will flow at infinite speed :)
      * <p>
      * Time complexity: O(1)
-     * @see #blpop(int, byte[]...)
+     * @see #blpop(int, string...)
      * @param timeout
      * @param keys
      * @return BLPOP returns a two-elements array via a multi bulk reply in order to return both the
@@ -2219,13 +2110,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         value is a nil multi bulk reply. Most client values will return false or nil
      *         accordingly to the programming language used.
      */
-    override
-    List!(byte[]) brpop(int timeout, byte[][] keys...) {
+    List!(string) brpop(int timeout, string[] keys...) {
         return brpop(getArgsAddTimeout(timeout, keys));
     }
 
-    override
-    List!(byte[]) blpop(byte[][] args...) {
+    List!(string) blpop(string[] args...) {
         checkIsInMultiOrPipeline();
         client.blpop(args);
         client.setTimeoutInfinite();
@@ -2236,8 +2125,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    override
-    List!(byte[]) brpop(byte[][] args...) {
+    List!(string) brpop(string[] args...) {
         checkIsInMultiOrPipeline();
         client.brpop(args);
         client.setTimeoutInfinite();
@@ -2260,7 +2148,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param password
      * @return Status code reply
      */
-    override
     string auth(string password) {
         checkIsInMultiOrPipeline();
         client.auth(password);
@@ -2273,15 +2160,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return pipeline;
     }
 
-    override
-    Long zcount(byte[] key, double min, double max) {
+    Long zcount(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
     }
 
-    override
-    Long zcount(byte[] key, byte[] min, byte[] max) {
+    Long zcount(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
@@ -2294,13 +2179,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * The elements having the same score are returned sorted lexicographically as ASCII strings (this
      * follows from a property of Redis sorted sets and does not involve further computation).
      * <p>
-     * Using the optional {@link #zrangeByScore(byte[], double, double, int, int) LIMIT} it's possible
+     * Using the optional {@link #zrangeByScore(string, double, double, int, int) LIMIT} it's possible
      * to get only a range of the matching elements in an SQL-alike way. Note that if offset is large
      * the commands needs to traverse the list for offset elements and this adds up to the O(M)
      * figure.
      * <p>
-     * The {@link #zcount(byte[], double, double) ZCOUNT} command is similar to
-     * {@link #zrangeByScore(byte[], double, double) ZRANGEBYSCORE} but instead of returning the
+     * The {@link #zcount(string, double, double) ZCOUNT} command is similar to
+     * {@link #zrangeByScore(string, double, double) ZRANGEBYSCORE} but instead of returning the
      * actual elements in the specified interval, it just returns the number of matching elements.
      * <p>
      * <b>Exclusive intervals and infinity</b>
@@ -2324,28 +2209,26 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * O(log(N))+O(M) with N being the number of elements in the sorted set and M the number of
      * elements returned by the command, so if M is constant (for instance you always ask for the
      * first ten elements with LIMIT) you can consider it O(log(N))
-     * @see #zrangeByScore(byte[], double, double)
-     * @see #zrangeByScore(byte[], double, double, int, int)
-     * @see #zrangeByScoreWithScores(byte[], double, double)
-     * @see #zrangeByScoreWithScores(byte[], double, double, int, int)
-     * @see #zcount(byte[], double, double)
+     * @see #zrangeByScore(string, double, double)
+     * @see #zrangeByScore(string, double, double, int, int)
+     * @see #zrangeByScoreWithScores(string, double, double)
+     * @see #zrangeByScoreWithScores(string, double, double, int, int)
+     * @see #zcount(string, double, double)
      * @param key
      * @param min
      * @param max
      * @return Multi bulk reply specifically a list of elements in the specified score range.
      */
-    override
-    Set!(byte[]) zrangeByScore(byte[] key, double min, double max) {
+    Set!(string) zrangeByScore(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrangeByScore(byte[] key, byte[] min, byte[] max) {
+    Set!(string) zrangeByScore(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -2355,13 +2238,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * The elements having the same score are returned sorted lexicographically as ASCII strings (this
      * follows from a property of Redis sorted sets and does not involve further computation).
      * <p>
-     * Using the optional {@link #zrangeByScore(byte[], double, double, int, int) LIMIT} it's possible
+     * Using the optional {@link #zrangeByScore(string, double, double, int, int) LIMIT} it's possible
      * to get only a range of the matching elements in an SQL-alike way. Note that if offset is large
      * the commands needs to traverse the list for offset elements and this adds up to the O(M)
      * figure.
      * <p>
-     * The {@link #zcount(byte[], double, double) ZCOUNT} command is similar to
-     * {@link #zrangeByScore(byte[], double, double) ZRANGEBYSCORE} but instead of returning the
+     * The {@link #zcount(string, double, double) ZCOUNT} command is similar to
+     * {@link #zrangeByScore(string, double, double) ZRANGEBYSCORE} but instead of returning the
      * actual elements in the specified interval, it just returns the number of matching elements.
      * <p>
      * <b>Exclusive intervals and infinity</b>
@@ -2385,11 +2268,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * O(log(N))+O(M) with N being the number of elements in the sorted set and M the number of
      * elements returned by the command, so if M is constant (for instance you always ask for the
      * first ten elements with LIMIT) you can consider it O(log(N))
-     * @see #zrangeByScore(byte[], double, double)
-     * @see #zrangeByScore(byte[], double, double, int, int)
-     * @see #zrangeByScoreWithScores(byte[], double, double)
-     * @see #zrangeByScoreWithScores(byte[], double, double, int, int)
-     * @see #zcount(byte[], double, double)
+     * @see #zrangeByScore(string, double, double)
+     * @see #zrangeByScore(string, double, double, int, int)
+     * @see #zrangeByScoreWithScores(string, double, double)
+     * @see #zrangeByScoreWithScores(string, double, double, int, int)
+     * @see #zcount(string, double, double)
      * @param key
      * @param min
      * @param max
@@ -2397,20 +2280,18 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param count
      * @return Multi bulk reply specifically a list of elements in the specified score range.
      */
-    override
-    Set!(byte[]) zrangeByScore(byte[] key, double min, double max,
+    Set!(string) zrangeByScore(string key, double min, double max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrangeByScore(byte[] key, byte[] min, byte[] max,
+    Set!(string) zrangeByScore(string key, string min, string max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScore(key, min, max, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
     /**
@@ -2420,13 +2301,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * The elements having the same score are returned sorted lexicographically as ASCII strings (this
      * follows from a property of Redis sorted sets and does not involve further computation).
      * <p>
-     * Using the optional {@link #zrangeByScore(byte[], double, double, int, int) LIMIT} it's possible
+     * Using the optional {@link #zrangeByScore(string, double, double, int, int) LIMIT} it's possible
      * to get only a range of the matching elements in an SQL-alike way. Note that if offset is large
      * the commands needs to traverse the list for offset elements and this adds up to the O(M)
      * figure.
      * <p>
-     * The {@link #zcount(byte[], double, double) ZCOUNT} command is similar to
-     * {@link #zrangeByScore(byte[], double, double) ZRANGEBYSCORE} but instead of returning the
+     * The {@link #zcount(string, double, double) ZCOUNT} command is similar to
+     * {@link #zrangeByScore(string, double, double) ZRANGEBYSCORE} but instead of returning the
      * actual elements in the specified interval, it just returns the number of matching elements.
      * <p>
      * <b>Exclusive intervals and infinity</b>
@@ -2450,25 +2331,23 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * O(log(N))+O(M) with N being the number of elements in the sorted set and M the number of
      * elements returned by the command, so if M is constant (for instance you always ask for the
      * first ten elements with LIMIT) you can consider it O(log(N))
-     * @see #zrangeByScore(byte[], double, double)
-     * @see #zrangeByScore(byte[], double, double, int, int)
-     * @see #zrangeByScoreWithScores(byte[], double, double)
-     * @see #zrangeByScoreWithScores(byte[], double, double, int, int)
-     * @see #zcount(byte[], double, double)
+     * @see #zrangeByScore(string, double, double)
+     * @see #zrangeByScore(string, double, double, int, int)
+     * @see #zrangeByScoreWithScores(string, double, double)
+     * @see #zrangeByScoreWithScores(string, double, double, int, int)
+     * @see #zcount(string, double, double)
      * @param key
      * @param min
      * @param max
      * @return Multi bulk reply specifically a list of elements in the specified score range.
      */
-    override
-    Set!(Tuple) zrangeByScoreWithScores(byte[] key, double min, double max) {
+    Set!(Tuple) zrangeByScoreWithScores(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScoreWithScores(key, min, max);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max) {
+    Set!(Tuple) zrangeByScoreWithScores(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zrangeByScoreWithScores(key, min, max);
         return getTupledSet();
@@ -2481,13 +2360,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * The elements having the same score are returned sorted lexicographically as ASCII strings (this
      * follows from a property of Redis sorted sets and does not involve further computation).
      * <p>
-     * Using the optional {@link #zrangeByScore(byte[], double, double, int, int) LIMIT} it's possible
+     * Using the optional {@link #zrangeByScore(string, double, double, int, int) LIMIT} it's possible
      * to get only a range of the matching elements in an SQL-alike way. Note that if offset is large
      * the commands needs to traverse the list for offset elements and this adds up to the O(M)
      * figure.
      * <p>
-     * The {@link #zcount(byte[], double, double) ZCOUNT} command is similar to
-     * {@link #zrangeByScore(byte[], double, double) ZRANGEBYSCORE} but instead of returning the
+     * The {@link #zcount(string, double, double) ZCOUNT} command is similar to
+     * {@link #zrangeByScore(string, double, double) ZRANGEBYSCORE} but instead of returning the
      * actual elements in the specified interval, it just returns the number of matching elements.
      * <p>
      * <b>Exclusive intervals and infinity</b>
@@ -2511,11 +2390,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * O(log(N))+O(M) with N being the number of elements in the sorted set and M the number of
      * elements returned by the command, so if M is constant (for instance you always ask for the
      * first ten elements with LIMIT) you can consider it O(log(N))
-     * @see #zrangeByScore(byte[], double, double)
-     * @see #zrangeByScore(byte[], double, double, int, int)
-     * @see #zrangeByScoreWithScores(byte[], double, double)
-     * @see #zrangeByScoreWithScores(byte[], double, double, int, int)
-     * @see #zcount(byte[], double, double)
+     * @see #zrangeByScore(string, double, double)
+     * @see #zrangeByScore(string, double, double, int, int)
+     * @see #zrangeByScoreWithScores(string, double, double)
+     * @see #zrangeByScoreWithScores(string, double, double, int, int)
+     * @see #zcount(string, double, double)
      * @param key
      * @param min
      * @param max
@@ -2523,16 +2402,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param count
      * @return Multi bulk reply specifically a list of elements in the specified score range.
      */
-    override
-    Set!(Tuple) zrangeByScoreWithScores(byte[] key, double min, double max,
+    Set!(Tuple) zrangeByScoreWithScores(string key, double min, double max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScoreWithScores(key, min, max, offset, count);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrangeByScoreWithScores(byte[] key, byte[] min, byte[] max,
+    Set!(Tuple) zrangeByScoreWithScores(string key, string min, string max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByScoreWithScores(key, min, max, offset, count);
@@ -2540,76 +2417,68 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     }
 
     protected Set!(Tuple) getTupledSet() {
-        List!(byte[]) membersWithScores = client.getBinaryMultiBulkReply();
+        List!(string) membersWithScores = client.getBinaryMultiBulkReply();
         if (membersWithScores.isEmpty()) {
             return Collections.emptySet!(Tuple)();
         }
         Set!(Tuple) set = new LinkedHashSet!(Tuple)(membersWithScores.size() / 2, 1.0f);
-        InputRange!(byte[]) iterator = membersWithScores.iterator();
+        InputRange!(string) iterator = membersWithScores.iterator();
         while (!iterator.empty()) {
-            byte[] first = iterator.front(); iterator.popFront();
-            byte[] second = iterator.front(); iterator.popFront();
+            string first = iterator.front(); iterator.popFront();
+            string second = iterator.front(); iterator.popFront();
             Double d = BuilderFactory.DOUBLE.build(new Bytes(second));
             set.add(new Tuple(first, d.value()));
         }
         return set;
     }
 
-    override
-    Set!(byte[]) zrevrangeByScore(byte[] key, double max, double min) {
+    Set!(string) zrevrangeByScore(string key, double max, double min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrevrangeByScore(byte[] key, byte[] max, byte[] min) {
+    Set!(string) zrevrangeByScore(string key, string max, string min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrevrangeByScore(byte[] key, double max, double min,
+    Set!(string) zrevrangeByScore(string key, double max, double min,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrevrangeByScore(byte[] key, byte[] max, byte[] min,
+    Set!(string) zrevrangeByScore(string key, string max, string min,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScore(key, max, min, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, double max, double min) {
+    Set!(Tuple) zrevrangeByScoreWithScores(string key, double max, double min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScoreWithScores(key, max, min);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, double max,
+    Set!(Tuple) zrevrangeByScoreWithScores(string key, double max,
             double min, int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScoreWithScores(key, max, min, offset, count);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, byte[] max, byte[] min) {
+    Set!(Tuple) zrevrangeByScoreWithScores(string key, string max, string min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScoreWithScores(key, max, min);
         return getTupledSet();
     }
 
-    override
-    Set!(Tuple) zrevrangeByScoreWithScores(byte[] key, byte[] max,
-            byte[] min, int offset, int count) {
+    Set!(Tuple) zrevrangeByScoreWithScores(string key, string max,
+            string min, int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByScoreWithScores(key, max, min, offset, count);
         return getTupledSet();
@@ -2629,8 +2498,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param stop
      * @return
      */
-    override
-    Long zremrangeByRank(byte[] key, long start, long stop) {
+    Long zremrangeByRank(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zremrangeByRank(key, start, stop);
         return client.getIntegerReply();
@@ -2649,15 +2517,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param max
      * @return Integer reply, specifically the number of elements removed.
      */
-    override
-    Long zremrangeByScore(byte[] key, double min, double max) {
+    Long zremrangeByScore(string key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
     }
 
-    override
-    Long zremrangeByScore(byte[] key, byte[] min, byte[] max) {
+    Long zremrangeByScore(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
@@ -2668,9 +2534,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * dstkey. It is mandatory to provide the number of input keys N, before passing the input keys
      * and the other (optional) arguments.
      * <p>
-     * As the terms imply, the {@link #zinterstore(byte[], byte[]...)} ZINTERSTORE} command requires
+     * As the terms imply, the {@link #zinterstore(string, string...)} ZINTERSTORE} command requires
      * an element to be present in each of the given inputs to be inserted in the result. The {@link
-     * #zunionstore(byte[], byte[]...)} command inserts all elements across all inputs.
+     * #zunionstore(string, string...)} command inserts all elements across all inputs.
      * <p>
      * Using the WEIGHTS option, it is possible to add weight to each input sorted set. This means
      * that the score of each element in the sorted set is first multiplied by this weight before
@@ -2684,16 +2550,15 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * <b>Time complexity:</b> O(N) + O(M log(M)) with N being the sum of the sizes of the input
      * sorted sets, and M being the number of elements in the resulting sorted set
-     * @see #zunionstore(byte[], byte[]...)
-     * @see #zunionstore(byte[], ZParams, byte[]...)
-     * @see #zinterstore(byte[], byte[]...)
-     * @see #zinterstore(byte[], ZParams, byte[]...)
+     * @see #zunionstore(string, string...)
+     * @see #zunionstore(string, ZParams, string...)
+     * @see #zinterstore(string, string...)
+     * @see #zinterstore(string, ZParams, string...)
      * @param dstkey
      * @param sets
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    override
-    Long zunionstore(byte[] dstkey, byte[][] sets...) {
+    Long zunionstore(string dstkey, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2704,9 +2569,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * dstkey. It is mandatory to provide the number of input keys N, before passing the input keys
      * and the other (optional) arguments.
      * <p>
-     * As the terms imply, the {@link #zinterstore(byte[], byte[]...) ZINTERSTORE} command requires an
+     * As the terms imply, the {@link #zinterstore(string, string...) ZINTERSTORE} command requires an
      * element to be present in each of the given inputs to be inserted in the result. The {@link
-     * #zunionstore(byte[], byte[]...) ZUNIONSTORE} command inserts all elements across all inputs.
+     * #zunionstore(string, string...) ZUNIONSTORE} command inserts all elements across all inputs.
      * <p>
      * Using the WEIGHTS option, it is possible to add weight to each input sorted set. This means
      * that the score of each element in the sorted set is first multiplied by this weight before
@@ -2720,17 +2585,16 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * <b>Time complexity:</b> O(N) + O(M log(M)) with N being the sum of the sizes of the input
      * sorted sets, and M being the number of elements in the resulting sorted set
-     * @see #zunionstore(byte[], byte[]...)
-     * @see #zunionstore(byte[], ZParams, byte[]...)
-     * @see #zinterstore(byte[], byte[]...)
-     * @see #zinterstore(byte[], ZParams, byte[]...)
+     * @see #zunionstore(string, string...)
+     * @see #zunionstore(string, ZParams, string...)
+     * @see #zinterstore(string, string...)
+     * @see #zinterstore(string, ZParams, string...)
      * @param dstkey
      * @param sets
      * @param params
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    override
-    Long zunionstore(byte[] dstkey, ZParams params, byte[][] sets...) {
+    Long zunionstore(string dstkey, ZParams params, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, params, sets);
         return client.getIntegerReply();
@@ -2741,9 +2605,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * dstkey. It is mandatory to provide the number of input keys N, before passing the input keys
      * and the other (optional) arguments.
      * <p>
-     * As the terms imply, the {@link #zinterstore(byte[], byte[]...) ZINTERSTORE} command requires an
+     * As the terms imply, the {@link #zinterstore(string, string...) ZINTERSTORE} command requires an
      * element to be present in each of the given inputs to be inserted in the result. The {@link
-     * #zunionstore(byte[], byte[]...) ZUNIONSTORE} command inserts all elements across all inputs.
+     * #zunionstore(string, string...) ZUNIONSTORE} command inserts all elements across all inputs.
      * <p>
      * Using the WEIGHTS option, it is possible to add weight to each input sorted set. This means
      * that the score of each element in the sorted set is first multiplied by this weight before
@@ -2757,16 +2621,15 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * <b>Time complexity:</b> O(N) + O(M log(M)) with N being the sum of the sizes of the input
      * sorted sets, and M being the number of elements in the resulting sorted set
-     * @see #zunionstore(byte[], byte[]...)
-     * @see #zunionstore(byte[], ZParams, byte[]...)
-     * @see #zinterstore(byte[], byte[]...)
-     * @see #zinterstore(byte[], ZParams, byte[]...)
+     * @see #zunionstore(string, string...)
+     * @see #zunionstore(string, ZParams, string...)
+     * @see #zinterstore(string, string...)
+     * @see #zinterstore(string, ZParams, string...)
      * @param dstkey
      * @param sets
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    override
-    Long zinterstore(byte[] dstkey, byte[][] sets...) {
+    Long zinterstore(string dstkey, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2777,9 +2640,9 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * dstkey. It is mandatory to provide the number of input keys N, before passing the input keys
      * and the other (optional) arguments.
      * <p>
-     * As the terms imply, the {@link #zinterstore(byte[], byte[]...) ZINTERSTORE} command requires an
+     * As the terms imply, the {@link #zinterstore(string, string...) ZINTERSTORE} command requires an
      * element to be present in each of the given inputs to be inserted in the result. The {@link
-     * #zunionstore(byte[], byte[]...) ZUNIONSTORE} command inserts all elements across all inputs.
+     * #zunionstore(string, string...) ZUNIONSTORE} command inserts all elements across all inputs.
      * <p>
      * Using the WEIGHTS option, it is possible to add weight to each input sorted set. This means
      * that the score of each element in the sorted set is first multiplied by this weight before
@@ -2793,60 +2656,53 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * <b>Time complexity:</b> O(N) + O(M log(M)) with N being the sum of the sizes of the input
      * sorted sets, and M being the number of elements in the resulting sorted set
-     * @see #zunionstore(byte[], byte[]...)
-     * @see #zunionstore(byte[], ZParams, byte[]...)
-     * @see #zinterstore(byte[], byte[]...)
-     * @see #zinterstore(byte[], ZParams, byte[]...)
+     * @see #zunionstore(string, string...)
+     * @see #zunionstore(string, ZParams, string...)
+     * @see #zinterstore(string, string...)
+     * @see #zinterstore(string, ZParams, string...)
      * @param dstkey
      * @param sets
      * @param params
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
-    override
-    Long zinterstore(byte[] dstkey, ZParams params, byte[][] sets...) {
+    Long zinterstore(string dstkey, ZParams params, string[] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, params, sets);
         return client.getIntegerReply();
     }
 
-    override
-    Long zlexcount(byte[] key, byte[] min, byte[] max) {
+    Long zlexcount(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zlexcount(key, min, max);
         return client.getIntegerReply();
     }
 
-    override
-    Set!(byte[]) zrangeByLex(byte[] key, byte[] min, byte[] max) {
+    Set!(string) zrangeByLex(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrangeByLex(byte[] key, byte[] min, byte[] max,
+    Set!(string) zrangeByLex(string key, string min, string max,
             int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrangeByLex(key, min, max, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min) {
+    Set!(string) zrevrangeByLex(string key, string max, string min) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Set!(byte[]) zrevrangeByLex(byte[] key, byte[] max, byte[] min, int offset, int count) {
+    Set!(string) zrevrangeByLex(string key, string max, string min, int offset, int count) {
         checkIsInMultiOrPipeline();
         client.zrevrangeByLex(key, max, min, offset, count);
-        return new SetFromList!(byte[])(client.getBinaryMultiBulkReply());
+        return new SetFromList!(string)(client.getBinaryMultiBulkReply());
     }
 
-    override
-    Long zremrangeByLex(byte[] key, byte[] min, byte[] max) {
+    Long zremrangeByLex(string key, string min, string max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByLex(key, min, max);
         return client.getIntegerReply();
@@ -2865,7 +2721,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * @return Status code reply
      */
-    override
     string save() {
         client.save();
         return client.getStatusCodeReply();
@@ -2879,7 +2734,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * to check if the operation succeeded using the LASTSAVE command.
      * @return Status code reply
      */
-    override
     string bgsave() {
         client.bgsave();
         return client.getStatusCodeReply();
@@ -2899,7 +2753,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * @return Status code reply
      */
-    override
     string bgrewriteaof() {
         client.bgrewriteaof();
         return client.getStatusCodeReply();
@@ -2913,7 +2766,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * command and checking at regular intervals every N seconds if LASTSAVE changed.
      * @return Integer reply, specifically an UNIX time stamp.
      */
-    override
     Long lastsave() {
         client.lastsave();
         return client.getIntegerReply();
@@ -2929,7 +2781,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Status code reply on error. On success nothing is returned since the server quits and
      *         the connection is closed.
      */
-    override
     string shutdown() {
         client.shutdown();
         string status;
@@ -2977,13 +2828,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * @return Bulk reply
      */
-    override
     string info() {
         client.info();
         return client.getBulkReply();
     }
 
-    override
     string info(string section) {
         client.info(section);
         return client.getBulkReply();
@@ -3024,13 +2873,11 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param port
      * @return Status code reply
      */
-    override
     string slaveof(string host, int port) {
         client.slaveof(host, port);
         return client.getStatusCodeReply();
     }
 
-    override
     string slaveofNoOne() {
         client.slaveofNoOne();
         return client.getStatusCodeReply();
@@ -3070,8 +2917,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param pattern
      * @return Bulk reply.
      */
-    override
-    List!(byte[]) configGet(byte[] pattern) {
+    List!(string) configGet(string pattern) {
         checkIsInMultiOrPipeline();
         client.configGet(pattern);
         return client.getBinaryMultiBulkReply();
@@ -3081,7 +2927,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Reset the stats returned by INFO
      * @return
      */
-    override
     string configResetStat() {
         checkIsInMultiOrPipeline();
         client.configResetStat();
@@ -3108,7 +2953,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * file at all, the CONFIG REWRITE will just return an error.
      * @return OK when the configuration was rewritten properly. Otherwise an error is returned.
      */
-    override
     string configRewrite() {
         checkIsInMultiOrPipeline();
         client.configRewrite();
@@ -3120,7 +2964,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * supported.
      * <p>
      * The list of configuration parameters supported by CONFIG SET can be obtained issuing a
-     * {@link #configGet(byte[]) CONFIG GET *} command.
+     * {@link #configGet(string) CONFIG GET *} command.
      * <p>
      * The configuration set using CONFIG SET is immediately loaded by the Redis server that will
      * start acting as specified starting from the next command.
@@ -3144,8 +2988,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return Status code reply
      */
-    override
-    byte[] configSet(byte[] parameter, byte[] value) {
+    string configSet(string parameter, string value) {
         checkIsInMultiOrPipeline();
         client.configSet(parameter, value);
         return client.getBinaryBulkReply();
@@ -3155,8 +2998,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.isConnected();
     }
 
-    override
-    Long strlen(byte[] key) {
+    Long strlen(string key) {
         checkIsInMultiOrPipeline();
         client.strlen(key);
         return client.getIntegerReply();
@@ -3166,44 +3008,39 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         client.sync();
     }
 
-    override
-    Long lpushx(byte[] key, byte[][] string...) {
+    Long lpushx(string key, string[] string...) {
         checkIsInMultiOrPipeline();
         client.lpushx(key, string);
         return client.getIntegerReply();
     }
 
     /**
-     * Undo a {@link #expire(byte[], int) expire} at turning the expire key into a normal key.
+     * Undo a {@link #expire(string, int) expire} at turning the expire key into a normal key.
      * <p>
      * Time complexity: O(1)
      * @param key
      * @return Integer reply, specifically: 1: the key is now persist. 0: the key is not persist (only
      *         happens when key not set).
      */
-    override
-    Long persist(byte[] key) {
+    Long persist(string key) {
         client.persist(key);
         return client.getIntegerReply();
     }
 
-    override
-    Long rpushx(byte[] key, byte[][] string...) {
+    Long rpushx(string key, string[] string...) {
         checkIsInMultiOrPipeline();
         client.rpushx(key, string);
         return client.getIntegerReply();
     }
 
-    override
-    byte[] echo(byte[] string) {
+    string echo(string string) {
         checkIsInMultiOrPipeline();
         client.echo(string);
         return client.getBinaryBulkReply();
     }
 
-    override
-    Long linsert(byte[] key, ListPosition where, byte[] pivot,
-            byte[] value) {
+    Long linsert(string key, ListPosition where, string pivot,
+            string value) {
         checkIsInMultiOrPipeline();
         client.linsert(key, where, pivot, value);
         return client.getIntegerReply();
@@ -3226,8 +3063,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param timeout
      * @return the element
      */
-    override
-    byte[] brpoplpush(byte[] source, byte[] destination, int timeout) {
+    string brpoplpush(string source, string destination, int timeout) {
         client.brpoplpush(source, destination, timeout);
         client.setTimeoutInfinite();
         try {
@@ -3244,15 +3080,13 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param value
      * @return
      */
-    override
-    bool setbit(byte[] key, long offset, bool value) {
+    bool setbit(string key, long offset, bool value) {
         checkIsInMultiOrPipeline();
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
     }
 
-    override
-    bool setbit(byte[] key, long offset, byte[] value) {
+    bool setbit(string key, long offset, string value) {
         checkIsInMultiOrPipeline();
         client.setbit(key, offset, value);
         return client.getIntegerReply() == 1;
@@ -3264,46 +3098,41 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param offset
      * @return
      */
-    override
-    bool getbit(byte[] key, long offset) {
+    bool getbit(string key, long offset) {
         checkIsInMultiOrPipeline();
         client.getbit(key, offset);
         return client.getIntegerReply() == 1;
     }
 
-    Long bitpos(byte[] key, bool value) {
+    Long bitpos(string key, bool value) {
         return bitpos(key, value, new BitPosParams());
     }
 
-    Long bitpos(byte[] key, bool value, BitPosParams params) {
+    Long bitpos(string key, bool value, BitPosParams params) {
         checkIsInMultiOrPipeline();
         client.bitpos(key, value, params);
         return client.getIntegerReply();
     }
 
-    override
-    Long setrange(byte[] key, long offset, byte[] value) {
+    Long setrange(string key, long offset, string value) {
         checkIsInMultiOrPipeline();
         client.setrange(key, offset, value);
         return client.getIntegerReply();
     }
 
-    override
-    byte[] getrange(byte[] key, long startOffset, long endOffset) {
+    string getrange(string key, long startOffset, long endOffset) {
         checkIsInMultiOrPipeline();
         client.getrange(key, startOffset, endOffset);
         return client.getBinaryBulkReply();
     }
 
-    override
-    Long publish(byte[] channel, byte[] message) {
+    Long publish(string channel, string message) {
         checkIsInMultiOrPipeline();
         client.publish(channel, message);
         return client.getIntegerReply();
     }
 
-    override
-    void subscribe(BinaryRedisPubSub jedisPubSub, byte[][] channels...) {
+    void subscribe(RedisPubSub jedisPubSub, string[] channels...) {
         client.setTimeoutInfinite();
         try {
             jedisPubSub.proceed(client, channels);
@@ -3312,8 +3141,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    override
-    void psubscribe(BinaryRedisPubSub jedisPubSub, byte[][] patterns...) {
+    void psubscribe(RedisPubSub jedisPubSub, string[] patterns...) {
         client.setTimeoutInfinite();
         try {
             jedisPubSub.proceedWithPatterns(client, patterns);
@@ -3322,7 +3150,6 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    override
     int getDB() {
         return client.getDB();
     }
@@ -3335,15 +3162,14 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @param args
      * @return Script result
      */
-    override
-    Object eval(byte[] script, List!(byte[]) keys, List!(byte[]) args) {
+    Object eval(string script, List!(string) keys, List!(string) args) {
         return eval(script, Protocol.toByteArray(keys.size()), getParamsWithBinary(keys, args));
     }
 
-    static byte[][] getParamsWithBinary(List!(byte[]) keys, List!(byte[]) args) {
+    static string[] getParamsWithBinary(List!(string) keys, List!(string) args) {
         int keyCount = keys.size();
         int argCount = args.size();
-        byte[][] params = new byte[][keyCount + argCount];
+        string[] params = new string[keyCount + argCount];
 
         for (int i = 0; i < keyCount; i++)
             params[i] = keys.get(i);
@@ -3354,8 +3180,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return params;
     }
 
-    override
-    Object eval(byte[] script, byte[] keyCount, byte[][] params...) {
+    Object eval(string script, int keyCount, string[] params...) {
         client.setTimeoutInfinite();
         try {
             client.eval(script, keyCount, params);
@@ -3365,28 +3190,24 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    override
-    Object eval(byte[] script, int keyCount, byte[][] params...) {
-        return eval(script, Protocol.toByteArray(keyCount), params);
-    }
+    // override
+    // Object eval(string script, int keyCount, string[] params...) {
+    //     return eval(script, Protocol.toByteArray(keyCount), params);
+    // }
 
-    override
-    Object eval(byte[] script) {
+    Object eval(string script) {
         return eval(script, 0);
     }
 
-    override
-    Object evalsha(byte[] sha1) {
+    Object evalsha(string sha1) {
         return evalsha(sha1, 0);
     }
 
-    override
-    Object evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args) {
+    Object evalsha(string sha1, List!(string) keys, List!(string) args) {
         return evalsha(sha1, keys.size(), getParamsWithBinary(keys, args));
     }
 
-    override
-    Object evalsha(byte[] sha1, int keyCount, byte[][] params...) {
+    Object evalsha(string sha1, int keyCount, string[] params...) {
         client.setTimeoutInfinite();
         try {
             client.evalsha(sha1, keyCount, params);
@@ -3396,115 +3217,107 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    override
+    // override
     string scriptFlush() {
         client.scriptFlush();
         return client.getStatusCodeReply();
     }
 
-    Long scriptExists(byte[] sha1) {
-        byte[][] a = new byte[][1];
+    bool scriptExists(string sha1) {
+        string[] a = new string[1];
         a[0] = sha1;
         return scriptExists(a).get(0);
     }
 
-    override
-    List!(Long) scriptExists(byte[][] sha1...) {
-        client.scriptExists(sha1);
-        return client.getIntegerMultiBulkReply();
+    List!(bool) scriptExists(string[] sha1...) {
+      client.scriptExists(sha1);
+      List!(Long) result = client.getIntegerMultiBulkReply();
+      List!(bool) exists = new ArrayList!(bool)();
+
+      foreach(Long r ; result)
+        exists.add(r.value() == 1);
+
+      return exists;
     }
 
-    override
-    byte[] scriptLoad(byte[] script) {
+    string scriptLoad(string script) {
         client.scriptLoad(script);
         return client.getBinaryBulkReply();
     }
 
-    override
+    // override
     string scriptKill() {
         client.scriptKill();
         return client.getStatusCodeReply();
     }
 
-    override
     string slowlogReset() {
         client.slowlogReset();
         return client.getBulkReply();
     }
 
-    override
     Long slowlogLen() {
         client.slowlogLen();
         return client.getIntegerReply();
     }
 
-    override
-    List!(byte[]) slowlogGetBinary() {
+    List!(Slowlog) slowlogGet() {
         client.slowlogGet();
-        return client.getBinaryMultiBulkReply();
+        return Slowlog.from(client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(byte[]) slowlogGetBinary(long entries) {
+    List!(Slowlog) slowlogGet(long entries) {
         client.slowlogGet(entries);
-        return client.getBinaryMultiBulkReply();
+        return Slowlog.from(client.getObjectMultiBulkReply());
     }
 
-    override
-    Long objectRefcount(byte[] key) {
+
+    Long objectRefcount(string key) {
         client.objectRefcount(key);
         return client.getIntegerReply();
     }
 
-    override
-    byte[] objectEncoding(byte[] key) {
+    string objectEncoding(string key) {
         client.objectEncoding(key);
         return client.getBinaryBulkReply();
     }
 
-    override
-    Long objectIdletime(byte[] key) {
+    Long objectIdletime(string key) {
         client.objectIdletime(key);
         return client.getIntegerReply();
     }
 
-    override
-    Long bitcount(byte[] key) {
+    Long bitcount(string key) {
         checkIsInMultiOrPipeline();
         client.bitcount(key);
         return client.getIntegerReply();
     }
 
-    override
-    Long bitcount(byte[] key, long start, long end) {
+    Long bitcount(string key, long start, long end) {
         checkIsInMultiOrPipeline();
         client.bitcount(key, start, end);
         return client.getIntegerReply();
     }
 
-    override
-    Long bitop(BitOP op, byte[] destKey, byte[][] srcKeys...) {
+    Long bitop(BitOP op, string destKey, string[] srcKeys...) {
         checkIsInMultiOrPipeline();
         client.bitop(op, destKey, srcKeys);
         return client.getIntegerReply();
     }
 
-    override
-    byte[] dump(byte[] key) {
+    byte[] dump(string key) {
         checkIsInMultiOrPipeline();
         client.dump(key);
         return client.getBinaryBulkReply();
     }
 
-    override
-    string restore(byte[] key, int ttl, byte[] serializedValue) {
+    string restore(string key, int ttl, byte[] serializedValue) {
         checkIsInMultiOrPipeline();
         client.restore(key, ttl, serializedValue);
         return client.getStatusCodeReply();
     }
 
-    override
-    string restoreReplace(byte[] key, int ttl, byte[] serializedValue) {
+    string restoreReplace(string key, int ttl, byte[] serializedValue) {
         checkIsInMultiOrPipeline();
         client.restoreReplace(key, ttl, serializedValue);
         return client.getStatusCodeReply();
@@ -3521,7 +3334,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * <p>
      * Since Redis 2.1.3 you can update the value of the timeout of a key already having an expire
      * set. It is also possible to undo the expire at all turning the key into a normal key using the
-     * {@link #persist(byte[]) PERSIST} command.
+     * {@link #persist(string) PERSIST} command.
      * <p>
      * Time complexity: O(1)
      * @see <a href="http://redis.io/commands/pexpire">PEXPIRE Command</a>
@@ -3531,86 +3344,75 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      *         the key already has an associated timeout (this may happen only in Redis versions <
      *         2.1.3, Redis >= 2.1.3 will happily update the timeout), or the key does not exist.
      */
-    override
-    Long pexpire(byte[] key, long milliseconds) {
+    Long pexpire(string key, long milliseconds) {
         checkIsInMultiOrPipeline();
         client.pexpire(key, milliseconds);
         return client.getIntegerReply();
     }
 
-    override
-    Long pexpireAt(byte[] key, long millisecondsTimestamp) {
+    Long pexpireAt(string key, long millisecondsTimestamp) {
         checkIsInMultiOrPipeline();
         client.pexpireAt(key, millisecondsTimestamp);
         return client.getIntegerReply();
     }
 
-    override
-    Long pttl(byte[] key) {
+    Long pttl(string key) {
         checkIsInMultiOrPipeline();
         client.pttl(key);
         return client.getIntegerReply();
     }
 
     /**
-     * PSETEX works exactly like {@link #setex(byte[], int, byte[])} with the sole difference that the
+     * PSETEX works exactly like {@link #setex(string, int, string)} with the sole difference that the
      * expire time is specified in milliseconds instead of seconds. Time complexity: O(1)
      * @param key
      * @param milliseconds
      * @param value
      * @return Status code reply
      */
-    override
-    string psetex(byte[] key, long milliseconds, byte[] value) {
+    string psetex(string key, long milliseconds, string value) {
         checkIsInMultiOrPipeline();
         client.psetex(key, milliseconds, value);
         return client.getStatusCodeReply();
     }
 
-    override
-    byte[] memoryDoctorBinary() {
+    string memoryDoctor() {
         checkIsInMultiOrPipeline();
         client.memoryDoctor();
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    override
-    string clientKill(byte[] ipPort) {
+    string clientKill(string ipPort) {
         checkIsInMultiOrPipeline();
         this.client.clientKill(ipPort);
         return this.client.getStatusCodeReply();
     }
 
-    override
     string clientKill(string ip, int port) {
         checkIsInMultiOrPipeline();
         this.client.clientKill(ip, port);
         return this.client.getStatusCodeReply();
     }
 
-    override
     Long clientKill(ClientKillParams params) {
         checkIsInMultiOrPipeline();
         this.client.clientKill(params);
         return this.client.getIntegerReply();
     }
 
-    override
-    byte[] clientGetnameBinary() {
+    string clientGetname() {
         checkIsInMultiOrPipeline();
         client.clientGetname();
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    override
-    byte[] clientListBinary() {
+    string clientList() {
         checkIsInMultiOrPipeline();
         client.clientList();
-        return client.getBinaryBulkReply();
+        return client.getBulkReply();
     }
 
-    override
-    string clientSetname(byte[] name) {
+    string clientSetname(string name) {
         checkIsInMultiOrPipeline();
         client.clientSetname(name);
         return client.getBulkReply();
@@ -3628,17 +3430,15 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getMultiBulkReply();
     }
 
-    override
-    string migrate(string host, int port, byte[] key,
+    string migrate(string host, int port, string key,
             int destinationDb, int timeout) {
         checkIsInMultiOrPipeline();
         client.migrate(host, port, key, destinationDb, timeout);
         return client.getStatusCodeReply();
     }
 
-    override
     string migrate(string host, int port, int destinationDB,
-            int timeout, MigrateParams params, byte[][] keys...) {
+            int timeout, MigrateParams params, string[] keys...) {
         checkIsInMultiOrPipeline();
         client.migrate(host, port, destinationDB, timeout, params, keys);
         return client.getStatusCodeReply();
@@ -3649,112 +3449,101 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * Object class has implemented "wait" method, we cannot use it, so I had to change the name of
      * the method. Sorry :S
      */
-    override
-    Long waitReplicas(int replicas, long timeout) {
+    long waitReplicas(int replicas, long timeout) {
         checkIsInMultiOrPipeline();
         client.waitReplicas(replicas, timeout);
         return client.getIntegerReply();
     }
 
-    override
-    Long pfadd(byte[] key, byte[][] elements...) {
+    long pfadd(string key, string[] elements...) {
         checkIsInMultiOrPipeline();
         client.pfadd(key, elements);
         return client.getIntegerReply();
     }
 
-    override
-    Long pfcount(byte[] key) {
+    long pfcount(string key) {
         checkIsInMultiOrPipeline();
         client.pfcount(key);
         return client.getIntegerReply();
     }
 
-    override
-    string pfmerge(byte[] destkey, byte[][] sourcekeys...) {
+    string pfmerge(string destkey, string[] sourcekeys...) {
         checkIsInMultiOrPipeline();
         client.pfmerge(destkey, sourcekeys);
         return client.getStatusCodeReply();
     }
 
-    override
-    Long pfcount(byte[][] keys...) {
+    long pfcount(string[] keys...) {
         checkIsInMultiOrPipeline();
         client.pfcount(keys);
         return client.getIntegerReply();
     }
 
-    ScanResult!(byte[]) scan(byte[] cursor) {
+    ScanResult!(string) scan(string cursor) {
         return scan(cursor, new ScanParams());
     }
 
-    ScanResult!(byte[]) scan(byte[] cursor, ScanParams params) {
+    ScanResult!(string) scan(string cursor, ScanParams params) {
         checkIsInMultiOrPipeline();
         client.scan(cursor, params);
         List!(Object) result = client.getObjectMultiBulkReply();
-        // byte[] newcursor = (byte[]) result.get(0);
-        // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-        // return new ScanResult!(byte[])(newcursor, rawResults);
+        // string newcursor = (string) result.get(0);
+        // List!(string) rawResults = (List!(string)) result.get(1);
+        // return new ScanResult!(string)(newcursor, rawResults);
         implementationMissing();
         return null;
     }
 
-    override
-    ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor) {
+    ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor) {
         return hscan(key, cursor, new ScanParams());
     }
 
-    override
-    ScanResult!(MapEntry!(byte[], byte[])) hscan(byte[] key, byte[] cursor,
+    ScanResult!(MapEntry!(string, string)) hscan(string key, string cursor,
             ScanParams params) {
         checkIsInMultiOrPipeline();
         client.hscan(key, cursor, params);
         // List!(Object) result = client.getObjectMultiBulkReply();
-        // byte[] newcursor = cast(byte[]) result.get(0);
-        // List!(MapEntry!(byte[], byte[])) results = new ArrayList!(MapEntry!(byte[], byte[]))();
-        // List!(byte[]) rawResults = cast(List!(byte[])) result.get(1);
-        // Iterator!(byte[]) iterator = rawResults.iterator();
+        // string newcursor = cast(string) result.get(0);
+        // List!(MapEntry!(string, string)) results = new ArrayList!(MapEntry!(string, string))();
+        // List!(string) rawResults = cast(List!(string)) result.get(1);
+        // Iterator!(string) iterator = rawResults.iterator();
         // while (iterator.hasNext()) {
-        //   results.add(new AbstractMap.SimpleEntry!(byte[], byte[])(iterator.next(), iterator.next()));
+        //   results.add(new AbstractMap.SimpleEntry!(string, string)(iterator.next(), iterator.next()));
         // }
-        // return new ScanResult!(MapEntry!(byte[], byte[]))(newcursor, results);
+        // return new ScanResult!(MapEntry!(string, string))(newcursor, results);
 
         implementationMissing();
         return null;
     }
 
-    override
-    ScanResult!(byte[]) sscan(byte[] key, byte[] cursor) {
+    ScanResult!(string) sscan(string key, string cursor) {
         return sscan(key, cursor, new ScanParams());
     }
 
-    override
-    ScanResult!(byte[]) sscan(byte[] key, byte[] cursor, ScanParams params) {
+    ScanResult!(string) sscan(string key, string cursor, ScanParams params) {
         checkIsInMultiOrPipeline();
         client.sscan(key, cursor, params);
         // List!(Object) result = client.getObjectMultiBulkReply();
-        // byte[] newcursor = (byte[]) result.get(0);
-        // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
+        // string newcursor = (string) result.get(0);
+        // List!(string) rawResults = (List!(string)) result.get(1);
         // return new ScanResult<>(newcursor, rawResults);
 
         implementationMissing();
         return null;    
     }
 
-    override
-    ScanResult!(Tuple) zscan(byte[] key, byte[] cursor) {
+    ScanResult!(Tuple) zscan(string key, string cursor) {
         return zscan(key, cursor, new ScanParams());
     }
 
-    override
-    ScanResult!(Tuple) zscan(byte[] key, byte[] cursor, ScanParams params) {
+    ScanResult!(Tuple) zscan(string key, string cursor, ScanParams params) {
         checkIsInMultiOrPipeline();
         client.zscan(key, cursor, params);
         List!(Object) result = client.getObjectMultiBulkReply();
-        // byte[] newcursor = (byte[]) result.get(0);
+        // string newcursor = (string) result.get(0);
         // List!(Tuple) results = new ArrayList<>();
-        // List!(byte[]) rawResults = (List!(byte[])) result.get(1);
-        // Iterator!(byte[]) iterator = rawResults.iterator();
+        // List!(string) rawResults = (List!(string)) result.get(1);
+        // Iterator!(string) iterator = rawResults.iterator();
         // while (iterator.hasNext()) {
         //   results.add(new Tuple(iterator.next(), BuilderFactory.DOUBLE.build(iterator.next())));
         // }
@@ -3764,108 +3553,94 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return null;
     }
 
-    override
-    Long geoadd(byte[] key, double longitude, double latitude, byte[] member) {
+    Long geoadd(string key, double longitude, double latitude, string member) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, longitude, latitude, member);
         return client.getIntegerReply();
     }
 
-    override
-    Long geoadd(byte[] key, Map!(byte[], GeoCoordinate) memberCoordinateMap) {
+    Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, memberCoordinateMap);
         return client.getIntegerReply();
     }
 
-    override
-    Double geodist(byte[] key, byte[] member1, byte[] member2) {
+    Double geodist(string key, string member1, string member2) {
         checkIsInMultiOrPipeline();
         client.geodist(key, member1, member2);
         string dval = client.getBulkReply();
         return (dval !is null ? new Double(dval) : null);
     }
 
-    override
-    Double geodist(byte[] key, byte[] member1, byte[] member2, GeoUnit unit) {
+    Double geodist(string key, string member1, string member2, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.geodist(key, member1, member2, unit);
         string dval = client.getBulkReply();
         return (dval !is null ? new Double(dval) : null);
     }
 
-    override
-    List!(byte[]) geohash(byte[] key, byte[][] members...) {
+    List!(string) geohash(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.geohash(key, members);
         return client.getBinaryMultiBulkReply();
     }
 
-    override
-    List!(GeoCoordinate) geopos(byte[] key, byte[][] members...) {
+    List!(GeoCoordinate) geopos(string key, string[] members...) {
         checkIsInMultiOrPipeline();
         client.geopos(key, members);
         return BuilderFactory.GEO_COORDINATE_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude,
+    List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude,
             double radius, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadius(key, longitude, latitude, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadiusReadonly(byte[] key, double longitude, double latitude,
+    List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude, double latitude,
             double radius, GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusReadonly(key, longitude, latitude, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadius(byte[] key, double longitude, double latitude,
+    List!(GeoRadiusResponse) georadius(string key, double longitude, double latitude,
             double radius, GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadius(key, longitude, latitude, radius, unit, param);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadiusReadonly(byte[] key, double longitude, double latitude,
+    List!(GeoRadiusResponse) georadiusReadonly(string key, double longitude, double latitude,
             double radius, GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusReadonly(key, longitude, latitude, radius, unit, param);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
     
-    override
-    List!(GeoRadiusResponse) georadiusByMember(byte[] key, byte[] member, double radius,
+    List!(GeoRadiusResponse) georadiusByMember(string key, string member, double radius,
             GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusByMember(key, member, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadiusByMemberReadonly(byte[] key, byte[] member, double radius,
+    List!(GeoRadiusResponse) georadiusByMemberReadonly(string key, string member, double radius,
             GeoUnit unit) {
         checkIsInMultiOrPipeline();
         client.georadiusByMemberReadonly(key, member, radius, unit);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadiusByMember(byte[] key, byte[] member, double radius,
+    List!(GeoRadiusResponse) georadiusByMember(string key, string member, double radius,
             GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusByMember(key, member, radius, unit, param);
         return BuilderFactory.GEORADIUS_WITH_PARAMS_RESULT.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    List!(GeoRadiusResponse) georadiusByMemberReadonly(byte[] key, byte[] member, double radius,
+    List!(GeoRadiusResponse) georadiusByMemberReadonly(string key, string member, double radius,
             GeoUnit unit, GeoRadiusParam param) {
         checkIsInMultiOrPipeline();
         client.georadiusByMemberReadonly(key, member, radius, unit, param);
@@ -3873,129 +3648,117 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     }
 
 
-    override
-    List!(Long) bitfield(byte[] key, byte[][] arguments...) {
+    List!(Long) bitfield(string key, string[] arguments...) {
         checkIsInMultiOrPipeline();
         client.bitfield(key, arguments);
         return client.getIntegerMultiBulkReply();
     }
 
-    override
-    Long hstrlen(byte[] key, byte[] field) {
+    Long hstrlen(string key, string field) {
         checkIsInMultiOrPipeline();
         client.hstrlen(key, field);
         return client.getIntegerReply();
     }
 
-    override
-    List!(byte[]) xread(int count, long block, Map!(byte[], byte[]) streams) {
+    List!(string) xread(int count, long block, Map!(string, string) streams) {
         checkIsInMultiOrPipeline();
         client.xread(count, block, streams);
         return client.getBinaryMultiBulkReply();
     }
 
-    override
-    List!(byte[]) xreadGroup(byte[] groupname, byte[] consumer, int count, long block, bool noAck,
-            Map!(byte[], byte[]) streams) {
+    List!(string) xreadGroup(string groupname, string consumer, int count, long block, bool noAck,
+            Map!(string, string) streams) {
         checkIsInMultiOrPipeline();
         client.xreadGroup(groupname, consumer, count, block, noAck, streams);
         return client.getBinaryMultiBulkReply();  
     }
 
-    override
-    byte[] xadd(byte[] key, byte[] id, Map!(byte[], byte[]) hash, long maxLen, bool approximateLength) {
+    string xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xadd(key, id, hash, maxLen, approximateLength);
         return client.getBinaryBulkReply();  
     }
 
-    override
-    Long xlen(byte[] key) {
+    Long xlen(string key) {
         checkIsInMultiOrPipeline();
         client.xlen(key);
         return client.getIntegerReply();  
     }
 
-    override
-    List!(byte[]) xrange(byte[] key, byte[] start, byte[] end, long count) {
+    List!(string) xrange(string key, StreamEntryID start, StreamEntryID end, long count) {
         checkIsInMultiOrPipeline();
         client.xrange(key, start, end, count);
         return client.getBinaryMultiBulkReply();  
     }
 
-    override
-    List!(byte[]) xrevrange(byte[] key, byte[] end, byte[] start, int count) {
+    List!(string) xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
         checkIsInMultiOrPipeline();
         client.xrevrange(key, end, start, count);
         return client.getBinaryMultiBulkReply();  
     }
 
-    override
-    Long xack(byte[] key, byte[] group, byte[][] ids...) {
+    Long xack(string key, string group, StreamEntryID[] ids...) {
         checkIsInMultiOrPipeline();
         client.xack(key, group, ids);
         return client.getIntegerReply();
     }
 
-    override
-    string xgroupCreate(byte[] key, byte[] consumer, byte[] id, bool makeStream) {
+    string xgroupCreate(string key, string consumer, StreamEntryID id, bool makeStream) {
         checkIsInMultiOrPipeline();
         client.xgroupCreate(key, consumer, id, makeStream);
         return client.getStatusCodeReply();
     }
 
-    override
-    string xgroupSetID(byte[] key, byte[] consumer, byte[] id) {
+    string xgroupSetID(string key, string consumer, StreamEntryID id) {
         checkIsInMultiOrPipeline();
         client.xgroupSetID(key, consumer, id);
         return client.getStatusCodeReply();
     }
 
-    override
-    Long xgroupDestroy(byte[] key, byte[] consumer) {
+    long xgroupDestroy(string key, string groupname) {
         checkIsInMultiOrPipeline();
-        client.xgroupDestroy(key, consumer);
-        return client.getIntegerReply();
+        client.xgroupDestroy(key, groupname);
+        return client.getIntegerReply().value();
     }
 
-    override
-    string xgroupDelConsumer(byte[] key, byte[] consumer, byte[] consumerName) {
+    string xgroupDelConsumer(string key, string consumer, string consumerName) {
         checkIsInMultiOrPipeline();
         client.xgroupDelConsumer(key, consumer, consumerName);
         return client.getStatusCodeReply();  
     }
 
-    override
-    Long xdel(byte[] key, byte[][] ids...) {
+    Long xdel(string key, string[] ids...) {
         checkIsInMultiOrPipeline();
         client.xdel(key, ids);
         return client.getIntegerReply();
     }
 
-    override
-    Long xtrim(byte[] key, long maxLen, bool approximateLength) {
+    Long xtrim(string key, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xtrim(key, maxLen, approximateLength);
         return client.getIntegerReply();
     }
 
-    override
-    List!(byte[]) xpending(byte[] key, byte[] groupname, byte[] start, byte[] end, int count, byte[] consumername) {
+    List!(StreamPendingEntry) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end,
+            int count, string consumername) {
         checkIsInMultiOrPipeline();
         client.xpending(key, groupname, start, end, count, consumername);
-        return client.getBinaryMultiBulkReply();  }
 
-    override
-        List!(byte[]) xclaim(byte[] key, byte[] groupname, byte[] consumername, 
-                                                 long minIdleTime, long newIdleTime, int retries, 
-                                                 bool force, byte[][] ids) {
-        checkIsInMultiOrPipeline();
-        client.xclaim(key, groupname, consumername, minIdleTime, newIdleTime, retries, force, ids);
-        return client.getBinaryMultiBulkReply();  
+        // TODO handle consumername == NULL case
+        
+        return BuilderFactory.STREAM_PENDING_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
     }
 
-    override
-    Object sendCommand(ProtocolCommand cmd, byte[][] args...) {
+    List!(StreamEntry) xclaim(string key, string group, string consumername, long minIdleTime, long newIdleTime,
+            int retries, bool force, StreamEntryID[] ids...) {
+        
+        checkIsInMultiOrPipeline();
+        client.xclaim( key, group, consumername, minIdleTime, newIdleTime, retries, force, ids);
+        
+        return BuilderFactory.STREAM_ENTRY_LIST.build(cast(Object)client.getObjectMultiBulkReply());
+    }
+
+    Object sendCommand(ProtocolCommand cmd, string[] args...) {
         client.sendCommand(cmd, args);
         return client.getOne();
     }
@@ -4021,32 +3784,26 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
         this.list = list;
     }
 
-    override
     void clear() {
         list.clear();
     }
 
-    override
     int size() {
         return list.size();
     }
 
-    override
     bool isEmpty() {
         return list.isEmpty();
     }
 
-    override
     bool contains(E o) {
         return list.contains(o);
     }
 
-    override
     bool remove(E o) {
         return list.remove(o);
     }
 
-    override
     bool add(E e) {
         return !contains(e) && list.add(e);
     }
@@ -4056,7 +3813,6 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
     //   return list.iterator();
     // }
 
-    override
     E[] toArray() {
         return list.toArray();
     }
@@ -4066,17 +3822,14 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
     //   return list.toArray(a);
     // }
 
-    override
     string toString() {
         return list.toString();
     }
 
-    override
     size_t toHash() @trusted nothrow {
         return list.toHash();
     }
-
-    override bool opEquals(Object o) {
+ bool opEquals(Object o) {
         if (o is null) return false;
         if (o is this) return true;
         Set!E c = cast(Set!E) o;
@@ -4089,17 +3842,14 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
         return containsAll(c);
     }
 
-    override
     bool containsAll(Collection!E c) {
         return list.containsAll(c);
     }
 
-    override
     bool removeAll(Collection!E c) {
         return list.removeAll(c);
     }
 
-    override
     bool retainAll(Collection!E c) {
         return list.retainAll(c);
     }

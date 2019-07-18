@@ -29,29 +29,27 @@ abstract class Params {
         return v.get!T();
     }
 
-    byte[][] getByteParams() {
+    string[] getByteParams() {
         if (params is null)
-            return new byte[][0];
-        ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
+            return null;
+        ArrayList!(string) byteParams = new ArrayList!(string)();
 
-        // foreach(Entry!(string, Object) param ; params.entrySet()) {
-        //   byteParams.add(SafeEncoder.encode(param.getKey()));
+        foreach(string key, Variant value; params) {
+          byteParams.add(key);
 
-        //   Object value = param.getValue();
-        //   if (value !is null) {
-        //     if (value instanceof byte[]) {
-        //       byteParams.add((byte[]) value);
-        //     } else {
-        //       byteParams.add(SafeEncoder.encode(to!string(value)));
-        //     }
-        //   }
-        // }
+          if (value.hasValue()) {
+              byteParams.add(value.toString());
+            // if (value instanceof byte[]) {
+            //   byteParams.add((byte[]) value);
+            // } else {
+            //   byteParams.add(SafeEncoder.encode(to!string(value)));
+            // }
+          }
+        }
+
+        return byteParams.toArray();
 
         // return byteParams.toArray(new byte[byteParams.size()][]);
-
-        implementationMissing();
-        return null;
-
     }
 
     protected bool contains(string name) {

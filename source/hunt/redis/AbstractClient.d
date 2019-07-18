@@ -15,6 +15,7 @@ import hunt.collection.List;
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
 import hunt.Long;
+import hunt.String;
 import hunt.util.Common;
 
 // import javax.net.ssl.HostnameVerifier;
@@ -49,7 +50,7 @@ class AbstractClient : Closeable {
 	private Mutex _doneLocker;
 	private Condition _doneCondition;
 
-    private enum byte[][] EMPTY_ARGS = null;
+    private enum string[] EMPTY_ARGS = null;
 
     private string host = Protocol.DEFAULT_HOST;
     private int port = Protocol.DEFAULT_PORT;
@@ -221,19 +222,11 @@ class AbstractClient : Closeable {
         }
     }
 
-    void sendCommand(Command cmd, string[] args...) {
-        byte[][] bargs = new byte[][args.length];
-        for (int i = 0; i < args.length; i++) {
-            bargs[i] = SafeEncoder.encode(args[i]);
-        }
-        sendCommand(cmd, bargs);
-    }
-
     void sendCommand(Command cmd) {
         sendCommand(cmd, EMPTY_ARGS);
     }
 
-    void sendCommand(Command cmd, byte[][] args...) {
+    void sendCommand(Command cmd, string[] args...) {
         try {
             connect();
             Protocol.sendCommand(outputStream, cmd, args);
@@ -263,18 +256,20 @@ class AbstractClient : Closeable {
     string getStatusCodeReply() {
         flush();
         Object obj = readProtocolWithCheckingBroken();
-        Bytes bytesObj = cast(Bytes)obj;
+        String bytesObj = cast(String)obj;
         if(bytesObj is null) {
             warning("The obj is not a Bytes.");
             throw new NullPointerException();
         }
 
-        byte[] resp = bytesObj.value();
-        if (resp.empty()) {
-            return null;
-        } else {
-            return SafeEncoder.encode(resp);
-        }
+        return bytesObj.value();
+
+        // byte[] resp = bytesObj.value();
+        // if (resp.empty()) {
+        //     return null;
+        // } else {
+        //     return SafeEncoder.encode(resp);
+        // }
     }
 
     string getBulkReply() {

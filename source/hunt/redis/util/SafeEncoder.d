@@ -14,34 +14,46 @@ import std.conv;
  */
 class SafeEncoder {
 
-  private this(){
-    throw new InstantiationError( "Must not instantiate this class" );
-  }
-
-  static byte[][] encodeMany(string[] strs...) {
-    byte[][] many = new byte[][strs.length];
-    for (size_t i = 0; i < strs.length; i++) {
-      many[i] = encode(strs[i]);
+    private this(){
+        throw new InstantiationError( "Must not instantiate this class" );
     }
-    return many;
-  }
 
-  static byte[] encode(string str) {
-    try {
-      if (str.empty) {
-        throw new RedisDataException("value sent to redis cannot be null");
-      }
-      return StringUtils.getBytes(str, Protocol.CHARSET);
-    } catch (UnsupportedEncodingException e) {
-      throw new RedisException(e);
+    // static byte[][] encodeMany(string[] strs...) {
+    //     byte[][] many = new byte[][strs.length];
+    //     for (size_t i = 0; i < strs.length; i++) {
+    //         many[i] = encode(strs[i]);
+    //     }
+    //     return many;
+    // }
+    static string[] encodeMany(string[] strs...) {
+        return strs;
+        // byte[][] many = new byte[][strs.length];
+        // for (size_t i = 0; i < strs.length; i++) {
+        //     many[i] = encode(strs[i]);
+        // }
+        // return many;
     }
-  }
 
-  static string encode(byte[] data) {
-    try {
-      return cast(string)data.idup;
-    } catch (UnsupportedEncodingException e) {
-      throw new RedisException(e);
+    static string encode(string str) {
+        return str;
     }
-  }
+
+    // static byte[] encode(string str) {
+    //     try {
+    //         if (str.empty) {
+    //             throw new RedisDataException("value sent to redis cannot be null");
+    //         }
+    //         return StringUtils.getBytes(str, Protocol.CHARSET);
+    //     } catch (UnsupportedEncodingException e) {
+    //         throw new RedisException(e);
+    //     }
+    // }
+
+    // static string encode(byte[] data) {
+    //     try {
+    //         return cast(string)data.idup;
+    //     } catch (UnsupportedEncodingException e) {
+    //         throw new RedisException(e);
+    //     }
+    // }
 }

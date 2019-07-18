@@ -83,11 +83,6 @@ class Pipeline : MultiKeyPipelineBase, Closeable {
     }
 
     override
-    protected Client getClient(byte[] key) {
-        return client;
-    }
-
-    override
     protected Client getClient(string key) {
         return client;
     }

@@ -31,10 +31,6 @@ class Transaction : MultiKeyPipelineBase, Closeable {
         return client;
     }
 
-    override protected Client getClient(byte[] key) {
-        return client;
-    }
-
     void clear() {
         if (inTransaction) {
             discard();

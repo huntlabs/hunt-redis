@@ -9,6 +9,7 @@ import hunt.redis.GeoUnit;
 import hunt.redis.Protocol;
 import hunt.redis.ScanParams;
 import hunt.redis.SortingParams;
+import hunt.redis.StreamEntryID;
 import hunt.redis.ZParams;
 
 // import hunt.redis.Protocol.Keyword;
@@ -1073,7 +1074,7 @@ class Client : AbstractClient {
         int i = 0;
         args[i++] = SafeEncoder.encode(host);
         args[i++] = toByteArray(port);
-        args[i++] = new byte[0];
+        args[i++] = "";
         args[i++] = toByteArray(destinationDB);
         args[i++] = toByteArray(timeout);
         // System.arraycopy(bparams, 0, args, i, bparams.length);
@@ -1266,7 +1267,7 @@ class Client : AbstractClient {
         sendCommand(Command.HSTRLEN, key, field);
     }
     
-    void xadd(string key, string id, Map!(string, string) hash, long maxLen, bool approximateLength) {
+    void xadd(string key, StreamEntryID id, Map!(string, string) hash, long maxLen, bool approximateLength) {
             int maxLexArgs = 0;
             if(maxLen < long.max) { // optional arguments
                 if(approximateLength) {
@@ -1287,7 +1288,7 @@ class Client : AbstractClient {
             params[index++] = toByteArray(maxLen);
         }
         
-        params[index++] = id;
+        params[index++] = id.toString();
         foreach(string key, string value ; hash) {
             params[index++] = key;
             params[index++] = value;

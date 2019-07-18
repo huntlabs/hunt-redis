@@ -5,7 +5,6 @@ module hunt.redis.commands.RedisCommands;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
@@ -38,7 +37,7 @@ interface RedisCommands {
 
   string get(string key);
 
-  Boolean exists(string key);
+  bool exists(string key);
 
   Long persist(string key);
 
@@ -64,11 +63,11 @@ interface RedisCommands {
 
   Long touch(string key);
 
-  Boolean setbit(string key, long offset, bool value);
+  bool setbit(string key, long offset, bool value);
 
-  Boolean setbit(string key, long offset, string value);
+  bool setbit(string key, long offset, string value);
 
-  Boolean getbit(string key, long offset);
+  bool getbit(string key, long offset);
 
   Long setrange(string key, long offset, string value);
 
@@ -112,7 +111,7 @@ interface RedisCommands {
 
   Double hincrByFloat(string key, string field, double value);
 
-  Boolean hexists(string key, string field);
+  bool hexists(string key, string field);
 
   Long hdel(string key, string[] field...);
 
@@ -156,7 +155,7 @@ interface RedisCommands {
 
   Long scard(string key);
 
-  Boolean sismember(string key, string member);
+  bool sismember(string key, string member);
 
   string srandmember(string key);
 
