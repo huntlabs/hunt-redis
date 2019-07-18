@@ -3,12 +3,10 @@ import std.stdio;
 import hunt.util.UnitTest;
 import hunt.logging.ConsoleLogger;
 
-import test.PoolTest;
-
-import test.utils.JedisURIHelperTest;
+import test.utils.RedisURIHelperTest;
 
 
 void main()
 {
-	testUnits!(JedisURIHelperTest);
+	testUnits!(RedisURIHelperTest);
 }

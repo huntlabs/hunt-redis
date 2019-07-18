@@ -154,7 +154,7 @@ class AbstractClient : Closeable {
         config.setTimeout(soTimeout);
         _client.setConfig(config);
         _client.connectHandler((NetSocket socket) {
-            version (HUNT_DEBUG) infof("A connection created with %s:%d", _host, _port);
+            version (HUNT_DEBUG) infof("A connection created with %s:%d", host, port);
             // tcpSession.handler(&onDataReceived); 
 
             outputStream = new RedisOutputStream(new TcpOutputStream(socket.getTcpStream()));
