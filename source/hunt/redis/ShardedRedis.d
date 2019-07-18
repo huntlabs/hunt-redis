@@ -855,8 +855,8 @@ alias Pattern = Regex!char;
 //         if (dataSource !is null) {
 //             bool broken = false;
 
-//             foreach(Redis jedis ; getAllShards()) {
-//                 if (jedis.getClient().isBroken()) {
+//             foreach(Redis redis ; getAllShards()) {
+//                 if (redis.getClient().isBroken()) {
 //                     broken = true;
 //                     break;
 //                 }
@@ -879,8 +879,8 @@ alias Pattern = Regex!char;
 //     }
 
 //     void resetState() {
-//         foreach(Redis jedis ; getAllShards()) {
-//             jedis.resetState();
+//         foreach(Redis redis ; getAllShards()) {
+//             redis.resetState();
 //         }
 //     }
 

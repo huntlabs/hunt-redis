@@ -78,7 +78,7 @@ import hunt.redis.Exceptions;
 //    * @param s
 //    * @param e
 //    * @return CRC16 as integer value See <a
-//    *         href="https://github.com/xetorthio/jedis/pull/733#issuecomment-55840331">Issue 733</a>
+//    *         href="https://github.com/xetorthio/redis/pull/733#issuecomment-55840331">Issue 733</a>
 //    */
 //   static int getCRC16(byte[] bytes, int s, int e) {
 //     int crc = 0x0000;

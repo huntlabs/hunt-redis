@@ -1804,10 +1804,10 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     protected void checkIsInMultiOrPipeline() {
         if (client.isInMulti()) {
             throw new RedisDataException(
-                    "Cannot use Redis when in Multi. Please use Transaction or reset jedis state.");
+                    "Cannot use Redis when in Multi. Please use Transaction or reset redis state.");
         } else if (pipeline !is null && pipeline.hasPipelinedResponse()) {
             throw new RedisDataException(
-                    "Cannot use Redis when in Pipeline. Please use Pipeline or reset jedis state .");
+                    "Cannot use Redis when in Pipeline. Please use Pipeline or reset redis state .");
         }
     }
 
@@ -2863,12 +2863,12 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * MONITOR is a debugging command that outputs the whole sequence of commands received by the
      * Redis server. is very handy in order to understand what is happening into the database. This
      * command is used directly via telnet.
-     * @param jedisMonitor
+     * @param redisMonitor
      */
-    void monitor(RedisMonitor jedisMonitor) {
+    void monitor(RedisMonitor redisMonitor) {
         client.monitor();
         client.getStatusCodeReply();
-        jedisMonitor.proceed(client);
+        redisMonitor.proceed(client);
     }
 
     /**
@@ -3151,19 +3151,19 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    void subscribe(RedisPubSub jedisPubSub, string[] channels...) {
+    void subscribe(RedisPubSub redisPubSub, string[] channels...) {
         client.setTimeoutInfinite();
         try {
-            jedisPubSub.proceed(client, channels);
+            redisPubSub.proceed(client, channels);
         } finally {
             client.rollbackTimeout();
         }
     }
 
-    void psubscribe(RedisPubSub jedisPubSub, string[] patterns...) {
+    void psubscribe(RedisPubSub redisPubSub, string[] patterns...) {
         client.setTimeoutInfinite();
         try {
-            jedisPubSub.proceedWithPatterns(client, patterns);
+            redisPubSub.proceedWithPatterns(client, patterns);
         } finally {
             client.rollbackTimeout();
         }
@@ -3633,8 +3633,8 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    void setDataSource(RedisPoolAbstract jedisPool) {
-        this.dataSource = jedisPool;
+    void setDataSource(RedisPoolAbstract redisPool) {
+        this.dataSource = redisPool;
     }    
 
     long pfadd(string key, string[] elements...) {

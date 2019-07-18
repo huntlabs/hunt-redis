@@ -43,9 +43,9 @@ alias Pattern = Regex!char;
 
 //     override
 //     ShardedRedis getResource() {
-//         ShardedRedis jedis = super.getResource();
-//         jedis.setDataSource(this);
-//         return jedis;
+//         ShardedRedis redis = super.getResource();
+//         redis.setDataSource(this);
+//         return redis;
 //     }
 
 //     override
@@ -81,22 +81,22 @@ alias Pattern = Regex!char;
 
 //     override
 //     IPooledObject makeObject() {
-//         ShardedRedis jedis = new ShardedRedis(shards, algo, keyTagPattern);
-//         return new DefaultPooledObject!(ShardedRedis)(jedis);
+//         ShardedRedis redis = new ShardedRedis(shards, algo, keyTagPattern);
+//         return new DefaultPooledObject!(ShardedRedis)(redis);
 //     }
 
 //     override
 //     void destroyObject(IPooledObject pooledShardedRedis) {
 //         ShardedRedis shardedRedis = pooledShardedRedis.getObject();
-//         foreach(Redis jedis ; shardedRedis.getAllShards()) {
-//             if (jedis.isConnected()) {
+//         foreach(Redis redis ; shardedRedis.getAllShards()) {
+//             if (redis.isConnected()) {
 //                 try {
 //                     try {
-//                         jedis.quit();
+//                         redis.quit();
 //                     } catch (Exception e) {
 
 //                     }
-//                     jedis.disconnect();
+//                     redis.disconnect();
 //                 } catch (Exception e) {
 
 //                 }
@@ -107,8 +107,8 @@ alias Pattern = Regex!char;
 //     override
 //     bool validateObject(IPooledObject pooledShardedRedis) {
 //         try {
-//             ShardedRedis jedis = pooledShardedRedis.getObject();
-//             foreach(Redis shard ; jedis.getAllShards()) {
+//             ShardedRedis redis = pooledShardedRedis.getObject();
+//             foreach(Redis shard ; redis.getAllShards()) {
 //                 if (!shard.ping().equals("PONG")) {
 //                     return false;
 //                 }

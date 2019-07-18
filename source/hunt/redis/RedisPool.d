@@ -232,9 +232,9 @@ class RedisPool : RedisPoolAbstract {
 
     override
     Redis getResource() {
-        Redis jedis = super.getResource();
-        jedis.setDataSource(this);
-        return jedis;
+        Redis redis = super.getResource();
+        redis.setDataSource(this);
+        return redis;
     }
 
     override

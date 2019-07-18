@@ -64,9 +64,9 @@ interface MultiKeyRedisClusterCommands {
 
   long publish(string channel, string message);
 
-  void subscribe(RedisPubSub jedisPubSub, string[] channels...);
+  void subscribe(RedisPubSub redisPubSub, string[] channels...);
 
-  void psubscribe(RedisPubSub jedisPubSub, string[] patterns...);
+  void psubscribe(RedisPubSub redisPubSub, string[] patterns...);
 
   long bitop(BitOP op, string destKey, string[] srcKeys...);
 

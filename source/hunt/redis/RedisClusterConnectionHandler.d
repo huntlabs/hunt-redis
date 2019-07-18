@@ -58,23 +58,23 @@ abstract class RedisClusterConnectionHandler : Closeable {
       int connectionTimeout, int soTimeout, string password, string clientName,
       bool ssl) {
     foreach(HostAndPort hostAndPort ; startNodes) {
-      Redis jedis = null;
+      Redis redis = null;
       try {
-        // jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
-        jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl);
+        // redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
+        redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl);
         if (password !is null) {
-          jedis.auth(password);
+          redis.auth(password);
         }
         if (clientName !is null) {
-          jedis.clientSetname(clientName);
+          redis.clientSetname(clientName);
         }
-        cache.discoverClusterNodesAndSlots(jedis);
+        cache.discoverClusterNodesAndSlots(redis);
         break;
       } catch (RedisConnectionException e) {
         // try next nodes
       } finally {
-        if (jedis !is null) {
-          jedis.close();
+        if (redis !is null) {
+          redis.close();
         }
       }
     }
@@ -84,8 +84,8 @@ abstract class RedisClusterConnectionHandler : Closeable {
     cache.renewClusterSlots(null);
   }
 
-  void renewSlotCache(Redis jedis) {
-    cache.renewClusterSlots(jedis);
+  void renewSlotCache(Redis redis) {
+    cache.renewClusterSlots(redis);
   }
 
   override

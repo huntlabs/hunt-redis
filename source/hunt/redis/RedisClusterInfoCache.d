@@ -89,12 +89,12 @@ class RedisClusterInfoCache {
 //     this.hostAndPortMap = hostAndPortMap;
 //   }
 
-    void discoverClusterNodesAndSlots(Redis jedis) {
+    void discoverClusterNodesAndSlots(Redis redis) {
         w.lock();
 
         try {
             reset();
-            List!(Object) slots = jedis.clusterSlots();
+            List!(Object) slots = redis.clusterSlots();
 
             foreach(Object slotInfoObj ; slots) {
                 List!(Object) slotInfo = cast(List!(Object)) slotInfoObj;
@@ -125,7 +125,7 @@ class RedisClusterInfoCache {
         }
     }
 
-    void renewClusterSlots(Redis jedis) {
+    void renewClusterSlots(Redis redis) {
         //If rediscovering is already in process - no need to start one more same rediscovering, just return
         if (!rediscovering) {
             try {
@@ -134,9 +134,9 @@ class RedisClusterInfoCache {
                     rediscovering = true;
 
                     try {
-                        if (jedis !is null) {
+                        if (redis !is null) {
                             try {
-                                discoverClusterSlots(jedis);
+                                discoverClusterSlots(redis);
                                 return;
                             } catch (RedisException e) {
                                 //try nodes from all pools
@@ -167,8 +167,8 @@ class RedisClusterInfoCache {
         }
     }
 
-    private void discoverClusterSlots(Redis jedis) {
-        List!(Object) slots = jedis.clusterSlots();
+    private void discoverClusterSlots(Redis redis) {
+        List!(Object) slots = redis.clusterSlots();
         this.slots.clear();
 
         foreach(Object slotInfoObj ; slots) {
@@ -318,8 +318,8 @@ class RedisClusterInfoCache {
         return client.getHost() ~ ":" ~ client.getPort().to!string();
     }
 
-    static string getNodeKey(Redis jedis) {
-        return getNodeKey(jedis.getClient());
+    static string getNodeKey(Redis redis) {
+        return getNodeKey(redis.getClient());
     }
 
     private List!(int) getAssignedSlotArray(List!(Object) slotInfo) {

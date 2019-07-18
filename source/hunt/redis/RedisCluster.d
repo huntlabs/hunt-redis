@@ -94,37 +94,37 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //     this(nodes, timeout, DEFAULT_MAX_ATTEMPTS, poolConfig);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int timeout, int maxAttempts,
+//   this(Set!(HostAndPort) redisClusterNode, int timeout, int maxAttempts,
 //       GenericObjectPoolConfig poolConfig) {
-//     super(jedisClusterNode, timeout, maxAttempts, poolConfig);
+//     super(redisClusterNode, timeout, maxAttempts, poolConfig);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
+//   this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
 //       int maxAttempts, GenericObjectPoolConfig poolConfig) {
-//     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, poolConfig);
+//     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, poolConfig);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
+//   this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
 //                       int maxAttempts, string password, GenericObjectPoolConfig poolConfig) {
-//     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
+//     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
+//   this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
 //           int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig) {
-//     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
+//     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
+//   this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
 //       int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
 //       bool ssl) {
-//     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
+//     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
 //   }
 
-//   this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout,
+//   this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
 //       int maxAttempts, string password, string clientName, GenericObjectPoolConfig poolConfig,
 //       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
 //       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
-//     super(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
+//     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
 //         ssl, sslSocketFactory, sslParameters, hostnameVerifier, hostAndPortMap);
 //   }
 
@@ -1712,22 +1712,22 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 //   }
 
 //   override
-//   void subscribe(RedisPubSub jedisPubSub, string[] channels...) {
+//   void subscribe(RedisPubSub redisPubSub, string[] channels...) {
 //     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
 //       override
 //       Integer execute(Redis connection) {
-//         connection.subscribe(jedisPubSub, channels);
+//         connection.subscribe(redisPubSub, channels);
 //         return 0;
 //       }
 //     }.runWithAnyNode();
 //   }
 
 //   override
-//   void psubscribe(RedisPubSub jedisPubSub, string[] patterns...) {
+//   void psubscribe(RedisPubSub redisPubSub, string[] patterns...) {
 //     new RedisClusterCommand!(Integer)(connectionHandler, maxAttempts) {
 //       override
 //       Integer execute(Redis connection) {
-//         connection.psubscribe(jedisPubSub, patterns);
+//         connection.psubscribe(redisPubSub, patterns);
 //         return 0;
 //       }
 //     }.runWithAnyNode();

@@ -55,22 +55,22 @@ class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
     List!(RedisPool) pools = cache.getShuffledNodesPool();
 
     foreach(RedisPool pool ; pools) {
-      Redis jedis = null;
+      Redis redis = null;
       try {
-        jedis = pool.getResource();
+        redis = pool.getResource();
 
-        if (jedis is null) {
+        if (redis is null) {
           continue;
         }
 
-        string result = jedis.ping();
+        string result = redis.ping();
 
-        if (result.equalsIgnoreCase("pong")) return jedis;
+        if (result.equalsIgnoreCase("pong")) return redis;
 
-        jedis.close();
+        redis.close();
       } catch (RedisException ex) {
-        if (jedis !is null) {
-          jedis.close();
+        if (redis !is null) {
+          redis.close();
         }
       }
     }

@@ -15,7 +15,7 @@ import hunt.collection.ArrayList;
  * http://redis.io/commands/zadd <br/>
  * <br/>
  * So we decided to wrap "ZADD with INCR option" to ZINCRBY. <br/>
- * https://github.com/xetorthio/jedis/issues/1067 <br/>
+ * https://github.com/xetorthio/redis/issues/1067 <br/>
  * <br/>
  * Works with Redis 3.0.2 and onwards.
  */

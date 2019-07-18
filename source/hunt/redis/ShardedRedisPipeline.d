@@ -22,7 +22,7 @@ import hunt.collection;
 // /**
 // */
 // class ShardedRedisPipeline : PipelineBase {
-//   private BinaryShardedRedis jedis;
+//   private BinaryShardedRedis redis;
 //   private List!(FutureResult) results;
 //   private Queue!(Client) clients;
 
@@ -32,8 +32,8 @@ import hunt.collection;
 //   }
 
 
-//   void setShardedRedis(BinaryShardedRedis jedis) {
-//     this.jedis = jedis;
+//   void setShardedRedis(BinaryShardedRedis redis) {
+//     this.redis = redis;
 //   }
 
 //   List!(Object) getResults() {
@@ -71,7 +71,7 @@ import hunt.collection;
 
 //   override
 //   protected Client getClient(string key) {
-//     Client client = jedis.getShard(key).getClient();
+//     Client client = redis.getShard(key).getClient();
 //     clients.add(client);
 //     results.add(new FutureResult(client));
 //     return client;
@@ -79,7 +79,7 @@ import hunt.collection;
 
 //   override
 //   protected Client getClient(byte[] key) {
-//     Client client = jedis.getShard(key).getClient();
+//     Client client = redis.getShard(key).getClient();
 //     clients.add(client);
 //     results.add(new FutureResult(client));
 //     return client;

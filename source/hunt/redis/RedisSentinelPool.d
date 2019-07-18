@@ -159,11 +159,11 @@ import std.string;
 
 //             tracef("Connecting to Sentinel %s", hap);
 
-//             Redis jedis = null;
+//             Redis redis = null;
 //             try {
-//                 jedis = new Redis(hap);
+//                 redis = new Redis(hap);
 
-//                 List!(string) masterAddr = jedis.sentinelGetMasterAddrByName(masterName);
+//                 List!(string) masterAddr = redis.sentinelGetMasterAddrByName(masterName);
 
 //                 // connected to[] sentinel...
 //                 sentinelAvailable = true;
@@ -183,8 +183,8 @@ import std.string;
 //                     "Cannot get master address from sentinel running @ %s. Reason: %s. Trying next one.", hap,
 //                     e.toString());
 //             } finally {
-//                 if (jedis !is null) {
-//                     jedis.close();
+//                 if (redis !is null) {
+//                     redis.close();
 //                 }
 //             }
 //         }
@@ -232,19 +232,19 @@ import std.string;
 //     override
 //     Redis getResource() {
 //         while (true) {
-//             Redis jedis = super.getResource();
-//             jedis.setDataSource(this);
+//             Redis redis = super.getResource();
+//             redis.setDataSource(this);
 
 //             // get a reference because it can change concurrently
 //             HostAndPort master = currentHostMaster;
-//             HostAndPort connection = new HostAndPort(jedis.getClient().getHost(), jedis.getClient()
+//             HostAndPort connection = new HostAndPort(redis.getClient().getHost(), redis.getClient()
 //                     .getPort());
 
 //             if (master == connection) {
 //                 // connected to the correct master
-//                 return jedis;
+//                 return redis;
 //             } else {
-//                 returnBrokenResource(jedis);
+//                 returnBrokenResource(redis);
 //             }
 //         }
 //     }

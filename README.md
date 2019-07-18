@@ -25,9 +25,9 @@ All of the following redis features are supported:
 To use it just:
     
 ```java
-Redis jedis = new Redis("localhost");
-jedis.set("foo", "bar");
-string value = jedis.get("foo");
+Redis redis = new Redis("localhost");
+redis.set("foo", "bar");
+string value = redis.get("foo");
 ```
 
 ## Redis Cluster
@@ -35,10 +35,10 @@ string value = jedis.get("foo");
 Redis cluster [specification](http://redis.io/topics/cluster-spec) (still under development) is implemented
 
 ```java
-Set!(HostAndPort) jedisClusterNodes = new HashSet!(HostAndPort)();
+Set!(HostAndPort) redisClusterNodes = new HashSet!(HostAndPort)();
 //Redis Cluster will attempt to discover cluster nodes automatically
-jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7379));
-RedisCluster jc = new RedisCluster(jedisClusterNodes);
+redisClusterNodes.add(new HostAndPort("127.0.0.1", 7379));
+RedisCluster jc = new RedisCluster(redisClusterNodes);
 jc.set("foo", "bar");
 string value = jc.get("foo");
 ```

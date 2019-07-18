@@ -1,5 +1,7 @@
 module test.utils.RedisURIHelperTest;
 
+import hunt.redis.util.RedisURIHelper;
+
 import hunt.Assert;
 import hunt.collection;
 import hunt.Exceptions;
@@ -11,10 +13,8 @@ import hunt.net.util.HttpURI;
 
 alias URI = HttpURI;
 
-import hunt.redis.util.RedisURIHelper;
 
-
-class JedisURIHelperTest {
+class RedisURIHelperTest {
 
   @Test
   void shouldGetPasswordFromURIWithCredentials() {
