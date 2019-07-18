@@ -729,9 +729,9 @@ abstract class PipelineBase : Queable, RedisPipeline {
     }
 
     override
-    Response!(byte[]) dump(string key) {
+    Response!(string) dump(string key) {
         getClient(key).dump(key);
-        return getResponse(BuilderFactory.BYTE_ARRAY);
+        return getResponse(BuilderFactory.STRING);
     }
 
     override
@@ -973,7 +973,8 @@ abstract class PipelineBase : Queable, RedisPipeline {
     }
 
     override
-    Response!(List!(StreamPendingEntry)) xpending(string key, string groupname, StreamEntryID start, StreamEntryID end, int count, string consumername){
+    Response!(List!(StreamPendingEntry)) xpending(string key, string groupname, 
+            StreamEntryID start, StreamEntryID end, int count, string consumername){
         getClient(key).xpending(key, groupname, start, end, count, consumername);
         return getResponse(BuilderFactory.STREAM_PENDING_ENTRY_LIST);        
     }

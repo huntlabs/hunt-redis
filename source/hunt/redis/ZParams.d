@@ -14,39 +14,41 @@ import std.conv;
 
 import hunt.redis.util.SafeEncoder;
 
-  enum Aggregate {
-    SUM, MIN, MAX
-  }
+enum Aggregate {
+    SUM,
+    MIN,
+    MAX
+}
 
 class ZParams {
 
-  private List!(byte[]) params;
+    private List!(string) params;
 
-  this() {
-    params = new ArrayList!(byte[])();
-  }
+    this() {
+        params = new ArrayList!(string)();
+    }
 
-  /**
+    /**
    * Set weights.
    * @param weights weights.
    * @return 
    */
-  ZParams weights(double[] weights...) {
-    params.add(SafeEncoder.encode(Protocol.Keyword.WEIGHTS.to!string()));
-    foreach(double weight ; weights) {
-      params.add(Protocol.toByteArray(weight));
+    ZParams weights(double[] weights...) {
+        params.add(SafeEncoder.encode(Protocol.Keyword.WEIGHTS.to!string()));
+        foreach (double weight; weights) {
+            params.add(Protocol.toByteArray(weight));
+        }
+
+        return this;
     }
 
-    return this;
-  }
+    Collection!(string) getParams() {
+        return params; // Collections.unmodifiableCollection(params);
+    }
 
-  Collection!(byte[]) getParams() {
-    return params; // Collections.unmodifiableCollection(params);
-  }
-
-  ZParams aggregate(Aggregate aggregate) {
-    params.add(SafeEncoder.encode(Protocol.Keyword.AGGREGATE.to!string()));
-    params.add(SafeEncoder.encode(aggregate.to!string()));
-    return this;
-  }
+    ZParams aggregate(Aggregate aggregate) {
+        params.add(SafeEncoder.encode(Protocol.Keyword.AGGREGATE.to!string()));
+        params.add(SafeEncoder.encode(aggregate.to!string()));
+        return this;
+    }
 }

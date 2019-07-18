@@ -260,7 +260,7 @@ interface RedisPipeline {
   
   Response!(Long) hstrlen(string key, string field);
 
-  Response!(byte[]) dump(string key);
+  Response!(string) dump(string key);
 
   Response!(string) restore(string key, int ttl, byte[] serializedValue);
 

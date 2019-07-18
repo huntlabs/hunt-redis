@@ -13,13 +13,13 @@ class ScanParams {
     private Map!(Protocol.Keyword, ByteBuffer) params;
 
     enum string SCAN_POINTER_START = "0";
-    // enum byte[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
+    // enum string SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
 
     this() {
         params = new HashMap!(Protocol.Keyword, ByteBuffer); // new EnumMap!(Keyword, ByteBuffer)(Keyword.class);
     }
 
-    ScanParams match(byte[] pattern) {
+    ScanParams match(string pattern) {
         params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(pattern));
         return this;
     }
@@ -46,19 +46,19 @@ class ScanParams {
         return this;
     }
 
-    Collection!(byte[]) getParams() {
-        List!(byte[]) paramsList = new ArrayList!(byte[])(params.size());
+    Collection!(string) getParams() {
+        List!(string) paramsList = new ArrayList!(string)(params.size());
         foreach (Protocol.Keyword key, ByteBuffer value; params) {
-            paramsList.add(cast(byte[])key.to!string());
-            paramsList.add(value.array());
+            paramsList.add(key.to!string());
+            paramsList.add(cast(string)value.array());
         }
         // return Collections.unmodifiableCollection(paramsList);
         return paramsList;
     }
 
-    byte[] binaryMatch() {
+    string binaryMatch() {
         if (params.containsKey(Protocol.Keyword.MATCH)) {
-            return params.get(Protocol.Keyword.MATCH).array();
+            return cast(string)params.get(Protocol.Keyword.MATCH).array();
         } else {
             return null;
         }

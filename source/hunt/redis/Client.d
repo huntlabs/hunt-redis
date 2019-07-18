@@ -3,6 +3,7 @@ module hunt.redis.Client;
 import hunt.redis.AbstractClient;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
+import hunt.redis.ClusterReset;
 import hunt.redis.ListPosition;
 import hunt.redis.GeoCoordinate;
 import hunt.redis.GeoUnit;
@@ -489,11 +490,11 @@ class Client : AbstractClient {
     }
 
     void zrangeWithScores(string key, long start, long stop) {
-        sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZRANGE, key, toByteArray(start), toByteArray(stop), to!string(Keyword.WITHSCORES));
     }
 
     void zrevrangeWithScores(string key, long start, long stop) {
-        sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZREVRANGE, key, toByteArray(start), toByteArray(stop), to!string(Keyword.WITHSCORES));
     }
 
     void zcard(string key) {
@@ -559,13 +560,13 @@ class Client : AbstractClient {
         List!(string) args = new ArrayList!(string)();
         args.add(key);
         args.addAll(sortingParameters.getParams());
-        args.add(cast(string)to!string(Keyword.STORE));
+        args.add(to!string(Keyword.STORE));
         args.add(dstkey);
         sendCommand(Command.SORT, args.toArray());
     }
 
     void sort(string key, string dstkey) {
-        sendCommand(Command.SORT, key, cast(string)to!string(Keyword.STORE), dstkey);
+        sendCommand(Command.SORT, key, to!string(Keyword.STORE), dstkey);
     }
 
     void brpop(string[] args) {
@@ -644,64 +645,64 @@ class Client : AbstractClient {
 
     void zrangeByScore(string key, double min, double max, int offset,
             int count) {
-        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), to!string(Keyword.LIMIT), toByteArray(offset),
             toByteArray(count));
     }
 
     void zrevrangeByScore(string key, double max, double min,
             int offset, int count) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), to!string(Keyword.LIMIT), toByteArray(offset),
             toByteArray(count));
     }
 
     void zrangeByScoreWithScores(string key, double min, double max) {
-        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), to!string(Keyword.WITHSCORES));
     }
 
     void zrevrangeByScoreWithScores(string key, double max, double min) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), to!string(Keyword.WITHSCORES));
     }
 
     void zrangeByScoreWithScores(string key, double min, double max,
             int offset, int count) {
-        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
-            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZRANGEBYSCORE, key, toByteArray(min), toByteArray(max), to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), to!string(Keyword.WITHSCORES));
     }
 
     void zrevrangeByScoreWithScores(string key, double max, double min,
             int offset, int count) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
-            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, toByteArray(max), toByteArray(min), to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), to!string(Keyword.WITHSCORES));
     }
 
     void zrangeByScore(string key, string min, string max, int offset,
             int count) {
-        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zrevrangeByScore(string key, string max, string min,
             int offset, int count) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zrangeByScoreWithScores(string key, string min, string max) {
-        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, to!string(Keyword.WITHSCORES));
     }
 
     void zrevrangeByScoreWithScores(string key, string max, string min) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, to!string(Keyword.WITHSCORES));
     }
 
     void zrangeByScoreWithScores(string key, string min, string max,
             int offset, int count) {
-        sendCommand(Command.ZRANGEBYSCORE, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count),
-            cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZRANGEBYSCORE, key, min, max, to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count),
+            to!string(Keyword.WITHSCORES));
     }
 
     void zrevrangeByScoreWithScores(string key, string max, string min,
             int offset, int count) {
-        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset),
-            toByteArray(count), cast(string)to!string(Keyword.WITHSCORES));
+        sendCommand(Command.ZREVRANGEBYSCORE, key, max, min, to!string(Keyword.LIMIT), toByteArray(offset),
+            toByteArray(count), to!string(Keyword.WITHSCORES));
     }
 
     void zremrangeByRank(string key, long start, long stop) {
@@ -756,7 +757,7 @@ class Client : AbstractClient {
 
     void zrangeByLex(string key, string min, string max, int offset,
             int count) {
-        sendCommand(Command.ZRANGEBYLEX, key, min, max, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+        sendCommand(Command.ZRANGEBYLEX, key, min, max, to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zrevrangeByLex(string key, string max, string min) {
@@ -765,7 +766,7 @@ class Client : AbstractClient {
 
     void zrevrangeByLex(string key, string max, string min,
             int offset, int count) {
-        sendCommand(Command.ZREVRANGEBYLEX, key, max, min, cast(string)to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
+        sendCommand(Command.ZREVRANGEBYLEX, key, max, min, to!string(Keyword.LIMIT), toByteArray(offset), toByteArray(count));
     }
 
     void zremrangeByLex(string key, string min, string max) {
@@ -809,15 +810,15 @@ class Client : AbstractClient {
     }
 
     void slaveofNoOne() {
-        sendCommand(Command.SLAVEOF, cast(string)to!string(Keyword.NO), cast(string)to!string(Keyword.ONE));
+        sendCommand(Command.SLAVEOF, to!string(Keyword.NO), to!string(Keyword.ONE));
     }
 
     void configGet(string pattern) {
-        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.GET), pattern);
+        sendCommand(Command.CONFIG, to!string(Keyword.GET), pattern);
     }
 
     void configSet(string parameter, string value) {
-        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.SET), parameter, value);
+        sendCommand(Command.CONFIG, to!string(Keyword.SET), parameter, value);
     }
 
     void strlen(string key) {
@@ -846,7 +847,7 @@ class Client : AbstractClient {
 
     void linsert(string key, ListPosition where, string pivot,
             string value) {
-        sendCommand(Command.LINSERT, key, cast(string)to!string(where), pivot, value);
+        sendCommand(Command.LINSERT, key, to!string(where), pivot, value);
     }
 
     // void debug(DebugParams params) {
@@ -858,11 +859,11 @@ class Client : AbstractClient {
     }
 
     void configResetStat() {
-        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.RESETSTAT));
+        sendCommand(Command.CONFIG, to!string(Keyword.RESETSTAT));
     }
 
     void configRewrite() {
-        sendCommand(Command.CONFIG, cast(string)to!string(Keyword.REWRITE));
+        sendCommand(Command.CONFIG, to!string(Keyword.REWRITE));
     }
 
     void setbit(string key, long offset, string value) {
@@ -933,47 +934,47 @@ class Client : AbstractClient {
     }
 
     void scriptFlush() {
-        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.FLUSH));
+        sendCommand(Command.SCRIPT, to!string(Keyword.FLUSH));
     }
 
     void scriptExists(string[] sha1...) {
-        sendCommand(Command.SCRIPT, joinParameters(cast(string)to!string(Keyword.EXISTS), sha1));
+        sendCommand(Command.SCRIPT, joinParameters(to!string(Keyword.EXISTS), sha1));
     }
 
     void scriptLoad(string script) {
-        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.LOAD), script);
+        sendCommand(Command.SCRIPT, to!string(Keyword.LOAD), script);
     }
 
     void scriptKill() {
-        sendCommand(Command.SCRIPT, cast(string)to!string(Keyword.KILL));
+        sendCommand(Command.SCRIPT, to!string(Keyword.KILL));
     }
 
     void slowlogGet() {
-        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.GET));
+        sendCommand(Command.SLOWLOG, to!string(Keyword.GET));
     }
 
     void slowlogGet(long entries) {
-        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.GET), toByteArray(entries));
+        sendCommand(Command.SLOWLOG, to!string(Keyword.GET), toByteArray(entries));
     }
 
     void slowlogReset() {
-        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.RESET));
+        sendCommand(Command.SLOWLOG, to!string(Keyword.RESET));
     }
 
     void slowlogLen() {
-        sendCommand(Command.SLOWLOG, cast(string)to!string(Keyword.LEN));
+        sendCommand(Command.SLOWLOG, to!string(Keyword.LEN));
     }
 
     void objectRefcount(string key) {
-        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.REFCOUNT), key);
+        sendCommand(Command.OBJECT, to!string(Keyword.REFCOUNT), key);
     }
 
     void objectIdletime(string key) {
-        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.IDLETIME), key);
+        sendCommand(Command.OBJECT, to!string(Keyword.IDLETIME), key);
     }
 
     void objectEncoding(string key) {
-        sendCommand(Command.OBJECT, cast(string)to!string(Keyword.ENCODING), key);
+        sendCommand(Command.OBJECT, to!string(Keyword.ENCODING), key);
     }
 
     void bitcount(string key) {
@@ -985,7 +986,7 @@ class Client : AbstractClient {
     }
 
     void bitop(BitOP op, string destKey, string[] srcKeys...) {
-        sendCommand(Command.BITOP, joinParameters(cast(string)to!string(op), destKey, srcKeys));
+        sendCommand(Command.BITOP, joinParameters(to!string(op), destKey, srcKeys));
     }
 
     void sentinel(string[] args...) {
@@ -1001,7 +1002,7 @@ class Client : AbstractClient {
     }
 
     void restoreReplace(string key, int ttl, string serializedValue) {
-        sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue, cast(string)to!string(Keyword.REPLACE));
+        sendCommand(Command.RESTORE, key, toByteArray(ttl), serializedValue, to!string(Keyword.REPLACE));
     }
 
     void pexpire(string key, long milliseconds) {
@@ -1025,11 +1026,11 @@ class Client : AbstractClient {
     }
 
     void memoryDoctor() {
-        sendCommand(Command.MEMORY, cast(string)to!string(Keyword.DOCTOR));
+        sendCommand(Command.MEMORY, to!string(Keyword.DOCTOR));
     }
 
     void clientKill(string ipPort) {
-        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.KILL), ipPort);
+        sendCommand(Command.CLIENT, to!string(Keyword.KILL), ipPort);
     }
 
     void clientKill(string ip, int port) {
@@ -1037,23 +1038,23 @@ class Client : AbstractClient {
     }
 
     void clientKill(ClientKillParams params) {
-        sendCommand(Command.CLIENT, joinParameters(cast(string)to!string(Keyword.KILL), params.getByteParams()));
+        sendCommand(Command.CLIENT, joinParameters(to!string(Keyword.KILL), params.getByteParams()));
     }
 
     void clientGetname() {
-        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.GETNAME));
+        sendCommand(Command.CLIENT, to!string(Keyword.GETNAME));
     }
 
     void clientList() {
-        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.LIST));
+        sendCommand(Command.CLIENT, to!string(Keyword.LIST));
     }
 
     void clientSetname(string name) {
-        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.SETNAME), name);
+        sendCommand(Command.CLIENT, to!string(Keyword.SETNAME), name);
     }
 
     void clientPause(long timeout) {
-        sendCommand(Command.CLIENT, cast(string)to!string(Keyword.PAUSE), toByteArray(timeout));
+        sendCommand(Command.CLIENT, to!string(Keyword.PAUSE), toByteArray(timeout));
     }
 
     void time() {
@@ -1080,7 +1081,7 @@ class Client : AbstractClient {
         // System.arraycopy(bparams, 0, args, i, bparams.length);
         args[i .. i+bparams.length] = bparams[0 .. $];
         i += bparams.length;
-        args[i++] = cast(string)to!string(Keyword.KEYS);
+        args[i++] = to!string(Keyword.KEYS);
         // System.arraycopy(keys, 0, args, i, keys.length);
         args[i .. i+keys.length] = keys[0 .. $];
         sendCommand(Command.MIGRATE, args);
@@ -1125,8 +1126,84 @@ class Client : AbstractClient {
         sendCommand(Command.WAIT, toByteArray(replicas), toByteArray(timeout));
     }
 
-    void cluster(string[] args...) {
+    void cluster(string[] args) {
         sendCommand(Command.CLUSTER, args);
+    }
+
+    void cluster(string subcommand, int[] args...) {
+        string[] arg = new string[args.length + 1];
+        for (int i = 1; i < arg.length; i++) {
+            arg[i] = toByteArray(args[i - 1]);
+        }
+        arg[0] = subcommand;
+        cluster(arg);
+    }
+
+    void pubsub(string subcommand, string[] args...) {
+        string[] arg = new string[args.length + 1];
+        for (int i = 1; i < arg.length; i++) {
+            arg[i] = args[i - 1];
+        }
+        arg[0] = subcommand;
+        pubsub(arg);
+    }
+
+    void cluster(string subcommand, string[] args...) {
+        string[] arg = new string[args.length + 1];
+        for (size_t i = 1; i < arg.length; i++) {
+            arg[i] = args[i - 1];
+        }
+        arg[0] = subcommand;
+        cluster(arg);
+    }
+
+    // void cluster(string subcommand) {
+    //     string[] arg = new byte[][1];
+    //     arg[0] = SafeEncoder.encode(subcommand);
+    //     cluster(arg);
+    // }
+
+    void clusterNodes() {
+        cluster([Protocol.CLUSTER_NODES]);
+    }
+
+    void clusterMeet(string ip, int port) {
+        cluster(Protocol.CLUSTER_MEET, ip, to!string(port));
+    }
+
+    void clusterReset(ClusterReset resetType) {
+        cluster(Protocol.CLUSTER_RESET, resetType.to!string());
+    }
+
+    void clusterAddSlots(int[] slots...) {
+        cluster(Protocol.CLUSTER_ADDSLOTS, slots);
+    }
+
+    void clusterDelSlots(int[] slots...) {
+        cluster(Protocol.CLUSTER_DELSLOTS, slots);
+    }
+
+    void clusterInfo() {
+        cluster([Protocol.CLUSTER_INFO]);
+    }
+
+    void clusterGetKeysInSlot(int slot, int count) {
+        int[] args = [slot, count];
+        cluster(Protocol.CLUSTER_GETKEYSINSLOT, args);
+    }
+
+    void clusterSetSlotNode(int slot, string nodeId) {
+        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_NODE, nodeId);
+    }
+
+    void clusterSetSlotMigrating(int slot, string nodeId) {
+        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_MIGRATING,
+            nodeId);
+    }
+
+    void clusterSetSlotImporting(int slot, string nodeId) {
+        cluster(Protocol.CLUSTER_SETSLOT, to!string(slot), Protocol.CLUSTER_SETSLOT_IMPORTING,
+            nodeId);
     }
 
     void asking() {
@@ -1172,7 +1249,7 @@ class Client : AbstractClient {
     }
 
     void geodist(string key, string member1, string member2, GeoUnit unit) {
-        sendCommand(Command.GEODIST, key, member1, member2, cast(string)to!string(unit));
+        sendCommand(Command.GEODIST, key, member1, member2, to!string(unit));
     }
 
     void geohash(string key, string[] members...) {
@@ -1185,54 +1262,54 @@ class Client : AbstractClient {
 
     void georadius(string key, double longitude, double latitude, double radius, GeoUnit unit) {
         sendCommand(Command.GEORADIUS, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-            cast(string)to!string(unit));
+            to!string(unit));
     }
 
     void georadiusReadonly(string key, double longitude, double latitude, double radius, GeoUnit unit) {
         sendCommand(Command.GEORADIUS_RO, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-            cast(string)to!string(unit));
+            to!string(unit));
     }
 
     void georadius(string key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
         sendCommand(Command.GEORADIUS, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-            toByteArray(radius), cast(string)to!string(unit)));
+            toByteArray(radius), to!string(unit)));
     }
 
     void georadiusReadonly(string key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
         sendCommand(Command.GEORADIUS_RO, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-            toByteArray(radius), cast(string)to!string(unit)));
+            toByteArray(radius), to!string(unit)));
     }
 
     void georadiusByMember(string key, string member, double radius, GeoUnit unit) {
-        sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), cast(string)to!string(unit));
+        sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), to!string(unit));
     }
 
     void georadiusByMemberReadonly(string key, string member, double radius, GeoUnit unit) {
-        sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), cast(string)to!string(unit));
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), to!string(unit));
     }
 
     void georadiusByMember(string key, string member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), cast(string)to!string(unit)));
+        sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), to!string(unit)));
     }
 
     void georadiusByMemberReadonly(string key, string member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), cast(string)to!string(unit)));
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), to!string(unit)));
     }
 
     void moduleLoad(string path) {
-        sendCommand(Command.MODULE, cast(string)to!string(Keyword.LOAD), path);
+        sendCommand(Command.MODULE, to!string(Keyword.LOAD), path);
     }
 
     void moduleList() {
-        sendCommand(Command.MODULE, cast(string)to!string(Keyword.LIST));
+        sendCommand(Command.MODULE, to!string(Keyword.LIST));
     }
 
     void moduleUnload(string name) {
-        sendCommand(Command.MODULE, cast(string)to!string(Keyword.UNLOAD), name);
+        sendCommand(Command.MODULE, to!string(Keyword.UNLOAD), name);
     }
 
     private ArrayList!(string) convertScoreMembersToByteArrays(Map!(string, Double) scoreMembers) {
@@ -1281,7 +1358,7 @@ class Client : AbstractClient {
         int index = 0;
         params[index++] = key;
         if(maxLen < long.max) {
-            params[index++] = cast(string)to!string(Keyword.MAXLEN);
+            params[index++] = to!string(Keyword.MAXLEN);
             if(approximateLength) {
                 params[index++] = Protocol.BYTES_TILDE;
             }
@@ -1300,26 +1377,26 @@ class Client : AbstractClient {
          sendCommand(Command.XLEN, key);
     }
     
-    void xrange(string key, string start, string end, long count) { 
-         sendCommand(Command.XRANGE, key, start, end, cast(string)to!string(Keyword.COUNT), toByteArray(count));
+    void xrange(string key, StreamEntryID start, StreamEntryID end, long count) { 
+         sendCommand(Command.XRANGE, key, start.toString(), end.toString(), to!string(Keyword.COUNT), o!string(count));
     }
     
-    void xrevrange(string key, string end, string start, int count) {
-        sendCommand(Command.XREVRANGE, key, end, start, cast(string)to!string(Keyword.COUNT), toByteArray(count));
+    void xrevrange(string key, StreamEntryID end, StreamEntryID start, int count) {
+        sendCommand(Command.XREVRANGE, key, end.toString(), start.toString(), to!string(Keyword.COUNT), o!string(count));
     }
 
     void xread(int count, long block, Map!(string, string) streams) {
         string[] params = new string[3 + streams.size() * 2 + (block > 0 ? 2 : 0)];
 
         int streamsIndex = 0;
-        params[streamsIndex++] = cast(string)to!string(Keyword.COUNT);
+        params[streamsIndex++] = to!string(Keyword.COUNT);
         params[streamsIndex++] = toByteArray(count);
         if(block > 0) {
-            params[streamsIndex++] = cast(string)to!string(Keyword.BLOCK);
+            params[streamsIndex++] = to!string(Keyword.BLOCK);
             params[streamsIndex++] = toByteArray(block);
         }
         
-        params[streamsIndex++] = cast(string)to!string(Keyword.STREAMS);
+        params[streamsIndex++] = to!string(Keyword.STREAMS);
         int idsIndex = streamsIndex + streams.size();
 
         foreach(string key, string value; streams) {
@@ -1343,39 +1420,39 @@ class Client : AbstractClient {
      
     void xgroupCreate(string key, string groupname, string id, bool makeStream) {
         if(makeStream) {
-            sendCommand(Command.XGROUP, cast(string)to!string(Keyword.CREATE), key, groupname, id, cast(string)to!string(Keyword.MKSTREAM));  
+            sendCommand(Command.XGROUP, to!string(Keyword.CREATE), key, groupname, id, to!string(Keyword.MKSTREAM));  
         } else {
-            sendCommand(Command.XGROUP, cast(string)to!string(Keyword.CREATE), key, groupname, id);  
+            sendCommand(Command.XGROUP, to!string(Keyword.CREATE), key, groupname, id);  
         }
     }
 
     void xgroupSetID(string key, string groupname, string id) {
-        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.SETID), key, groupname, id);    
+        sendCommand(Command.XGROUP, to!string(Keyword.SETID), key, groupname, id);    
     }
 
     void xgroupDestroy(string key, string groupname) {
-        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.DESTROY), key, groupname);    
+        sendCommand(Command.XGROUP, to!string(Keyword.DESTROY), key, groupname);    
     }
 
     void xgroupDelConsumer(string key, string groupname, string consumerName) {
-        sendCommand(Command.XGROUP, cast(string)to!string(Keyword.DELCONSUMER), key, groupname, consumerName);    
+        sendCommand(Command.XGROUP, to!string(Keyword.DELCONSUMER), key, groupname, consumerName);    
     }
      
-    void xdel(string key, string[] ids...) {
+    void xdel(string key, StreamEntryID[] ids...) {
         string[] params = new string[1 + ids.length];
         int index = 0;
         params[index++] = key;
-        foreach(string id ; ids) {
-            params[index++] = id;
+        foreach(StreamEntryID id ; ids) {
+            params[index++] = id.toString();
         }
         sendCommand(Command.XDEL, params);
     }
     
     void xtrim(string key, long maxLen, bool approximateLength) {
         if(approximateLength) {
-            sendCommand(Command.XTRIM, key, cast(string)to!string(Keyword.MAXLEN), Protocol.BYTES_TILDE ,toByteArray(maxLen));
+            sendCommand(Command.XTRIM, key, to!string(Keyword.MAXLEN), Protocol.BYTES_TILDE ,toByteArray(maxLen));
         } else {
-            sendCommand(Command.XTRIM, key, cast(string)to!string(Keyword.MAXLEN), toByteArray(maxLen));
+            sendCommand(Command.XTRIM, key, to!string(Keyword.MAXLEN), toByteArray(maxLen));
         }
     }
     
@@ -1396,21 +1473,21 @@ class Client : AbstractClient {
         string[] params = new string[4 + optional + streams.size() * 2];
 
         int streamsIndex = 0;
-        params[streamsIndex++] = cast(string)to!string(Keyword.GROUP);
+        params[streamsIndex++] = to!string(Keyword.GROUP);
         params[streamsIndex++] = groupname;
         params[streamsIndex++] = consumer;
         if(count>0) {
-            params[streamsIndex++] = cast(string)to!string(Keyword.COUNT);
+            params[streamsIndex++] = to!string(Keyword.COUNT);
             params[streamsIndex++] = toByteArray(count);
         }
         if(block > 0) {
-            params[streamsIndex++] = cast(string)to!string(Keyword.BLOCK);
+            params[streamsIndex++] = to!string(Keyword.BLOCK);
             params[streamsIndex++] = toByteArray(block);
         }
         if(noAck) {
-            params[streamsIndex++] = cast(string)to!string(Keyword.NOACK);
+            params[streamsIndex++] = to!string(Keyword.NOACK);
         }
-        params[streamsIndex++] = cast(string)to!string(Keyword.STREAMS);
+        params[streamsIndex++] = to!string(Keyword.STREAMS);
         
         int idsIndex = streamsIndex + streams.size();
         foreach(string key, string value ; streams) {
@@ -1445,15 +1522,15 @@ class Client : AbstractClient {
                 arguments.add(id);  
             }
             if(newIdleTime > 0) {
-                arguments.add(cast(string)to!string(Keyword.IDLE));
+                arguments.add(to!string(Keyword.IDLE));
                 arguments.add(toByteArray(newIdleTime));
             }
             if(retries > 0) {
-                arguments.add(cast(string)to!string(Keyword.RETRYCOUNT));
+                arguments.add(to!string(Keyword.RETRYCOUNT));
                 arguments.add(toByteArray(retries));        
             }
             if(force) {
-                arguments.add(cast(string)to!string(Keyword.FORCE));        
+                arguments.add(to!string(Keyword.FORCE));        
             }
             sendCommand(Command.XCLAIM, arguments.toArray());
     }

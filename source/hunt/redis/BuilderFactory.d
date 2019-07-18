@@ -16,6 +16,7 @@ import hunt.Double;
 import hunt.Exceptions;
 import hunt.Integer;
 import hunt.Long;
+import hunt.String;
 
 // import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
@@ -100,8 +101,8 @@ class BuilderFactory {
                 override
                 string build(Object data) {
                         if(data is null) return null;
-                        byte[] bytes = (cast(Bytes)data).value;
-                        return SafeEncoder.encode(bytes);
+                        string bytes = (cast(String)data).value;
+                        return bytes;
                 }
 
                 override
@@ -228,11 +229,11 @@ class BuilderFactory {
 
     //  };
 
-    // static Builder!(List!(byte[])) BYTE_ARRAY_LIST() {
+    static Builder!(List!(string)) BYTE_ARRAY_LIST() {
 
-    //     implementationMissing();
-    //     return null;
-    // }
+        implementationMissing();
+        return null;
+    }
     //  static Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
     //      override
         
@@ -251,11 +252,11 @@ class BuilderFactory {
     //      }
     //  };
 
-    // static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET() {
+    static Builder!(Set!(string)) BYTE_ARRAY_ZSET() {
 
-    //     implementationMissing();
-    //     return null;
-    // }
+        implementationMissing();
+        return null;
+    }
     //  static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
     //      override
         
@@ -282,7 +283,7 @@ class BuilderFactory {
     //  };
 
 
-    static Builder!(Map!(byte[], byte[])) BYTE_ARRAY_MAP() {
+    static Builder!(Map!(string, string)) BYTE_ARRAY_MAP() {
 
         implementationMissing();
         return null;

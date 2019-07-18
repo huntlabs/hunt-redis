@@ -3163,21 +3163,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
      * @return Script result
      */
     Object eval(string script, List!(string) keys, List!(string) args) {
-        return eval(script, Protocol.toByteArray(keys.size()), getParamsWithBinary(keys, args));
-    }
-
-    static string[] getParamsWithBinary(List!(string) keys, List!(string) args) {
-        int keyCount = keys.size();
-        int argCount = args.size();
-        string[] params = new string[keyCount + argCount];
-
-        for (int i = 0; i < keyCount; i++)
-            params[i] = keys.get(i);
-
-        for (int i = 0; i < argCount; i++)
-            params[keyCount + i] = args.get(i);
-
-        return params;
+        return eval(script, keys.size(), getParams(keys, args));
     }
 
     Object eval(string script, int keyCount, string[] params...) {
@@ -3190,13 +3176,25 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         }
     }
 
-    // override
-    // Object eval(string script, int keyCount, string[] params...) {
-    //     return eval(script, Protocol.toByteArray(keyCount), params);
-    // }
-
     Object eval(string script) {
         return eval(script, 0);
+    }
+
+    alias getParamsWithBinary = getParams;
+
+    static string[] getParams(List!(string) keys, List!(string) args) {
+        int keyCount = keys.size();
+        int argCount = args.size();
+
+        string[] params = new string[keyCount + args.size()];
+
+        for (int i = 0; i < keyCount; i++)
+            params[i] = keys.get(i);
+
+        for (int i = 0; i < argCount; i++)
+            params[keyCount + i] = args.get(i);
+
+        return params;
     }
 
     Object evalsha(string sha1) {
@@ -3774,7 +3772,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
  * return Set result.
  * @param <E>
  */
-class SetFromList(E) : AbstractSet!(E), Serializable {
+class SetFromList(E) : AbstractSet!(E) { // , Serializable
     private List!(E) list;
 
     this(List!(E) list) {
@@ -3784,27 +3782,27 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
         this.list = list;
     }
 
-    void clear() {
+    override void clear() {
         list.clear();
     }
 
-    int size() {
+    override int size() {
         return list.size();
     }
 
-    bool isEmpty() {
+    override bool isEmpty() {
         return list.isEmpty();
     }
 
-    bool contains(E o) {
+    override bool contains(E o) {
         return list.contains(o);
     }
 
-    bool remove(E o) {
+    override bool remove(E o) {
         return list.remove(o);
     }
 
-    bool add(E e) {
+    override bool add(E e) {
         return !contains(e) && list.add(e);
     }
 
@@ -3813,7 +3811,7 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
     //   return list.iterator();
     // }
 
-    E[] toArray() {
+    override E[] toArray() {
         return list.toArray();
     }
 
@@ -3822,14 +3820,15 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
     //   return list.toArray(a);
     // }
 
-    string toString() {
+    override string toString() {
         return list.toString();
     }
 
-    size_t toHash() @trusted nothrow {
+    override size_t toHash() @trusted nothrow {
         return list.toHash();
     }
- bool opEquals(Object o) {
+
+    override bool opEquals(Object o) {
         if (o is null) return false;
         if (o is this) return true;
         Set!E c = cast(Set!E) o;
@@ -3842,15 +3841,15 @@ class SetFromList(E) : AbstractSet!(E), Serializable {
         return containsAll(c);
     }
 
-    bool containsAll(Collection!E c) {
+    override bool containsAll(Collection!E c) {
         return list.containsAll(c);
     }
 
-    bool removeAll(Collection!E c) {
+    override bool removeAll(Collection!E c) {
         return list.removeAll(c);
     }
 
-    bool retainAll(Collection!E c) {
+    override bool retainAll(Collection!E c) {
         return list.retainAll(c);
     }
 

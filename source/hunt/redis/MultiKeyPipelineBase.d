@@ -203,7 +203,7 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     override
     Response!(string) rpoplpush(string srckey, string dstkey) {
         client.rpoplpush(srckey, dstkey);
-        return getResponse(BuilderFactory.BYTE_ARRAY);
+        return getResponse(BuilderFactory.STRING);
     }
 
     override
@@ -407,7 +407,7 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     override
     Response!(string) brpoplpush(string source, string destination, int timeout) {
         client.brpoplpush(source, destination, timeout);
-        return getResponse(BuilderFactory.BYTE_ARRAY);
+        return getResponse(BuilderFactory.STRING);
     }
 
     override
@@ -445,12 +445,6 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         client.randomKey();
         return getResponse(BuilderFactory.STRING);
     }
-
-    // override
-    // Response!(string) randomKeyBinary() {
-    //     client.randomKey();
-    //     return getResponse(BuilderFactory.BYTE_ARRAY);
-    // }
 
     override
     Response!(string) flushDB() {
@@ -576,59 +570,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
 
     override
     Response!(Object) eval(string script) {
-        return this.eval(script, 0, new string[0]);
-    }
-
-    override
-    Response!(Object) eval(string script, List!(string) keys, List!(string) args) {
-        string[] argv = Redis.getParams(keys, args);
-        return this.eval(script, keys.size(), argv);
-    }
-
-    override
-    Response!(Object) eval(string script, int keyCount, string[] params...) {
-        getClient(script).eval(script, keyCount, params);
-        return getResponse(BuilderFactory.EVAL_RESULT);
-    }
-
-    override
-    Response!(Object) evalsha(string sha1) {
-        return this.evalsha(sha1, 0, new string[0]);
-    }
-
-    override
-    Response!(Object) evalsha(string sha1, List!(string) keys, List!(string) args) {
-        string[] argv = Redis.getParams(keys, args);
-        return this.evalsha(sha1, keys.size(), argv);
-    }
-
-    override
-    Response!(Object) evalsha(string sha1, int keyCount, string[] params...) {
-        getClient(sha1).evalsha(sha1, keyCount, params);
-        return getResponse(BuilderFactory.EVAL_RESULT);
-    }
-
-    override
-    Response!(Object) eval(string script) {
         return this.eval(script, 0);
     }
 
-    // override
-    // Response!(Object) eval(string script, string keyCount, string[] params...) {
-    //     getClient(script).eval(script, keyCount, params);
-    //     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
-    // }
-
     override
     Response!(Object) eval(string script, List!(string) keys, List!(string) args) {
-        string[] argv = BinaryRedis.getParamsWithBinary(keys, args);
+        string[] argv = Redis.getParams(keys, args);
         return this.eval(script, keys.size(), argv);
     }
 
     override
     Response!(Object) eval(string script, int keyCount, string[] params...) {
         getClient(script).eval(script, keyCount, params);
-        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+        return getResponse(BuilderFactory.EVAL_RESULT);
     }
 
     override
@@ -638,15 +592,23 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
 
     override
     Response!(Object) evalsha(string sha1, List!(string) keys, List!(string) args) {
-        string[] argv = BinaryRedis.getParamsWithBinary(keys, args);
+        string[] argv = Redis.getParams(keys, args);
         return this.evalsha(sha1, keys.size(), argv);
     }
 
     override
     Response!(Object) evalsha(string sha1, int keyCount, string[] params...) {
         getClient(sha1).evalsha(sha1, keyCount, params);
-        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+        return getResponse(BuilderFactory.EVAL_RESULT);
     }
+
+
+    // override
+    // Response!(Object) eval(string script, string keyCount, string[] params...) {
+    //     getClient(script).eval(script, keyCount, params);
+    //     return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+    // }
+
 
     override
     Response!(Long) pfcount(string[] keys...) {

@@ -21,53 +21,53 @@ import hunt.collection.ArrayList;
  */
 class ZIncrByParams : Params {
 
-  private enum string XX = "xx";
-  private enum string NX = "nx";
-  private enum string INCR = "incr";
+    private enum string XX = "xx";
+    private enum string NX = "nx";
+    private enum string INCR = "incr";
 
-  this() {
-  }
+    this() {
+    }
 
-  static ZIncrByParams zIncrByParams() {
-    return new ZIncrByParams();
-  }
+    static ZIncrByParams zIncrByParams() {
+        return new ZIncrByParams();
+    }
 
-  /**
+    /**
    * Only set the key if it does not already exist.
    * @return ZIncrByParams
    */
-  ZIncrByParams nx() {
-    addParam(NX);
-    return this;
-  }
+    ZIncrByParams nx() {
+        addParam(NX);
+        return this;
+    }
 
-  /**
+    /**
    * Only set the key if it already exist.
    * @return ZIncrByParams
    */
-  ZIncrByParams xx() {
-    addParam(XX);
-    return this;
-  }
-
-  byte[][] getByteParams(byte[] key, byte[][] args...) {
-    ArrayList!(byte[]) byteParams = new ArrayList!(byte[])();
-    byteParams.add(key);
-
-    if (contains(NX)) {
-      byteParams.add(SafeEncoder.encode(NX));
-    }
-    if (contains(XX)) {
-      byteParams.add(SafeEncoder.encode(XX));
+    ZIncrByParams xx() {
+        addParam(XX);
+        return this;
     }
 
-    byteParams.add(SafeEncoder.encode(INCR));
+    string[] getByteParams(string key, string[] args...) {
+        ArrayList!(string) byteParams = new ArrayList!(string)();
+        byteParams.add(key);
 
-    foreach(byte[] arg ; args) {
-      byteParams.add(arg);
+        if (contains(NX)) {
+            byteParams.add(SafeEncoder.encode(NX));
+        }
+        if (contains(XX)) {
+            byteParams.add(SafeEncoder.encode(XX));
+        }
+
+        byteParams.add(SafeEncoder.encode(INCR));
+
+        foreach (string arg; args) {
+            byteParams.add(arg);
+        }
+
+        return byteParams.toArray();
     }
-
-    return byteParams.toArray();
-  }
 
 }
