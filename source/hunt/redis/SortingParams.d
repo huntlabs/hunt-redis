@@ -36,22 +36,6 @@ class SortingParams {
      * @return the SortingParams Object
      */
     SortingParams by(string pattern) {
-        return by(SafeEncoder.encode(pattern));
-    }
-
-    /**
-     * Sort by weight in keys.
-     * <p>
-     * Takes a pattern that is used in order to generate the key names of the weights used for
-     * sorting. Weight key names are obtained substituting the first occurrence of * with the actual
-     * value of the elements on the list.
-     * <p>
-     * The pattern for a normal key/value pair is "field*" and for a value in a hash
-     * "field*-&gt;fieldname".
-     * @param pattern
-     * @return the SortingParams Object
-     */
-    SortingParams by(string pattern) {
         params.add(Keyword.BY.to!string());
         params.add(pattern);
         return this;
@@ -138,25 +122,4 @@ class SortingParams {
         return this;
     }
 
-    /**
-     * Retrieving external keys from the result of the search.
-     * <p>
-     * Takes a pattern that is used in order to generate the key names of the result of sorting. The
-     * key names are obtained substituting the first occurrence of * with the actual value of the
-     * elements on the list.
-     * <p>
-     * The pattern for a normal key/value pair is "field*" and for a value in a hash
-     * "field*-&gt;fieldname".
-     * <p>
-     * To get the list itself use the char # as pattern.
-     * @param patterns
-     * @return the SortingParams Object
-     */
-    SortingParams get(string[] patterns...) {
-        foreach(string pattern ; patterns) {
-            params.add(Keyword.GET.to!string());
-            params.add(pattern);
-        }
-        return this;
-    }
 }

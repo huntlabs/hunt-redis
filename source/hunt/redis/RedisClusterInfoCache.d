@@ -18,6 +18,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 import hunt.Byte;
 import hunt.Long;
 import hunt.Integer;
+import hunt.String;
 
 import core.sync.rwmutex;
 import core.sync.condition;
@@ -193,7 +194,7 @@ class RedisClusterInfoCache {
 
     private HostAndPort generateHostAndPort(List!(Object) hostInfos) {
         Object info = hostInfos.get(0);
-        Bytes infoBytes = cast(Bytes)info;
+        String infoBytes = cast(String)info;
         string host = SafeEncoder.encode(infoBytes.value());
         int port = (cast(Long) hostInfos.get(1)).intValue();
         if (ssl && hostAndPortMap !is null) {

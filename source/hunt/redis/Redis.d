@@ -42,8 +42,11 @@ import hunt.Byte;
 import hunt.Double;
 import hunt.Long;
 
+import std.array;
+import std.conv;
 import std.format;
 import std.range;
+import std.container.array;
 
 
 /**
@@ -3226,18 +3229,19 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     bool scriptExists(string sha1) {
         string[] a = new string[1];
         a[0] = sha1;
-        return scriptExists(a).get(0);
+        return scriptExists(a)[0];
     }
 
-    List!(bool) scriptExists(string[] sha1...) {
+    bool[] scriptExists(string[] sha1...) {
       client.scriptExists(sha1);
       List!(Long) result = client.getIntegerMultiBulkReply();
-      List!(bool) exists = new ArrayList!(bool)();
+      Array!bool exists;
+    //   List!(bool) exists = new ArrayList!(bool)();
 
       foreach(Long r ; result)
-        exists.add(r.value() == 1);
+        exists.insertBack(r.value() == 1);
 
-      return exists;
+      return exists.array;
     }
 
     string scriptLoad(string script) {
@@ -3305,19 +3309,19 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    byte[] dump(string key) {
+    string dump(string key) {
         checkIsInMultiOrPipeline();
         client.dump(key);
         return client.getBulkReply();
     }
 
-    string restore(string key, int ttl, byte[] serializedValue) {
+    string restore(string key, int ttl, string serializedValue) {
         checkIsInMultiOrPipeline();
         client.restore(key, ttl, serializedValue);
         return client.getStatusCodeReply();
     }
 
-    string restoreReplace(string key, int ttl, byte[] serializedValue) {
+    string restoreReplace(string key, int ttl, string serializedValue) {
         checkIsInMultiOrPipeline();
         client.restoreReplace(key, ttl, serializedValue);
         return client.getStatusCodeReply();
@@ -3722,7 +3726,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
     long xgroupDestroy(string key, string groupname) {
         checkIsInMultiOrPipeline();
         client.xgroupDestroy(key, groupname);
-        return client.getIntegerReply().value();
+        return client.getIntegerReply();
     }
 
     string xgroupDelConsumer(string key, string consumer, string consumerName) {
@@ -3731,7 +3735,7 @@ class Redis : BasicCommands, RedisCommands, MultiKeyCommands,
         return client.getStatusCodeReply();  
     }
 
-    long xdel(string key, string[] ids...) {
+    long xdel(string key, StreamEntryID[] ids...) {
         checkIsInMultiOrPipeline();
         client.xdel(key, ids);
         return client.getIntegerReply();

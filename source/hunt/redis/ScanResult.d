@@ -4,47 +4,42 @@ import hunt.redis.ScanParams;
 
 import hunt.collection.List;
 
-import hunt.redis.util.SafeEncoder;
 
 class ScanResult(T) {
-  private byte[] cursor;
-  private List!(T) results;
+    private string cursor;
+    private List!(T) results;
 
-  this(string cursor, List!(T) results) {
-    this(SafeEncoder.encode(cursor), results);
-  }
+    this(string cursor, List!(T) results) {
+        this.cursor = cursor;
+        this.results = results;
+    }
 
-  this(byte[] cursor, List!(T) results) {
-    this.cursor = cursor;
-    this.results = results;
-  }
+    /**
+     * Returns the new value of the cursor
+     * @return the new cursor value. {@link ScanParams#SCAN_POINTER_START} when a complete iteration has finished
+     */
+    string getCursor() {
+        return cursor;
+    }
 
-  /**
-   * Returns the new value of the cursor
-   * @return the new cursor value. {@link ScanParams#SCAN_POINTER_START} when a complete iteration has finished
-   */
-  string getCursor() {
-    return SafeEncoder.encode(cursor);
-  }
+    /**
+     * Is the iteration complete. I.e. was the complete dataset scanned.
+     *
+     * @return true if the iteration is complete
+     */
+    bool isCompleteIteration() {
+        return ScanParams.SCAN_POINTER_START == getCursor();
+    }
 
-  /**
-   * Is the iteration complete. I.e. was the complete dataset scanned.
-   *
-   * @return true if the iteration is complete
-   */
-  bool isCompleteIteration() {
-    return ScanParams.SCAN_POINTER_START == getCursor();
-  }
+    string getCursorAsBytes() {
+        return cursor;
+    }
 
-  byte[] getCursorAsBytes() {
-    return cursor;
-  }
-
-  /**
-   * The scan results from the current call.
-   * @return the scan results
-   */
-  List!(T) getResult() {
-    return results;
-  }
+    /**
+     * The scan results from the current call.
+     * @return the scan results
+     */
+    List!(T) getResult() {
+        return results;
+    }
 }

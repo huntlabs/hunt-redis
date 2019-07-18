@@ -14,14 +14,10 @@ import hunt.util.Comparator;
 import std.conv;
 
 class Tuple : Comparable!(Tuple) {
-    private byte[] element;
+    private string element;
     private double score;
 
     this(string element, double score) {
-        this(SafeEncoder.encode(element), score);
-    }
-
-    this(byte[] element, double score) {
         this.element = element;
         this.score = score;
     }
@@ -69,22 +65,18 @@ class Tuple : Comparable!(Tuple) {
     }
 
     string getElement() {
-        if (null != element) {
-            return SafeEncoder.encode(element);
-        } else {
-            return null;
-        }
-    }
-
-    byte[] getBinaryElement() {
         return element;
     }
+
+    // string getBinaryElement() {
+    //     return element;
+    // }
 
     double getScore() {
         return score;
     }
 
     override string toString() {
-        return "[" ~ SafeEncoder.encode(element).to!string() ~ "," ~ score.to!string ~ "]";
+        return "[" ~ element ~ "," ~ score.to!string ~ "]";
     }
 }
