@@ -22,9 +22,9 @@ All of the following redis features are supported:
 - Scripting with pipelining
 - Redis Cluster
 
-To use it just:
+## To use it just:
     
-```java
+```D
 Redis redis = new Redis("localhost");
 redis.set("foo", "bar");
 string value = redis.get("foo");
@@ -34,11 +34,11 @@ string value = redis.get("foo");
 
 Redis cluster [specification](http://redis.io/topics/cluster-spec) (still under development) is implemented
 
-```java
+```D
 Set!(HostAndPort) redisClusterNodes = new HashSet!(HostAndPort)();
 //Redis Cluster will attempt to discover cluster nodes automatically
 redisClusterNodes.add(new HostAndPort("127.0.0.1", 7379));
-RedisCluster jc = new RedisCluster(redisClusterNodes);
-jc.set("foo", "bar");
-string value = jc.get("foo");
+RedisCluster rc = new RedisCluster(redisClusterNodes);
+rc.set("foo", "bar");
+string value = rc.get("foo");
 ```
