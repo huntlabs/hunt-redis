@@ -6,12 +6,9 @@ import hunt.logging.ConsoleLogger;
 import test.HostAndPortTest;
 import test.utils.RedisURIHelperTest;
 
-
-void main()
-{
+void main() {
 
 	testUnits!(HostAndPortTest);
-
 
 	// testUnits!(RedisURIHelperTest);
 }

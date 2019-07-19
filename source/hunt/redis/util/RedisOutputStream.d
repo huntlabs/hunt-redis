@@ -1,9 +1,11 @@
 module hunt.redis.util.RedisOutputStream;
 
 import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
 import hunt.io.Common;
 import hunt.io.FilterInputStream;
 import hunt.io.FilterOutputStream;
+
 
 /**
  * The class implements a buffered output stream without synchronization There are also special
@@ -63,6 +65,9 @@ class RedisOutputStream : FilterOutputStream {
 
     private void flushBuffer() {
         if (count > 0) {
+            version(HUNT_REDIS_DEBUG) {
+                tracef("outgoing: %s", cast(string)buf[0 .. count]);
+            }
             outputStream.write(buf, 0, count);
             count = 0;
         }

@@ -9,16 +9,16 @@
 
 module hunt.redis.util.RedisInputStream;
 
-// import java.io.ByteArrayOutputStream;
-import hunt.Exceptions;
-import hunt.text.StringBuilder;
+import hunt.redis.Exceptions;
 
+import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
 import hunt.io.Common;
 import hunt.io.ByteArrayOutputStream;
 import hunt.io.FilterInputStream;
 import hunt.io.FilterOutputStream;
+import hunt.text.StringBuilder;
 
-import hunt.redis.Exceptions;
 
 import std.algorithm;
 
@@ -209,6 +209,7 @@ class RedisInputStream : FilterInputStream {
                 if (limit == -1) {
                     throw new RedisConnectionException("Unexpected end of stream.");
                 }
+                version(HUNT_REDIS_DEBUG) tracef("incoming: %s", cast(string)buf[0..limit]);
             } catch (IOException e) {
                 throw new RedisConnectionException(e);
             }

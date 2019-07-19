@@ -24,6 +24,10 @@ docs/
 # Code coverage
 *.lst
 
+
+# Examples
+examples/UnitTest/unittest
+examples/SimpleDemo/simple-demo
+
 # Others
 /java/
-examples/UnitTest/unittest

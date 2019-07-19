@@ -43,6 +43,14 @@ import std.socket;
 alias Protocol = hunt.redis.Protocol.Protocol;
 alias Command = Protocol.Command;
 
+shared static this() {
+    NetUtil.startEventLoop();
+}
+
+shared static ~this() {
+    NetUtil.stopEventLoop();
+}
+
 /**
 */
 class AbstractClient : Closeable {
@@ -167,6 +175,10 @@ class AbstractClient : Closeable {
         version (HUNT_DEBUG)
             info("Waiting for a connection...");
         _doneCondition.wait(connectionTimeout.msecs);
+
+        if(!isConnected()) {
+            throw new RedisConnectionException("Unable to connect to the server.");
+        }
     }
 
 
@@ -229,7 +241,9 @@ class AbstractClient : Closeable {
     void sendCommand(Command cmd, string[] args...) {
         try {
             connect();
-            Protocol.sendCommand(outputStream, cmd, args);
+            if(isConnected()) {
+                Protocol.sendCommand(outputStream, cmd, args);
+            }
         } catch (RedisConnectionException ex) {
             /*
              * When client send request which formed by invalid protocol, Redis send back error message
