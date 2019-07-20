@@ -8,7 +8,7 @@ import std.conv;
 
 class GetSetBenchmark {
     //   private enum int TOTAL_OPERATIONS = 100000;
-    private enum int TOTAL_OPERATIONS = 1;
+    private enum int TOTAL_OPERATIONS = 10;
 
     static void run() {
         // HostAndPort hnp = HostAndPortUtil.getRedisServers().get(0);

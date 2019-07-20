@@ -15,10 +15,10 @@ import hunt.Byte;
 import hunt.Double;
 import hunt.Exceptions;
 import hunt.Integer;
+import hunt.logging.ConsoleLogger;
 import hunt.Long;
 import hunt.String;
 
-// import hunt.redis.util.RedisByteHashMap;
 import hunt.redis.util.SafeEncoder;
 
 import std.conv;
@@ -113,37 +113,31 @@ class BuilderFactory {
     }
 
     static Builder!(List!(string)) STRING_LIST() {
+        __gshared Builder!(List!(string)) inst;
+        return initOnce!inst(new class Builder!(List!(string)) {
+            override List!(string) build(Object data) {
+                if (data is null) {
+                    return null;
+                }
+                List!(Object) l = cast(List!(Object)) data;
+                ArrayList!(string) result = new ArrayList!(string)(l.size());
+                foreach(Object barray ; l) {
+                    String str = cast(String)barray;
+                    if (str is null) {
+                        result.add(cast(string)null);
+                    } else {
+                        result.add(str.value());
+                    }
+                }
+                return result;
+            }
 
-        implementationMissing();
-        return null;
+            override string toString() {
+                return "List!(string)";
+            }
+
+        });
     }
-
-
-    // static Builder!(List!(string)) STRING_LIST = new Builder!(List!(string))() {
-    //     override
-    
-    //     List!(string) build(Object data) {
-    //         if (null == data) {
-    //             return null;
-    //         }
-    //         List!(byte[]) l = (List!(byte[])) data;
-    //         ArrayList!(string) result = new ArrayList!(string)(l.size());
-    //         foreach(byte[] barray ; l) {
-    //             if (barray is null) {
-    //                 result.add(null);
-    //             } else {
-    //                 result.add(SafeEncoder.encode(barray));
-    //             }
-    //         }
-    //         return result;
-    //     }
-
-    //     override
-    //     string toString() {
-    //         return "List!(string)";
-    //     }
-
-    // };
 
     static Builder!(Map!(string, string)) STRING_MAP() {
 

@@ -93,7 +93,6 @@ final class Protocol {
 
     static void sendCommand(RedisOutputStream os, Command command,
             string[] args...) {
-        // sendCommand(os, command.getRaw(), args);
         sendCommand(os, command.to!string(), args);
     }
 
@@ -228,28 +227,6 @@ final class Protocol {
         return process(inputStream);
     }
 
-    // static byte[] toByteArray(bool value) {
-    //     return value ? BYTES_TRUE : BYTES_FALSE;
-    // }
-
-    // static byte[] toByteArray(int value) {
-    //     return SafeEncoder.encode(to!string(value));
-    // }
-
-    // static byte[] toByteArray(long value) {
-    //     return SafeEncoder.encode(to!string(value));
-    // }
-
-    // static byte[] toByteArray(double value) {
-    //     if (value == double.infinity) {
-    //         return POSITIVE_INFINITY_BYTES;
-    //     } else if (value == -double.infinity) {
-    //         return NEGATIVE_INFINITY_BYTES;
-    //     } else {
-    //         return SafeEncoder.encode(to!string(value));
-    //     }
-    // }
-
     static string toByteArray(bool value) {
         return value ? BYTES_TRUE : BYTES_FALSE;
     }
@@ -272,6 +249,7 @@ final class Protocol {
         }
     }    
 
+// dfmt off
     static enum Command {
         PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,
         RENAMEX, DBSIZE, EXPIRE, EXPIREAT, TTL, SELECT, MOVE, FLUSHALL, GETSET, MGET, SETNX, SETEX,
@@ -300,7 +278,9 @@ final class Protocol {
         BLOCK, NOACK, STREAMS, KEY, CREATE, MKSTREAM, SETID, DESTROY, DELCONSUMER, MAXLEN, GROUP, 
         IDLE, TIME, RETRYCOUNT, FORCE
     }
+// dfmt on    
 }
 
 
 alias ProtocolCommand = Protocol.Command;
+alias ProtocolKeyword = Protocol.Keyword;

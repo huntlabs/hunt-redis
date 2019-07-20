@@ -209,7 +209,12 @@ class RedisInputStream : FilterInputStream {
                 if (limit == -1) {
                     throw new RedisConnectionException("Unexpected end of stream.");
                 }
-                version(HUNT_REDIS_DEBUG) tracef("incoming: %s", cast(string)buf[0..limit]);
+                version(HUNT_REDIS_DEBUG) {
+                    if(limit<=32)
+                        tracef("incoming: %s", cast(string)buf[0..limit]);
+                    else
+                        tracef("incoming(partly): %s", cast(string)buf[0..32]);
+                }
             } catch (IOException e) {
                 throw new RedisConnectionException(e);
             }

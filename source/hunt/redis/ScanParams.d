@@ -19,11 +19,6 @@ class ScanParams {
         params = new HashMap!(Protocol.Keyword, ByteBuffer); // new EnumMap!(Keyword, ByteBuffer)(Keyword.class);
     }
 
-    ScanParams match(string pattern) {
-        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(pattern));
-        return this;
-    }
-
     /**
    * @see <a href="https://redis.io/commands/scan#the-match-option">MATCH option in Redis documentation</a>
    * 
@@ -31,7 +26,7 @@ class ScanParams {
    * @return 
    */
     ScanParams match(string pattern) {
-        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(SafeEncoder.encode(pattern)));
+        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(cast(byte[]) pattern));
         return this;
     }
 

@@ -35,9 +35,10 @@ import hunt.redis.params;
 import hunt.redis.util.RedisURIHelper;
 import hunt.redis.util.Slowlog;
 
-import hunt.net.util.HttpURI;
 import hunt.collection;
 import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
+import hunt.net.util.HttpURI;
 import hunt.util.Common;
 
 import hunt.Byte;
