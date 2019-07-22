@@ -66,7 +66,11 @@ class RedisOutputStream : FilterOutputStream {
     private void flushBuffer() {
         if (count > 0) {
             version(HUNT_REDIS_DEBUG) {
+                if(count<32) {
                 tracef("outgoing: %s", cast(string)buf[0 .. count]);
+                } else {
+                    tracef("outgoing: %s", cast(string)buf[0 .. 32]);
+                }
             }
             outputStream.write(buf, 0, count);
             count = 0;

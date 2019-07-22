@@ -23,6 +23,7 @@ import hunt.redis.util.SafeEncoder;
 
 import std.conv;
 import std.concurrency : initOnce;
+import std.range;
 
 class BuilderFactory {
     static Builder!(Double) DOUBLE() {
@@ -65,8 +66,8 @@ class BuilderFactory {
 
     static Builder!(const(ubyte)[]) BYTE_ARRAY() {
 
-        implementationMissing();
-        return null;
+            implementationMissing();
+            return null;
     }
     //  static Builder!(const(ubyte)[]) BYTE_ARRAY = new Builder!(const(ubyte)[])() {
     //      override
@@ -119,14 +120,15 @@ class BuilderFactory {
                 if (data is null) {
                     return null;
                 }
+                warning(typeid(data));
                 List!(Object) l = cast(List!(Object)) data;
                 ArrayList!(string) result = new ArrayList!(string)(l.size());
                 foreach(Object barray ; l) {
-                    String str = cast(String)barray;
-                    if (str is null) {
+                    Bytes bytes = cast(Bytes)barray;
+                    if (bytes is null) {
                         result.add(cast(string)null);
                     } else {
-                        result.add(str.value());
+                        result.add(SafeEncoder.encode(cast(ubyte[])bytes.value()));
                     }
                 }
                 return result;
@@ -140,30 +142,29 @@ class BuilderFactory {
     }
 
     static Builder!(Map!(string, string)) STRING_MAP() {
+        __gshared Builder!(Map!(string, string)) inst;
+        return initOnce!inst(new class Builder!(Map!(string, string)) {
+            override
+            Map!(string, string) build(Object data) {
+                // warning(typeid(data));
+                List!(const(ubyte)[]) flatHash = cast(List!(const(ubyte)[])) data;
+                Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
+                InputRange!(const(ubyte)[]) iterator = flatHash.iterator();
+                while (!iterator.empty()) {
+                    const(ubyte)[] first = iterator.front(); iterator.popFront();
+                    const(ubyte)[] second = iterator.front(); iterator.popFront();
+                    hash.put(SafeEncoder.encode(first), SafeEncoder.encode(second));
+                }
 
-        implementationMissing();
-        return null;
+                return hash;
+            }
+
+            override
+            string toString() {
+                return "Map!(string, string)";
+            }
+        });
     }
-    // static Builder!(Map!(string, string)) STRING_MAP = new Builder!(Map!(string, string))() {
-    //     override
-    
-    //     Map!(string, string) build(Object data) {
-    //         List!(const(ubyte)[]) flatHash = (List!(const(ubyte)[])) data;
-    //         Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
-    //         Iterator!(const(ubyte)[]) iterator = flatHash.iterator();
-    //         while (iterator.hasNext()) {
-    //             hash.put(SafeEncoder.encode(iterator.next()), SafeEncoder.encode(iterator.next()));
-    //         }
-
-    //         return hash;
-    //     }
-
-    //     override
-    //     string toString() {
-    //         return "Map!(string, string)";
-    //     }
-
-    // };
 
     static Builder!(Map!(string, string)) PUBSUB_NUMSUB_MAP() {
 
@@ -224,27 +225,39 @@ class BuilderFactory {
     //  };
 
     static Builder!(List!(const(ubyte)[])) BYTE_ARRAY_LIST() {
+        __gshared Builder!(List!(const(ubyte)[])) inst;
+        return initOnce!inst(new class Builder!(List!(const(ubyte)[])) {
+            override
+            
+            List!(const(ubyte)[]) build(Object data) {
+                if (data is null) {
+                    return null;
+                }
 
-        implementationMissing();
-        return null;
+                List!Object lst = cast(List!Object)data;
+                if(lst is null) {
+                    version(HUNT_DEBUG) warning("lst is null");
+                    return null;
+                } else {
+                     ArrayList!(const(ubyte)[]) result = new ArrayList!(const(ubyte)[])(lst.size());
+                     foreach(Object obj; lst) {
+                         Bytes bytes = cast(Bytes)obj;
+                         if(bytes is null) {
+                             result.add(null);
+                         } else {
+                            result.add(cast(ubyte[])bytes.value);
+                         }
+                     }
+                    return result;
+                }                
+            }
+
+            override
+            string toString() {
+                return "List!(const(ubyte)[])";
+            }
+        });
     }
-    //  static Builder!(List!(const(ubyte)[])) BYTE_ARRAY_LIST = new Builder!(List!(const(ubyte)[]))() {
-    //      override
-        
-    //      List!(const(ubyte)[]) build(Object data) {
-    //          if (null == data) {
-    //              return null;
-    //          }
-    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
-
-    //          return l;
-    //      }
-
-    //      override
-    //      string toString() {
-    //          return "List!(const(ubyte)[])";
-    //      }
-    //  };
 
     static Builder!(Set!(const(ubyte)[])) BYTE_ARRAY_ZSET() {
 

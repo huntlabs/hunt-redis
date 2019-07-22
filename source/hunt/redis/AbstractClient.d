@@ -339,7 +339,17 @@ class AbstractClient : Closeable {
 
     List!(const(ubyte)[]) getBinaryMultiBulkReply() {
         flush();
-        return cast(List!(const(ubyte)[])) readProtocolWithCheckingBroken();
+
+        return BuilderFactory.BYTE_ARRAY_LIST.build(readProtocolWithCheckingBroken());
+
+        // return cast(List!(const(ubyte)[])) readProtocolWithCheckingBroken();
+        // List!Object lst = cast(List!Object)readProtocolWithCheckingBroken();
+        // if(lst is null) {
+        //     version(HUNT_DEBUG) warning("lst is null");
+        //     return null;
+        // } else {
+
+        // }
     }
 
     // deprecated("")
@@ -394,7 +404,9 @@ class AbstractClient : Closeable {
         }
 
         try {
-            return Protocol.read(inputStream);
+            Object obj = Protocol.read(inputStream);
+            // version(HUNT_DEBUG) trace(typeid(obj));
+            return obj;
         } catch (RedisConnectionException exc) {
             broken = true;
             throw exc;
