@@ -34,8 +34,8 @@ class MurmurHash : Hashing {
    * @param seed The seed for the hash.
    * @return The 32 bit hash of the bytes in question.
    */
-    static int hash(byte[] data, int seed) {
-        return hash(BufferUtils.toBuffer(data), seed);
+    static int hash(const(ubyte)[] data, int seed) {
+        return hash(BufferUtils.toBuffer(cast(byte[])data), seed);
     }
 
     /**
@@ -46,8 +46,8 @@ class MurmurHash : Hashing {
    * @param seed The seed to start with.
    * @return The 32-bit hash of the data in question.
    */
-    static int hash(byte[] data, int offset, int length, int seed) {
-        return hash(BufferUtils.toBuffer(data, offset, length), seed);
+    static int hash(const(ubyte)[] data, int offset, int length, int seed) {
+        return hash(BufferUtils.toBuffer(cast(byte[])data, offset, length), seed);
     }
 
     /**
@@ -95,12 +95,12 @@ class MurmurHash : Hashing {
         return h;
     }
 
-    static long hash64A(byte[] data, int seed) {
-        return hash64A(BufferUtils.toBuffer(data), seed);
+    static long hash64A(const(ubyte)[] data, int seed) {
+        return hash64A(BufferUtils.toBuffer(cast(byte[])data), seed);
     }
 
-    static long hash64A(byte[] data, int offset, int length, int seed) {
-        return hash64A(BufferUtils.toBuffer(data, offset, length), seed);
+    static long hash64A(const(ubyte)[] data, int offset, int length, int seed) {
+        return hash64A(BufferUtils.toBuffer(cast(byte[])data, offset, length), seed);
     }
 
     static long hash64A(ByteBuffer buf, int seed) {
@@ -141,7 +141,7 @@ class MurmurHash : Hashing {
         return h;
     }
 
-    override long hash(byte[] key) {
+    override long hash(const(ubyte)[] key) {
         return hash64A(key, 0x1234ABCD);
     }
 

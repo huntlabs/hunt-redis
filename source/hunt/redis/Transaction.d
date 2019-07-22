@@ -31,6 +31,10 @@ class Transaction : MultiKeyPipelineBase, Closeable {
         return client;
     }
 
+    override protected Client getClient(const(ubyte)[] key) {
+        return client;
+    }    
+
     void clear() {
         if (inTransaction) {
             discard();

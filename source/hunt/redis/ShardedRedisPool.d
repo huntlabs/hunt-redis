@@ -1,7 +1,7 @@
 module hunt.redis.ShardedRedisPool;
 
-import hunt.redis.Redis;
-import hunt.redis.ShardedRedis;
+import hunt.redis.BinaryRedis;
+import hunt.redis.BinaryShardedRedis;
 import hunt.redis.RedisShardInfo;
 import hunt.redis.ShardedRedis;
 import hunt.redis.ShardedRedisPool;
@@ -43,9 +43,9 @@ alias Pattern = Regex!char;
 
 //     override
 //     ShardedRedis getResource() {
-//         ShardedRedis redis = super.getResource();
-//         redis.setDataSource(this);
-//         return redis;
+//         ShardedRedis jedis = super.getResource();
+//         jedis.setDataSource(this);
+//         return jedis;
 //     }
 
 //     override
@@ -81,22 +81,22 @@ alias Pattern = Regex!char;
 
 //     override
 //     IPooledObject makeObject() {
-//         ShardedRedis redis = new ShardedRedis(shards, algo, keyTagPattern);
-//         return new DefaultPooledObject!(ShardedRedis)(redis);
+//         ShardedRedis jedis = new ShardedRedis(shards, algo, keyTagPattern);
+//         return new DefaultPooledObject!(ShardedRedis)(jedis);
 //     }
 
 //     override
 //     void destroyObject(IPooledObject pooledShardedRedis) {
 //         ShardedRedis shardedRedis = pooledShardedRedis.getObject();
-//         foreach(Redis redis ; shardedRedis.getAllShards()) {
-//             if (redis.isConnected()) {
+//         foreach(Redis jedis ; shardedRedis.getAllShards()) {
+//             if (jedis.isConnected()) {
 //                 try {
 //                     try {
-//                         redis.quit();
+//                         jedis.quit();
 //                     } catch (Exception e) {
 
 //                     }
-//                     redis.disconnect();
+//                     jedis.disconnect();
 //                 } catch (Exception e) {
 
 //                 }
@@ -107,8 +107,8 @@ alias Pattern = Regex!char;
 //     override
 //     bool validateObject(IPooledObject pooledShardedRedis) {
 //         try {
-//             ShardedRedis redis = pooledShardedRedis.getObject();
-//             foreach(Redis shard ; redis.getAllShards()) {
+//             ShardedRedis jedis = pooledShardedRedis.getObject();
+//             foreach(Redis shard ; jedis.getAllShards()) {
 //                 if (!shard.ping().equals("PONG")) {
 //                     return false;
 //                 }

@@ -1,9 +1,9 @@
 module hunt.redis.ShardedRedis;
 
 
-import hunt.redis.Redis;
-import hunt.redis.RedisPubSub;
-import hunt.redis.ShardedRedis;
+import hunt.redis.BinaryRedis;
+import hunt.redis.BinaryRedisPubSub;
+import hunt.redis.BinaryShardedRedis;
 import hunt.redis.BitOP;
 import hunt.redis.BitPosParams;
 import hunt.redis.Client;
@@ -534,13 +534,13 @@ alias Pattern = Regex!char;
 //     }
 
 //     override
-//     Long zadd(string key, Map!(string, double) scoreMembers) {
+//     Long zadd(string key, Map!(string, Double) scoreMembers) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers);
 //     }
 
 //     override
-//     Long zadd(string key, Map!(string, double) scoreMembers, ZAddParams params) {
+//     Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers, params);
 //     }
@@ -855,8 +855,8 @@ alias Pattern = Regex!char;
 //         if (dataSource !is null) {
 //             bool broken = false;
 
-//             foreach(Redis redis ; getAllShards()) {
-//                 if (redis.getClient().isBroken()) {
+//             foreach(Redis jedis ; getAllShards()) {
+//                 if (jedis.getClient().isBroken()) {
 //                     broken = true;
 //                     break;
 //                 }
@@ -879,8 +879,8 @@ alias Pattern = Regex!char;
 //     }
 
 //     void resetState() {
-//         foreach(Redis redis ; getAllShards()) {
-//             redis.resetState();
+//         foreach(Redis jedis ; getAllShards()) {
+//             jedis.resetState();
 //         }
 //     }
 

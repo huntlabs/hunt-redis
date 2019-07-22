@@ -1,7 +1,7 @@
 module hunt.redis.ShardedRedisPipeline;
 
 import hunt.redis.Client;
-import hunt.redis.ShardedRedis;
+import hunt.redis.BinaryShardedRedis;
 import hunt.redis.PipelineBase;
 
 import hunt.collection;
@@ -22,7 +22,7 @@ import hunt.collection;
 // /**
 // */
 // class ShardedRedisPipeline : PipelineBase {
-//   private BinaryShardedRedis redis;
+//   private BinaryShardedRedis jedis;
 //   private List!(FutureResult) results;
 //   private Queue!(Client) clients;
 
@@ -32,8 +32,8 @@ import hunt.collection;
 //   }
 
 
-//   void setShardedRedis(BinaryShardedRedis redis) {
-//     this.redis = redis;
+//   void setShardedRedis(BinaryShardedRedis jedis) {
+//     this.jedis = jedis;
 //   }
 
 //   List!(Object) getResults() {
@@ -71,7 +71,7 @@ import hunt.collection;
 
 //   override
 //   protected Client getClient(string key) {
-//     Client client = redis.getShard(key).getClient();
+//     Client client = jedis.getShard(key).getClient();
 //     clients.add(client);
 //     results.add(new FutureResult(client));
 //     return client;
@@ -79,7 +79,7 @@ import hunt.collection;
 
 //   override
 //   protected Client getClient(byte[] key) {
-//     Client client = redis.getShard(key).getClient();
+//     Client client = jedis.getShard(key).getClient();
 //     clients.add(client);
 //     results.add(new FutureResult(client));
 //     return client;

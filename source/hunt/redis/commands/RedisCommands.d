@@ -24,6 +24,7 @@ import hunt.redis.params.SetParams;
 import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 
+import hunt.Double;
 
 /**
  * Common interface for sharded and non-sharded Redis
@@ -41,11 +42,11 @@ interface RedisCommands {
 
   string type(string key);
 
-  string dump(string key);
+  const(ubyte)[] dump(string key);
 
-  string restore(string key, int ttl, string serializedValue);
+  string restore(string key, int ttl, const(ubyte)[] serializedValue);
 
-  string restoreReplace(string key, int ttl, string serializedValue);
+  string restoreReplace(string key, int ttl, const(ubyte)[] serializedValue);
 
   long expire(string key, int seconds);
 
@@ -85,7 +86,7 @@ interface RedisCommands {
 
   long incrBy(string key, long increment);
 
-  double incrByFloat(string key, double increment);
+  Double incrByFloat(string key, double increment);
 
   long incr(string key);
 
@@ -107,7 +108,7 @@ interface RedisCommands {
 
   long hincrBy(string key, string field, long value);
 
-  double hincrByFloat(string key, string field, double value);
+  Double hincrByFloat(string key, string field, double value);
 
   bool hexists(string key, string field);
 
@@ -173,9 +174,9 @@ interface RedisCommands {
 
   long zrem(string key, string[] members...);
 
-  double zincrby(string key, double increment, string member);
+  Double zincrby(string key, double increment, string member);
 
-  double zincrby(string key, double increment, string member, ZIncrByParams params);
+  Double zincrby(string key, double increment, string member, ZIncrByParams params);
 
   long zrank(string key, string member);
 
@@ -189,7 +190,7 @@ interface RedisCommands {
 
   long zcard(string key);
 
-  double zscore(string key, string member);
+  Double zscore(string key, string member);
 
   List!(string) sort(string key);
 
@@ -300,9 +301,9 @@ interface RedisCommands {
 
   long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap);
 
-  double geodist(string key, string member1, string member2);
+  Double geodist(string key, string member1, string member2);
 
-  double geodist(string key, string member1, string member2, GeoUnit unit);
+  Double geodist(string key, string member1, string member2, GeoUnit unit);
 
   List!(string) geohash(string key, string[] members...);
 

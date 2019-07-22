@@ -260,11 +260,11 @@ interface RedisPipeline {
   
   Response!(Long) hstrlen(string key, string field);
 
-  Response!(string) dump(string key);
+  Response!(const(ubyte)[]) dump(string key);
 
-  Response!(string) restore(string key, int ttl, string serializedValue);
+  Response!(string) restore(string key, int ttl, const(ubyte)[] serializedValue);
 
-  Response!(string) restoreReplace(string key, int ttl, string serializedValue);
+  Response!(string) restoreReplace(string key, int ttl, const(ubyte)[] serializedValue);
 
   Response!(string) migrate(string host, int port, string key, int destinationDB, int timeout);
 

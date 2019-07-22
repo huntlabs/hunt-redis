@@ -8,10 +8,10 @@ import hunt.collection.Collections;
 import hunt.collection.List;
 
 class BitPosParams {
-    private List!(string) params;
+    private List!(const(ubyte)[]) params;
 
     this() {
-        params = new ArrayList!(string)();
+        params = new ArrayList!(const(ubyte)[])();
     }
 
     this(long start) {
@@ -25,7 +25,7 @@ class BitPosParams {
         params.add(Protocol.toByteArray(end));
     }
 
-    Collection!(string) getParams() {
+    Collection!(const(ubyte)[]) getParams() {
         return params;
     }
 }

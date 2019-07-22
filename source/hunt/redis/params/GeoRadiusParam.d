@@ -56,9 +56,9 @@ class GeoRadiusParam : Params {
         return this;
     }
 
-    string[] getByteParams(string[] args...) {
-        ArrayList!(string) byteParams = new ArrayList!(string)();
-        foreach (string arg; args) {
+    const(ubyte)[][] getByteParams(const(ubyte)[][] args...) {
+        ArrayList!(const(ubyte)[]) byteParams = new ArrayList!(const(ubyte)[])();
+        foreach (const(ubyte)[] arg; args) {
             byteParams.add(arg);
         }
 

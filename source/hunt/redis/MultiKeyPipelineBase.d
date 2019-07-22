@@ -1,7 +1,7 @@
 module hunt.redis.MultiKeyPipelineBase;
 
 import hunt.redis.commands;
-import hunt.redis.Redis;
+import hunt.redis.BinaryRedis;
 import hunt.redis.BuilderFactory;
 import hunt.redis.Client;
 import hunt.redis.BitOP;
@@ -12,7 +12,6 @@ import hunt.redis.GeoUnit;
 import hunt.redis.ListPosition;
 import hunt.redis.Module;
 import hunt.redis.PipelineBase;
-import hunt.redis.Protocol;
 import hunt.redis.Redis;
 import hunt.redis.Response;
 import hunt.redis.SortingParams;
@@ -27,37 +26,28 @@ import hunt.Boolean;
 import hunt.Double;
 import hunt.Long;
 
-abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline, 
-        ClusterPipeline, ScriptingCommandsPipeline, BasicRedisPipeline {
+abstract class MultiKeyPipelineBase : PipelineBase,
+        MultiKeyBinaryRedisPipeline, MultiKeyCommandsPipeline, ClusterPipeline,
+        BinaryScriptingCommandsPipeline, ScriptingCommandsPipeline, BasicRedisPipeline {
 
     protected Client client = null;
 
-    alias blpop = PipelineBase.blpop;
-    alias brpop = PipelineBase.brpop;
-    alias del = PipelineBase.del;
-    alias unlink = PipelineBase.unlink;
-    alias exists = PipelineBase.exists;
-    alias touch = PipelineBase.touch;
-    alias pfcount = PipelineBase.pfcount;
-    alias migrate = PipelineBase.migrate;
-
-    override
     Response!(List!(string)) brpop(string[] args...) {
         client.brpop(args);
         return getResponse(BuilderFactory.STRING_LIST);
     }
-    
+    alias brpop = PipelineBase.brpop;
 
     Response!(List!(string)) brpop(int timeout, string[] keys...) {
         client.brpop(timeout, keys);
         return getResponse(BuilderFactory.STRING_LIST);
     }
 
-    override
     Response!(List!(string)) blpop(string[] args...) {
         client.blpop(args);
         return getResponse(BuilderFactory.STRING_LIST);
     }
+    alias blpop = PipelineBase.blpop;
 
     Response!(List!(string)) blpop(int timeout, string[] keys...) {
         client.blpop(timeout, keys);
@@ -68,23 +58,63 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         client.blpop(timeout, keys);
         return getResponse(BuilderFactory.STRING_MAP);
     }
-    
 
     override
+    Response!(List!(const(ubyte)[])) brpop(const(ubyte)[][] args...) {
+        client.brpop(args);
+        return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
+    }
+
+    Response!(List!(string)) brpop(int timeout, const(ubyte)[][] keys...) {
+        client.brpop(timeout, keys);
+        return getResponse(BuilderFactory.STRING_LIST);
+    }
+
+    Response!(Map!(string, string)) brpopMap(int timeout, string[] keys...) {
+        client.blpop(timeout, keys);
+        return getResponse(BuilderFactory.STRING_MAP);
+    }
+
+    override
+    Response!(List!(const(ubyte)[])) blpop(const(ubyte)[][] args...) {
+        client.blpop(args);
+        return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
+    }
+
+    Response!(List!(string)) blpop(int timeout, const(ubyte)[][] keys...) {
+        client.blpop(timeout, keys);
+        return getResponse(BuilderFactory.STRING_LIST);
+    }
+
     Response!(Long) del(string[] keys...) {
         client.del(keys);
         return getResponse(BuilderFactory.LONG);
     }
+    alias del = PipelineBase.del;
 
-    override
+    Response!(Long) del(const(ubyte)[][] keys...) {
+        client.del(keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+
     Response!(Long) unlink(string[] keys...) {
         client.unlink(keys);
         return getResponse(BuilderFactory.LONG);
     }
+    alias unlink = PipelineBase.unlink;
 
+    Response!(Long) unlink(const(ubyte)[][] keys...) {
+        client.unlink(keys);
+        return getResponse(BuilderFactory.LONG);
+    }
 
-    override
     Response!(Long) exists(string[] keys...) {
+        client.exists(keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+    alias exists = PipelineBase.exists;
+
+    Response!(Long) exists(const(ubyte)[][] keys...) {
         client.exists(keys);
         return getResponse(BuilderFactory.LONG);
     }
@@ -96,13 +126,31 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Set!(const(ubyte)[])) keys(const(ubyte)[] pattern) {
+        getClient(pattern).keys(pattern);
+        return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
+    }
+
+    override
     Response!(List!(string)) mget(string[] keys...) {
         client.mget(keys);
         return getResponse(BuilderFactory.STRING_LIST);
     }
 
     override
+    Response!(List!(const(ubyte)[])) mget(const(ubyte)[][] keys...) {
+        client.mget(keys);
+        return getResponse(BuilderFactory.BYTE_ARRAY_LIST);
+    }
+
+    override
     Response!(string) mset(string[] keysvalues...) {
+        client.mset(keysvalues);
+        return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(string) mset(const(ubyte)[][] keysvalues...) {
         client.mset(keysvalues);
         return getResponse(BuilderFactory.STRING);
     }
@@ -114,7 +162,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) msetnx(const(ubyte)[][] keysvalues...) {
+        client.msetnx(keysvalues);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(string) rename(string oldkey, string newkey) {
+        client.rename(oldkey, newkey);
+        return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(string) rename(const(ubyte)[] oldkey, const(ubyte)[] newkey) {
         client.rename(oldkey, newkey);
         return getResponse(BuilderFactory.STRING);
     }
@@ -126,9 +186,21 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey) {
+        client.renamenx(oldkey, newkey);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(string) rpoplpush(string srckey, string dstkey) {
         client.rpoplpush(srckey, dstkey);
         return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(const(ubyte)[]) rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey) {
+        client.rpoplpush(srckey, dstkey);
+        return getResponse(BuilderFactory.BYTE_ARRAY);
     }
 
     override
@@ -138,7 +210,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Set!(const(ubyte)[])) sdiff(const(ubyte)[][] keys...) {
+        client.sdiff(keys);
+        return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
+    }
+
+    override
     Response!(Long) sdiffstore(string dstkey, string[] keys...) {
+        client.sdiffstore(dstkey, keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         client.sdiffstore(dstkey, keys);
         return getResponse(BuilderFactory.LONG);
     }
@@ -150,7 +234,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Set!(const(ubyte)[])) sinter(const(ubyte)[][] keys...) {
+        client.sinter(keys);
+        return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
+    }
+
+    override
     Response!(Long) sinterstore(string dstkey, string[] keys...) {
+        client.sinterstore(dstkey, keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         client.sinterstore(dstkey, keys);
         return getResponse(BuilderFactory.LONG);
     }
@@ -162,7 +258,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member) {
+        client.smove(srckey, dstkey, member);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(Long) sort(string key, SortingParams sortingParameters, string dstkey) {
+        client.sort(key, sortingParameters, dstkey);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey) {
         client.sort(key, sortingParameters, dstkey);
         return getResponse(BuilderFactory.LONG);
     }
@@ -174,13 +282,31 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) sort(const(ubyte)[] key, const(ubyte)[] dstkey) {
+        client.sort(key, dstkey);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(Set!(string)) sunion(string[] keys...) {
         client.sunion(keys);
         return getResponse(BuilderFactory.STRING_SET);
     }
 
     override
+    Response!(Set!(const(ubyte)[])) sunion(const(ubyte)[][] keys...) {
+        client.sunion(keys);
+        return getResponse(BuilderFactory.BYTE_ARRAY_ZSET);
+    }
+
+    override
     Response!(Long) sunionstore(string dstkey, string[] keys...) {
+        client.sunionstore(dstkey, keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         client.sunionstore(dstkey, keys);
         return getResponse(BuilderFactory.LONG);
     }
@@ -192,7 +318,19 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(string) watch(const(ubyte)[][] keys...) {
+        client.watch(keys);
+        return getResponse(BuilderFactory.STRING);
+    }
+
+    override
     Response!(Long) zinterstore(string dstkey, string[] sets...) {
+        client.zinterstore(dstkey, sets);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
         client.zinterstore(dstkey, sets);
         return getResponse(BuilderFactory.LONG);
     }
@@ -204,13 +342,31 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
+        client.zinterstore(dstkey, params, sets);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(Long) zunionstore(string dstkey, string[] sets...) {
         client.zunionstore(dstkey, sets);
         return getResponse(BuilderFactory.LONG);
     }
 
     override
+    Response!(Long) zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
+        client.zunionstore(dstkey, sets);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(Long) zunionstore(string dstkey, ZParams params, string[] sets...) {
+        client.zunionstore(dstkey, params, sets);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(Long) zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
         client.zunionstore(dstkey, params, sets);
         return getResponse(BuilderFactory.LONG);
     }
@@ -246,6 +402,12 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(const(ubyte)[]) brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout) {
+        client.brpoplpush(source, destination, timeout);
+        return getResponse(BuilderFactory.BYTE_ARRAY);
+    }
+
+    override
     Response!(string) configResetStat() {
         client.configResetStat();
         return getResponse(BuilderFactory.STRING);
@@ -270,9 +432,21 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Long) publish(const(ubyte)[] channel, const(ubyte)[] message) {
+        client.publish(channel, message);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
     Response!(string) randomKey() {
         client.randomKey();
         return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(const(ubyte)[]) randomKeyBinary() {
+        client.randomKey();
+        return getResponse(BuilderFactory.BYTE_ARRAY);
     }
 
     override
@@ -329,6 +503,12 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     Response!(string) swapDB(int index1, int index2) {
         client.swapDB(index1, index2);
         return getResponse(BuilderFactory.STRING);
+    }
+
+    override
+    Response!(Long) bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...) {
+        client.bitop(op, destKey, srcKeys);
+        return getResponse(BuilderFactory.LONG);
     }
 
     override
@@ -393,7 +573,7 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
 
     override
     Response!(Object) eval(string script) {
-        return this.eval(script, 0);
+        return this.eval(script, 0, new string[0]);
     }
 
     override
@@ -410,7 +590,7 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
 
     override
     Response!(Object) evalsha(string sha1) {
-        return this.evalsha(sha1, 0);
+        return this.evalsha(sha1, 0, new string[0]);
     }
 
     override
@@ -426,9 +606,60 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
     }
 
     override
+    Response!(Object) eval(const(ubyte)[] script) {
+        return this.eval(script, 0);
+    }
+
+    override
+    Response!(Object) eval(const(ubyte)[] script, const(ubyte)[] keyCount, const(ubyte)[][] params...) {
+        getClient(script).eval(script, keyCount, params);
+        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+    }
+
+    override
+    Response!(Object) eval(const(ubyte)[] script, List!(const(ubyte)[]) keys, List!(const(ubyte)[]) args) {
+        const(ubyte)[][] argv = BinaryRedis.getParamsWithBinary(keys, args);
+        return this.eval(script, keys.size(), argv);
+    }
+
+    override
+    Response!(Object) eval(const(ubyte)[] script, int keyCount, const(ubyte)[][] params...) {
+        getClient(script).eval(script, keyCount, params);
+        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+    }
+
+    override
+    Response!(Object) evalsha(const(ubyte)[] sha1) {
+        return this.evalsha(sha1, 0);
+    }
+
+    override
+    Response!(Object) evalsha(const(ubyte)[] sha1, List!(const(ubyte)[]) keys, List!(const(ubyte)[]) args) {
+        const(ubyte)[][] argv = BinaryRedis.getParamsWithBinary(keys, args);
+        return this.evalsha(sha1, keys.size(), argv);
+    }
+
+    override
+    Response!(Object) evalsha(const(ubyte)[] sha1, int keyCount, const(ubyte)[][] params...) {
+        getClient(sha1).evalsha(sha1, keyCount, params);
+        return getResponse(BuilderFactory.EVAL_BINARY_RESULT);
+    }
+
     Response!(Long) pfcount(string[] keys...) {
         client.pfcount(keys);
         return getResponse(BuilderFactory.LONG);
+    }
+    alias pfcount = PipelineBase.pfcount;
+
+    Response!(Long) pfcount(const(ubyte)[][] keys...) {
+        client.pfcount(keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+
+    override
+    Response!(string) pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...) {
+        client.pfmerge(destkey, sourcekeys);
+        return getResponse(BuilderFactory.STRING);
     }
 
     override
@@ -443,8 +674,13 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         return getResponse(BuilderFactory.STRING_LIST);
     }
 
-    override
     Response!(Long) touch(string[] keys...) {
+        client.touch(keys);
+        return getResponse(BuilderFactory.LONG);
+    }
+    alias touch = PipelineBase.touch;
+
+    Response!(Long) touch(const(ubyte)[][] keys...) {
         client.touch(keys);
         return getResponse(BuilderFactory.LONG);
     }
@@ -467,17 +703,21 @@ abstract class MultiKeyPipelineBase : PipelineBase, MultiKeyCommandsPipeline,
         return getResponse(BuilderFactory.STRING);
     }  
     
-    override
     Response!(string) migrate(string host, int port, int destinationDB,
             int timeout, MigrateParams params, string[] keys...) {
         client.migrate(host, port, destinationDB, timeout, params, keys);
         return getResponse(BuilderFactory.STRING);
     }
+    alias migrate = PipelineBase.migrate;
 
-    override
-    Response!(string) migrate(string host, int port,
-            string key, int destinationDb, int timeout) {
-        return super.migrate(host, port, key, destinationDb, timeout);
+    Response!(string) migrate(string host, int port, int destinationDB,
+            int timeout, MigrateParams params, const(ubyte)[][] keys...) {
+        client.migrate(host, port, destinationDB, timeout, params, keys);
+        return getResponse(BuilderFactory.STRING);
+    }
+
+    override Response!string migrate(string host, int port, string key, int destinationDB, int timeout) {
+        return super.migrate(host, port, key, destinationDB, timeout);
     }
 
     override

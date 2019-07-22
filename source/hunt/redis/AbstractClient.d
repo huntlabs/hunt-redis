@@ -42,6 +42,7 @@ import std.socket;
 
 alias Protocol = hunt.redis.Protocol.Protocol;
 alias Command = Protocol.Command;
+alias ConstUBytes = const(ubyte)[];
 
 shared static this() {
     NetUtil.startEventLoop();
@@ -58,7 +59,7 @@ class AbstractClient : Closeable {
 	private Mutex _doneLocker;
 	private Condition _doneCondition;
 
-    private enum string[] EMPTY_ARGS = null;
+    private enum const(ubyte)[][] EMPTY_ARGS = null;
 
     private string host = Protocol.DEFAULT_HOST;
     private int port = Protocol.DEFAULT_PORT;
@@ -234,11 +235,19 @@ class AbstractClient : Closeable {
         }
     }
 
+    void sendCommand(Command cmd, string[] args...) {
+        const(ubyte)[][] bargs = new const(ubyte)[][args.length];
+        for (int i = 0; i < args.length; i++) {
+            bargs[i] = SafeEncoder.encode(args[i]);
+        }
+        sendCommand(cmd, bargs);
+    }
+
     void sendCommand(Command cmd) {
         sendCommand(cmd, EMPTY_ARGS);
     }
 
-    void sendCommand(Command cmd, string[] args...) {
+    void sendCommand(Command cmd, const(ubyte)[][] args...) {
         try {
             connect();
             if(isConnected()) {
@@ -299,18 +308,18 @@ class AbstractClient : Closeable {
         return bytesObj.value();
     }
 
-    // byte[] getBinaryBulkReply() {
-    //     flush();
+    const(ubyte)[] getBinaryBulkReply() {
+        flush();
 
-    //     Object obj = readProtocolWithCheckingBroken();
-    //     String bytesObj = cast(String)obj;
-    //     if(bytesObj is null) {
-    //         warning("The obj is not a String.");
-    //         throw new NullPointerException();
-    //     }
+        Object obj = readProtocolWithCheckingBroken();
+        Bytes bytesObj = cast(Bytes)obj;
+        if(bytesObj is null) {
+            warning("The obj is not a String.");
+            throw new NullPointerException();
+        }
 
-    //     return bytesObj.value();
-    // }
+        return cast(const(ubyte)[])bytesObj.value();
+    }
 
     long getIntegerReply() {
         flush();
@@ -324,10 +333,10 @@ class AbstractClient : Closeable {
     }
     
 
-    // List!(byte[]) getBinaryMultiBulkReply() {
-    //     flush();
-    //     return cast(List!(byte[])) readProtocolWithCheckingBroken();
-    // }
+    List!(const(ubyte)[]) getBinaryMultiBulkReply() {
+        flush();
+        return cast(List!(const(ubyte)[])) readProtocolWithCheckingBroken();
+    }
 
     // deprecated("")
     // List!(Object) getRawObjectMultiBulkReply() {

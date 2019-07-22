@@ -47,8 +47,8 @@ class ZAddParams : Params {
         return this;
     }
 
-    string[] getByteParams(string key, string[] args...) {
-        ArrayList!(string) byteParams = new ArrayList!(string)();
+    const(ubyte)[][] getByteParams(const(ubyte)[] key, const(ubyte)[][] args...) {
+        ArrayList!(const(ubyte)[]) byteParams = new ArrayList!(const(ubyte)[])();
         byteParams.add(key);
 
         if (contains(NX)) {
@@ -61,7 +61,7 @@ class ZAddParams : Params {
             byteParams.add(SafeEncoder.encode(CH));
         }
 
-        foreach (string arg; args) {
+        foreach (const(ubyte)[] arg; args) {
             byteParams.add(arg);
         }
 

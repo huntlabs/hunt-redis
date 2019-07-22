@@ -22,10 +22,10 @@ enum Aggregate {
 
 class ZParams {
 
-    private List!(string) params;
+    private List!(const(ubyte)[]) params;
 
     this() {
-        params = new ArrayList!(string)();
+        params = new ArrayList!(const(ubyte)[])();
     }
 
     /**
@@ -42,7 +42,7 @@ class ZParams {
         return this;
     }
 
-    Collection!(string) getParams() {
+    Collection!(const(ubyte)[]) getParams() {
         return params; // Collections.unmodifiableCollection(params);
     }
 

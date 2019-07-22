@@ -24,28 +24,29 @@ class RedisTest : RedisCommandTestBase {
     //     redis.dbSize();
     // }
 
-    @Test void checkBinaryData() {
-        ubyte[] bigdata = new ubyte[1777];
-        // ubyte[] bigdata = new ubyte[7];
-        for (int b = 0; b < bigdata.length; b++) {
-            bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
-        }
-        Map!(string, string) hash = new HashMap!(string, string)();
-        hash.put("data", cast(string)(bigdata));
+    // @Test void checkBinaryData() {
+    //     ubyte[] bigdata = new ubyte[1777];
+    //     // ubyte[] bigdata = new ubyte[7];
+    //     for (int b = 0; b < bigdata.length; b++) {
+    //         bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
+    //     }
+    //     Map!(string, string) hash = new HashMap!(string, string)();
+    //     hash.put("data", cast(string)(bigdata));
 
-        string status = redis.hmset("foo", hash);
-        assertEquals("OK", status);
-        Map!(string, string) hash2 = redis.hgetAll("foo");
-        assertEquals(hash, redis.hgetAll("foo"));
+    //     string status = redis.hmset("foo", hash);
+    //     assertEquals("OK", status);
+    //     Map!(string, string) hash2 = redis.hgetAll("foo");
+    //     assertEquals(hash, redis.hgetAll("foo"));
 
-    }
-
-    // @Test void connectWithShardInfo() {
-    //     RedisShardInfo shardInfo = new RedisShardInfo("localhost", Protocol.DEFAULT_PORT);
-    //     shardInfo.setPassword("foobared");
-    //     Redis redis = new Redis(shardInfo);
-    //     redis.get("foo");
     // }
+
+    @Test void connectWithShardInfo() {
+        // RedisShardInfo shardInfo = new RedisShardInfo("localhost", Protocol.DEFAULT_PORT);
+        RedisShardInfo shardInfo = new RedisShardInfo("10.1.222.120", Protocol.DEFAULT_PORT);
+        shardInfo.setPassword("foobared");
+        Redis redis = new Redis(shardInfo);
+        redis.get("foo");
+    }
 
     // @Test void timeoutConnection() {
     //     Redis redis = new Redis("localhost", 6379, 15000);

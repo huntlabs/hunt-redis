@@ -35,9 +35,9 @@ interface RedisClusterCommands {
 
   string type(string key);
 
-  string dump(string key);
+  const(ubyte)[] dump(string key);
 
-  string restore(string key, int ttl, string serializedValue);
+  string restore(string key, int ttl, const(ubyte)[] serializedValue);
 
   long expire(string key, int seconds);
 

@@ -63,20 +63,20 @@ class BuilderFactory {
         });
     }
 
-    // static Builder!(byte[]) BYTE_ARRAY() {
+    static Builder!(const(ubyte)[]) BYTE_ARRAY() {
 
-    //     implementationMissing();
-    //     return null;
-    // }
-    //  static Builder!(byte[]) BYTE_ARRAY = new Builder!(byte[])() {
+        implementationMissing();
+        return null;
+    }
+    //  static Builder!(const(ubyte)[]) BYTE_ARRAY = new Builder!(const(ubyte)[])() {
     //      override
-    //      byte[] build(Object data) {
-    //          return ((byte[]) data); // deleted == 1
+    //      const(ubyte)[] build(Object data) {
+    //          return ((const(ubyte)[]) data); // deleted == 1
     //      }
 
     //      override
     //      string toString() {
-    //          return "byte[]";
+    //          return "const(ubyte)[]";
     //      }
     //  };
 
@@ -148,9 +148,9 @@ class BuilderFactory {
     //     override
     
     //     Map!(string, string) build(Object data) {
-    //         List!(byte[]) flatHash = (List!(byte[])) data;
+    //         List!(const(ubyte)[]) flatHash = (List!(const(ubyte)[])) data;
     //         Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
-    //         Iterator!(byte[]) iterator = flatHash.iterator();
+    //         Iterator!(const(ubyte)[]) iterator = flatHash.iterator();
     //         while (iterator.hasNext()) {
     //             hash.put(SafeEncoder.encode(iterator.next()), SafeEncoder.encode(iterator.next()));
     //         }
@@ -178,7 +178,7 @@ class BuilderFactory {
     //          Map!(string, string) hash = new HashMap!(string, string)(flatHash.size()/2, 1);
     //          Iterator!(Object) iterator = flatHash.iterator();
     //          while (iterator.hasNext()) {
-    //              hash.put(SafeEncoder.encode((byte[]) iterator.next()),
+    //              hash.put(SafeEncoder.encode((const(ubyte)[]) iterator.next()),
     //                  to!string((Long) iterator.next()));
     //          }
 
@@ -204,9 +204,9 @@ class BuilderFactory {
     //          if (null == data) {
     //              return null;
     //          }
-    //          List!(byte[]) l = (List!(byte[])) data;
+    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
     //          Set!(string) result = new HashSet!(string)(l.size(), 1);
-    //          foreach(byte[] barray ; l) {
+    //          foreach(const(ubyte)[] barray ; l) {
     //              if (barray is null) {
     //                  result.add(null);
     //              } else {
@@ -223,44 +223,44 @@ class BuilderFactory {
 
     //  };
 
-    static Builder!(List!(string)) BYTE_ARRAY_LIST() {
+    static Builder!(List!(const(ubyte)[])) BYTE_ARRAY_LIST() {
 
         implementationMissing();
         return null;
     }
-    //  static Builder!(List!(byte[])) BYTE_ARRAY_LIST = new Builder!(List!(byte[]))() {
+    //  static Builder!(List!(const(ubyte)[])) BYTE_ARRAY_LIST = new Builder!(List!(const(ubyte)[]))() {
     //      override
         
-    //      List!(byte[]) build(Object data) {
+    //      List!(const(ubyte)[]) build(Object data) {
     //          if (null == data) {
     //              return null;
     //          }
-    //          List!(byte[]) l = (List!(byte[])) data;
+    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
 
     //          return l;
     //      }
 
     //      override
     //      string toString() {
-    //          return "List!(byte[])";
+    //          return "List!(const(ubyte)[])";
     //      }
     //  };
 
-    static Builder!(Set!(string)) BYTE_ARRAY_ZSET() {
+    static Builder!(Set!(const(ubyte)[])) BYTE_ARRAY_ZSET() {
 
         implementationMissing();
         return null;
     }
-    //  static Builder!(Set!(byte[])) BYTE_ARRAY_ZSET = new Builder!(Set!(byte[]))() {
+    //  static Builder!(Set!(const(ubyte)[])) BYTE_ARRAY_ZSET = new Builder!(Set!(const(ubyte)[]))() {
     //      override
         
-    //      Set!(byte[]) build(Object data) {
+    //      Set!(const(ubyte)[]) build(Object data) {
     //          if (null == data) {
     //              return null;
     //          }
-    //          List!(byte[]) l = (List!(byte[])) data;
-    //          Set!(byte[]) result = new LinkedHashSet!(byte[])(l);
-    //          foreach(byte[] barray ; l) {
+    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
+    //          Set!(const(ubyte)[]) result = new LinkedHashSet!(const(ubyte)[])(l);
+    //          foreach(const(ubyte)[] barray ; l) {
     //              if (barray is null) {
     //                  result.add(null);
     //              } else {
@@ -272,24 +272,24 @@ class BuilderFactory {
 
     //      override
     //      string toString() {
-    //          return "ZSet!(byte[])";
+    //          return "ZSet!(const(ubyte)[])";
     //      }
     //  };
 
 
-    static Builder!(Map!(string, string)) BYTE_ARRAY_MAP() {
+    static Builder!(Map!(const(ubyte)[], const(ubyte)[])) BYTE_ARRAY_MAP() {
 
         implementationMissing();
         return null;
     }
 
-    //  static Builder!(Map!(byte[], byte[])) BYTE_ARRAY_MAP = new Builder!(Map!(byte[], byte[]))() {
+    //  static Builder!(Map!(const(ubyte)[], const(ubyte)[])) BYTE_ARRAY_MAP = new Builder!(Map!(const(ubyte)[], const(ubyte)[]))() {
     //      override
         
-    //      Map!(byte[], byte[]) build(Object data) {
-    //          List!(byte[]) flatHash = (List!(byte[])) data;
-    //          Map!(byte[], byte[]) hash = new RedisByteHashMap();
-    //          Iterator!(byte[]) iterator = flatHash.iterator();
+    //      Map!(const(ubyte)[], const(ubyte)[]) build(Object data) {
+    //          List!(const(ubyte)[]) flatHash = (List!(const(ubyte)[])) data;
+    //          Map!(const(ubyte)[], const(ubyte)[]) hash = new RedisByteHashMap();
+    //          Iterator!(const(ubyte)[]) iterator = flatHash.iterator();
     //          while (iterator.hasNext()) {
     //              hash.put(iterator.next(), iterator.next());
     //          }
@@ -299,7 +299,7 @@ class BuilderFactory {
 
     //      override
     //      string toString() {
-    //          return "Map!(byte[], byte[])";
+    //          return "Map!(const(ubyte)[], const(ubyte)[])";
     //      }
 
     //  };
@@ -317,9 +317,9 @@ class BuilderFactory {
     //          if (null == data) {
     //              return null;
     //          }
-    //          List!(byte[]) l = (List!(byte[])) data;
+    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
     //          Set!(string) result = new LinkedHashSet!(string)(l.size(), 1);
-    //          foreach(byte[] barray ; l) {
+    //          foreach(const(ubyte)[] barray ; l) {
     //              if (barray is null) {
     //                  result.add(null);
     //              } else {
@@ -348,9 +348,9 @@ class BuilderFactory {
     //          if (null == data) {
     //              return null;
     //          }
-    //          List!(byte[]) l = (List!(byte[])) data;
+    //          List!(const(ubyte)[]) l = (List!(const(ubyte)[])) data;
     //          Set!(Tuple) result = new LinkedHashSet!(Tuple)(l.size()/2, 1);
-    //          Iterator!(byte[]) iterator = l.iterator();
+    //          Iterator!(const(ubyte)[]) iterator = l.iterator();
     //          while (iterator.hasNext()) {
     //              result.add(new Tuple(iterator.next(), DOUBLE.build(iterator.next())));
     //          }
@@ -383,7 +383,7 @@ class BuilderFactory {
     //      }
 
     //      private Object evalResult(Object result) {
-    //          if (result instanceof byte[]) return SafeEncoder.encode((byte[]) result);
+    //          if (result instanceof const(ubyte)[]) return SafeEncoder.encode((const(ubyte)[]) result);
 
     //          if (result instanceof List<?>) {
     //              List<?> list = (List<?>) result;
@@ -491,7 +491,7 @@ class BuilderFactory {
     //              foreach(Object obj ; objectList) {
     //                  List!(Object) informations = (List!(Object)) obj;
 
-    //                  resp = new GeoRadiusResponse((byte[]) informations.get(0));
+    //                  resp = new GeoRadiusResponse((const(ubyte)[]) informations.get(0));
 
     //                  int size = informations.size();
     //                  for (int idx = 1; idx < size; idx++) {
@@ -513,7 +513,7 @@ class BuilderFactory {
     //          } else {
     //              // list of members
     //              foreach(Object obj ; objectList) {
-    //                  responses.add(new GeoRadiusResponse((byte[]) obj));
+    //                  responses.add(new GeoRadiusResponse((const(ubyte)[]) obj));
     //              }
     //          }
 
@@ -547,7 +547,7 @@ class BuilderFactory {
     //          }
 
     //          foreach(List!(Object) moduleResp; objectList) {
-    //              Module m = new Module(SafeEncoder.encode((byte[]) moduleResp.get(1)), ((Long) moduleResp.get(3)).intValue());
+    //              Module m = new Module(SafeEncoder.encode((const(ubyte)[]) moduleResp.get(1)), ((Long) moduleResp.get(3)).intValue());
     //              responses.add(m);
     //          }
 
@@ -595,7 +595,7 @@ class BuilderFactory {
     //          if (null == data) {
     //              return null;
     //          }
-    //          string id = SafeEncoder.encode((byte[])data);
+    //          string id = SafeEncoder.encode((const(ubyte)[])data);
     //          return new StreamEntryID(id);
     //      }
 
@@ -626,14 +626,14 @@ class BuilderFactory {
     //          }
 
     //          foreach(ArrayList!(Object) res ; objectList) {
-    //              string entryIdString = SafeEncoder.encode((byte[])res.get(0));
+    //              string entryIdString = SafeEncoder.encode((const(ubyte)[])res.get(0));
     //              StreamEntryID entryID = new StreamEntryID(entryIdString);
-    //              List!(byte[]) hash = (List!(byte[]))res.get(1);
+    //              List!(const(ubyte)[]) hash = (List!(const(ubyte)[]))res.get(1);
                 
-    //              Iterator!(byte[]) hashIterator = hash.iterator();
+    //              Iterator!(const(ubyte)[]) hashIterator = hash.iterator();
     //              Map!(string, string) map = new HashMap<>(hash.size()/2);
     //              while(hashIterator.hasNext()) {
-    //                  map.put(SafeEncoder.encode((byte[])hashIterator.next()), SafeEncoder.encode((byte[])hashIterator.next()));
+    //                  map.put(SafeEncoder.encode((const(ubyte)[])hashIterator.next()), SafeEncoder.encode((const(ubyte)[])hashIterator.next()));
     //              }
     //              responses.add(new StreamEntry(entryID, map));
     //          }
@@ -664,8 +664,8 @@ class BuilderFactory {
     //          List!(StreamPendingEntry) result = new ArrayList<>(streamsEntries.size());
     //          foreach(Object streamObj ; streamsEntries) {
     //              List!(Object) stream = (List!(Object))streamObj;
-    //              string id = SafeEncoder.encode((byte[])stream.get(0));
-    //              string consumerName = SafeEncoder.encode((byte[])stream.get(1));
+    //              string id = SafeEncoder.encode((const(ubyte)[])stream.get(0));
+    //              string consumerName = SafeEncoder.encode((const(ubyte)[])stream.get(1));
     //              long idleTime = BuilderFactory.LONG.build(stream.get(2));      
     //              long deliveredTimes = BuilderFactory.LONG.build(stream.get(3));
     //              result.add(new StreamPendingEntry(new StreamEntryID(id), consumerName, idleTime, deliveredTimes));

@@ -1,62 +1,57 @@
-module hunt.redis.commands.RedisClusterScriptingCommands;
+module hunt.redis.commands.RedisClusterBinaryScriptingCommands;
 
 import hunt.collection.List;
-import hunt.Boolean;
+import hunt.Double;
+import hunt.Long;
 
+interface RedisClusterBinaryScriptingCommands {
+  Object eval(byte[] script, byte[] keyCount, byte[][] params...);
 
-interface RedisClusterScriptingCommands {
-  Object eval(string script, int keyCount, string[] params...);
+  Object eval(byte[] script, int keyCount, byte[][] params...);
 
-  Object eval(string script, List!(string) keys, List!(string) args);
-
-  /**
-   * @param script
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Object eval(string script, string sampleKey);
-
-  /**
-   * @param sha1
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Object evalsha(string sha1, string sampleKey);
-
-  Object evalsha(string sha1, List!(string) keys, List!(string) args);
-
-  Object evalsha(string sha1, int keyCount, string[] params...);
-
-  /**
-   * @param sha1
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @return 
-   */
-  Boolean scriptExists(string sha1, string sampleKey);
-
-  /**
-   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
-   * @param sha1
-   * @return 
-   */
-  List!(Boolean) scriptExists(string sampleKey, string[] sha1...);
+  Object eval(byte[] script, List!(byte[]) keys, List!(byte[]) args);
 
   /**
    * @param script
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  string scriptLoad(string script, string sampleKey);
+  Object eval(byte[] script, byte[] sampleKey);
+
+  /**
+   * @param sha1
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @return 
+   */
+  Object evalsha(byte[] sha1, byte[] sampleKey);
+
+  Object evalsha(byte[] sha1, List!(byte[]) keys, List!(byte[]) args);
+
+  Object evalsha(byte[] sha1, int keyCount, byte[][] params...);
+
+  /**
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @param sha1
+   * @return 
+   */
+  List!(Long) scriptExists(byte[] sampleKey, byte[][] sha1...);
+
+  /**
+   * @param script
+   * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
+   * @return 
+   */
+  byte[] scriptLoad(byte[] script, byte[] sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  string scriptFlush(string sampleKey);
+  string scriptFlush(byte[] sampleKey);
 
   /**
    * @param sampleKey Command will be executed in the node where the hash slot of this key is assigned to
    * @return 
    */
-  string scriptKill(string sampleKey);
+  string scriptKill(byte[] sampleKey);
 }

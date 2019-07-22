@@ -316,9 +316,9 @@ interface Commands {
 
   void dump(string key);
 
-  void restore(string key, int ttl, byte[] serializedValue);
+  void restore(string key, int ttl, const(ubyte)[] serializedValue);
 
-  void restoreReplace(string key, int ttl, byte[] serializedValue);
+  void restoreReplace(string key, int ttl, const(ubyte)[] serializedValue);
 
   void scan(string cursor, ScanParams params);
 

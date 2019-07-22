@@ -12,6 +12,7 @@ import hunt.Byte;
 import hunt.Integer;
 
 import std.array;
+import std.conv;
 import std.variant;
 
 abstract class Params {
@@ -29,21 +30,22 @@ abstract class Params {
         return v.get!T();
     }
 
-    string[] getByteParams() {
+    const(ubyte)[][] getByteParams() {
         if (params is null)
             return null;
-        ArrayList!(string) byteParams = new ArrayList!(string)();
+        ArrayList!(const(ubyte)[]) byteParams = new ArrayList!(const(ubyte)[])();
 
         foreach(string key, Variant value; params) {
-          byteParams.add(key);
+          byteParams.add(SafeEncoder.encode(key));
 
           if (value.hasValue()) {
-              byteParams.add(value.toString());
-            // if (value instanceof byte[]) {
-            //   byteParams.add((byte[]) value);
-            // } else {
-            //   byteParams.add(SafeEncoder.encode(to!string(value)));
-            // }
+              
+            //   byteParams.add(value.toString());
+            if (value.type == typeid(byte[]) || value.type == typeid(const(ubyte)[])) {
+              byteParams.add(value.get!(const(ubyte)[])());
+            } else {
+              byteParams.add(SafeEncoder.encode(to!string(value)));
+            }
           }
         }
 

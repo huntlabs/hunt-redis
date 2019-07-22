@@ -13,10 +13,15 @@ class ScanParams {
     private Map!(Protocol.Keyword, ByteBuffer) params;
 
     enum string SCAN_POINTER_START = "0";
-    // enum string SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
+    enum const(ubyte)[] SCAN_POINTER_START_BINARY = SafeEncoder.encode(SCAN_POINTER_START);
 
     this() {
         params = new HashMap!(Protocol.Keyword, ByteBuffer); // new EnumMap!(Keyword, ByteBuffer)(Keyword.class);
+    }
+
+    ScanParams match(const(ubyte)[] pattern) {
+        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(cast(byte[])pattern));
+        return this;
     }
 
     /**
@@ -26,7 +31,7 @@ class ScanParams {
    * @return 
    */
     ScanParams match(string pattern) {
-        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(cast(byte[]) pattern));
+        params.put(Protocol.Keyword.MATCH, BufferUtils.toBuffer(cast(byte[])SafeEncoder.encode(pattern)));
         return this;
     }
 
@@ -37,23 +42,23 @@ class ScanParams {
    * @return 
    */
     ScanParams count(int count) {
-        params.put(Protocol.Keyword.COUNT, BufferUtils.toBuffer(Protocol.toByteArray(count)));
+        params.put(Protocol.Keyword.COUNT, BufferUtils.toBuffer(cast(byte[])Protocol.toByteArray(count)));
         return this;
     }
 
-    Collection!(string) getParams() {
-        List!(string) paramsList = new ArrayList!(string)(params.size());
+    Collection!(const(ubyte)[]) getParams() {
+        List!(const(ubyte)[]) paramsList = new ArrayList!(const(ubyte)[])(params.size());
         foreach (Protocol.Keyword key, ByteBuffer value; params) {
-            paramsList.add(key.to!string());
-            paramsList.add(cast(string)value.array());
+            paramsList.add(cast(const(ubyte)[])key.to!string());
+            paramsList.add(cast(const(ubyte)[])value.array());
         }
         // return Collections.unmodifiableCollection(paramsList);
         return paramsList;
     }
 
-    string binaryMatch() {
+    const(ubyte)[] binaryMatch() {
         if (params.containsKey(Protocol.Keyword.MATCH)) {
-            return cast(string)params.get(Protocol.Keyword.MATCH).array();
+            return cast(const(ubyte)[])(params.get(Protocol.Keyword.MATCH).array());
         } else {
             return null;
         }

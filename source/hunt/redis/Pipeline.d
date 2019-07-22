@@ -84,6 +84,11 @@ class Pipeline : MultiKeyPipelineBase, Closeable {
         return client;
     }
 
+    override
+    protected Client getClient(const(ubyte)[] key) {
+        return client;
+    }
+
     void clear() {
         if (isInMulti()) {
             discard();

@@ -195,7 +195,7 @@ class RedisClusterInfoCache {
     private HostAndPort generateHostAndPort(List!(Object) hostInfos) {
         Object info = hostInfos.get(0);
         String infoBytes = cast(String)info;
-        string host = SafeEncoder.encode(infoBytes.value());
+        string host = infoBytes.value();
         int port = (cast(Long) hostInfos.get(1)).intValue();
         if (ssl && hostAndPortMap !is null) {
             HostAndPort hostAndPort = hostAndPortMap.getSSLHostAndPort(host, port);

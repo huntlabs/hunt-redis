@@ -80,36 +80,36 @@ final class Protocol {
     enum string PUBSUB_NUMSUB = "numsub";
     enum string PUBSUB_NUM_PAT = "numpat";
 
-    enum string BYTES_TRUE = "1";
-    enum string BYTES_FALSE = "0";
-    enum string BYTES_TILDE = "~";
+    enum const(ubyte)[] BYTES_TRUE = cast(const(ubyte)[])"1";
+    enum const(ubyte)[] BYTES_FALSE = cast(const(ubyte)[])"0";
+    enum const(ubyte)[] BYTES_TILDE = cast(const(ubyte)[])"~";
 
-    enum string POSITIVE_INFINITY_BYTES = "+inf";
-    enum string NEGATIVE_INFINITY_BYTES = "-inf";
+    enum const(ubyte)[] POSITIVE_INFINITY_BYTES = cast(const(ubyte)[])"+inf";
+    enum const(ubyte)[] NEGATIVE_INFINITY_BYTES = cast(const(ubyte)[])"-inf";
 
     private this() {
         // this prevent the class from instantiation
     }
 
     static void sendCommand(RedisOutputStream os, Command command,
-            string[] args...) {
-        sendCommand(os, command.to!string(), args);
+            const(ubyte)[][] args...) {
+        sendCommand(os, command.getRaw(), args);
     }
 
-    private static void sendCommand(RedisOutputStream os, string command,
-            string[] args...) {
+    private static void sendCommand(RedisOutputStream os, const(ubyte)[] command,
+            const(ubyte)[][] args...) {
         try {
             os.write(ASTERISK_BYTE);
             os.writeIntCrLf(cast(int)args.length + 1);
             os.write(DOLLAR_BYTE);
             os.writeIntCrLf(cast(int)command.length);
-            os.write(command);
+            os.write(cast(byte[])command);
             os.writeCrLf();
 
-            foreach (string arg ; args) {
+            foreach (const(ubyte)[] arg ; args) {
                 os.write(DOLLAR_BYTE);
                 os.writeIntCrLf(cast(int)arg.length);
-                os.write(arg);
+                os.write(cast(byte[])arg);
                 os.writeCrLf();
             }
         } catch (IOException e) {
@@ -162,9 +162,9 @@ final class Protocol {
         byte b = inputStream.readByte();
         switch(b) {
         case PLUS_BYTE:
-            return new String(cast(string)processStatusCodeReply(inputStream));
+            return new Bytes(processStatusCodeReply(inputStream));
         case DOLLAR_BYTE:
-            return new String(cast(string)processBulkReply(inputStream));
+            return new Bytes(processBulkReply(inputStream));
         case ASTERISK_BYTE:
             return cast(Object)processMultiBulkReply(inputStream);
         case COLON_BYTE:
@@ -227,25 +227,25 @@ final class Protocol {
         return process(inputStream);
     }
 
-    static string toByteArray(bool value) {
+    static const(ubyte)[] toByteArray(bool value) {
         return value ? BYTES_TRUE : BYTES_FALSE;
     }
 
-    static string toByteArray(int value) {
-        return to!string(value);
+    static const(ubyte)[] toByteArray(int value) {
+        return cast(const(ubyte)[])to!string(value);
     }
 
-    static string toByteArray(long value) {
-        return to!string(value);
+    static const(ubyte)[] toByteArray(long value) {
+        return cast(const(ubyte)[])to!string(value);
     }
 
-    static string toByteArray(double value) {
+    static const(ubyte)[] toByteArray(double value) {
         if (value == double.infinity) {
             return POSITIVE_INFINITY_BYTES;
         } else if (value == -double.infinity) {
             return NEGATIVE_INFINITY_BYTES;
         } else {
-            return to!string(value);
+            return cast(const(ubyte)[])to!string(value);
         }
     }    
 
@@ -278,9 +278,20 @@ final class Protocol {
         BLOCK, NOACK, STREAMS, KEY, CREATE, MKSTREAM, SETID, DESTROY, DELCONSUMER, MAXLEN, GROUP, 
         IDLE, TIME, RETRYCOUNT, FORCE
     }
+
 // dfmt on    
 }
 
 
 alias ProtocolCommand = Protocol.Command;
 alias ProtocolKeyword = Protocol.Keyword;
+
+
+const(ubyte)[] getRaw(ProtocolKeyword k) {
+    return cast(const(ubyte)[])k.to!string();
+}
+
+const(ubyte)[] getRaw(ProtocolCommand c) {
+    return cast(const(ubyte)[])c.to!string();
+}
+

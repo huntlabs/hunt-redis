@@ -17,10 +17,10 @@ import std.conv;
  * Builder Class for {@link Redis#sort(string, SortingParams) SORT} Parameters.
  */
 class SortingParams {
-    private List!(string) params;
+    private List!(const(ubyte)[]) params;
 
     this() {
-        params = new ArrayList!(string)();
+        params = new ArrayList!(const(ubyte)[])();
     }
 
     /**
@@ -35,8 +35,8 @@ class SortingParams {
      * @param pattern
      * @return the SortingParams Object
      */
-    SortingParams by(string pattern) {
-        params.add(Keyword.BY.to!string());
+    SortingParams by(const(ubyte)[] pattern) {
+        params.add(cast(const(ubyte)[])Keyword.BY.to!string());
         params.add(pattern);
         return this;
     }
@@ -49,12 +49,12 @@ class SortingParams {
      * @return the SortingParams Object
      */
     SortingParams nosort() {
-        params.add(Keyword.BY.to!string());
-        params.add(Keyword.NOSORT.to!string());
+        params.add(cast(const(ubyte)[])Keyword.BY.to!string());
+        params.add(cast(const(ubyte)[])Keyword.NOSORT.to!string());
         return this;
     }
 
-    Collection!(string) getParams() {
+    Collection!(const(ubyte)[]) getParams() {
         // return Collections.unmodifiableCollection(params);
         return params;
     }
@@ -64,7 +64,7 @@ class SortingParams {
      * @return the sortingParams Object
      */
     SortingParams desc() {
-        params.add(Keyword.DESC.to!string());
+        params.add(cast(const(ubyte)[])Keyword.DESC.to!string());
         return this;
     }
 
@@ -73,7 +73,7 @@ class SortingParams {
      * @return the SortingParams Object
      */
     SortingParams asc() {
-        params.add(Keyword.ASC.to!string());
+        params.add(cast(const(ubyte)[])Keyword.ASC.to!string());
         return this;
     }
 
@@ -84,7 +84,7 @@ class SortingParams {
      * @return the SortingParams Object
      */
     SortingParams limit(int start, int count) {
-        params.add(Keyword.LIMIT.to!string());
+        params.add(cast(const(ubyte)[])Keyword.LIMIT.to!string());
         params.add(Protocol.toByteArray(start));
         params.add(Protocol.toByteArray(count));
         return this;
@@ -96,7 +96,7 @@ class SortingParams {
      * @return the SortingParams Object
      */
     SortingParams alpha() {
-        params.add(Keyword.ALPHA.to!string());
+        params.add(cast(const(ubyte)[])Keyword.ALPHA.to!string());
         return this;
     }
 
@@ -116,7 +116,7 @@ class SortingParams {
      */
     SortingParams get(string[] patterns...) {
         foreach(string pattern ; patterns) {
-            params.add(Keyword.GET.to!string());
+            params.add(cast(const(ubyte)[])Keyword.GET.to!string());
             params.add(SafeEncoder.encode(pattern));
         }
         return this;
