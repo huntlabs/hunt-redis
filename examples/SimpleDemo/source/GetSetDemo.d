@@ -25,7 +25,8 @@ class GetSetBenchmark {
         for (int n = 0; n < TOTAL_OPERATIONS; n++) {
             string key = "foo" ~ n.to!string();
             redis.set(key, "bar" ~ n.to!string());
-            redis.get(key);
+            string v = redis.get(key);
+            tracef("key=%s, value=%s", key, v);
         }
 
         long elapsed = DateTimeHelper.currentTimeMillis() - begin;

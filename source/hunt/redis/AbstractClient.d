@@ -277,35 +277,39 @@ class AbstractClient : Closeable {
     }
 
     string getStatusCodeReply() {
-        flush();
-        Object obj = readProtocolWithCheckingBroken();
-        String bytesObj = cast(String)obj;
-        if(bytesObj is null) {
-            warning("The obj is not a Bytes.");
-            throw new NullPointerException();
-        }
-
-        return bytesObj.value();
+        // flush();
+        // Object obj = readProtocolWithCheckingBroken();
+        // Bytes bytesObj = cast(Bytes)obj;
+        // if(bytesObj is null) {
+        //     warning("The obj is not a Bytes.");
+        //     throw new NullPointerException();
+        // }
 
         // byte[] resp = bytesObj.value();
         // if (resp.empty()) {
         //     return null;
         // } else {
-        //     return SafeEncoder.encode(resp);
+        //     return SafeEncoder.encode(cast(const(ubyte)[])resp);
         // }
+        return getBulkReply();
     }
 
     string getBulkReply() {
         flush();
 
         Object obj = readProtocolWithCheckingBroken();
-        String bytesObj = cast(String)obj;
+        Bytes bytesObj = cast(Bytes)obj;
         if(bytesObj is null) {
             warning("The obj is not a String.");
             throw new NullPointerException();
         }
 
-        return bytesObj.value();
+        byte[] resp = bytesObj.value();
+        if (resp.empty()) {
+            return null;
+        } else {
+            return SafeEncoder.encode(cast(const(ubyte)[])resp);
+        }
     }
 
     const(ubyte)[] getBinaryBulkReply() {
