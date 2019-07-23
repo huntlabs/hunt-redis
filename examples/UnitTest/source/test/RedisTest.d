@@ -24,38 +24,38 @@ class RedisTest : RedisCommandTestBase {
     //     redis.dbSize();
     // }
 
-    @Test void checkBinaryData() {
-        ubyte[] bigdata = new ubyte[1777];
-        // ubyte[] bigdata = new ubyte[7];
-        for (int b = 0; b < bigdata.length; b++) {
-            bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
-        }
-        Map!(string, string) hash = new HashMap!(string, string)();
-        hash.put("data", SafeEncoder.encode(bigdata));
+    // @Test void checkBinaryData() {
+    //     ubyte[] bigdata = new ubyte[1777];
+    //     // ubyte[] bigdata = new ubyte[7];
+    //     for (int b = 0; b < bigdata.length; b++) {
+    //         bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
+    //     }
+    //     Map!(string, string) hash = new HashMap!(string, string)();
+    //     hash.put("data", SafeEncoder.encode(bigdata));
 
-        string status = redis.hmset("foo", hash);
-        assertEquals("OK", status);
-        Map!(string, string) hash2 = redis.hgetAll("foo");
-        assertEquals(hash, redis.hgetAll("foo"));
-    }
+    //     string status = redis.hmset("foo", hash);
+    //     assertEquals("OK", status);
+    //     Map!(string, string) hash2 = redis.hgetAll("foo");
+    //     assertEquals(hash, redis.hgetAll("foo"));
+    // }
 
-    @Test void checkBinaryData2() {
-        ubyte[] bigdata = new ubyte[1777];
-        // ubyte[] bigdata = new ubyte[7];
-        for (int b = 0; b < bigdata.length; b++) {
-            bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
-        }
-        // Map!(string, string) hash = new HashMap!(string, string)();
-        // hash.put("data", SafeEncoder.encode(bigdata));
+    // @Test void checkBinaryData2() {
+    //     ubyte[] bigdata = new ubyte[1777];
+    //     // ubyte[] bigdata = new ubyte[7];
+    //     for (int b = 0; b < bigdata.length; b++) {
+    //         bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
+    //     }
+    //     // Map!(string, string) hash = new HashMap!(string, string)();
+    //     // hash.put("data", SafeEncoder.encode(bigdata));
 
-        Map!(const(ubyte)[], const(ubyte)[]) hash = new HashMap!(const(ubyte)[], const(ubyte)[])();
-        hash.put(cast(const(ubyte)[])"data", bigdata);
+    //     Map!(const(ubyte)[], const(ubyte)[]) hash = new HashMap!(const(ubyte)[], const(ubyte)[])();
+    //     hash.put(cast(const(ubyte)[])"data", bigdata);
 
-        string status = redis.hmset(cast(const(ubyte)[])"foo", hash);
-        assertEquals("OK", status);
-        Map!(string, string) hash2 = redis.hgetAll("foo");
-        assertEquals(hash, redis.hgetAll(cast(const(ubyte)[])"foo"));
-    }
+    //     string status = redis.hmset(cast(const(ubyte)[])"foo", hash);
+    //     assertEquals("OK", status);
+    //     Map!(string, string) hash2 = redis.hgetAll("foo");
+    //     assertEquals(hash, redis.hgetAll(cast(const(ubyte)[])"foo"));
+    // }
 
     // @Test void connectWithShardInfo() {
     //     // RedisShardInfo shardInfo = new RedisShardInfo("localhost", Protocol.DEFAULT_PORT);
