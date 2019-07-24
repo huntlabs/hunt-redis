@@ -2818,7 +2818,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         int keyCount = keys.size();
         int argCount = args.size();
 
-        string[] params = new string[keyCount + args.size()];
+        string[] params = new string[keyCount + argCount];
 
         for (int i = 0; i < keyCount; i++)
             params[i] = keys.get(i);
@@ -2831,6 +2831,10 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
 
     Object eval(string script, List!(string) keys, List!(string) args) {
         return eval(script, keys.size(), getParams(keys, args));
+    }
+
+    Object eval(string script, string[] keys, string[] args) {
+        return eval(script, cast(int)keys.length, keys ~ args);
     }
 
     Object eval(string script) {
