@@ -55,13 +55,17 @@ alias Protocol = hunt.redis.Protocol.Protocol;
 alias Command = Protocol.Command;
 alias ConstUBytes = const(ubyte)[];
 
-shared static this() {
-    NetUtil.startEventLoop();
-}
+// dfmt off
+version(unittest) {} else {
+    shared static this() {
+        NetUtil.startEventLoop();
+    }
 
-shared static ~this() {
-    NetUtil.stopEventLoop();
+    shared static ~this() {
+        NetUtil.stopEventLoop();
+    }
 }
+//dfmt on
 
 /**
 */
