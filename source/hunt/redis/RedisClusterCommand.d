@@ -30,10 +30,11 @@ abstract class RedisClusterCommand(T) {
         return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
     }
 
-    T run(int keyCount, string[] keys...) {
+    T run(string[] keys...) { // int keyCount, 
         if (keys is null || keys.length == 0) {
             throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
         }
+        int keyCount = cast(int)keys.length;
 
         // For multiple keys, only execute if they all share the same connection slot.
         int slot = RedisClusterCRC16.getSlot(keys[0]);
@@ -50,14 +51,16 @@ abstract class RedisClusterCommand(T) {
         return runWithRetries(slot, this.maxAttempts, false, null);
     }
 
-    T runBinary(byte[] key) {
+    T runBinary(const(ubyte)[] key) {
         return runWithRetries(RedisClusterCRC16.getSlot(key), this.maxAttempts, false, null);
     }
 
-    T runBinary(int keyCount, byte[][] keys...) {
+    T runBinary(const(ubyte)[][] keys...) { // int keyCount, 
         if (keys is null || keys.length == 0) {
             throw new RedisClusterOperationException("No way to dispatch this command to Redis Cluster.");
         }
+
+        int keyCount = cast(int)keys.length;
 
         // For multiple keys, only execute if they all share the same connection slot.
         int slot = RedisClusterCRC16.getSlot(keys[0]);
