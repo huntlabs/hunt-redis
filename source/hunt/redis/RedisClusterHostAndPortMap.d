@@ -8,11 +8,11 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.redis.RedisClusterHostAndPortMap;
 
 import hunt.redis.HostAndPort;
 
 interface RedisClusterHostAndPortMap {
-  HostAndPort getSSLHostAndPort(string host, int port);
+    HostAndPort getSSLHostAndPort(string host, int port);
 }
