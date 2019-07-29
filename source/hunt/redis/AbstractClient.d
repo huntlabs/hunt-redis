@@ -53,19 +53,8 @@ import std.socket;
 
 alias Protocol = hunt.redis.Protocol.Protocol;
 alias Command = Protocol.Command;
-alias ConstUBytes = const(ubyte)[];
+alias CUBytes = const(ubyte)[];
 
-// dfmt off
-version(unittest) {} else {
-    shared static this() {
-        NetUtil.startEventLoop();
-    }
-
-    shared static ~this() {
-        NetUtil.stopEventLoop();
-    }
-}
-//dfmt on
 
 /**
 */
@@ -110,6 +99,8 @@ class AbstractClient : Closeable {
         this.ssl = ssl;
         initialize();
     }
+
+
 
     // this(string host, int port, bool ssl,
     //     SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
