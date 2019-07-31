@@ -1,14 +1,14 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "examples/UnitTest"
-		},
-		{
-			"path": "examples/SimpleDemo"
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "examples/UnitTest"
+        },
+        {
+            "path": "examples/SimpleDemo"
+        }
+    ],
+    "settings": {}
 }

@@ -1,13 +1,13 @@
 {
-	"name": "unittest",
-	"description": "All the unittests for hunt-pool.",
-	"copyright": "Copyright (C) 2019, HuntLabs.net",
-	"homepage": "https://www.huntlabs.net",
-	"license": "Apache-2.0",
-	"dependencies": {
-		"hunt-redis" :{"path": "../../"}
-	},
-	"versions": [
-		"HUNT_DEBUG", "HUNT_REDIS_DEBUG", "HUNT_IO_MORE1", "HUNT_CONCURRENCY_DEBUG"
-	]
+    "name": "unittest",
+    "description": "All the unittests for hunt-pool.",
+    "copyright": "Copyright (C) 2019, HuntLabs.net",
+    "homepage": "https://www.huntlabs.net",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "hunt-redis" :{"path": "../../"}
+    },
+    "versions": [
+        "HUNT_DEBUG", "HUNT_REDIS_DEBUG", "HUNT_IO_MORE1", "HUNT_CONCURRENCY_DEBUG"
+    ]
 }

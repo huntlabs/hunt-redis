@@ -60,8 +60,8 @@ alias CUBytes = const(ubyte)[];
 */
 class AbstractClient : Closeable {
     private NetClient _client;
-	private Mutex _doneLocker;
-	private Condition _doneCondition;
+    private Mutex _doneLocker;
+    private Condition _doneCondition;
 
     private enum const(ubyte)[][] EMPTY_ARGS = null;
 
@@ -118,8 +118,8 @@ class AbstractClient : Closeable {
     // }
 
     private void initialize() {
-		_doneLocker = new Mutex();
-		_doneCondition = new Condition(_doneLocker);
+        _doneLocker = new Mutex();
+        _doneCondition = new Condition(_doneLocker);
     }
 
     int getConnectionTimeout() {
