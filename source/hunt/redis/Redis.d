@@ -59,12 +59,10 @@ import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
 import hunt.collection;
-import hunt.Exceptions;
-import hunt.net.util.HttpURI;
-
-// import hunt.bool;
 import hunt.Double;
-// import hunt.long;
+import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
+import hunt.net.util.HttpURI;
 
 import std.conv;
 
@@ -2850,8 +2848,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     }
 
     private Object evalResult(Object result) {
-        implementationMissing();
-        return null;
+        // FIXME: Needing refactor or cleanup -@zxp at 8/5/2019, 1:45:00 PM
+        // 
+
+        version(HUNT_REDIS_DEBUG) {
+            warningf("result's type: %s", typeid(result));
+        }
+        return result;
         // if (result instanceof const(ubyte)[]) return SafeEncoder.encode((const(ubyte)[]) result);
 
         // if (result instanceof List<?>) {

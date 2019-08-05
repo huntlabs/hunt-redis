@@ -66,7 +66,6 @@ class AbstractClient : Closeable {
 
     private string host = Protocol.DEFAULT_HOST;
     private int port = Protocol.DEFAULT_PORT;
-    // private Socket socket;
     private RedisOutputStream outputStream;
     private RedisInputStream inputStream;
     private int connectionTimeout = Protocol.DEFAULT_TIMEOUT;
@@ -112,10 +111,6 @@ class AbstractClient : Closeable {
     //   this.hostnameVerifier = hostnameVerifier;
     // }
 
-    // Socket getSocket() {
-    //     return socket;
-    // }
-
     private void initialize() {
         _doneLocker = new Mutex();
         _doneCondition = new Condition(_doneLocker);
@@ -124,13 +119,13 @@ class AbstractClient : Closeable {
     int getConnectionTimeout() {
         return connectionTimeout;
     }
+    
+    void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
 
     int getSoTimeout() {
         return soTimeout;
-    }
-
-    void setConnectionTimeout(int connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
     }
 
     void setSoTimeout(int soTimeout) {
@@ -170,39 +165,39 @@ class AbstractClient : Closeable {
 
         _client.setHandler(new class ConnectionEventHandler {
 
-            override void sessionOpened(Connection session) {
-                version (HUNT_DEBUG) infof("Connection created: %s", session.getRemoteAddress());
+            override void connectionOpened(Connection connection) {
+                version (HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
                 
-                outputStream = new RedisOutputStream(new TcpOutputStream(session.getStream()));
-                inputStream = new RedisInputStream(new TcpInputStream(session.getStream()));  
+                outputStream = new RedisOutputStream(new TcpOutputStream(connection.getStream()));
+                inputStream = new RedisInputStream(new TcpInputStream(connection.getStream()));  
 
                 _doneCondition.notifyAll();
             }
 
-            override void sessionClosed(Connection session) {
-                version (HUNT_DEBUG) infof("Connection closed: %s", session.getRemoteAddress());
+            override void connectionClosed(Connection connection) {
+                version (HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
             }
 
-            override void messageReceived(Connection session, Object message) {
+            override void messageReceived(Connection connection, Object message) {
                 tracef("message type: %s", typeid(message).name);
                 string str = format("data received: %s", message.toString());
                 tracef(str);
                 // if(count< 10) {
-                //     session.encode(new String(str));
+                //     connection.encode(new String(str));
                 // }
                 // count++;
             }
 
-            override void exceptionCaught(Connection session, Exception t) {
+            override void exceptionCaught(Connection connection, Exception t) {
                 warning(t);
             }
 
-            override void failedOpeningSession(int sessionId, Exception t) {
+            override void failedOpeningConnection(int sessionId, Exception t) {
                 warning(t);
                 _client.close(); 
             }
 
-            override void failedAcceptingSession(int sessionId, Exception t) {
+            override void failedAcceptingConnection(int sessionId, Exception t) {
                 warning(t);
             }
         }).connect(host, port);        
@@ -249,7 +244,7 @@ class AbstractClient : Closeable {
                 connect();
             }
             // socket.setSoTimeout(0);
-            implementationMissing(false);
+            // implementationMissing(false);
         } catch (SocketException ex) {
             broken = true;
             throw new RedisConnectionException(ex);
@@ -259,7 +254,7 @@ class AbstractClient : Closeable {
     void rollbackTimeout() {
         try {
             // socket.setSoTimeout(soTimeout);
-            implementationMissing(false);
+            // implementationMissing(false);
         } catch (SocketException ex) {
             broken = true;
             throw new RedisConnectionException(ex);
@@ -331,16 +326,22 @@ class AbstractClient : Closeable {
         Object obj = readProtocolWithCheckingBroken();
         Bytes bytesObj = cast(Bytes)obj;
         if(bytesObj is null) {
-            warning("The obj is not a String.");
+            warning("The obj is not a Bytes.");
             throw new NullPointerException();
         }
 
         byte[] resp = bytesObj.value();
-        if (resp.empty()) {
-            return null;
-        } else {
-            return SafeEncoder.encode(cast(const(ubyte)[])resp);
+        string r = cast(string)resp;
+        version(HUNT_REDIS_DEBUG) {
+            tracef("reply: %s", r);
         }
+        
+        return r;
+        // if (resp.empty()) {
+        //     return null;
+        // } else {
+        //     return SafeEncoder.encode(cast(const(ubyte)[])resp);
+        // }
     }
 
     const(ubyte)[] getBinaryBulkReply() {

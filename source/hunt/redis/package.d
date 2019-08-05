@@ -38,6 +38,7 @@ public import hunt.redis.RedisClusterConnectionHandler;
 public import hunt.redis.RedisClusterHostAndPortMap;
 public import hunt.redis.RedisClusterInfoCache;
 public import hunt.redis.RedisFactory;
+public import hunt.redis.RedisLock;
 public import hunt.redis.RedisMonitor;
 public import hunt.redis.RedisPool;
 public import hunt.redis.RedisPoolAbstract;

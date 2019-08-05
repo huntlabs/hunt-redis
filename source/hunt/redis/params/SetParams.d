@@ -89,11 +89,14 @@ class SetParams : Params {
 
         if (contains(EX)) {
             byteParams.add(SafeEncoder.encode(EX));
-            byteParams.add(SafeEncoder.encode(getParam!string(EX)));
+            int v = getParam!int(EX);
+            byteParams.add(SafeEncoder.encode(v.to!string()));
         }
+
         if (contains(PX)) {
             byteParams.add(SafeEncoder.encode(PX));
-            byteParams.add(SafeEncoder.encode(getParam!string(PX)));
+            long v = getParam!long(PX);
+            byteParams.add(SafeEncoder.encode(v.to!string()));
         }
 
         return byteParams.toArray();
