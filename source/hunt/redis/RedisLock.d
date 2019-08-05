@@ -73,7 +73,7 @@ class RedisLock {
                 ulong n = 0;
                 auto t1 = MonoTime.currTime.ticks();
                 foreach (c; _redisClients) {
-                    if (LockInstance(c, key, val, ttl))
+                    if (lockInstance(c, key, val, ttl))
                         ++n;
                 }
 
@@ -84,7 +84,7 @@ class RedisLock {
                     lock.validTime = validtime;
                     return true;
                 } else {
-                    Unlock(lock);
+                    unlock(lock);
                 }
                 ulong delay = rand() % _delaytime + _delaytime / 2;
                 Thread.sleep(dur!"msecs"(delay));
@@ -99,7 +99,7 @@ class RedisLock {
     void unlock(const ref LockedObject lock) {
         synchronized (this) {
             foreach (c; _redisClients) {
-                UnlockInstance(c, lock.key, lock.uniqueId);
+                unlockInstance(c, lock.key, lock.uniqueId);
             }
 
             if (_hostports !is null) {
@@ -109,7 +109,7 @@ class RedisLock {
                         _redisClients ~= new Redis(hpc[0], to!ushort(hpc[1]));
                         _hostports.remove(k);
                     } catch (Throwable e) {
-
+                        warning(e);
                     }
                 }
             }
@@ -117,9 +117,7 @@ class RedisLock {
 
     }
 
-private:
-
-    static bool lockInstance(Redis redis, string key, string value, long ttl) {
+    private static bool lockInstance(Redis redis, string key, string value, long ttl) {
         try {
             // return redis.send!bool("set" , _prefix ~ key , value , "px" , ttl , "nx");
             SetParams para = new SetParams();
@@ -130,7 +128,7 @@ private:
         }
     }
 
-    static void unlockInstance(Redis redis, string key, string value) {
+    private static void unlockInstance(Redis redis, string key, string value) {
         try {
             Object r = redis.eval(`if redis.call('get', KEYS[1]) == ARGV[1] 
                             then return redis.call('del', KEYS[1])
@@ -139,7 +137,7 @@ private:
                         end`,
                     [_prefix ~ key], [value]);
         } catch (Throwable e) {
-
+            warning(e);
         }
 
     }
