@@ -33,10 +33,8 @@ import hunt.util.Common;
 // import javax.net.ssl.SSLParameters;
 // import javax.net.ssl.SSLSocket;
 // import javax.net.ssl.SSLSocketFactory;
-import hunt.net.NetClient;
-import hunt.net.Config;
-import hunt.net.NetSocket;
-import hunt.net.NetUtil;
+
+import hunt.net;
 
 import hunt.io.Common;
 import hunt.io.TcpStream;
@@ -48,12 +46,13 @@ import core.sync.mutex;
 import core.time;
 
 import std.array;
+import std.format;
 import std.socket;
 
 
 alias Protocol = hunt.redis.Protocol.Protocol;
 alias Command = Protocol.Command;
-alias CUBytes = const(ubyte)[];
+alias ConstUBytes = const(ubyte)[];
 
 
 /**
@@ -162,22 +161,62 @@ class AbstractClient : Closeable {
         scope (exit)
             _doneLocker.unlock();
             
-        _client = NetUtil.createNetClient();
+        NetClientOptions options = new NetClientOptions();
+        options.setConnectTimeout(connectionTimeout.msecs);
+        options.setIdleTimeout(soTimeout.msecs);
 
-        Config config = new Config();
-        config.setConnectionTimeout(connectionTimeout);
-        config.setTimeout(soTimeout);
-        _client.setConfig(config);
-        _client.connectHandler((NetSocket socket) {
-            version (HUNT_DEBUG) infof("A connection created with %s:%d", host, port);
-            // tcpSession.handler(&onDataReceived); 
+        _client = NetUtil.createNetClient(options);
 
-            outputStream = new RedisOutputStream(new TcpOutputStream(socket.getTcpStream()));
-            inputStream = new RedisInputStream(new TcpInputStream(socket.getTcpStream()));  
 
-            _doneCondition.notifyAll();
-        });
-        _client.connect(port, host);
+        _client.setHandler(new class ConnectionEventHandler {
+
+            override void sessionOpened(Connection session) {
+                version (HUNT_DEBUG) infof("Connection created: %s", session.getRemoteAddress());
+                
+                outputStream = new RedisOutputStream(new TcpOutputStream(session.getStream()));
+                inputStream = new RedisInputStream(new TcpInputStream(session.getStream()));  
+
+                _doneCondition.notifyAll();
+            }
+
+            override void sessionClosed(Connection session) {
+                version (HUNT_DEBUG) infof("Connection closed: %s", session.getRemoteAddress());
+            }
+
+            override void messageReceived(Connection session, Object message) {
+                tracef("message type: %s", typeid(message).name);
+                string str = format("data received: %s", message.toString());
+                tracef(str);
+                // if(count< 10) {
+                //     session.encode(new String(str));
+                // }
+                // count++;
+            }
+
+            override void exceptionCaught(Connection session, Exception t) {
+                warning(t);
+            }
+
+            override void failedOpeningSession(int sessionId, Exception t) {
+                warning(t);
+                _client.close(); 
+            }
+
+            override void failedAcceptingSession(int sessionId, Exception t) {
+                warning(t);
+            }
+        }).connect(host, port);        
+
+        // _client.connectHandler((NetSocket socket) {
+        //     version (HUNT_DEBUG) infof("A connection created with %s:%d", host, port);
+        //     // tcpSession.handler(&onDataReceived); 
+
+        //     outputStream = new RedisOutputStream(new TcpOutputStream(socket.getTcpStream()));
+        //     inputStream = new RedisInputStream(new TcpInputStream(socket.getTcpStream()));  
+
+        //     _doneCondition.notifyAll();
+        // });
+        // _client.connect(port, host);
         
         version (HUNT_DEBUG)
             info("Waiting for a connection...");
@@ -187,20 +226,6 @@ class AbstractClient : Closeable {
             throw new RedisConnectionException("Unable to connect to the server.");
         }
     }
-
-
-    // private void onDataReceived(ByteBuffer buffer) {
-    //     version(HUNT_DEBUG) { 
-    //         auto data = cast(ubyte[]) buffer.getRemaining();
-    //         infof("data received (%d bytes): ", data.length); 
-    //         version(HUNT_DEBUG) {
-    //             if(data.length<=64)
-    //                 infof("%(%02X %)", data[0 .. $]);
-    //             else
-    //                 infof("%(%02X %) ...", data[0 .. 64]);
-    //         }
-    //     }
-    // }    
 
     override
     void close() {
