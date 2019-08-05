@@ -9,8 +9,8 @@ import test.utils.RedisURIHelperTest;
 
 void main() {
 
-	// testUnits!(HostAndPortTest);
-	testUnits!(RedisTest);
+    // testUnits!(HostAndPortTest);
+    testUnits!(RedisTest);
 
-	// testUnits!(RedisURIHelperTest);
+    // testUnits!(RedisURIHelperTest);
 }

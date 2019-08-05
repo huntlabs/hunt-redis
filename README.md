@@ -1,3 +1,5 @@
+## Hunt Redis
+A powerfull redis client for D Programming Language. Port from java [Jedis](https://github.com/xetorthio/jedis) project.
 
 ## So what can I do with Redis?
 All of the following redis features are supported:
