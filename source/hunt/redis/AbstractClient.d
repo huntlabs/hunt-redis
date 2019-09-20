@@ -188,16 +188,16 @@ class AbstractClient : Closeable {
                 // count++;
             }
 
-            override void exceptionCaught(Connection connection, Exception t) {
+            override void exceptionCaught(Connection connection, Throwable t) {
                 warning(t);
             }
 
-            override void failedOpeningConnection(int sessionId, Exception t) {
+            override void failedOpeningConnection(int sessionId, Throwable t) {
                 warning(t);
                 _client.close(); 
             }
 
-            override void failedAcceptingConnection(int sessionId, Exception t) {
+            override void failedAcceptingConnection(int sessionId, Throwable t) {
                 warning(t);
             }
         }).connect(host, port);        
