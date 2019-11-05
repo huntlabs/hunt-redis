@@ -20,7 +20,7 @@ class GetSetBenchmark {
         redis.auth("foobared");
         redis.flushAll();
 
-        long begin = DateTimeHelper.currentTimeMillis();
+        long begin = DateTime.currentTimeMillis();
 
         for (int n = 0; n < TOTAL_OPERATIONS; n++) {
             string key = "foo" ~ n.to!string();
@@ -29,7 +29,7 @@ class GetSetBenchmark {
             tracef("key=%s, value=%s", key, v);
         }
 
-        long elapsed = DateTimeHelper.currentTimeMillis() - begin;
+        long elapsed = DateTime.currentTimeMillis() - begin;
 
         redis.disconnect();
 

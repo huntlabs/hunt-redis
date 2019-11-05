@@ -9,7 +9,7 @@ import std.stdio;
 import std.conv;
 
 // string RedisHosts = "10.1.11.115:6379;10.1.11.115:6380;10.1.11.115:6381;10.1.11.115:7000;10.1.11.115:7001;10.1.11.115:7002";
-// string RedisHosts = "10.1.222.120:6379";
+string RedisHosts = "10.1.222.120:6379";
 
 void run()
 {

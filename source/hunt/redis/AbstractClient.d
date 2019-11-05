@@ -163,7 +163,7 @@ class AbstractClient : Closeable {
         _client = NetUtil.createNetClient(options);
 
 
-        _client.setHandler(new class ConnectionEventHandler {
+        _client.setHandler(new class NetConnectionHandler {
 
             override void connectionOpened(Connection connection) {
                 version (HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
@@ -179,9 +179,11 @@ class AbstractClient : Closeable {
             }
 
             override void messageReceived(Connection connection, Object message) {
-                tracef("message type: %s", typeid(message).name);
-                string str = format("data received: %s", message.toString());
-                tracef(str);
+                version(HUNT_REDIS_DEBUG) {
+                    tracef("message type: %s", typeid(message).name);
+                    string str = format("data received: %s", message.toString());
+                    tracef(str);
+                }
                 // if(count< 10) {
                 //     connection.encode(new String(str));
                 // }
@@ -189,16 +191,16 @@ class AbstractClient : Closeable {
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {
-                warning(t);
+                version (HUNT_DEBUG) warning(t);
             }
 
             override void failedOpeningConnection(int sessionId, Throwable t) {
-                warning(t);
+                version (HUNT_DEBUG) warning(t);
                 _client.close(); 
             }
 
             override void failedAcceptingConnection(int sessionId, Throwable t) {
-                warning(t);
+                version (HUNT_DEBUG) warning(t);
             }
         }).connect(host, port);        
 
