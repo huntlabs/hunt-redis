@@ -23,71 +23,71 @@ import hunt.collection.Set;
 
 
 interface MultiKeyRedisClusterCommands {
-  long del(string[] keys...);
+    // long del(string[] keys...);
 
-  long unlink(string[] keys...);
+    // long unlink(string[] keys...);
 
-  long exists(string[] keys...);
+    // long exists(string[] keys...);
 
-  List!(string) blpop(int timeout, string[] keys...);
+    // List!(string) blpop(int timeout, string[] keys...);
 
-  List!(string) brpop(int timeout, string[] keys...);
+    // List!(string) brpop(int timeout, string[] keys...);
 
-  List!(string) mget(string[] keys...);
+    // List!(string) mget(string[] keys...);
 
-  string mset(string[] keysvalues...);
+    // string mset(string[] keysvalues...);
 
-  long msetnx(string[] keysvalues...);
+    // long msetnx(string[] keysvalues...);
 
-  string rename(string oldkey, string newkey);
+    // string rename(string oldkey, string newkey);
 
-  long renamenx(string oldkey, string newkey);
+    // long renamenx(string oldkey, string newkey);
 
-  string rpoplpush(string srckey, string dstkey);
+    // string rpoplpush(string srckey, string dstkey);
 
-  Set!(string) sdiff(string[] keys...);
+    // Set!(string) sdiff(string[] keys...);
 
-  long sdiffstore(string dstkey, string[] keys...);
+    // long sdiffstore(string dstkey, string[] keys...);
 
-  Set!(string) sinter(string[] keys...);
+    // Set!(string) sinter(string[] keys...);
 
-  long sinterstore(string dstkey, string[] keys...);
+    // long sinterstore(string dstkey, string[] keys...);
 
-  long smove(string srckey, string dstkey, string member);
+    // long smove(string srckey, string dstkey, string member);
 
-  long sort(string key, SortingParams sortingParameters, string dstkey);
+    // long sort(string key, SortingParams sortingParameters, string dstkey);
 
-  long sort(string key, string dstkey);
+    // long sort(string key, string dstkey);
 
-  Set!(string) sunion(string[] keys...);
+    // Set!(string) sunion(string[] keys...);
 
-  long sunionstore(string dstkey, string[] keys...);
+    // long sunionstore(string dstkey, string[] keys...);
 
-  long zinterstore(string dstkey, string[] sets...);
+    // long zinterstore(string dstkey, string[] sets...);
 
-  long zinterstore(string dstkey, ZParams params, string[] sets...);
+    // long zinterstore(string dstkey, ZParams params, string[] sets...);
 
-  long zunionstore(string dstkey, string[] sets...);
+    // long zunionstore(string dstkey, string[] sets...);
 
-  long zunionstore(string dstkey, ZParams params, string[] sets...);
+    // long zunionstore(string dstkey, ZParams params, string[] sets...);
 
-  string brpoplpush(string source, string destination, int timeout);
+    // string brpoplpush(string source, string destination, int timeout);
 
-  long publish(string channel, string message);
+    // long publish(string channel, string message);
 
-  void subscribe(RedisPubSub redisPubSub, string[] channels...);
+    // void subscribe(RedisPubSub redisPubSub, string[] channels...);
 
-  void psubscribe(RedisPubSub redisPubSub, string[] patterns...);
+    // void psubscribe(RedisPubSub redisPubSub, string[] patterns...);
 
-  long bitop(BitOP op, string destKey, string[] srcKeys...);
+    // long bitop(BitOP op, string destKey, string[] srcKeys...);
 
-  string pfmerge(string destkey, string[] sourcekeys...);
+    // string pfmerge(string destkey, string[] sourcekeys...);
 
-  long pfcount(string[] keys...);
+    // long pfcount(string[] keys...);
 
-  long touch(string[] keys...);
+    // long touch(string[] keys...);
 
-  ScanResult!(string) scan(string cursor, ScanParams params);
+    // ScanResult!(string) scan(string cursor, ScanParams params);
 
-  Set!(string) keys(string pattern);
+    // Set!(string) keys(string pattern);
 }

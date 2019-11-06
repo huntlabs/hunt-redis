@@ -47,62 +47,64 @@ import std.conv;
 import std.regex;
 alias Pattern = Regex!char;
 
+/**
+ * 
+ */
+class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands {
+    this(List!(RedisShardInfo) shards) {
+        super(shards);
+    }
 
-// class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands {
-//     this(List!(RedisShardInfo) shards) {
-//         super(shards);
-//     }
+    this(List!(RedisShardInfo) shards, Hashing algo) {
+        super(shards, algo);
+    }
 
-//     this(List!(RedisShardInfo) shards, Hashing algo) {
-//         super(shards, algo);
-//     }
+    this(List!(RedisShardInfo) shards, Pattern keyTagPattern) {
+        super(shards, keyTagPattern);
+    }
 
-//     this(List!(RedisShardInfo) shards, Pattern keyTagPattern) {
-//         super(shards, keyTagPattern);
-//     }
+    this(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
+        super(shards, algo, keyTagPattern);
+    }
 
-//     this(List!(RedisShardInfo) shards, Hashing algo, Pattern keyTagPattern) {
-//         super(shards, algo, keyTagPattern);
-//     }
+    void disconnect() {
+        foreach(Redis jedis ; getAllShards()) {
+            if (jedis.isConnected()) {
+                try {
+                    jedis.quit();
+                } catch (RedisConnectionException e) {
+                    // ignore the exception node, so that all other normal nodes can release all connections.
+                }
+                try {
+                    jedis.disconnect();
+                } catch (RedisConnectionException e) {
+                    // ignore the exception node, so that all other normal nodes can release all connections.
+                }
+            }
+        }
+    }
 
-//     void disconnect() {
-//         foreach(Redis jedis ; getAllShards()) {
-//             if (jedis.isConnected()) {
-//                 try {
-//                     jedis.quit();
-//                 } catch (RedisConnectionException e) {
-//                     // ignore the exception node, so that all other normal nodes can release all connections.
-//                 }
-//                 try {
-//                     jedis.disconnect();
-//                 } catch (RedisConnectionException e) {
-//                     // ignore the exception node, so that all other normal nodes can release all connections.
-//                 }
-//             }
-//         }
-//     }
+    protected Redis create(RedisShardInfo shard) {
+        return new Redis(shard);
+    }
 
-//     protected Redis create(RedisShardInfo shard) {
-//         return new Redis(shard);
-//     }
+    override
+    string set(const(ubyte)[] key, const(ubyte)[] value) {
+        Redis j = getShard(key);
+        return j.set(key, value);
+    }
 
-//     override
-//     string set(const(ubyte)[] key, const(ubyte)[] value) {
-//         Redis j = getShard(key);
-//         return j.set(key, value);
-//     }
+    override
+    string set(const(ubyte)[] key, const(ubyte)[] value, SetParams params) {
+        Redis j = getShard(key);
+        return j.set(key, value, params);
+    }
 
-//     override
-//     string set(const(ubyte)[] key, const(ubyte)[] value, SetParams params) {
-//         Redis j = getShard(key);
-//         return j.set(key, value, params);
-//     }
-
-//     override
-//     const(ubyte)[] get(const(ubyte)[] key) {
-//         Redis j = getShard(key);
-//         return j.get(key);
-//     }
+    override
+    const(ubyte)[] get(const(ubyte)[] key) {
+        Redis j = getShard(key);
+        return j.get(key);
+    }
 
 //     override
 //     bool exists(const(ubyte)[] key) {
@@ -1075,4 +1077,4 @@ alias Pattern = Regex!char;
 //         return j.sendCommand(cmd, args);
 //     }
 
-// }
+}

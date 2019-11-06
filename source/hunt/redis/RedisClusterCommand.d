@@ -11,6 +11,8 @@
  
 module hunt.redis.RedisClusterCommand;
 
+import hunt.redis.Redis;
+import hunt.redis.RedisClusterConnectionHandler;
 import hunt.redis.Exceptions;
 import hunt.redis.util.RedisClusterCRC16;
 
