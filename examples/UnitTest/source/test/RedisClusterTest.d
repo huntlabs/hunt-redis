@@ -64,26 +64,25 @@ class RedisClusterTest {
 
     @Before
     void setUp() {
-        // node1 = new Redis(nodeInfo1);
-        // node1.auth(RedisPassword);
-        // node1.flushAll();
+        node1 = new Redis(nodeInfo1);
+        node1.auth(RedisPassword);
+        node1.flushAll();
 
-        // node2 = new Redis(nodeInfo2);
-        // node2.auth(RedisPassword);
-        // node2.flushAll();
+        node2 = new Redis(nodeInfo2);
+        node2.auth(RedisPassword);
+        node2.flushAll();
 
-        // node3 = new Redis(nodeInfo3);
-        // node3.auth(RedisPassword);
-        // node3.flushAll();
+        node3 = new Redis(nodeInfo3);
+        node3.auth(RedisPassword);
+        node3.flushAll();
 
         // node4 = new Redis(nodeInfo4);
         // node4.auth(RedisPassword);
-        // node4.flushAll();
+        // // node4.flushAll();
 
         // nodeSlave2 = new Redis(nodeInfoSlave2);
         // nodeSlave2.auth(RedisPassword);
-        // nodeSlave2.flushAll();
-
+        // // nodeSlave2.flushAll();
 
         // // ---- configure cluster
         // node1.clusterReset(ClusterReset.SOFT);
@@ -122,12 +121,7 @@ class RedisClusterTest {
         // node1.flushDB();
         // node2.flushDB();
         // node3.flushDB();
-        // node4.flushDB();
-
-        // node1.clusterReset(ClusterReset.SOFT);
-        // node2.clusterReset(ClusterReset.SOFT);
-        // node3.clusterReset(ClusterReset.SOFT);
-        // node4.clusterReset(ClusterReset.SOFT);
+        // // node4.flushDB();
     }
 
     @After
@@ -181,51 +175,53 @@ class RedisClusterTest {
     //     assertEquals(3, jc2.getClusterNodes().size());
     // }
 
+    // @Test
+    // void testSetClientName() {
+    //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
+    //     string clientName = "myAppName";
+    //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
+    //             DEFAULT_REDIRECTIONS, RedisPassword, clientName, DEFAULT_CONFIG);
+
+    //     Map!(string, RedisPool) clusterNodes = jc.getClusterNodes();
+    //     RedisPool[] values = clusterNodes.values();
+    //     tracef("pool size: %d", values.length);
+    //     foreach (RedisPool jedisPool ; values) {
+    //         Redis jedis = jedisPool.getResource();
+    //         try {
+    //             warningf("%s, %s", jedis.toString(), jedis.clientGetname());
+    //             assertEquals(clientName, jedis.clientGetname());
+    //         } catch(Throwable t) {
+    //             warning(t);
+    //         } finally {
+    //             jedis.close();
+    //         }
+    //     }
+    // }
+
     @Test
-    void testSetClientName() {
+    void testCalculateConnectionPerSlot() {
         Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
         jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
-        string clientName = "myAppName";
         RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
-                DEFAULT_REDIRECTIONS, RedisPassword, clientName, DEFAULT_CONFIG);
+                DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+        warning("running here");
+        jc.set("foo", "bar");
+        jc.set("test", "test");
+        assertEquals("bar", node3.get("foo"));
+        assertEquals("test", node2.get("test"));
 
-        Map!(string, RedisPool) clusterNodes = jc.getClusterNodes();
-        RedisPool[] values = clusterNodes.values();
-        tracef("pool size: %d", values.length);
-        foreach (RedisPool jedisPool ; values) {
-            Redis jedis = jedisPool.getResource();
-            try {
-                warningf("%s, %s", jedis.toString(), jedis.clientGetname());
-                assertEquals(clientName, jedis.clientGetname());
-            } catch(Throwable t) {
-                warning(t);
-            } finally {
-                jedis.close();
-            }
-        }
+        warning("running here");
+        RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
+                DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+        jc2.set("foo", "bar");
+        jc2.set("test", "test");
+        assertEquals("bar", node3.get("foo"));
+        assertEquals("test", node2.get("test"));
     }
 
     // @Test
-    // void testCalculateConnectionPerSlot() {
-    //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
-    //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
-    //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-    //     jc.set("foo", "bar");
-    //     jc.set("test", "test");
-    //     assertEquals("bar", node3.get("foo"));
-    //     assertEquals("test", node2.get("test"));
-
-    //     RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
-    //             DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-    //     jc2.set("foo", "bar");
-    //     jc2.set("test", "test");
-    //     assertEquals("bar", node3.get("foo"));
-    //     assertEquals("test", node2.get("test"));
-    // }
-
-    // @Test
-    // void testReadonly() throws Exception {
+    // void testReadonly() {
     //     node1.clusterMeet(RedisServerHost, nodeInfoSlave2.getPort());
     //     RedisClusterTestUtil.waitForClusterReady(node1, node2, node3, nodeSlave2);
 
@@ -574,7 +570,7 @@ class RedisClusterTest {
     //     for (int i = 0; i < 50; i++) {
     //         executor.submit(new Callable!(string)() {
     //             override
-    //             string call() throws Exception {
+    //             string call() {
     //                 // FIXME : invalidate slot cache from RedisCluster to test
     //                 // random connection also does work
     //                 return jc.get("foo");
