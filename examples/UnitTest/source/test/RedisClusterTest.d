@@ -31,6 +31,14 @@ import hunt.redis.RedisPoolConfig;
 // import hunt.redis.tests.utils.RedisClusterTestUtil;
 import hunt.redis.util.RedisClusterCRC16;
 
+import hunt.pool.impl.GenericObjectPoolConfig;
+
+import core.time;
+import core.thread;
+
+import std.algorithm;
+import std.conv;
+import std.string;
 
 class RedisClusterTest {
     private static Redis node1;
@@ -76,13 +84,13 @@ class RedisClusterTest {
         node3.auth(RedisPassword);
         node3.flushAll();
 
-        // node4 = new Redis(nodeInfo4);
-        // node4.auth(RedisPassword);
-        // // node4.flushAll();
+        node4 = new Redis(nodeInfo4);
+        node4.auth(RedisPassword);
+        // node4.flushAll();
 
-        // nodeSlave2 = new Redis(nodeInfoSlave2);
-        // nodeSlave2.auth(RedisPassword);
-        // // nodeSlave2.flushAll();
+        nodeSlave2 = new Redis(nodeInfoSlave2);
+        nodeSlave2.auth(RedisPassword);
+        // nodeSlave2.flushAll();
 
         // // ---- configure cluster
         // node1.clusterReset(ClusterReset.SOFT);
@@ -199,34 +207,36 @@ class RedisClusterTest {
     //     }
     // }
 
-    @Test
-    void testCalculateConnectionPerSlot() {
-        Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-        jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
-        RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
-                DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-        warning("running here");
-        jc.set("foo", "bar");
-        jc.set("test", "test");
-        assertEquals("bar", node3.get("foo"));
-        assertEquals("test", node2.get("test"));
+    // @Test
+    // void testCalculateConnectionPerSlot() {
+    //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
+    //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
+    //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+    //     warning("running here");
+    //     jc.set("foo", "bar");
+    //     jc.set("test", "test");
+    //     assertEquals("bar", node3.get("foo"));
+    //     assertEquals("test", node2.get("test"));
 
-        warning("running here");
-        RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
-                DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-        jc2.set("foo", "bar");
-        jc2.set("test", "test");
-        assertEquals("bar", node3.get("foo"));
-        assertEquals("test", node2.get("test"));
-    }
+    //     warning("running here");
+    //     RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
+    //             DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+    //     jc2.set("foo", "bar");
+    //     jc2.set("test", "test");
+    //     assertEquals("bar", node3.get("foo"));
+    //     assertEquals("test", node2.get("test"));
+    // }
 
     // @Test
     // void testReadonly() {
     //     node1.clusterMeet(RedisServerHost, nodeInfoSlave2.getPort());
     //     RedisClusterTestUtil.waitForClusterReady(node1, node2, node3, nodeSlave2);
+    //     warning("running here");
 
-    //     for (string nodeInfo : node2.clusterNodes().split("\n")) {
-    //         if (nodeInfo.contains("myself")) {
+    //     foreach (string nodeInfo ; node2.clusterNodes().split("\n")) {
+    //         tracef("nodeInfo: %s", nodeInfo);
+    //         if (nodeInfo.canFind("myself")) {
     //             nodeSlave2.clusterReplicate(nodeInfo.split(" ")[0]);
     //             break;
     //         }
@@ -235,31 +245,37 @@ class RedisClusterTest {
     //         nodeSlave2.get("test");
     //         fail();
     //     } catch (RedisMovedDataException e) {
+    //         warning(e.msg);
     //     }
     //     nodeSlave2.readonly();
-    //     nodeSlave2.get("test");
+    //     string value = nodeSlave2.get("test");
+    //     infof("value: %s", value);
 
     //     nodeSlave2.clusterReset(ClusterReset.SOFT);
     //     nodeSlave2.flushDB();
     // }
 
-    // /**
-    //  * slot->nodes 15363 node3 e
-    //  */
+    /**
+     * slot->nodes 15363 node3 e
+     */
     // @Test
     // void testMigrate() {
-    //     log.info("test migrate slot");
+    //     info("test migrate slot");
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
     //     jedisClusterNode.add(nodeInfo1);
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     string node3Id = RedisClusterTestUtil.getNodeId(node3.clusterNodes());
     //     string node2Id = RedisClusterTestUtil.getNodeId(node2.clusterNodes());
+    //     tracef("node2Id: %s", node2Id);
+    //     tracef("node3Id: %s", node3Id);
     //     node3.clusterSetSlotMigrating(15363, node2Id);
     //     node2.clusterSetSlotImporting(15363, node3Id);
     //     try {
     //         node2.set("e", "e");
     //     } catch (RedisMovedDataException jme) {
+    //         infof(jme.msg);
+    //         tracef("slot: %d", jme.getSlot());
     //         assertEquals(15363, jme.getSlot());
     //         assertEquals(new HostAndPort(RedisServerHost, nodeInfo3.getPort()), jme.getTargetNode());
     //     }
@@ -267,6 +283,8 @@ class RedisClusterTest {
     //     try {
     //         node3.set("e", "e");
     //     } catch (RedisAskDataException jae) {
+    //         infof(jae.msg);
+    //         tracef("slot: %d", jae.getSlot());
     //         assertEquals(15363, jae.getSlot());
     //         assertEquals(new HostAndPort(RedisServerHost, nodeInfo2.getPort()), jae.getTargetNode());
     //     }
@@ -276,22 +294,32 @@ class RedisClusterTest {
     //     try {
     //         node2.get("e");
     //     } catch (RedisMovedDataException jme) {
+    //         infof(jme.msg);
+    //         tracef("slot: %d", jme.getSlot());
     //         assertEquals(15363, jme.getSlot());
     //         assertEquals(new HostAndPort(RedisServerHost, nodeInfo3.getPort()), jme.getTargetNode());
     //     }
     //     try {
-    //         node3.get("e");
+    //         trace(node3.get("e"));
     //     } catch (RedisAskDataException jae) {
+    //         infof(jae.msg);
+    //         tracef("slot: %d", jae.getSlot());
     //         assertEquals(15363, jae.getSlot());
     //         assertEquals(new HostAndPort(RedisServerHost, nodeInfo2.getPort()), jae.getTargetNode());
     //     }
 
-    //     assertEquals("e", jc.get("e"));
+    //     string v = jc.get("e");
+    //     tracef("v: ", v);
+    //     assertEquals("e", v);
 
+    //     tracef("node2Id: %s", node2Id);
+    //     tracef("node3Id: %s", node3Id);
     //     node2.clusterSetSlotNode(15363, node2Id);
     //     node3.clusterSetSlotNode(15363, node2Id);
     //     // assertEquals("e", jc.get("e"));
-    //     assertEquals("e", node2.get("e"));
+    //     v = node2.get("e");
+    //     tracef("v: ", v);
+    //     assertEquals("e", v);
 
     //     // assertEquals("e", node3.get("e"));
 
@@ -365,6 +393,7 @@ class RedisClusterTest {
     //     RedisClusterTestUtil.waitForClusterReady(node1, node2, node3);
     //     jc.set("51", "foo");
     //     assertEquals("foo", jc.get("51"));
+    //     warning("done");
     // }
 
     // @Test
@@ -378,6 +407,7 @@ class RedisClusterTest {
     //     node2.clusterSetSlotMigrating(slot51, RedisClusterTestUtil.getNodeId(node3.clusterNodes()));
     //     jc.set("51", "foo");
     //     assertEquals("foo", jc.get("51"));
+    //     warning("done");
     // }
 
     // @Test(expected = RedisClusterMaxAttemptsException.class)
@@ -407,9 +437,12 @@ class RedisClusterTest {
     //     assertNodeHandshakeEnded(node2, 1000);
     //     assertNodeHandshakeEnded(node1, 1000);
 
-    //     assertEquals(4, node1.clusterNodes().split("\n").length);
-    //     assertEquals(4, node2.clusterNodes().split("\n").length);
-    //     assertEquals(4, node3.clusterNodes().split("\n").length);
+    //     infof("node1: %s", node1.clusterNodes());
+    //     infof("node2: %s", node2.clusterNodes());
+    //     infof("node3: %s", node3.clusterNodes());
+    //     // assertEquals(4, node1.clusterNodes().split("\n").length);
+    //     // assertEquals(4, node2.clusterNodes().split("\n").length);
+    //     // assertEquals(4, node3.clusterNodes().split("\n").length);
 
     //     // do cluster forget
     //     node1.clusterForget(node7Id);
@@ -420,9 +453,13 @@ class RedisClusterTest {
     //     RedisClusterTestUtil.assertNodeIsUnknown(node2, node7Id, 1000);
     //     RedisClusterTestUtil.assertNodeIsUnknown(node3, node7Id, 1000);
 
-    //     assertEquals(3, node1.clusterNodes().split("\n").length);
-    //     assertEquals(3, node2.clusterNodes().split("\n").length);
-    //     assertEquals(3, node3.clusterNodes().split("\n").length);
+    //     infof("node1: %s", node1.clusterNodes());
+    //     infof("node2: %s", node2.clusterNodes());
+    //     infof("node3: %s", node3.clusterNodes());
+    //     // assertEquals(3, node1.clusterNodes().split("\n").length);
+    //     // assertEquals(3, node2.clusterNodes().split("\n").length);
+    //     // assertEquals(3, node3.clusterNodes().split("\n").length);
+    //     warning("done");
     // }
 
     // @Test
@@ -436,28 +473,34 @@ class RedisClusterTest {
     //     } finally {
     //         // rollback
     //         string[] rangeInfo = slotRange.split("-");
-    //         int lower = Integer.parseInt(rangeInfo[0]);
-    //         int upper = Integer.parseInt(rangeInfo[1]);
+    //         trace(rangeInfo);
+
+    //         int lower = to!int(rangeInfo[0]);
+    //         int upper = to!int(rangeInfo[1]);
 
     //         int[] node1Slots = new int[upper - lower + 1];
     //         for (int i = 0; lower <= upper;) {
     //             node1Slots[i++] = lower++;
     //         }
+    //         // trace(node1Slots);
     //         node1.clusterAddSlots(node1Slots);
     //     }
+
+    //     warning("done");
     // }
 
     // @Test
     // void testClusterKeySlot() {
     //     // It assumes RedisClusterCRC16 is correctly implemented
     //     assertEquals(RedisClusterCRC16.getSlot("{user1000}.following"),
-    //             node1.clusterKeySlot("{user1000}.following").intValue());
+    //             node1.clusterKeySlot("{user1000}.following"));
     //     assertEquals(RedisClusterCRC16.getSlot("foo{bar}{zap}"),
-    //             node1.clusterKeySlot("foo{bar}{zap}").intValue());
+    //             node1.clusterKeySlot("foo{bar}{zap}"));
     //     assertEquals(RedisClusterCRC16.getSlot("foo{}{bar}"),
-    //             node1.clusterKeySlot("foo{}{bar}").intValue());
+    //             node1.clusterKeySlot("foo{}{bar}"));
     //     assertEquals(RedisClusterCRC16.getSlot("foo{{bar}}zap"),
-    //             node1.clusterKeySlot("foo{{bar}}zap").intValue());
+    //             node1.clusterKeySlot("foo{{bar}}zap"));
+    //     warning("done");
     // }
 
     // @Test
@@ -469,11 +512,12 @@ class RedisClusterTest {
 
     //     int count = 5;
     //     for (int index = 0; index < count; index++) {
-    //         jc.set("foo{bar}" + index, "hello");
+    //         jc.set("foo{bar}" ~ index.to!string(), "hello");
     //     }
 
     //     int slot = RedisClusterCRC16.getSlot("foo{bar}");
-    //     assertEquals(count, node1.clusterCountKeysInSlot(slot).intValue());
+    //     assertEquals(count, node1.clusterCountKeysInSlot(slot));
+    //     warning("done");
     // }
 
     // @Test
@@ -499,7 +543,7 @@ class RedisClusterTest {
     //     assertEquals("foo", jc.get("51"));
     // }
 
-    // @Test(expected = RedisExhaustedPoolException.class)
+    // @TestWith!(RedisExhaustedPoolException)
     // void testIfPoolConfigAppliesToClusterPools() {
     //     GenericObjectPoolConfig config = new GenericObjectPoolConfig();
     //     config.setMaxTotal(0);
@@ -509,10 +553,11 @@ class RedisClusterTest {
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, config);
     //     jc.set("52", "poolTestValue");
+    //     warning("done");
     // }
 
     // @Test
-    // void testCloseable() throws IOException {
+    // void testCloseable() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
     //     jedisClusterNode.add(new HostAndPort(nodeInfo1.getHost(), nodeInfo1.getPort()));
 
@@ -547,17 +592,17 @@ class RedisClusterTest {
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, 4000, 4000, DEFAULT_REDIRECTIONS,
     //             RedisPassword, DEFAULT_CONFIG);
 
-    //     for (RedisPool pool : jc.getClusterNodes().values()) {
+    //     foreach (RedisPool pool ; jc.getClusterNodes().values()) {
     //         Redis jedis = pool.getResource();
     //         assertEquals(4000, jedis.getClient().getConnectionTimeout());
     //         assertEquals(4000, jedis.getClient().getSoTimeout());
     //         jedis.close();
     //     }
+    //     warning("done");
     // }
 
     // @Test
-    // void testRedisClusterRunsWithMultithreaded() throws InterruptedException,
-    //         ExecutionException, IOException {
+    // void testRedisClusterRunsWithMultithreaded() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
     //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     final RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
@@ -701,43 +746,49 @@ class RedisClusterTest {
     //     }
     // }
 
-    // private static string getNodeServingSlotRange(string infoOutput) {
-    //     // f4f3dc4befda352a4e0beccf29f5e8828438705d 127.0.0.1:7380 master - 0
-    //     // 1394372400827 0 connected 5461-10922
-    //     for (string infoLine : infoOutput.split("\n")) {
-    //         if (infoLine.contains("myself")) {
-    //             try {
-    //                 return infoLine.split(" ")[8];
-    //             } catch (ArrayIndexOutOfBoundsException e) {
-    //                 return null;
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
+    private static string getNodeServingSlotRange(string infoOutput) {
+        // f4f3dc4befda352a4e0beccf29f5e8828438705d 127.0.0.1:7380 master - 0
+        // 1394372400827 0 connected 5461-10922
+        foreach (string infoLine ; infoOutput.split("\n")) {
+            if (infoLine.canFind("myself")) {
+                try {
+                    tracef("infoLine: %s", infoLine);
+                    auto r = infoLine.split(" ");
+                    if(r.length >8)
+                        return infoLine.split(" ")[8];
+                    else
+                        return "";
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
 
-    // private void assertNodeHandshakeEnded(Redis node, int timeoutMs) {
-    //     int sleepInterval = 100;
-    //     for (int sleepTime = 0; sleepTime <= timeoutMs; sleepTime += sleepInterval) {
-    //         bool isHandshaking = isAnyNodeHandshaking(node);
-    //         if (!isHandshaking) return;
+    private void assertNodeHandshakeEnded(Redis node, int timeoutMs) {
+        int sleepInterval = 100;
+        for (int sleepTime = 0; sleepTime <= timeoutMs; sleepTime += sleepInterval) {
+            bool isHandshaking = isAnyNodeHandshaking(node);
+            if (!isHandshaking) return;
 
-    //         try {
-    //             Thread.sleep(sleepInterval);
-    //         } catch (InterruptedException e) {
-    //         }
-    //     }
+            try {
+                Thread.sleep(sleepInterval.msecs);
+            } catch (InterruptedException e) {
+            }
+        }
 
-    //     throw new RedisException("Node handshaking is not ended");
-    // }
+        throw new RedisException("Node handshaking is not ended");
+    }
 
-    // private bool isAnyNodeHandshaking(Redis node) {
-    //     string infoOutput = node.clusterNodes();
-    //     for (string infoLine : infoOutput.split("\n")) {
-    //         if (infoLine.contains("handshake")) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    private bool isAnyNodeHandshaking(Redis node) {
+        string infoOutput = node.clusterNodes();
+        foreach (string infoLine ; infoOutput.split("\n")) {
+            tracef("infoLine: %s", infoLine);
+            if (infoLine.canFind("handshake")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
