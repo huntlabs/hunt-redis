@@ -38,7 +38,8 @@ class RedisClusterTest {
     private static Redis node3;
     private static Redis node4;
     private static Redis nodeSlave2;
-    private string RedisServerHost = "10.1.222.120"; // "127.0.0.1";
+    private enum string RedisServerHost = "10.1.222.120"; // "127.0.0.1";
+    private enum RedisServerPort = 6380; // 6379;
     private string RedisPassword = "foobared";
 
     private enum int DEFAULT_TIMEOUT = 2000;
@@ -163,46 +164,51 @@ class RedisClusterTest {
     //     node2.get("test");
     // }
 
-    @Test
-    void testDiscoverNodesAutomatically() {
-        Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-        // jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
-        jedisClusterNode.add(new HostAndPort(RedisServerHost, 6380));
-        RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
-                DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-        int size = jc.getClusterNodes().size();
-        warningf("Cluster size: %d", size);
-        assertEquals(3, size);
-
-        RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, 6380), DEFAULT_TIMEOUT,
-                DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
-        warningf("Cluster size: %d",jc2.getClusterNodes().size());
-        assertEquals(3, jc2.getClusterNodes().size());
-    }
-
     // @Test
-    // void testSetClientName() {
+    // void testDiscoverNodesAutomatically() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
-    //     string clientName = "myAppName";
+    //     // jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
-    //             DEFAULT_REDIRECTIONS, RedisPassword, clientName, DEFAULT_CONFIG);
-    //     Map!(string, RedisPool) clusterNodes = jc.getClusterNodes();
-    //     Collection!(RedisPool) values = clusterNodes.values();
-    //     for (RedisPool jedisPool : values) {
-    //         Redis jedis = jedisPool.getResource();
-    //         try {
-    //             assertEquals(clientName, jedis.clientGetname());
-    //         } finally {
-    //             jedis.close();
-    //         }
-    //     }
+    //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+    //     int size = jc.getClusterNodes().size();
+    //     warningf("Cluster size: %d", size);
+    //     assertEquals(3, size);
+
+    //     RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
+    //             DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+    //     warningf("Cluster size: %d",jc2.getClusterNodes().size());
+    //     assertEquals(3, jc2.getClusterNodes().size());
     // }
+
+    @Test
+    void testSetClientName() {
+        Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
+        jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
+        string clientName = "myAppName";
+        RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
+                DEFAULT_REDIRECTIONS, RedisPassword, clientName, DEFAULT_CONFIG);
+
+        Map!(string, RedisPool) clusterNodes = jc.getClusterNodes();
+        RedisPool[] values = clusterNodes.values();
+        tracef("pool size: %d", values.length);
+        foreach (RedisPool jedisPool ; values) {
+            Redis jedis = jedisPool.getResource();
+            try {
+                warningf("%s, %s", jedis.toString(), jedis.clientGetname());
+                assertEquals(clientName, jedis.clientGetname());
+            } catch(Throwable t) {
+                warning(t);
+            } finally {
+                jedis.close();
+            }
+        }
+    }
 
     // @Test
     // void testCalculateConnectionPerSlot() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     jc.set("foo", "bar");
@@ -210,7 +216,7 @@ class RedisClusterTest {
     //     assertEquals("bar", node3.get("foo"));
     //     assertEquals("test", node2.get("test"));
 
-    //     RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, 7379), DEFAULT_TIMEOUT,
+    //     RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
     //             DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     jc2.set("foo", "bar");
     //     jc2.set("test", "test");
@@ -352,7 +358,7 @@ class RedisClusterTest {
     // @Test
     // void testRecalculateSlotsWhenMoved() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     int slot51 = RedisClusterCRC16.getSlot("51");
@@ -368,7 +374,7 @@ class RedisClusterTest {
     // @Test
     // void testAskResponse() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     int slot51 = RedisClusterCRC16.getSlot("51");
@@ -381,7 +387,7 @@ class RedisClusterTest {
     // @Test(expected = RedisClusterMaxAttemptsException.class)
     // void testRedisClusterMaxRedirections() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     int slot51 = RedisClusterCRC16.getSlot("51");
@@ -503,7 +509,7 @@ class RedisClusterTest {
     //     config.setMaxTotal(0);
     //     config.setMaxWaitMillis(DEFAULT_TIMEOUT);
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, config);
     //     jc.set("52", "poolTestValue");
@@ -557,7 +563,7 @@ class RedisClusterTest {
     // void testRedisClusterRunsWithMultithreaded() throws InterruptedException,
     //         ExecutionException, IOException {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     final RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
     //             DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
     //     jc.set("foo", "bar");
@@ -587,7 +593,7 @@ class RedisClusterTest {
     // @Test(timeout = DEFAULT_TIMEOUT)
     // void testReturnConnectionOnRedisConnectionException() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisPoolConfig config = new RedisPoolConfig();
     //     config.setMaxTotal(1);
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
@@ -604,7 +610,7 @@ class RedisClusterTest {
     // @Test(expected = RedisClusterMaxAttemptsException.class, timeout = DEFAULT_TIMEOUT)
     // void testReturnConnectionOnRedirection() {
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisPoolConfig config = new RedisPoolConfig();
     //     config.setMaxTotal(1);
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, 0, 2, DEFAULT_REDIRECTIONS, RedisPassword,
@@ -617,7 +623,7 @@ class RedisClusterTest {
 
     // @Test
     // void testLocalhostNodeNotAddedWhen127Present() {
-    //     HostAndPort localhost = new HostAndPort("localhost", 7379);
+    //     HostAndPort localhost = new HostAndPort("localhost", RedisServerPort);
     //     Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
     //     // cluster node is defined as 127.0.0.1; adding localhost should work,
     //     // but shouldn't show up.
@@ -633,10 +639,10 @@ class RedisClusterTest {
 
     // @Test
     // void testInvalidStartNodeNotAdded() {
-    //     HostAndPort invalidHost = new HostAndPort("not-a-real-host", 7379);
+    //     HostAndPort invalidHost = new HostAndPort("not-a-real-host", RedisServerPort);
     //     Set!(HostAndPort) jedisClusterNode = new LinkedHashSet!(HostAndPort)();
     //     jedisClusterNode.add(invalidHost);
-    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, 7379));
+    //     jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
     //     RedisPoolConfig config = new RedisPoolConfig();
     //     config.setMaxTotal(1);
     //     RedisCluster jc = new RedisCluster(jedisClusterNode, 0, 2, DEFAULT_REDIRECTIONS, RedisPassword,

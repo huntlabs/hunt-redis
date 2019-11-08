@@ -226,6 +226,7 @@ class RedisClusterInfoCache {
                 return hostAndPort;
             }
         }
+        version(HUNT_REDIS_DEBUG) tracef("%s:%d", host, port);
         return new HostAndPort(host, port);
     }
 

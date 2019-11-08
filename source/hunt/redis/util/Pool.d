@@ -14,11 +14,13 @@ module hunt.redis.util.Pool;
 import hunt.redis.Exceptions;
 
 import hunt.Exceptions;
+import hunt.logging.ConsoleLogger;
 import hunt.util.Common;
 
 import hunt.pool.PooledObjectFactory;
 import hunt.pool.impl.GenericObjectPool;
 import hunt.pool.impl.GenericObjectPoolConfig;
+
 
 
 abstract class Pool(T) : Closeable {
@@ -49,6 +51,8 @@ abstract class Pool(T) : Closeable {
             try {
                 closeInternalPool();
             } catch (Exception e) {
+                debug warning(e.msg);
+                version(HUNT_REDIS_DEBUG) warning(e);
             }
         }
 
@@ -59,6 +63,8 @@ abstract class Pool(T) : Closeable {
         try {
             return internalPool.borrowObject();
         } catch (NoSuchElementException nse) {
+            debug warning(nse.msg);
+            version(HUNT_REDIS_DEBUG) warning(nse);
             if (nse.next is null) { // The exception was caused by an exhausted pool
                 throw new RedisExhaustedPoolException(
                         "Could not get a resource since the pool is exhausted", nse);
@@ -66,6 +72,8 @@ abstract class Pool(T) : Closeable {
             // Otherwise, the exception was caused by the implemented activateObject() or ValidateObject()
             throw new RedisException("Could not get a resource from the pool", nse);
         } catch (Exception e) {
+            debug warning(e.msg);
+            version(HUNT_REDIS_DEBUG) warning(e);
             throw new RedisConnectionException("Could not get a resource from the pool", e);
         }
     }
@@ -74,9 +82,12 @@ abstract class Pool(T) : Closeable {
         if (resource is null) {
             return;
         }
+        
         try {
             internalPool.returnObject(resource);
         } catch (Exception e) {
+            debug warning(e.msg);
+            version(HUNT_REDIS_DEBUG) warning(e);
             throw new RedisException("Could not return the resource to the pool", e);
         }
     }
@@ -101,6 +112,8 @@ abstract class Pool(T) : Closeable {
         try {
             internalPool.invalidateObject(resource);
         } catch (Exception e) {
+            debug warning(e.msg);
+            version(HUNT_REDIS_DEBUG) warning(e);
             throw new RedisException("Could not return the broken resource to the pool", e);
         }
     }
@@ -109,6 +122,8 @@ abstract class Pool(T) : Closeable {
         try {
             internalPool.close();
         } catch (Exception e) {
+            debug warning(e.msg);
+            version(HUNT_REDIS_DEBUG) warning(e);
             throw new RedisException("Could not destroy the pool", e);
         }
     }
@@ -195,6 +210,8 @@ abstract class Pool(T) : Closeable {
                 this.internalPool.addObject();
             }
         } catch (Exception e) {
+            debug warning(e.msg);
+            version(HUNT_REDIS_DEBUG) warning(e);
             throw new RedisException("Error trying to add idle objects", e);
         }
     }

@@ -179,6 +179,10 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
     //   client.setSoTimeout(soTimeout);
     // }
 
+    override string toString() {
+        return format("%s:%d", client.getHost(), client.getPort());
+    }
+
     private void initializeClientFromURI(HttpURI uri) {
         // initializeClientFromURI(uri, null, null, null);
      if (!RedisURIHelper.isValid(uri)) {

@@ -215,8 +215,10 @@ class AbstractClient : Closeable {
         // });
         // _client.connect(port, host);
         
-        version (HUNT_DEBUG)
-            info("Waiting for a connection...");
+        version (HUNT_DEBUG) {
+            infof("Waiting for a connection in %s...", seconds(connectionTimeout / 1000));
+        }
+
         _doneCondition.wait(connectionTimeout.msecs);
 
         if(!isConnected()) {

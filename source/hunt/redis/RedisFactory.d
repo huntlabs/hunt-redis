@@ -21,6 +21,7 @@ import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.util.RedisURIHelper;
 
+import hunt.logging.ConsoleLogger;
 import hunt.net.util.HttpURI;
 
 import std.format;
@@ -114,7 +115,6 @@ class RedisFactory : PooledObjectFactory!(Redis) {
         if (jedis.getDB() != database) {
             jedis.select(database);
         }
-
     }
 
     void destroyObject(IPooledObject pooledRedis) {
@@ -138,6 +138,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
         // Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
         //         connectionTimeout, soTimeout, ssl, sslSocketFactory,
         //         sslParameters, hostnameVerifier);
+        version(HUNT_REDIS_DEBUG) infof("%s", hostAndPort.toString());
         Redis jedis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
                 connectionTimeout, soTimeout, ssl);
 
@@ -153,6 +154,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
                 jedis.clientSetname(clientName);
             }
         } catch (RedisException je) {
+            debug warning(je.msg);
             jedis.close();
             throw je;
         }
