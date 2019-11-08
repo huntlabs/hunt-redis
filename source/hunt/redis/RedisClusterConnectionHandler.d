@@ -11,17 +11,18 @@
 
 module hunt.redis.RedisClusterConnectionHandler;
 
+import hunt.redis.Exceptions;
+import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.RedisClusterInfoCache;
 import hunt.redis.RedisPool;
 
-import hunt.util.Common;
 import hunt.collection.Map;
 import hunt.collection.Set;
+import hunt.logging.ConsoleLogger;
 import hunt.pool.impl.GenericObjectPoolConfig;
+import hunt.util.Common;
 
-import hunt.redis.Exceptions;
-import hunt.redis.HostAndPort;
 
 abstract class RedisClusterConnectionHandler : Closeable {
     protected RedisClusterInfoCache cache;
@@ -70,6 +71,12 @@ abstract class RedisClusterConnectionHandler : Closeable {
             int connectionTimeout, int soTimeout, string password, string clientName, bool ssl) {
         foreach (HostAndPort hostAndPort; startNodes) {
             Redis redis = null;
+            scope(exit) {
+                if (redis !is null) {
+                    redis.close();
+                }
+            }
+
             try {
                 // redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(), connectionTimeout, soTimeout, ssl, sslSocketFactory, sslParameters, hostnameVerifier);
                 redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
@@ -82,12 +89,12 @@ abstract class RedisClusterConnectionHandler : Closeable {
                 }
                 cache.discoverClusterNodesAndSlots(redis);
                 break;
-            } catch (RedisConnectionException e) {
+            } catch (RedisConnectionException ex) {
                 // try next nodes
-            } finally {
-                if (redis !is null) {
-                    redis.close();
-                }
+                debug warning(ex.msg);
+                version(HUNT_REDIS_DEBUG) warning(ex);
+            } catch(Exception ex) {
+                version(HUNT_REDIS_DEBUG) warning(ex);
             }
         }
     }

@@ -78,7 +78,7 @@ class RedisOutputStream : FilterOutputStream {
         if (count > 0) {
             version(HUNT_REDIS_DEBUG) {
                 if(count<32) {
-                tracef("outgoing: %s", cast(string)buf[0 .. count]);
+                    tracef("outgoing: %s", cast(string)buf[0 .. count]);
                 } else {
                     tracef("outgoing: %s", cast(string)buf[0 .. 32]);
                 }

@@ -282,21 +282,27 @@ class AbstractClient : Closeable {
                 Protocol.sendCommand(outputStream, cmd, args);
             }
         } catch (RedisConnectionException ex) {
-            /*
-             * When client send request which formed by invalid protocol, Redis send back error message
-             * before close connection. We try to read it to provide reason of failure.
-             */
-            try {
-                string errorMessage = Protocol.readErrorLineIfPossible(inputStream);
-                if (errorMessage !is null && errorMessage.length > 0) {
-                    ex = new RedisConnectionException(errorMessage, ex.next);
-                }
-            } catch (Exception e) {
+            if(inputStream is null) {
+                warning("inputStream is null");
+            } else {
                 /*
-                 * Catch any IOException or RedisConnectionException occurred from InputStream#read and just
-                 * ignore. This approach is safe because reading error message is optional and connection
-                 * will eventually be closed.
-                 */
+                * When client send request which formed by invalid protocol, Redis send back error message
+                * before close connection. We try to read it to provide reason of failure.
+                */
+                try {
+                    string errorMessage = Protocol.readErrorLineIfPossible(inputStream);
+                    if (errorMessage !is null && errorMessage.length > 0) {
+                        ex = new RedisConnectionException(errorMessage, ex.next);
+                    }
+                } catch (Exception e) {
+                    /*
+                    * Catch any IOException or RedisConnectionException occurred from InputStream#read and just
+                    * ignore. This approach is safe because reading error message is optional and connection
+                    * will eventually be closed.
+                    */
+                   debug warning(e.msg);
+                   version(HUNT_REDIS_DEBUG) warning(e);
+                }
             }
             // Any other exceptions related to connection?
             broken = true;
@@ -334,7 +340,7 @@ class AbstractClient : Closeable {
 
         byte[] resp = bytesObj.value();
         string r = cast(string)resp;
-        version(HUNT_REDIS_DEBUG) {
+        version(HUNT_REDIS_DEBUG_MORE) {
             tracef("reply: %s", r);
         }
         

@@ -16,10 +16,12 @@ import hunt.redis.util.SafeEncoder;
 
 import test.commands.RedisCommandTestBase;
 
+// enum RedisHost = "localhost";
+enum RedisHost = "10.1.222.120";
+
 class RedisTest : RedisCommandTestBase {
     // @Test void useWithoutConnecting() {
-    //     // Redis redis = new Redis("localhost"); 
-    //     Redis redis = new Redis("10.1.222.120");
+    //     Redis redis = new Redis(RedisHost);
     //     redis.auth("foobared");
     //     redis.dbSize();
     // }
@@ -58,8 +60,7 @@ class RedisTest : RedisCommandTestBase {
     // }
 
     // @Test void connectWithShardInfo() {
-    //     // RedisShardInfo shardInfo = new RedisShardInfo("localhost", Protocol.DEFAULT_PORT);
-    //     RedisShardInfo shardInfo = new RedisShardInfo("10.1.222.120", Protocol.DEFAULT_PORT);
+    //     RedisShardInfo shardInfo = new RedisShardInfo(RedisHost, Protocol.DEFAULT_PORT);
     //     shardInfo.setPassword("foobared");
     //     Redis redis = new Redis(shardInfo);
     //     redis.get("foo");
