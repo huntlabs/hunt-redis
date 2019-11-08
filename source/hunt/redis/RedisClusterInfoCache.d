@@ -24,6 +24,7 @@ import hunt.collection.Collections;
 import hunt.collection.HashMap;
 import hunt.collection.List;
 import hunt.collection.Map;
+import hunt.logging.ConsoleLogger;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
 import hunt.Byte;
@@ -31,7 +32,7 @@ import hunt.Long;
 import hunt.Integer;
 import hunt.String;
 
-import core.sync.rwmutex;
+import core.sync.mutex;
 import core.sync.condition;
 import std.conv;
 
@@ -39,9 +40,9 @@ class RedisClusterInfoCache {
     private Map!(string, RedisPool) nodes;
     private Map!(int, RedisPool) slots;
 
-    private ReadWriteMutex rwl;
-    private Object.Monitor r;
-    private Object.Monitor w;
+    private Mutex mutex;
+    // private Object.Monitor r;
+    // private Object.Monitor w;
     private bool rediscovering;
     private GenericObjectPoolConfig poolConfig;
 
@@ -68,9 +69,7 @@ class RedisClusterInfoCache {
 
         nodes = new HashMap!(string, RedisPool)();
         slots = new HashMap!(int, RedisPool)();
-        rwl = new ReadWriteMutex();
-        r = rwl.reader();
-        w = rwl.writer();
+        mutex = new Mutex();
 
         this.poolConfig = poolConfig;
         this.connectionTimeout = connectionTimeout;
@@ -101,10 +100,11 @@ class RedisClusterInfoCache {
 //   }
 
     void discoverClusterNodesAndSlots(Redis redis) {
-        w.lock();
+        mutex.lock();
+        scope(exit) mutex.unlock();
 
         try {
-            reset();
+            reset(); 
             List!(Object) slots = redis.clusterSlots();
 
             foreach(Object slotInfoObj ; slots) {
@@ -131,16 +131,19 @@ class RedisClusterInfoCache {
                     }
                 }
             }
-        } finally {
-            w.unlock();
+        } catch(Throwable ex) {
+            debug warning(ex.msg);
+            version(HUNT_REDIS_DEBUG) warning(ex);
         }
     }
 
     void renewClusterSlots(Redis redis) {
         //If rediscovering is already in process - no need to start one more same rediscovering, just return
         if (!rediscovering) {
+            mutex.lock();
+            scope(exit) mutex.unlock();
+
             try {
-                w.lock();
                 if (!rediscovering) {
                     rediscovering = true;
 
@@ -149,8 +152,10 @@ class RedisClusterInfoCache {
                             try {
                                 discoverClusterSlots(redis);
                                 return;
-                            } catch (RedisException e) {
+                            } catch (RedisException ex) {
                                 //try nodes from all pools
+                                debug warning(ex.msg);
+                                version(HUNT_REDIS_DEBUG) warning(ex);
                             }
                         }
 
@@ -160,8 +165,10 @@ class RedisClusterInfoCache {
                                 j = jp.getResource();
                                 discoverClusterSlots(j);
                                 return;
-                            } catch (RedisConnectionException e) {
+                            } catch (RedisConnectionException ex) {
                                 // try next nodes
+                                debug warning(ex.msg);
+                                version(HUNT_REDIS_DEBUG) warning(ex);
                             } finally {
                                 if (j !is null) {
                                     j.close();
@@ -172,8 +179,9 @@ class RedisClusterInfoCache {
                         rediscovering = false;      
                     }
                 }
-            } finally {
-                w.unlock();
+            } catch(Exception ex) {
+                debug warning(ex.msg);
+                version(HUNT_REDIS_DEBUG) warning(ex);
             }
         }
     }
@@ -205,8 +213,12 @@ class RedisClusterInfoCache {
 
     private HostAndPort generateHostAndPort(List!(Object) hostInfos) {
         Object info = hostInfos.get(0);
-        String infoBytes = cast(String)info;
-        string host = infoBytes.value();
+
+        Bytes infoBytes = cast(Bytes)info;
+        if(infoBytes is null) {
+            warningf("wrong cast: from %s to %s", typeid(info), typeid(Bytes));
+        }
+        string host = cast(string)infoBytes.value();
         int port = (cast(Long) hostInfos.get(1)).intValue();
         if (ssl && hostAndPortMap !is null) {
             HostAndPort hostAndPort = hostAndPortMap.getSSLHostAndPort(host, port);
@@ -218,7 +230,7 @@ class RedisClusterInfoCache {
     }
 
     RedisPool setupNodeIfNotExist(HostAndPort node) {
-        w.lock();
+        mutex.lock();
         try {
             string nodeKey = getNodeKey(node);
             RedisPool existingPool = nodes.get(nodeKey);
@@ -233,61 +245,61 @@ class RedisClusterInfoCache {
             nodes.put(nodeKey, nodePool);
             return nodePool;
         } finally {
-            w.unlock();
+            mutex.unlock();
         }
     }
 
     void assignSlotToNode(int slot, HostAndPort targetNode) {
-        w.lock();
+        mutex.lock();
         try {
             RedisPool targetPool = setupNodeIfNotExist(targetNode);
             slots.put(slot, targetPool);
         } finally {
-            w.unlock();
+            mutex.unlock();
         }
     }
 
     void assignSlotsToNode(List!(int) targetSlots, HostAndPort targetNode) {
-        w.lock();
+        mutex.lock();
         try {
             RedisPool targetPool = setupNodeIfNotExist(targetNode);
             foreach(int slot ; targetSlots) {
                 slots.put(slot, targetPool);
             }
         } finally {
-            w.unlock();
+            mutex.unlock();
         }
     }
 
     RedisPool getNode(string nodeKey) {
-        r.lock();
+        mutex.lock();
         try {
             return nodes.get(nodeKey);
         } finally {
-            r.unlock();
+            mutex.unlock();
         }
     }
 
     RedisPool getSlotPool(int slot) {
-        r.lock();
+        mutex.lock();
         try {
             return slots.get(slot);
         } finally {
-            r.unlock();
+            mutex.unlock();
         }
     }
 
     Map!(string, RedisPool) getNodes() {
-        r.lock();
+        mutex.lock();
         try {
             return new HashMap!(string, RedisPool)(nodes);
         } finally {
-            r.unlock();
+            mutex.unlock();
         }
     }
 
     List!(RedisPool) getShuffledNodesPool() {
-        r.lock();
+        mutex.lock();
         try {
             List!(RedisPool) pools = new ArrayList!(RedisPool)(nodes.values());
 // TODO: Tasks pending completion -@zxp at 7/17/2019, 10:01:18 AM            
@@ -295,7 +307,7 @@ class RedisClusterInfoCache {
             // Collections.shuffle(pools);
             return pools;
         } finally {
-            r.unlock();
+            mutex.unlock();
         }
     }
 
@@ -303,22 +315,28 @@ class RedisClusterInfoCache {
      * Clear discovered nodes collections and gently release allocated resources
      */
     void reset() {
-        w.lock();
-        try {
-            foreach(RedisPool pool ; nodes.values()) {
-                try {
-                    if (pool !is null) {
-                        pool.destroy();
-                    }
-                } catch (Exception e) {
-                    // pass
-                }
-            }
-            nodes.clear();
-            slots.clear();
-        } finally {
-            w.unlock();
+        mutex.lock();
+        scope(exit) {
+            mutex.unlock();
         }
+        
+        doReset();
+    }
+
+    private void doReset() {
+        foreach(RedisPool pool ; nodes.values()) {
+            try {
+                if (pool !is null) {
+                    pool.destroy();
+                }
+            } catch (Exception ex) {
+                // pass
+                debug warning(ex.msg);
+                version(HUNT_REDIS_DEBUG) warning(ex);                    
+            }
+        }
+        nodes.clear();
+        slots.clear();
     }
 
     static string getNodeKey(HostAndPort hnp) {
