@@ -1,13 +1,14 @@
 import std.stdio;
 import hunt.net.NetUtil;
 
-import GetSetDemo;
+import RedisDemo;
+import RedisClusterDemo;
 import RedisLockDemo;
 
 void main()
 {
-    // GetSetBenchmark.run();
-
-    RedisLockDemo.run();
+    // RedisBenchmark.run();
+    RedisClusterBenchmark.run();
+    // RedisLockDemo.run();
     
 }

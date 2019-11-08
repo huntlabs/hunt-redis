@@ -1,4 +1,4 @@
-module GetSetDemo;
+module RedisDemo;
 
 import hunt.logging.ConsoleLogger;
 import hunt.util.DateTime;
@@ -6,7 +6,7 @@ import hunt.util.DateTime;
 import hunt.redis;
 import std.conv;
 
-class GetSetBenchmark {
+class RedisBenchmark {
     //   private enum int TOTAL_OPERATIONS = 100000;
     private enum int TOTAL_OPERATIONS = 10;
 
