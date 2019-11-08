@@ -27,7 +27,7 @@ interface MultiKeyRedisClusterCommands {
 
     // long unlink(string[] keys...);
 
-    // long exists(string[] keys...);
+    long exists(string[] keys...);
 
     // List!(string) blpop(int timeout, string[] keys...);
 

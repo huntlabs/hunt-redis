@@ -174,78 +174,38 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
 
     override
     string set(string key, string value) {
-        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-        //     override
-        //     string execute(Redis connection) {
-        //         return connection.set(key, value);
-        //     }
-        // }.run(key);
         mixin(ClusterStringCommandTemplate!("set", string, [key.stringof, value.stringof]));
     }
 
     override
     string set(string key, string value, SetParams params) {
-        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-        //     override
-        //     string execute(Redis connection) {
-        //         return connection.set(key, value, params);
-        //     }
-        // }.run(key);
-        
         mixin(ClusterStringCommandTemplate!("set", string, [key.stringof, value.stringof, params.stringof]));
     }
 
     override
     string get(string key) {
-        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-        //     override
-        //     string execute(Redis connection) {
-        //         return connection.get(key);
-        //     }
-        // }.run(key);
-        
         mixin(ClusterStringCommandTemplate!("get", string, [key.stringof]));
     }
 
     // override
-    // Boolean exists(string key) {
-    //     return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
-    //         override
-    //         Boolean execute(Redis connection) {
-    //             return connection.exists(key);
-    //         }
-    //     }.run(key);
+    // bool exists(string key) {
+    //     mixin(ClusterStringCommandTemplate!("exists", bool, [key.stringof]));
     // }
 
-    // override
-    // Long exists(string[] keys...) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.exists(keys);
-    //         }
-    //     }.run(keys.length, keys);
-    // }
+    override
+    long exists(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("exists", long, [keys.stringof]));
+    }
 
     // override
-    // Long persist(string key) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.persist(key);
-    //         }
-    //     }.run(key);
+    // long persist(string key) {
+    //     mixin(ClusterStringCommandTemplate!("persist", long, [key.stringof]));
     // }
 
-    // override
-    // string type(string key) {
-    //     return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-    //         override
-    //         string execute(Redis connection) {
-    //             return connection.type(key);
-    //         }
-    //     }.run(key);
-    // }
+    override
+    string type(string key) {
+        mixin(ClusterStringCommandTemplate!("type", string, [key.stringof]));
+    }
 
     // override
     // byte[] dump(string key) {

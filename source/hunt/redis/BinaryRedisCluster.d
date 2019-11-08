@@ -61,28 +61,6 @@ private template ClusterBinaryCommandTemplate(string name, R, string[] args) {
 }
 
 
-// mixin template RedisClusterCommandTemplate2(string name, R, string[] args) {
-//     import std.format;
-
-//     enum string statementBlock = q{
-//         scope RedisClusterCommand!R command = new class(connectionHandler, maxAttempts) RedisClusterCommand!(R) {
-
-//             this(string connectionHandler, int maxAttempts) {
-//                 super(connectionHandler, maxAttempts);
-//             }
-
-//             override R execute() execute(Redis connection) {
-//                 return connection.%1$s(%2$-(%s, %));
-//             }
-//         };
-
-//         return command.runBinary(%3$s);
-//     }.format(name, args, args[0]);
-
-//     mixin(statementBlock);
-//     // pragma(msg, statementBlock);
-// }
-
 /**
  * 
  */
@@ -165,85 +143,38 @@ class BinaryRedisCluster : BinaryRedisClusterCommands,
 
     override
     string set(const(ubyte)[] key, const(ubyte)[] value) {
-        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-        // override
-        // string execute(Redis connection) {
-        //     return connection.set(key, value);
-        // }
-        // }.runBinary(key);
-
         mixin(ClusterBinaryCommandTemplate!("set", string, [key.stringof, value.stringof]));
     }
 
     override
     string set(const(ubyte)[] key, const(ubyte)[] value, SetParams params) {
-        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-        // override
-        // string execute(Redis connection) {
-        //     return connection.set(key, value, params);
-        // }
-        // }.runBinary(key);
-
         mixin(ClusterBinaryCommandTemplate!("set", string, [key.stringof, value.stringof, params.stringof]));
     }
 
     override
     const(ubyte)[] get(const(ubyte)[] key) {
-        // return new RedisClusterCommand!(const(ubyte)[])(connectionHandler, maxAttempts) {
-        // override
-        // const(ubyte)[] execute(Redis connection) {
-        //     return connection.get(key);
-        // }
-        // }.runBinary(key);
-
         mixin(ClusterBinaryCommandTemplate!("get", const(ubyte)[], [key.stringof]));
     }
 
-    // override
-    // Long exists(const(ubyte)[][] keys...) {
-    //     // return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //     // override
-    //     // Long execute(Redis connection) {
-    //     //     return connection.exists(keys);
-    //     // }
-    //     // }.runBinary(keys.length, keys);
-    //     mixin(ClusterBinaryCommandTemplate!("exists", Long, [keys.stringof]));
-    // }
+    override
+    long exists(const(ubyte)[][] keys...) {
+        mixin(ClusterBinaryCommandTemplate!("exists", long, [keys.stringof]));
+    }
 
     // override
-    // Boolean exists(const(ubyte)[] key) {
-    //     // return new RedisClusterCommand!(Boolean)(connectionHandler, maxAttempts) {
-    //     // override
-    //     // Boolean execute(Redis connection) {
-    //     //     return connection.exists(key);
-    //     // }
-    //     // }.runBinary(key);
-
-    //     mixin(ClusterBinaryCommandTemplate!("exists", Boolean, [key.stringof]));
+    // bool exists(const(ubyte)[] key) {
+    //     mixin(ClusterBinaryCommandTemplate!("exists", bool, [key.stringof]));
     // }
 
-    // override
-    // Long persist(const(ubyte)[] key) {
-    //     // return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //     // override
-    //     // Long execute(Redis connection) {
-    //     //     return connection.persist(key);
-    //     // }
-    //     // }.runBinary(key);
-    //     mixin(ClusterBinaryCommandTemplate!("persist", Long, [key.stringof]));
-    // }
+    override
+    long persist(const(ubyte)[] key) {
+        mixin(ClusterBinaryCommandTemplate!("persist", long, [key.stringof]));
+    }
 
-    // override
-    // string type(const(ubyte)[] key) {
-    //     // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-    //     // override
-    //     // string execute(Redis connection) {
-    //     //     return connection.type(key);
-    //     // }
-    //     // }.runBinary(key);
-
-    //     mixin(ClusterBinaryCommandTemplate!("type", string, [key.stringof]));
-    // }
+    override
+    string type(const(ubyte)[] key) {
+        mixin(ClusterBinaryCommandTemplate!("type", string, [key.stringof]));
+    }
 
     // override
     // const(ubyte)[] dump(const(ubyte)[] key) {

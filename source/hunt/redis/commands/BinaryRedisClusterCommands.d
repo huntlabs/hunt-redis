@@ -43,9 +43,9 @@ interface BinaryRedisClusterCommands {
 
   // bool exists(const(ubyte)[] key);
 
-  // Long persist(const(ubyte)[] key);
+  long persist(const(ubyte)[] key);
 
-  // string type(const(ubyte)[] key);
+  string type(const(ubyte)[] key);
 
   // const(ubyte)[] dump(const(ubyte)[] key);
 

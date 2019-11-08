@@ -47,7 +47,7 @@ interface RedisClusterCommands {
 
     // long persist(string key);
 
-    // string type(string key);
+    string type(string key);
 
     // const(ubyte)[] dump(string key);
 
