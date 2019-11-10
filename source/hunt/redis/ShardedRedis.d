@@ -345,17 +345,17 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     //     return j.hexists(key, field);
     // }
 
-    // override
-    // Long del(string key) {
-    //     Redis j = getShard(key);
-    //     return j.del(key);
-    // }
+    override
+    long del(string[] keys...) {
+        Redis j = getShard(keys[0]);
+        return j.del(keys[0]);
+    }
 
-    // override
-    // Long unlink(string key) {
-    //     Redis j = getShard(key);
-    //     return j.unlink(key);
-    // }
+    override
+    long unlink(string[] keys...) {
+        Redis j = getShard(keys[0]);
+        return j.unlink(keys);
+    }
 
     // override
     // Long hdel(string key, string[] fields...) {

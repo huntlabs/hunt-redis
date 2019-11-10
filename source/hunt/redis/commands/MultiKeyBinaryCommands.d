@@ -22,84 +22,85 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 
+deprecated("Using BinaryRedisCommands instead.")
 interface MultiKeyBinaryCommands {
-  long del(const(ubyte)[][] keys...);
+    long del(const(ubyte)[][] keys...);
 
-  long unlink(const(ubyte)[][] keys...);
+    long unlink(const(ubyte)[][] keys...);
 
-  long exists(const(ubyte)[][] keys...);
+    long exists(const(ubyte)[][] keys...);
 
-  List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
+    List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
 
-  List!(const(ubyte)[]) brpop(int timeout, const(ubyte)[][] keys...);
+    List!(const(ubyte)[]) brpop(int timeout, const(ubyte)[][] keys...);
 
-  List!(const(ubyte)[]) blpop(const(ubyte)[][] args...);
+    List!(const(ubyte)[]) blpop(const(ubyte)[][] args...);
 
-  List!(const(ubyte)[]) brpop(const(ubyte)[][] args...);
+    List!(const(ubyte)[]) brpop(const(ubyte)[][] args...);
 
-  Set!(const(ubyte)[]) keys(const(ubyte)[] pattern);
+    Set!(const(ubyte)[]) keys(const(ubyte)[] pattern);
 
-  List!(const(ubyte)[]) mget(const(ubyte)[][] keys...);
+    List!(const(ubyte)[]) mget(const(ubyte)[][] keys...);
 
-  string mset(const(ubyte)[][] keysvalues...);
+    string mset(const(ubyte)[][] keysvalues...);
 
-  long msetnx(const(ubyte)[][] keysvalues...);
+    long msetnx(const(ubyte)[][] keysvalues...);
 
-  string rename(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+    string rename(const(ubyte)[] oldkey, const(ubyte)[] newkey);
 
-  long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+    long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey);
 
-  const(ubyte)[] rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey);
+    const(ubyte)[] rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey);
 
-  Set!(const(ubyte)[]) sdiff(const(ubyte)[][] keys...);
+    Set!(const(ubyte)[]) sdiff(const(ubyte)[][] keys...);
 
-  long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
 
-  Set!(const(ubyte)[]) sinter(const(ubyte)[][] keys...);
+    Set!(const(ubyte)[]) sinter(const(ubyte)[][] keys...);
 
-  long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
 
-  long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member);
+    long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member);
 
-  long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey);
+    long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey);
 
-  long sort(const(ubyte)[] key, const(ubyte)[] dstkey);
+    long sort(const(ubyte)[] key, const(ubyte)[] dstkey);
 
-  Set!(const(ubyte)[]) sunion(const(ubyte)[][] keys...);
+    Set!(const(ubyte)[]) sunion(const(ubyte)[][] keys...);
 
-  long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
 
-  string watch(const(ubyte)[][] keys...);
+    string watch(const(ubyte)[][] keys...);
 
-  string unwatch();
+    string unwatch();
 
-  long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+    long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
 
-  long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+    long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
 
-  long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+    long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
 
-  long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+    long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
 
-  const(ubyte)[] brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout);
+    const(ubyte)[] brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout);
 
-  long publish(const(ubyte)[] channel, const(ubyte)[] message);
+    long publish(const(ubyte)[] channel, const(ubyte)[] message);
 
-  void subscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] channels...);
+    void subscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] channels...);
 
-  void psubscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] patterns...);
+    void psubscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] patterns...);
 
-  const(ubyte)[] randomBinaryKey();
+    const(ubyte)[] randomBinaryKey();
 
-  long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...);
+    long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...);
 
-  string pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...);
+    string pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...);
 
-  long pfcount(const(ubyte)[][] keys...);
+    long pfcount(const(ubyte)[][] keys...);
 
-  long touch(const(ubyte)[][] keys...);
-  
-  List!(const(ubyte)[]) xread(int count, long block, Map!(const(ubyte)[], const(ubyte)[]) streams);
-  
-  List!(const(ubyte)[]) xreadGroup(const(ubyte)[] groupname, const(ubyte)[] consumer, int count, long block, bool noAck, Map!(const(ubyte)[], const(ubyte)[]) streams);
+    long touch(const(ubyte)[][] keys...);
+    
+    List!(const(ubyte)[]) xread(int count, long block, Map!(const(ubyte)[], const(ubyte)[]) streams);
+    
+    List!(const(ubyte)[]) xreadGroup(const(ubyte)[] groupname, const(ubyte)[] consumer, int count, long block, bool noAck, Map!(const(ubyte)[], const(ubyte)[]) streams);
 }

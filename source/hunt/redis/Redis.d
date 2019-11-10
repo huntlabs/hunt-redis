@@ -66,9 +66,12 @@ import hunt.net.util.HttpURI;
 
 import std.conv;
 
+// MultiKeyCommands,
+
 /**
-*/
-class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
+ * 
+ */
+class Redis : BinaryRedis, RedisCommands, 
         AdvancedRedisCommands, ScriptingCommands, BasicCommands, 
         ClusterCommands, SentinelCommands, ModuleCommands {
 

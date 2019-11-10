@@ -60,10 +60,11 @@ import hunt.Double;
 import std.format;
 import std.range;
 
-
+// MultiKeyBinaryCommands,
 /**
-*/
-class BinaryRedis : BasicCommands, BinaryRedisCommands, MultiKeyBinaryCommands,
+ * 
+ */
+class BinaryRedis : BasicCommands, BinaryRedisCommands, 
         AdvancedBinaryRedisCommands, BinaryScriptingCommands, Closeable {
     protected Client client = null;
     protected Transaction transaction = null;

@@ -11,25 +11,30 @@
  
 module hunt.redis.commands.BinaryRedisCommands;
 
+import hunt.redis.BinaryRedisPubSub;
+import hunt.redis.BitOP;
+import hunt.redis.GeoCoordinate;
+import hunt.redis.GeoRadiusResponse;
+import hunt.redis.GeoUnit;
+import hunt.redis.ListPosition;
+import hunt.redis.params.GeoRadiusParam;
+import hunt.redis.params.SetParams;
+import hunt.redis.params.ZAddParams;
+import hunt.redis.params.ZIncrByParams;
 import hunt.redis.Protocol;
+import hunt.redis.RedisPubSub;
+import hunt.redis.ScanParams;
+import hunt.redis.ScanResult;
+import hunt.redis.SortingParams;
+import hunt.redis.StreamEntry;
+import hunt.redis.StreamEntryID;
+import hunt.redis.Tuple;
+import hunt.redis.ZParams;
 
 import hunt.collection.Collection;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-
-import hunt.redis.GeoCoordinate;
-import hunt.redis.GeoRadiusResponse;
-import hunt.redis.GeoUnit;
-import hunt.redis.ListPosition;
-import hunt.redis.ScanParams;
-import hunt.redis.ScanResult;
-import hunt.redis.SortingParams;
-import hunt.redis.Tuple;
-import hunt.redis.params.GeoRadiusParam;
-import hunt.redis.params.SetParams;
-import hunt.redis.params.ZAddParams;
-import hunt.redis.params.ZIncrByParams;
 
 import hunt.Double;
 
@@ -43,11 +48,81 @@ interface BinaryRedisCommands {
 
     const(ubyte)[] get(const(ubyte)[] key);
 
-    // bool exists(const(ubyte)[] key);
+    // long exists(const(ubyte)[][] keys...);
 
     // long persist(const(ubyte)[] key);
 
     // string type(const(ubyte)[] key);
+
+    // List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
+
+    // List!(const(ubyte)[]) brpop(int timeout, const(ubyte)[][] keys...);
+
+    // List!(const(ubyte)[]) blpop(const(ubyte)[][] args...);
+
+    // List!(const(ubyte)[]) brpop(const(ubyte)[][] args...);
+
+    // Set!(const(ubyte)[]) keys(const(ubyte)[] pattern);
+
+    // List!(const(ubyte)[]) mget(const(ubyte)[][] keys...);
+
+    // string mset(const(ubyte)[][] keysvalues...);
+
+    // long msetnx(const(ubyte)[][] keysvalues...);
+
+    // string rename(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+
+    // long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+
+    // const(ubyte)[] rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey);
+
+    // Set!(const(ubyte)[]) sdiff(const(ubyte)[][] keys...);
+
+    // long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+    // Set!(const(ubyte)[]) sinter(const(ubyte)[][] keys...);
+
+    // long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+    // long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member);
+
+    // Set!(const(ubyte)[]) sunion(const(ubyte)[][] keys...);
+
+    // long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+    // string watch(const(ubyte)[][] keys...);
+
+    // string unwatch();
+
+    // long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+
+    // long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+
+    // long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+
+    // long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+
+    // const(ubyte)[] brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout);
+
+    // long publish(const(ubyte)[] channel, const(ubyte)[] message);
+
+    // void subscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] channels...);
+
+    // void psubscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] patterns...);
+
+    // const(ubyte)[] randomBinaryKey();
+
+    // long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...);
+
+    // string pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...);
+
+    // long pfcount(const(ubyte)[][] keys...);
+
+    // long touch(const(ubyte)[][] keys...);
+    
+    // List!(const(ubyte)[]) xread(int count, long block, Map!(const(ubyte)[], const(ubyte)[]) streams);
+    
+    // List!(const(ubyte)[]) xreadGroup(const(ubyte)[] groupname, const(ubyte)[] consumer, int count, long block, bool noAck, Map!(const(ubyte)[], const(ubyte)[]) streams);
 
     // const(ubyte)[] dump(const(ubyte)[] key);
 
@@ -66,8 +141,6 @@ interface BinaryRedisCommands {
     // long ttl(const(ubyte)[] key);
 
     // long pttl(const(ubyte)[] key);
-
-    // long touch(const(ubyte)[] key);
 
     // bool setbit(const(ubyte)[] key, long offset, bool value);
 
@@ -203,6 +276,10 @@ interface BinaryRedisCommands {
 
     // List!(const(ubyte)[]) sort(const(ubyte)[] key, SortingParams sortingParameters);
 
+    // long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey);
+
+    // long sort(const(ubyte)[] key, const(ubyte)[] dstkey);    
+
     // long zcount(const(ubyte)[] key, double min, double max);
 
     // long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max);
@@ -265,9 +342,9 @@ interface BinaryRedisCommands {
 
     // long rpushx(const(ubyte)[] key, const(ubyte)[][] arg...);
 
-    // long del(const(ubyte)[] key);
+    // long del(const(ubyte)[][] keys...);
 
-    // long unlink(const(ubyte)[] key);
+    // long unlink(const(ubyte)[][] keys...);
 
     // const(ubyte)[] echo(const(ubyte)[] arg);
 
@@ -278,8 +355,6 @@ interface BinaryRedisCommands {
     // long bitcount(const(ubyte)[] key, long start, long end);
 
     // long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
-
-    // long pfcount(const(ubyte)[] key);
 
     // // Geo Commands
 

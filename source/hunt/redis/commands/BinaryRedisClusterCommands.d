@@ -35,23 +35,85 @@ import hunt.Double;
 import hunt.Long;
 
 interface BinaryRedisClusterCommands {
-  string set(const(ubyte)[] key, const(ubyte)[] value);
+    string set(const(ubyte)[] key, const(ubyte)[] value);
 
-  string set(const(ubyte)[] key, const(ubyte)[] value, SetParams params);
+    string set(const(ubyte)[] key, const(ubyte)[] value, SetParams params);
 
-  const(ubyte)[] get(const(ubyte)[] key);
+    const(ubyte)[] get(const(ubyte)[] key);
 
-  // bool exists(const(ubyte)[] key);
+    long exists(const(ubyte)[][] keys...);
 
-  long persist(const(ubyte)[] key);
+    long persist(const(ubyte)[] key);
 
-  string type(const(ubyte)[] key);
+    string type(const(ubyte)[] key);
 
-  // const(ubyte)[] dump(const(ubyte)[] key);
+// List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
 
-  // string restore(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
+// List!(const(ubyte)[]) brpop(int timeout, const(ubyte)[][] keys...);
 
-  // Long expire(const(ubyte)[] key, int seconds);
+// List!(const(ubyte)[]) mget(const(ubyte)[][] keys...);
+
+// string mset(const(ubyte)[][] keysvalues...);
+
+// long msetnx(const(ubyte)[][] keysvalues...);
+
+// string rename(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+
+// long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+
+// const(ubyte)[] rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey);
+
+// Set!(const(ubyte)[]) sdiff(const(ubyte)[][] keys...);
+
+// long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+// Set!(const(ubyte)[]) sinter(const(ubyte)[][] keys...);
+
+// long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+// long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member);
+
+// Set!(const(ubyte)[]) sunion(const(ubyte)[][] keys...);
+
+// long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+
+// long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+
+// long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+
+// long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+
+// long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+
+// const(ubyte)[] brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout);
+
+// long publish(const(ubyte)[] channel, const(ubyte)[] message);
+
+// void subscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] channels...);
+
+// void psubscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] patterns...);
+
+// long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...);
+
+// string pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...);
+
+// long pfcount(const(ubyte)[][] keys...);
+
+// long touch(const(ubyte)[][] keys...);
+
+// ScanResult!(const(ubyte)[]) scan(const(ubyte)[] cursor, ScanParams params);
+
+// Set!(const(ubyte)[]) keys(const(ubyte)[] pattern);
+
+// List!(const(ubyte)[]) xread(int count, long block, Map!(const(ubyte)[], const(ubyte)[]) streams);
+
+// List!(const(ubyte)[]) xreadGroup(const(ubyte)[] groupname, const(ubyte)[] consumer, int count, long block, bool noAck, Map!(const(ubyte)[], const(ubyte)[]) streams);
+
+// const(ubyte)[] dump(const(ubyte)[] key);
+
+// string restore(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
+
+// Long expire(const(ubyte)[] key, int seconds);
 
 //   Long pexpire(const(ubyte)[] key, long milliseconds);
 
@@ -62,8 +124,6 @@ interface BinaryRedisClusterCommands {
 //   Long ttl(const(ubyte)[] key);
 
 //   Long pttl(const(ubyte)[] key);
-
-//   Long touch(const(ubyte)[] key);
 
 //   bool setbit(const(ubyte)[] key, long offset, bool value);
 
@@ -199,6 +259,10 @@ interface BinaryRedisClusterCommands {
 
 //   List!(const(ubyte)[]) sort(const(ubyte)[] key, SortingParams sortingParameters);
 
+// long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey);
+
+// long sort(const(ubyte)[] key, const(ubyte)[] dstkey);
+
 //   Long zcount(const(ubyte)[] key, double min, double max);
 
 //   Long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max);
@@ -261,9 +325,9 @@ interface BinaryRedisClusterCommands {
 
 //   Long rpushx(const(ubyte)[] key, const(ubyte)[][] arg...);
 
-//   Long del(const(ubyte)[] key);
+//   long del(const(ubyte)[][] keys...);
 
-//   Long unlink(const(ubyte)[] key);
+//   long unlink(const(ubyte)[][] keys...);
 
 //   const(ubyte)[] echo(const(ubyte)[] arg);
 
@@ -272,8 +336,6 @@ interface BinaryRedisClusterCommands {
 //   Long bitcount(const(ubyte)[] key, long start, long end);
 
 //   Long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
-
-//   long pfcount(const(ubyte)[] key);
 
 //   // Geo Commands
 
@@ -330,7 +392,7 @@ interface BinaryRedisClusterCommands {
 //    * @return 
 //    */
 //   List!(Long) bitfield(const(ubyte)[] key, const(ubyte)[][] arguments...);
-  
+    
 //   /**
 //    * Used for HSTRLEN Redis command
 //    * @param key 
@@ -338,7 +400,7 @@ interface BinaryRedisClusterCommands {
 //    * @return 
 //    */
 //   Long hstrlen(const(ubyte)[] key, const(ubyte)[] field);
-  
+    
 //   const(ubyte)[] xadd(const(ubyte)[] key, const(ubyte)[] id, Map!(const(ubyte)[], const(ubyte)[]) hash, long maxLen, bool approximateLength);
 
 //   Long xlen(const(ubyte)[] key);

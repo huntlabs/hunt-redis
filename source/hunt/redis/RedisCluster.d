@@ -24,7 +24,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.commands.RedisClusterCommands;
 import hunt.redis.commands.RedisClusterScriptingCommands;
-import hunt.redis.commands.MultiKeyRedisClusterCommands;
+// import hunt.redis.commands.MultiKeyRedisClusterCommands;
 import hunt.redis.util.RedisClusterHashTagUtil;
 import hunt.redis.util.KeyMergeUtil;
 
@@ -61,8 +61,8 @@ private template ClusterStringCommandTemplate(string name, R, string[] args) {
 /**
  * 
  */
-class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
-        MultiKeyRedisClusterCommands, RedisClusterScriptingCommands {
+class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScriptingCommands {
+    // MultiKeyRedisClusterCommands,
 
     this(HostAndPort node) {
         this(Collections.singleton(node));

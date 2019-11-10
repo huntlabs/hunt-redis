@@ -64,8 +64,8 @@ private template ClusterBinaryCommandTemplate(string name, R, string[] args) {
 /**
  * 
  */
-class BinaryRedisCluster : BinaryRedisClusterCommands,
-    MultiKeyBinaryRedisClusterCommands, RedisClusterBinaryScriptingCommands, Closeable {
+class BinaryRedisCluster : BinaryRedisClusterCommands, RedisClusterBinaryScriptingCommands, Closeable {
+    // MultiKeyBinaryRedisClusterCommands,
 
     enum int HASHSLOTS = 16384;
     protected enum int DEFAULT_TIMEOUT = 2000;

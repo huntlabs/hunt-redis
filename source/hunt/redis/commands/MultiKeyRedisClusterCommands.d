@@ -21,7 +21,7 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Set;
 
-
+deprecated("Using RedisClusterCommands instead.")
 interface MultiKeyRedisClusterCommands {
     // long del(string[] keys...);
 
