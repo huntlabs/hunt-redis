@@ -24,7 +24,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.commands.RedisClusterCommands;
 import hunt.redis.commands.RedisClusterScriptingCommands;
-// import hunt.redis.commands.MultiKeyRedisClusterCommands;
+import hunt.redis.commands.MultiKeyRedisClusterCommands;
 import hunt.redis.util.RedisClusterHashTagUtil;
 import hunt.redis.util.KeyMergeUtil;
 
@@ -61,8 +61,8 @@ private template ClusterStringCommandTemplate(string name, R, string[] args) {
 /**
  * 
  */
-class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScriptingCommands {
-    // MultiKeyRedisClusterCommands,
+class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
+         MultiKeyRedisClusterCommands, RedisClusterScriptingCommands {
 
     this(HostAndPort node) {
         this(Collections.singleton(node));
@@ -187,20 +187,21 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScrip
         mixin(ClusterStringCommandTemplate!("get", string, [key.stringof]));
     }
 
-    // override
-    // bool exists(string key) {
-    //     mixin(ClusterStringCommandTemplate!("exists", bool, [key.stringof]));
-    // }
+    override
+    bool exists(string key) {
+        mixin(ClusterStringCommandTemplate!("exists", bool, [key.stringof]));
+    }
 
     override
     long exists(string[] keys...) {
         mixin(ClusterStringCommandTemplate!("exists", long, [keys.stringof]));
     }
+    alias exists = BinaryRedisCluster.exists;
 
-    // override
-    // long persist(string key) {
-    //     mixin(ClusterStringCommandTemplate!("persist", long, [key.stringof]));
-    // }
+    override
+    long persist(string key) {
+        mixin(ClusterStringCommandTemplate!("persist", long, [key.stringof]));
+    }
 
     override
     string type(string key) {
@@ -1280,35 +1281,27 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScrip
     //     }.run(key);
     // }
 
-    // override
-    // Long del(string key) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.del(key);
-    //         }
-    //     }.run(key);
-    // }
+    override
+    long del(string key) {
+        mixin(ClusterStringCommandTemplate!("del", long, [key.stringof]));
+    }
 
-    // override
-    // Long unlink(string key) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.unlink(key);
-    //         }
-    //     }.run(key);
-    // }
+    override
+    long del(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("del", long, [keys.stringof]));
+    }
+    alias del = BinaryRedisCluster.del;
 
-    // override
-    // Long unlink(string[] keys...) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.unlink(keys);
-    //         }
-    //     }.run(keys.length, keys);
-    // }
+    override
+    long unlink(string key) {
+        mixin(ClusterStringCommandTemplate!("unlink", long, [key.stringof]));
+    }
+
+    override
+    long unlink(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("unlink", long, [keys.stringof]));
+    }
+    alias unlink = BinaryRedisCluster.unlink;
 
     // override
     // string echo(string string) {
@@ -1454,16 +1447,6 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScrip
     // }
 
     // override
-    // Long del(string[] keys...) {
-    //     return new RedisClusterCommand!(Long)(connectionHandler, maxAttempts) {
-    //         override
-    //         Long execute(Redis connection) {
-    //             return connection.del(keys);
-    //         }
-    //     }.run(keys.length, keys);
-    // }
-
-    // override
     // List!(string) blpop(int timeout, string[] keys...) {
     //     return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
     //         override
@@ -1484,31 +1467,35 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands, RedisClusterScrip
     //     }.run(keys.length, keys);
     // }
 
-    // override
-    // List!(string) mget(string[] keys...) {
-    //     return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
-    //         override
-    //         List!(string) execute(Redis connection) {
-    //             return connection.mget(keys);
-    //         }
-    //     }.run(keys.length, keys);
-    // }
+    override
+    List!(string) mget(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("mget", List!(string), [keys.stringof]));
+        // return new RedisClusterCommand!(List!(string))(connectionHandler, maxAttempts) {
+        //     override
+        //     List!(string) execute(Redis connection) {
+        //         return connection.mget(keys);
+        //     }
+        // }.run(keys.length, keys);
+    }
 
-    // override
-    // string mset(string[] keysvalues...) {
-    //     string[] keys = new string[keysvalues.length / 2];
+    override
+    string mset(string[] keysvalues...) {
+        string[] keys = new string[keysvalues.length / 2];
 
-    //     for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
-    //         keys[keyIdx] = keysvalues[keyIdx * 2];
-    //     }
+        for (int keyIdx = 0; keyIdx < keys.length; keyIdx++) {
+            
+            keys[keyIdx] = keysvalues[keyIdx * 2];
+        }
+        
+        mixin(ClusterStringCommandTemplate!("mset", string, [keys.stringof]));
 
-    //     return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
-    //         override
-    //         string execute(Redis connection) {
-    //             return connection.mset(keysvalues);
-    //         }
-    //     }.run(keys.length, keys);
-    // }
+        // return new RedisClusterCommand!(string)(connectionHandler, maxAttempts) {
+        //     override
+        //     string execute(Redis connection) {
+        //         return connection.mset(keysvalues);
+        //     }
+        // }.run(keys.length, keys);
+    }
 
     // override
     // Long msetnx(string[] keysvalues...) {

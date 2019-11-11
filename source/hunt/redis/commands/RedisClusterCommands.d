@@ -42,64 +42,12 @@ interface RedisClusterCommands {
     string set(string key, string value, SetParams params);
 
     string get(string key);
-    // List!(string) mget(string[] keys...);
-    // string mset(string[] keysvalues...);
 
-    long exists(string[] keys...);
+    bool exists(string key);
 
-    // long persist(string key);
+    long persist(string key);
 
     string type(string key);
-
-    // long msetnx(string[] keysvalues...);
-
-    // string rename(string oldkey, string newkey);
-
-    // long renamenx(string oldkey, string newkey);
-
-    // string rpoplpush(string srckey, string dstkey);
-
-    // Set!(string) sdiff(string[] keys...);
-
-    // long sdiffstore(string dstkey, string[] keys...);
-
-    // Set!(string) sinter(string[] keys...);
-
-    // long sinterstore(string dstkey, string[] keys...);
-
-    // long smove(string srckey, string dstkey, string member);
-
-    // Set!(string) sunion(string[] keys...);
-
-    // long sunionstore(string dstkey, string[] keys...);
-
-    // long zinterstore(string dstkey, string[] sets...);
-
-    // long zinterstore(string dstkey, ZParams params, string[] sets...);
-
-    // long zunionstore(string dstkey, string[] sets...);
-
-    // long zunionstore(string dstkey, ZParams params, string[] sets...);
-
-    // string brpoplpush(string source, string destination, int timeout);
-
-    // long publish(string channel, string message);
-
-    // void subscribe(RedisPubSub redisPubSub, string[] channels...);
-
-    // void psubscribe(RedisPubSub redisPubSub, string[] patterns...);
-
-    // long bitop(BitOP op, string destKey, string[] srcKeys...);
-
-    // string pfmerge(string destkey, string[] sourcekeys...);
-
-    // long pfcount(string[] keys...);
-
-    // long touch(string[] keys...);
-
-    // ScanResult!(string) scan(string cursor, ScanParams params);
-
-    // Set!(string) keys(string pattern);
 
     // const(ubyte)[] dump(string key);
 
@@ -116,6 +64,8 @@ interface RedisClusterCommands {
     // long ttl(string key);
 
     // long pttl(string key);
+
+    // long touch(string key);
 
     // bool setbit(string key, long offset, bool value);
 
@@ -249,10 +199,6 @@ interface RedisClusterCommands {
 
     // List!(string) sort(string key, SortingParams sortingParameters);
 
-    // long sort(string key, SortingParams sortingParameters, string dstkey);
-
-    // long sort(string key, string dstkey);
-
     // long zcount(string key, double min, double max);
 
     // long zcount(string key, string min, string max);
@@ -313,13 +259,13 @@ interface RedisClusterCommands {
 
     // long rpushx(string key, string[] string...);
 
-    // List!(string) blpop(int timeout, string[] keys...);
+    // List!(string) blpop(int timeout, string key);
 
-    // List!(string) brpop(int timeout, string[] keys...);
+    // List!(string) brpop(int timeout, string key);
 
-    // long del(string[] keys...);
+    long del(string key);
 
-    // long unlink(string[] keys...);
+    long unlink(string key);
 
     // string echo(string string);
 
@@ -335,6 +281,7 @@ interface RedisClusterCommands {
 
     // long pfadd(string key, string[] elements...);
 
+    // long pfcount(string key);
 
     // // Geo Commands
 

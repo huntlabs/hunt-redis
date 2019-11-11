@@ -57,11 +57,10 @@ import hunt.collection.Set;
 
 import hunt.Boolean;
 import hunt.Double;
-import hunt.Long;
+// import hunt.long;
 
 import std.regex;
 alias Pattern = Regex!char;
-
 
 class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
 
@@ -101,98 +100,98 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
         return j.get(key);
     }
 
-    // override
-    // string echo(string string) {
-    //     Redis j = getShard(string);
-    //     return j.echo(string);
-    // }
+    override
+    string echo(string string) {
+        Redis j = getShard(string);
+        return j.echo(string);
+    }
+
+    override
+    bool exists(string key) {
+        Redis j = getShard(key);
+        return j.exists(key);
+    }
+
+    override
+    string type(string key) {
+        Redis j = getShard(key);
+        return j.type(key);
+    }
+
+    override
+    const(ubyte)[] dump(string key) {
+        Redis j = getShard(key);
+        return j.dump(key);
+    }
+
+    override
+    string restore(string key, int ttl, const(ubyte)[] serializedValue) {
+        Redis j = getShard(key);
+        return j.restore(key, ttl, serializedValue);
+    }
+
+    override
+    string restoreReplace(string key, int ttl, const(ubyte)[] serializedValue) {
+        Redis j = getShard(key);
+        return j.restoreReplace(key, ttl, serializedValue);
+    }
+
+    override
+    long expire(string key, int seconds) {
+        Redis j = getShard(key);
+        return j.expire(key, seconds);
+    }
+
+    override
+    long pexpire(string key, long milliseconds) {
+        Redis j = getShard(key);
+        return j.pexpire(key, milliseconds);
+    }
+
+    override
+    long expireAt(string key, long unixTime) {
+        Redis j = getShard(key);
+        return j.expireAt(key, unixTime);
+    }
+
+    override
+    long pexpireAt(string key, long millisecondsTimestamp) {
+        Redis j = getShard(key);
+        return j.pexpireAt(key, millisecondsTimestamp);
+    }
+
+    override
+    long ttl(string key) {
+        Redis j = getShard(key);
+        return j.ttl(key);
+    }
+
+    override
+    long pttl(string key) {
+        Redis j = getShard(key);
+        return j.pttl(key);
+    }
+
+    override
+    bool setbit(string key, long offset, bool value) {
+        Redis j = getShard(key);
+        return j.setbit(key, offset, value);
+    }
+
+    override
+    bool setbit(string key, long offset, string value) {
+        Redis j = getShard(key);
+        return j.setbit(key, offset, value);
+    }
+
+    override
+    bool getbit(string key, long offset) {
+        Redis j = getShard(key);
+        return j.getbit(key, offset);
+    }
 
     // override
-    // Boolean exists(string key) {
-    //     Redis j = getShard(key);
-    //     return j.exists(key);
-    // }
-
-    // override
-    // string type(string key) {
-    //     Redis j = getShard(key);
-    //     return j.type(key);
-    // }
-
-    // override
-    // byte[] dump(string key) {
-    //     Redis j = getShard(key);
-    //     return j.dump(key);
-    // }
-
-    // override
-    // string restore(string key, int ttl, byte[] serializedValue) {
-    //     Redis j = getShard(key);
-    //     return j.restore(key, ttl, serializedValue);
-    // }
-
-    // override
-    // string restoreReplace(string key, int ttl, byte[] serializedValue) {
-    //     Redis j = getShard(key);
-    //     return j.restoreReplace(key, ttl, serializedValue);
-    // }
-
-    // override
-    // Long expire(string key, int seconds) {
-    //     Redis j = getShard(key);
-    //     return j.expire(key, seconds);
-    // }
-
-    // override
-    // Long pexpire(string key, long milliseconds) {
-    //     Redis j = getShard(key);
-    //     return j.pexpire(key, milliseconds);
-    // }
-
-    // override
-    // Long expireAt(string key, long unixTime) {
-    //     Redis j = getShard(key);
-    //     return j.expireAt(key, unixTime);
-    // }
-
-    // override
-    // Long pexpireAt(string key, long millisecondsTimestamp) {
-    //     Redis j = getShard(key);
-    //     return j.pexpireAt(key, millisecondsTimestamp);
-    // }
-
-    // override
-    // Long ttl(string key) {
-    //     Redis j = getShard(key);
-    //     return j.ttl(key);
-    // }
-
-    // override
-    // Long pttl(string key) {
-    //     Redis j = getShard(key);
-    //     return j.pttl(key);
-    // }
-
-    // override
-    // bool setbit(string key, long offset, bool value) {
-    //     Redis j = getShard(key);
-    //     return j.setbit(key, offset, value);
-    // }
-
-    // override
-    // bool setbit(string key, long offset, string value) {
-    //     Redis j = getShard(key);
-    //     return j.setbit(key, offset, value);
-    // }
-
-    // override
-    // bool getbit(string key, long offset) {
-    //     Redis j = getShard(key);
-    //     return j.getbit(key, offset);
-    // }
-
-    // override
-    // Long setrange(string key, long offset, string value) {
+    // long setrange(string key, long offset, string value) {
     //     Redis j = getShard(key);
     //     return j.setrange(key, offset, value);
     // }
@@ -210,7 +209,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long setnx(string key, string value) {
+    // long setnx(string key, string value) {
     //     Redis j = getShard(key);
     //     return j.setnx(key, value);
     // }
@@ -250,19 +249,19 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long decrBy(string key, long decrement) {
+    // long decrBy(string key, long decrement) {
     //     Redis j = getShard(key);
     //     return j.decrBy(key, decrement);
     // }
 
     // override
-    // Long decr(string key) {
+    // long decr(string key) {
     //     Redis j = getShard(key);
     //     return j.decr(key);
     // }
 
     // override
-    // Long incrBy(string key, long increment) {
+    // long incrBy(string key, long increment) {
     //     Redis j = getShard(key);
     //     return j.incrBy(key, increment);
     // }
@@ -274,13 +273,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long incr(string key) {
+    // long incr(string key) {
     //     Redis j = getShard(key);
     //     return j.incr(key);
     // }
 
     // override
-    // Long append(string key, string value) {
+    // long append(string key, string value) {
     //     Redis j = getShard(key);
     //     return j.append(key, value);
     // }
@@ -292,13 +291,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long hset(string key, string field, string value) {
+    // long hset(string key, string field, string value) {
     //     Redis j = getShard(key);
     //     return j.hset(key, field, value);
     // }
 
     // override
-    // Long hset(string key, Map!(string, string) hash) {
+    // long hset(string key, Map!(string, string) hash) {
     //     Redis j = getShard(key);
     //     return j.hset(key, hash);
     // }
@@ -310,7 +309,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long hsetnx(string key, string field, string value) {
+    // long hsetnx(string key, string field, string value) {
     //     Redis j = getShard(key);
     //     return j.hsetnx(key, field, value);
     // }
@@ -328,7 +327,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long hincrBy(string key, string field, long value) {
+    // long hincrBy(string key, string field, long value) {
     //     Redis j = getShard(key);
     //     return j.hincrBy(key, field, value);
     // }
@@ -346,25 +345,25 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     override
-    long del(string[] keys...) {
-        Redis j = getShard(keys[0]);
-        return j.del(keys[0]);
+    long del(string key) {
+        Redis j = getShard(key);
+        return j.del(key);
     }
 
     override
-    long unlink(string[] keys...) {
-        Redis j = getShard(keys[0]);
-        return j.unlink(keys);
+    long unlink(string key) {
+        Redis j = getShard(key);
+        return j.unlink(key);
     }
 
     // override
-    // Long hdel(string key, string[] fields...) {
+    // long hdel(string key, string[] fields...) {
     //     Redis j = getShard(key);
     //     return j.hdel(key, fields);
     // }
 
     // override
-    // Long hlen(string key) {
+    // long hlen(string key) {
     //     Redis j = getShard(key);
     //     return j.hlen(key);
     // }
@@ -388,49 +387,49 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long rpush(string key, string[] strings...) {
+    // long rpush(string key, string[] strings...) {
     //     Redis j = getShard(key);
     //     return j.rpush(key, strings);
     // }
 
     // override
-    // Long lpush(string key, string[] strings...) {
+    // long lpush(string key, string[] strings...) {
     //     Redis j = getShard(key);
     //     return j.lpush(key, strings);
     // }
 
     // override
-    // Long lpushx(string key, string[] string...) {
+    // long lpushx(string key, string[] string...) {
     //     Redis j = getShard(key);
     //     return j.lpushx(key, string);
     // }
 
-    // override
-    // Long strlen(string key) {
-    //     Redis j = getShard(key);
-    //     return j.strlen(key);
-    // }
+    override
+    long strlen(string key) {
+        Redis j = getShard(key);
+        return j.strlen(key);
+    }
+
+    override
+    long move(string key, int dbIndex) {
+        Redis j = getShard(key);
+        return j.move(key, dbIndex);
+    }
 
     // override
-    // Long move(string key, int dbIndex) {
-    //     Redis j = getShard(key);
-    //     return j.move(key, dbIndex);
-    // }
-
-    // override
-    // Long rpushx(string key, string[] string...) {
+    // long rpushx(string key, string[] string...) {
     //     Redis j = getShard(key);
     //     return j.rpushx(key, string);
     // }
 
-    // override
-    // Long persist(string key) {
-    //     Redis j = getShard(key);
-    //     return j.persist(key);
-    // }
+    override
+    long persist(string key) {
+        Redis j = getShard(key);
+        return j.persist(key);
+    }
 
     // override
-    // Long llen(string key) {
+    // long llen(string key) {
     //     Redis j = getShard(key);
     //     return j.llen(key);
     // }
@@ -460,7 +459,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long lrem(string key, long count, string value) {
+    // long lrem(string key, long count, string value) {
     //     Redis j = getShard(key);
     //     return j.lrem(key, count, value);
     // }
@@ -478,7 +477,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long sadd(string key, string[] members...) {
+    // long sadd(string key, string[] members...) {
     //     Redis j = getShard(key);
     //     return j.sadd(key, members);
     // }
@@ -490,7 +489,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long srem(string key, string[] members...) {
+    // long srem(string key, string[] members...) {
     //     Redis j = getShard(key);
     //     return j.srem(key, members);
     // }
@@ -508,7 +507,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long scard(string key) {
+    // long scard(string key) {
     //     Redis j = getShard(key);
     //     return j.scard(key);
     // }
@@ -532,25 +531,25 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zadd(string key, double score, string member) {
+    // long zadd(string key, double score, string member) {
     //     Redis j = getShard(key);
     //     return j.zadd(key, score, member);
     // }
 
     // override
-    // Long zadd(string key, double score, string member, ZAddParams params) {
+    // long zadd(string key, double score, string member, ZAddParams params) {
     //     Redis j = getShard(key);
     //     return j.zadd(key, score, member, params);
     // }
 
     // override
-    // Long zadd(string key, Map!(string, Double) scoreMembers) {
+    // long zadd(string key, Map!(string, Double) scoreMembers) {
     //     Redis j = getShard(key);
     //     return j.zadd(key, scoreMembers);
     // }
 
     // override
-    // Long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
+    // long zadd(string key, Map!(string, Double) scoreMembers, ZAddParams params) {
     //     Redis j = getShard(key);
     //     return j.zadd(key, scoreMembers, params);
     // }
@@ -562,7 +561,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zrem(string key, string[] members...) {
+    // long zrem(string key, string[] members...) {
     //     Redis j = getShard(key);
     //     return j.zrem(key, members);
     // }
@@ -580,13 +579,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zrank(string key, string member) {
+    // long zrank(string key, string member) {
     //     Redis j = getShard(key);
     //     return j.zrank(key, member);
     // }
 
     // override
-    // Long zrevrank(string key, string member) {
+    // long zrevrank(string key, string member) {
     //     Redis j = getShard(key);
     //     return j.zrevrank(key, member);
     // }
@@ -610,7 +609,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zcard(string key) {
+    // long zcard(string key) {
     //     Redis j = getShard(key);
     //     return j.zcard(key);
     // }
@@ -634,13 +633,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zcount(string key, double min, double max) {
+    // long zcount(string key, double min, double max) {
     //     Redis j = getShard(key);
     //     return j.zcount(key, min, max);
     // }
 
     // override
-    // Long zcount(string key, string min, string max) {
+    // long zcount(string key, string min, string max) {
     //     Redis j = getShard(key);
     //     return j.zcount(key, min, max);
     // }
@@ -746,25 +745,25 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zremrangeByRank(string key, long start, long stop) {
+    // long zremrangeByRank(string key, long start, long stop) {
     //     Redis j = getShard(key);
     //     return j.zremrangeByRank(key, start, stop);
     // }
 
     // override
-    // Long zremrangeByScore(string key, double min, double max) {
+    // long zremrangeByScore(string key, double min, double max) {
     //     Redis j = getShard(key);
     //     return j.zremrangeByScore(key, min, max);
     // }
 
     // override
-    // Long zremrangeByScore(string key, string min, string max) {
+    // long zremrangeByScore(string key, string min, string max) {
     //     Redis j = getShard(key);
     //     return j.zremrangeByScore(key, min, max);
     // }
 
     // override
-    // Long zlexcount(string key, string min, string max) {
+    // long zlexcount(string key, string min, string max) {
     //     return getShard(key).zlexcount(key, min, max);
     // }
 
@@ -790,36 +789,36 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long zremrangeByLex(string key, string min, string max) {
+    // long zremrangeByLex(string key, string min, string max) {
     //     return getShard(key).zremrangeByLex(key, min, max);
     // }
 
     // override
-    // Long linsert(string key, ListPosition where, string pivot, string value) {
+    // long linsert(string key, ListPosition where, string pivot, string value) {
     //     Redis j = getShard(key);
     //     return j.linsert(key, where, pivot, value);
     // }
 
-    // override
-    // Long bitcount(string key) {
-    //     Redis j = getShard(key);
-    //     return j.bitcount(key);
-    // }
+    override
+    long bitcount(string key) {
+        Redis j = getShard(key);
+        return j.bitcount(key);
+    }
+
+    override
+    long bitcount(string key, long start, long end) {
+        Redis j = getShard(key);
+        return j.bitcount(key, start, end);
+    }
 
     // override
-    // Long bitcount(string key, long start, long end) {
-    //     Redis j = getShard(key);
-    //     return j.bitcount(key, start, end);
-    // }
-
-    // override
-    // Long bitpos(string key, bool value) {
+    // long bitpos(string key, bool value) {
     //     Redis j = getShard(key);
     //     return j.bitpos(key, value);
     // }
 
     // override
-    // Long bitpos(string key, bool value, BitPosParams params) {
+    // long bitpos(string key, bool value, BitPosParams params) {
     //     Redis j = getShard(key);
     //     return j.bitpos(key, value, params);
     // }
@@ -894,32 +893,32 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
         }
     }
 
-    // override
-    // long pfadd(string key, string[] elements...) {
-    //     Redis j = getShard(key);
-    //     return j.pfadd(key, elements);
-    // }
+    override
+    long pfadd(string key, string[] elements...) {
+        Redis j = getShard(key);
+        return j.pfadd(key, elements);
+    }
+
+    override
+    long pfcount(string key) {
+        Redis j = getShard(key);
+        return j.pfcount(key);
+    }
+
+    override
+    long touch(string key) {
+        Redis j = getShard(key);
+        return j.touch(key);
+    }
 
     // override
-    // long pfcount(string key) {
-    //     Redis j = getShard(key);
-    //     return j.pfcount(key);
-    // }
-
-    // override
-    // Long touch(string key) {
-    //     Redis j = getShard(key);
-    //     return j.touch(key);
-    // }
-
-    // override
-    // Long geoadd(string key, double longitude, double latitude, string member) {
+    // long geoadd(string key, double longitude, double latitude, string member) {
     //     Redis j = getShard(key);
     //     return j.geoadd(key, longitude, latitude, member);
     // }
 
     // override
-    // Long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
+    // long geoadd(string key, Map!(string, GeoCoordinate) memberCoordinateMap) {
     //     Redis j = getShard(key);
     //     return j.geoadd(key, memberCoordinateMap);
     // }
@@ -1005,13 +1004,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // List!(Long) bitfield(string key, string[] arguments...) {
+    // List!(long) bitfield(string key, string[] arguments...) {
     //     Redis j = getShard(key);
     //     return j.bitfield(key, arguments);
     // }
 
     // override
-    // Long hstrlen(string key, string field) {
+    // long hstrlen(string key, string field) {
     //     Redis j = getShard(key);
     //     return j.hstrlen(key, field);
     // }
@@ -1029,7 +1028,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     // override
-    // Long xlen(string key) {
+    // long xlen(string key) {
     //     Redis j = getShard(key);
     //     return j.xlen(key);
     // }

@@ -21,11 +21,10 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Set;
 
-deprecated("Using RedisClusterCommands instead.")
 interface MultiKeyRedisClusterCommands {
-    // long del(string[] keys...);
+    long del(string[] keys...);
 
-    // long unlink(string[] keys...);
+    long unlink(string[] keys...);
 
     long exists(string[] keys...);
 
@@ -33,9 +32,9 @@ interface MultiKeyRedisClusterCommands {
 
     // List!(string) brpop(int timeout, string[] keys...);
 
-    // List!(string) mget(string[] keys...);
+    List!(string) mget(string[] keys...);
 
-    // string mset(string[] keysvalues...);
+    string mset(string[] keysvalues...);
 
     // long msetnx(string[] keysvalues...);
 

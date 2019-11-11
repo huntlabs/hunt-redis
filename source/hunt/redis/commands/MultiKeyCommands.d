@@ -23,9 +23,7 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-// import hunt.Long;
 
-deprecated("Using BinaryRedisCommands instead.")
 interface MultiKeyCommands {
     long del(string[] keys...);
 

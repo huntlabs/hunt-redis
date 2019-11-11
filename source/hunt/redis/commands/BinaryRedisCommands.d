@@ -48,125 +48,57 @@ interface BinaryRedisCommands {
 
     const(ubyte)[] get(const(ubyte)[] key);
 
-    // long exists(const(ubyte)[][] keys...);
+    bool exists(const(ubyte)[] key);
 
-    // long persist(const(ubyte)[] key);
+    long persist(const(ubyte)[] key);
 
-    // string type(const(ubyte)[] key);
+    string type(const(ubyte)[] key);
 
-    // List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
+    const(ubyte)[] dump(const(ubyte)[] key);
 
-    // List!(const(ubyte)[]) brpop(int timeout, const(ubyte)[][] keys...);
+    string restore(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
 
-    // List!(const(ubyte)[]) blpop(const(ubyte)[][] args...);
+    string restoreReplace(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
 
-    // List!(const(ubyte)[]) brpop(const(ubyte)[][] args...);
+    long expire(const(ubyte)[] key, int seconds);
 
-    // Set!(const(ubyte)[]) keys(const(ubyte)[] pattern);
+    long pexpire(const(ubyte)[] key, long milliseconds);
 
-    // List!(const(ubyte)[]) mget(const(ubyte)[][] keys...);
+    long expireAt(const(ubyte)[] key, long unixTime);
 
-    // string mset(const(ubyte)[][] keysvalues...);
+    long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp);
 
-    // long msetnx(const(ubyte)[][] keysvalues...);
+    long ttl(const(ubyte)[] key);
 
-    // string rename(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+    long pttl(const(ubyte)[] key);
 
-    // long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey);
+    long touch(const(ubyte)[] key);
 
-    // const(ubyte)[] rpoplpush(const(ubyte)[] srckey, const(ubyte)[] dstkey);
+    bool setbit(const(ubyte)[] key, long offset, bool value);
 
-    // Set!(const(ubyte)[]) sdiff(const(ubyte)[][] keys...);
+    bool setbit(const(ubyte)[] key, long offset, const(ubyte)[] value);
 
-    // long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    bool getbit(const(ubyte)[] key, long offset);
 
-    // Set!(const(ubyte)[]) sinter(const(ubyte)[][] keys...);
+    long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value);
 
-    // long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    const(ubyte)[] getrange(const(ubyte)[] key, long startOffset, long endOffset);
 
-    // long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member);
+    const(ubyte)[] getSet(const(ubyte)[] key, const(ubyte)[] value);
 
-    // Set!(const(ubyte)[]) sunion(const(ubyte)[][] keys...);
+    long setnx(const(ubyte)[] key, const(ubyte)[] value);
 
-    // long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...);
+    string setex(const(ubyte)[] key, int seconds, const(ubyte)[] value);
 
-    // string watch(const(ubyte)[][] keys...);
+    string psetex(const(ubyte)[] key, long milliseconds, const(ubyte)[] value);
 
-    // string unwatch();
+    long decrBy(const(ubyte)[] key, long decrement);
 
-    // long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
+    long decr(const(ubyte)[] key);
 
-    // long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
+    long incrBy(const(ubyte)[] key, long increment);
 
-    // long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...);
-
-    // long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...);
-
-    // const(ubyte)[] brpoplpush(const(ubyte)[] source, const(ubyte)[] destination, int timeout);
-
-    // long publish(const(ubyte)[] channel, const(ubyte)[] message);
-
-    // void subscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] channels...);
-
-    // void psubscribe(BinaryRedisPubSub jedisPubSub, const(ubyte)[][] patterns...);
-
-    // const(ubyte)[] randomBinaryKey();
-
-    // long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...);
-
-    // string pfmerge(const(ubyte)[] destkey, const(ubyte)[][] sourcekeys...);
-
-    // long pfcount(const(ubyte)[][] keys...);
-
-    // long touch(const(ubyte)[][] keys...);
-    
-    // List!(const(ubyte)[]) xread(int count, long block, Map!(const(ubyte)[], const(ubyte)[]) streams);
-    
-    // List!(const(ubyte)[]) xreadGroup(const(ubyte)[] groupname, const(ubyte)[] consumer, int count, long block, bool noAck, Map!(const(ubyte)[], const(ubyte)[]) streams);
-
-    // const(ubyte)[] dump(const(ubyte)[] key);
-
-    // string restore(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
-
-    // string restoreReplace(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
-
-    // long expire(const(ubyte)[] key, int seconds);
-
-    // long pexpire(const(ubyte)[] key, long milliseconds);
-
-    // long expireAt(const(ubyte)[] key, long unixTime);
-
-    // long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp);
-
-    // long ttl(const(ubyte)[] key);
-
-    // long pttl(const(ubyte)[] key);
-
-    // bool setbit(const(ubyte)[] key, long offset, bool value);
-
-    // bool setbit(const(ubyte)[] key, long offset, const(ubyte)[] value);
-
-    // bool getbit(const(ubyte)[] key, long offset);
-
-    // long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value);
-
-    // const(ubyte)[] getrange(const(ubyte)[] key, long startOffset, long endOffset);
-
-    // const(ubyte)[] getSet(const(ubyte)[] key, const(ubyte)[] value);
-
-    // long setnx(const(ubyte)[] key, const(ubyte)[] value);
-
-    // string setex(const(ubyte)[] key, int seconds, const(ubyte)[] value);
-
-    // string psetex(const(ubyte)[] key, long milliseconds, const(ubyte)[] value);
-
-    // long decrBy(const(ubyte)[] key, long decrement);
-
-    // long decr(const(ubyte)[] key);
-
-    // long incrBy(const(ubyte)[] key, long increment);
-
-    // Double incrByFloat(const(ubyte)[] key, double increment);
+    Double incrByFloat(const(ubyte)[] key, double increment);
 
     // long incr(const(ubyte)[] key);
 
@@ -240,7 +172,7 @@ interface BinaryRedisCommands {
 
     // List!(const(ubyte)[]) srandmember(const(ubyte)[] key, int count);
 
-    // long strlen(const(ubyte)[] key);
+    long strlen(const(ubyte)[] key);
 
     // long zadd(const(ubyte)[] key, double score, const(ubyte)[] member);
 
@@ -275,10 +207,6 @@ interface BinaryRedisCommands {
     // List!(const(ubyte)[]) sort(const(ubyte)[] key);
 
     // List!(const(ubyte)[]) sort(const(ubyte)[] key, SortingParams sortingParameters);
-
-    // long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey);
-
-    // long sort(const(ubyte)[] key, const(ubyte)[] dstkey);    
 
     // long zcount(const(ubyte)[] key, double min, double max);
 
@@ -342,19 +270,21 @@ interface BinaryRedisCommands {
 
     // long rpushx(const(ubyte)[] key, const(ubyte)[][] arg...);
 
-    // long del(const(ubyte)[][] keys...);
+    long del(const(ubyte)[] key);
 
-    // long unlink(const(ubyte)[][] keys...);
+    long unlink(const(ubyte)[] key);
 
-    // const(ubyte)[] echo(const(ubyte)[] arg);
+    const(ubyte)[] echo(const(ubyte)[] arg);
 
-    // long move(const(ubyte)[] key, int dbIndex);
+    long move(const(ubyte)[] key, int dbIndex);
 
-    // long bitcount(const(ubyte)[] key);
+    long bitcount(const(ubyte)[] key);
 
-    // long bitcount(const(ubyte)[] key, long start, long end);
+    long bitcount(const(ubyte)[] key, long start, long end);
 
-    // long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
+    long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
+
+    long pfcount(const(ubyte)[] key);
 
     // // Geo Commands
 

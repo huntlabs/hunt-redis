@@ -22,7 +22,6 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 
-deprecated("Using BinaryRedisCommands instead.")
 interface MultiKeyBinaryCommands {
     long del(const(ubyte)[][] keys...);
 

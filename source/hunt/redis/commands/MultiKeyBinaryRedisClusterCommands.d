@@ -23,11 +23,10 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 
-deprecated("Using RedisClusterCommands instead.")
 interface MultiKeyBinaryRedisClusterCommands {
-    // long del(const(ubyte)[][] keys...);
+    long del(const(ubyte)[][] keys...);
 
-    // long unlink(const(ubyte)[][] keys...);
+    long unlink(const(ubyte)[][] keys...);
 
     long exists(const(ubyte)[][] keys...);
 
