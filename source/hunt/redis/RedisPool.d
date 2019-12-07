@@ -13,6 +13,7 @@ module hunt.redis.RedisPool;
 
 import hunt.redis.Redis;
 import hunt.redis.RedisPoolAbstract;
+import hunt.redis.RedisPoolConfig;
 import hunt.redis.RedisFactory;
 import hunt.redis.Protocol;
 
@@ -23,6 +24,10 @@ import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 import hunt.net.util.HttpURI;
 
+
+/**
+ * 
+ */
 class RedisPool : RedisPoolAbstract {
 
     this() {
@@ -267,4 +272,32 @@ class RedisPool : RedisPoolAbstract {
             }
         }
     }
+}
+
+
+
+@property RedisPool defaultRedisPool() @trusted {
+    import std.concurrency : initOnce;
+
+    __gshared RedisPool pool;
+    return initOnce!pool({
+        auto config = defalutPoolConfig();
+        auto p = new RedisPool(config, config.host, config.port, config.connectionTimeout,
+            config.soTimeout, config.password, config.database, config.clientName);
+        return p;
+    }());
+}
+
+private __gshared RedisPoolConfig _defalutPoolConfig;
+
+RedisPoolConfig defalutPoolConfig() {
+    if(_defalutPoolConfig is null) {
+        _defalutPoolConfig = new RedisPoolConfig();
+    }
+    return _defalutPoolConfig;
+}
+
+
+void defalutPoolConfig(RedisPoolConfig config) {
+    _defalutPoolConfig = config;
 }

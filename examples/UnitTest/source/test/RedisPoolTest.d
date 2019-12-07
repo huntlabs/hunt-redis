@@ -32,21 +32,28 @@ class RedisPoolTest {
 
     shared static this() {
         hnp = HostAndPortUtil.getRedisServers().get(0);
+        
+        RedisPoolConfig config = new RedisPoolConfig();
+        config.host = hnp.getHost();
+        config.port = hnp.getPort();
+        config.soTimeout = 2000;
+        defalutPoolConfig = config;
     }
 
-    // @Test
-    // void checkConnections() {
-    //     RedisPool pool = new RedisPool(new RedisPoolConfig(), hnp.getHost(), hnp.getPort(), 2000);
-    //     Redis redis = pool.getResource();
-    //     redis.auth("foobared");
-    //     redis.set("foo", "bar");
-    //     assertEquals("bar", redis.get("foo"));
-    //     redis.close();
-    //     pool.destroy();
-    //     assertTrue(pool.isClosed());
+    @Test
+    void checkConnections() {
+        // RedisPool pool = new RedisPool(new RedisPoolConfig(), hnp.getHost(), hnp.getPort(), 2000);
+        RedisPool pool = defaultRedisPool();
+        Redis redis = pool.getResource();
+        redis.auth("foobared");
+        redis.set("foo", "bar");
+        assertEquals("bar", redis.get("foo"));
+        redis.close();
+        pool.destroy();
+        assertTrue(pool.isClosed());
 
-    //     warning("done");
-    // }
+        warning("done");
+    }
 
     // @Test
     // void checkCloseableConnections() {
@@ -191,27 +198,27 @@ class RedisPoolTest {
     //     new RedisPool(new URI("redis://localhost:6380"));
     // }
 
-    @Test
-    void selectDatabaseOnActivation() {
-        RedisPool pool = new RedisPool(new RedisPoolConfig(), hnp.getHost(), hnp.getPort(), 2000,
-                "foobared");
+    // @Test
+    // void selectDatabaseOnActivation() {
+    //     RedisPool pool = new RedisPool(new RedisPoolConfig(), hnp.getHost(), hnp.getPort(), 2000,
+    //             "foobared");
 
-        Redis redis0 = pool.getResource();
-        assertEquals(0, redis0.getDB());
+    //     Redis redis0 = pool.getResource();
+    //     assertEquals(0, redis0.getDB());
 
-        redis0.select(1);
-        assertEquals(1, redis0.getDB());
+    //     redis0.select(1);
+    //     assertEquals(1, redis0.getDB());
 
-        redis0.close();
+    //     redis0.close();
 
-        Redis redis1 = pool.getResource();
-        assertTrue("Redis instance was not reused", redis1 == redis0);
-        assertEquals(0, redis1.getDB());
+    //     Redis redis1 = pool.getResource();
+    //     assertTrue("Redis instance was not reused", redis1 == redis0);
+    //     assertEquals(0, redis1.getDB());
 
-        redis1.close();
-        pool.destroy();
-        assertTrue(pool.isClosed());
-    }
+    //     redis1.close();
+    //     pool.destroy();
+    //     assertTrue(pool.isClosed());
+    // }
 
     // @Test
     // void customClientName() {
