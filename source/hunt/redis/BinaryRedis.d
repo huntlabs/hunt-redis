@@ -1742,10 +1742,12 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    Set!(const(ubyte)[]) zrange(const(ubyte)[] key, long start, long stop) {
+    const(ubyte)[][] zrange(const(ubyte)[] key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrange(key, start, stop);
-        return new SetFromList!(const(ubyte)[])(client.getBinaryMultiBulkReply());
+        // return new SetFromList!(const(ubyte)[])(client.getBinaryMultiBulkReply());
+        List!(const(ubyte)[]) r = client.getBinaryMultiBulkReply();
+        return r.toArray();
     }
 
     /**
@@ -1785,17 +1787,19 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return The new score
      */
     // override
-    Double zincrby(const(ubyte)[] key, double increment, const(ubyte)[] member) {
+    double zincrby(const(ubyte)[] key, double increment, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        Double r = BuilderFactory.DOUBLE.build(client.getOne());
+        return r.value();
     }
 
     // override
-    Double zincrby(const(ubyte)[] key, double increment, const(ubyte)[] member, ZIncrByParams params) {
+    double zincrby(const(ubyte)[] key, double increment, const(ubyte)[] member, ZIncrByParams params) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member, params);
-        return BuilderFactory.DOUBLE.build(client.getOne());
+        Double r = BuilderFactory.DOUBLE.build(client.getOne());
+        return r.value();
     }
 
     /**

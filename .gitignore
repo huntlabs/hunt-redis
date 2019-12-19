@@ -13,6 +13,7 @@
 
 # Executables
 *.exe
+core
 
 # DUB
 .dub

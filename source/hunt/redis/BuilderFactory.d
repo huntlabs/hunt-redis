@@ -29,7 +29,6 @@ import hunt.Integer;
 import hunt.logging.ConsoleLogger;
 import hunt.Long;
 import hunt.String;
-
 import hunt.redis.util.SafeEncoder;
 
 import std.conv;
@@ -45,11 +44,11 @@ class BuilderFactory {
                         string str = STRING.build(data);
                         if (str is null) return null;
                         try {
-                                return Double.valueOf(str.to!double);
+                            return Double.valueOf(str.to!double);
                         } catch (NumberFormatException e) {
-                                if (str == "inf" || str == "+inf") return new Double(Double.POSITIVE_INFINITY);
-                                if (str == "-inf") return new Double(Double.NEGATIVE_INFINITY);
-                                throw e;
+                            if (str == "inf" || str == "+inf") return new Double(Double.POSITIVE_INFINITY);
+                            if (str == "-inf") return new Double(Double.NEGATIVE_INFINITY);
+                            throw e;
                         }
                 }
 
@@ -112,9 +111,20 @@ class BuilderFactory {
         return initOnce!inst(new class Builder!(string) {
                 override
                 string build(Object data) {
-                        if(data is null) return null;
-                        string bytes = (cast(String)data).value;
-                        return bytes;
+                        if(data is null) {
+                            version(HUNT_DEBUG) warning("data is null");
+                            return null;
+                        }
+
+                        Bytes bytesObject = cast(Bytes)data;
+                        if(bytesObject !is null) {
+                            byte[] bytes = bytesObject.value();
+                            version(HUNT_REDIS_DEBUG) tracef("value: %s, %(0x%02X, %)", cast(string)bytes, bytes);
+                            return cast(string)bytes;
+                        } else {
+                            version(HUNT_DEBUG) warningf("value: %s, type: %s", data.toString(), typeid(data));
+                            return data.toString();
+                        }
                 }
 
                 override
@@ -131,7 +141,7 @@ class BuilderFactory {
                 if (data is null) {
                     return null;
                 }
-                warning(typeid(data));
+                version(HUNT_REDIS_DEBUG) warning(typeid(data));
                 List!(Object) l = cast(List!(Object)) data;
                 ArrayList!(string) result = new ArrayList!(string)(l.size());
                 foreach(Object barray ; l) {

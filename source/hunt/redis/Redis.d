@@ -1550,11 +1550,12 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    Set!(string) zrange(string key, long start, long stop) {
+    string[] zrange(string key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrange(key, start, stop);
         List!(string) members = client.getMultiBulkReply();
-        return new SetFromList!string(members);
+        // return new SetFromList!string(members);
+        return members.toArray();
     }
     alias zrange = BinaryRedis.zrange;
 
@@ -1594,17 +1595,19 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
      * @param member
      * @return The new score
      */
-    Double zincrby(string key, double increment, string member) {
+    double zincrby(string key, double increment, string member) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member);
-        return BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
+        Double r = BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
+        return r.value();
     }
     alias zincrby = BinaryRedis.zincrby;
 
-    Double zincrby(string key, double increment, string member, ZIncrByParams params) {
+    double zincrby(string key, double increment, string member, ZIncrByParams params) {
         checkIsInMultiOrPipeline();
         client.zincrby(key, increment, member, params);
-        return BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
+        Double r = BuilderFactory.DOUBLE.build(cast(Object)client.getOne());
+        return r.value();
     }
 
     /**
