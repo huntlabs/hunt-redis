@@ -22,13 +22,15 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
+import hunt.Long;
+
 
 interface MultiKeyBinaryRedisClusterCommands {
-    long del(const(ubyte)[][] keys...);
+    Long del(const(ubyte)[][] keys...);
 
-    long unlink(const(ubyte)[][] keys...);
+    Long unlink(const(ubyte)[][] keys...);
 
-    long exists(const(ubyte)[][] keys...);
+    Long exists(const(ubyte)[][] keys...);
 
     // List!(const(ubyte)[]) blpop(int timeout, const(ubyte)[][] keys...);
 

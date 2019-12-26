@@ -279,8 +279,8 @@ class BinaryClient : AbstractClient {
 
         int index = 0;
         params[index++] = key;
-        foreach (const(ubyte)[] key, const(ubyte)[] value; hash) {
-            params[index++] = key;
+        foreach (const(ubyte)[] k, const(ubyte)[] value; hash) {
+            params[index++] = k;
             params[index++] = value;
         }
         sendCommand(Command.HSET, params);
@@ -298,8 +298,8 @@ class BinaryClient : AbstractClient {
         List!(const(ubyte)[]) params = new ArrayList!(const(ubyte)[])();
         params.add(key);
 
-        foreach(const(ubyte)[] key, const(ubyte)[] value ; hash) {
-            params.add(key);
+        foreach(const(ubyte)[] k, const(ubyte)[] value ; hash) {
+            params.add(k);
             params.add(value);
         }
         sendCommand(Command.HMSET, params.toArray());
@@ -1298,8 +1298,8 @@ class BinaryClient : AbstractClient {
         }
         
         params[index++] = id;
-        foreach(const(ubyte)[] key, const(ubyte)[] value ; hash) {
-            params[index++] = key;
+        foreach(const(ubyte)[] k, const(ubyte)[] value ; hash) {
+            params[index++] = k;
             params[index++] = value;
         }
         sendCommand(Command.XADD, params);

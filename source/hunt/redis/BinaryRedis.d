@@ -55,7 +55,7 @@ import hunt.util.Common;
 
 import hunt.Byte;
 import hunt.Double;
-// import hunt.long;
+import hunt.Long;
 
 import std.format;
 import std.range;
@@ -316,7 +316,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         0 if none of the specified keys exist.
      */
     // override
-    long exists(const(ubyte)[][] keys...) {
+    Long exists(const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.exists(keys);
         return client.getIntegerReply();
@@ -344,14 +344,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         0 if none of the specified key existed
      */
     // override
-    long del(const(ubyte)[][] keys...) {
+    Long del(const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.del(keys);
         return client.getIntegerReply();
     }
 
     // override
-    long del(const(ubyte)[] key) {
+    Long del(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.del(key);
         return client.getIntegerReply();
@@ -371,14 +371,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply: The number of keys that were unlinked
      */
     // override
-    long unlink(const(ubyte)[][] keys...) {
+    Long unlink(const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.unlink(keys);
         return client.getIntegerReply();
     }
 
     // override
-    long unlink(const(ubyte)[] key) {
+    Long unlink(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.unlink(key);
         return client.getIntegerReply();
@@ -485,7 +485,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically: 1 if the key was renamed 0 if the target key already exist
      */
     // override
-    long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey) {
+    Long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey) {
         checkIsInMultiOrPipeline();
         client.renamenx(oldkey, newkey);
         return client.getIntegerReply();
@@ -496,7 +496,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply
      */
     // override
-    long dbSize() {
+    Long dbSize() {
         checkIsInMultiOrPipeline();
         client.dbSize();
         return client.getIntegerReply();
@@ -524,7 +524,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
     // override
-    long expire(const(ubyte)[] key, int seconds) {
+    Long expire(const(ubyte)[] key, int seconds) {
         checkIsInMultiOrPipeline();
         client.expire(key, seconds);
         return client.getIntegerReply();
@@ -554,7 +554,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         2.1.3, Redis &gt;= 2.1.3 will happily update the timeout), or the key does not exist.
      */
     // override
-    long expireAt(const(ubyte)[] key, long unixTime) {
+    Long expireAt(const(ubyte)[] key, long unixTime) {
         checkIsInMultiOrPipeline();
         client.expireAt(key, unixTime);
         return client.getIntegerReply();
@@ -570,7 +570,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         returned.
      */
     // override
-    long ttl(const(ubyte)[] key) {
+    Long ttl(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.ttl(key);
         return client.getIntegerReply();
@@ -583,14 +583,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply: The number of keys that were touched.
      */
     // override
-    long touch(const(ubyte)[][] keys...) {
+    Long touch(const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.touch(keys);
         return client.getIntegerReply();
     }
 
     // override
-    long touch(const(ubyte)[] key) {
+    Long touch(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.touch(key);
         return client.getIntegerReply();
@@ -630,7 +630,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         already present on the target DB or was not found in the current DB.
      */
     // override
-    long move(const(ubyte)[] key, int dbIndex) {
+    Long move(const(ubyte)[] key, int dbIndex) {
         checkIsInMultiOrPipeline();
         client.move(key, dbIndex);
         return client.getIntegerReply();
@@ -691,7 +691,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically: 1 if the key was set 0 if the key was not set
      */
     // override
-    long setnx(const(ubyte)[] key, const(ubyte)[] value) {
+    Long setnx(const(ubyte)[] key, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.setnx(key, value);
         return client.getIntegerReply();
@@ -756,7 +756,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         least one key already existed)
      */
     // override
-    long msetnx(const(ubyte)[][] keysvalues...) {
+    Long msetnx(const(ubyte)[][] keysvalues...) {
         checkIsInMultiOrPipeline();
         client.msetnx(keysvalues);
         return client.getIntegerReply();
@@ -781,7 +781,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
     // override
-    long decrBy(const(ubyte)[] key, long decrement) {
+    Long decrBy(const(ubyte)[] key, long decrement) {
         checkIsInMultiOrPipeline();
         client.decrBy(key, decrement);
         return client.getIntegerReply();
@@ -805,7 +805,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
     // override
-    long decr(const(ubyte)[] key) {
+    Long decr(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.decr(key);
         return client.getIntegerReply();
@@ -830,7 +830,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
     // override
-    long incrBy(const(ubyte)[] key, long increment) {
+    Long incrBy(const(ubyte)[] key, long increment) {
         checkIsInMultiOrPipeline();
         client.incrBy(key, increment);
         return client.getIntegerReply();
@@ -881,7 +881,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, this commands will reply with the new value of key after the increment.
      */
     // override
-    long incr(const(ubyte)[] key) {
+    Long incr(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.incr(key);
         return client.getIntegerReply();
@@ -900,7 +900,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the total length of the string after the append operation.
      */
     // override
-    long append(const(ubyte)[] key, const(ubyte)[] value) {
+    Long append(const(ubyte)[] key, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.append(key, value);
         return client.getIntegerReply();
@@ -942,14 +942,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         returned, otherwise if a new field is created 1 is returned.
      */
     // override
-    long hset(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
+    Long hset(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.hset(key, field, value);
         return client.getIntegerReply();
     }
 
     // override
-    long hset(const(ubyte)[] key, Map!(const(ubyte)[], const(ubyte)[]) hash) {
+    Long hset(const(ubyte)[] key, Map!(const(ubyte)[], const(ubyte)[]) hash) {
         checkIsInMultiOrPipeline();
         client.hset(key, hash);
         return client.getIntegerReply();
@@ -982,7 +982,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         returned.
      */
     // // override
-    long hsetnx(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
+    Long hsetnx(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.hsetnx(key, field, value);
         return client.getIntegerReply();
@@ -1039,7 +1039,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply The new value at field after the increment operation.
      */
     // override
-    long hincrBy(const(ubyte)[] key, const(ubyte)[] field, long value) {
+    Long hincrBy(const(ubyte)[] key, const(ubyte)[] field, long value) {
         checkIsInMultiOrPipeline();
         client.hincrBy(key, field, value);
         return client.getIntegerReply();
@@ -1093,7 +1093,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         returned and no operation is performed.
      */
     // override
-    long hdel(const(ubyte)[] key, const(ubyte)[][] fields...) {
+    Long hdel(const(ubyte)[] key, const(ubyte)[][] fields...) {
         checkIsInMultiOrPipeline();
         client.hdel(key, fields);
         return client.getIntegerReply();
@@ -1108,7 +1108,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         key does not exist, 0 is returned assuming an empty hash.
      */
     // override
-    long hlen(const(ubyte)[] key) {
+    Long hlen(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.hlen(key);
         return client.getIntegerReply();
@@ -1180,7 +1180,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         operation.
      */
     // override
-    long rpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
+    Long rpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
         checkIsInMultiOrPipeline();
         client.rpush(key, strings);
         return client.getIntegerReply();
@@ -1199,7 +1199,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         operation.
      */
     // override
-    long lpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
+    Long lpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
         checkIsInMultiOrPipeline();
         client.lpush(key, strings);
         return client.getIntegerReply();
@@ -1215,7 +1215,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return The length of the list.
      */
     // override
-    long llen(const(ubyte)[] key) {
+    Long llen(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.llen(key);
         return client.getIntegerReply();
@@ -1362,7 +1362,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer Reply, specifically: The number of removed elements if the operation succeeded
      */
     // override
-    long lrem(const(ubyte)[] key, long count, const(ubyte)[] value) {
+    Long lrem(const(ubyte)[] key, long count, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.lrem(key, count, value);
         return client.getIntegerReply();
@@ -1436,7 +1436,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         already a member of the set
      */
     // override
-    long sadd(const(ubyte)[] key, const(ubyte)[][] members...) {
+    Long sadd(const(ubyte)[] key, const(ubyte)[][] members...) {
         checkIsInMultiOrPipeline();
         client.sadd(key, members);
         return client.getIntegerReply();
@@ -1468,7 +1468,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         not a member of the set
      */
     // override
-    long srem(const(ubyte)[] key, const(ubyte)[][] member...) {
+    Long srem(const(ubyte)[] key, const(ubyte)[][] member...) {
         checkIsInMultiOrPipeline();
         client.srem(key, member);
         return client.getIntegerReply();
@@ -1521,7 +1521,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         on the first set and no operation was performed
      */
     // override
-    long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member) {
+    Long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.smove(srckey, dstkey, member);
         return client.getIntegerReply();
@@ -1535,7 +1535,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         integer.
      */
     // override
-    long scard(const(ubyte)[] key) {
+    Long scard(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.scard(key);
         return client.getIntegerReply();
@@ -1590,7 +1590,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Status code reply
      */
     // override
-    long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
+    Long sinterstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.sinterstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1625,7 +1625,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Status code reply
      */
     // override
-    long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
+    Long sunionstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.sunionstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1667,7 +1667,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Status code reply
      */
     // override
-    long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
+    Long sdiffstore(const(ubyte)[] dstkey, const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.sdiffstore(dstkey, keys);
         return client.getIntegerReply();
@@ -1714,28 +1714,28 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         already a member of the sorted set and the score was updated
      */
     // override
-    long zadd(const(ubyte)[] key, double score, const(ubyte)[] member) {
+    Long zadd(const(ubyte)[] key, double score, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member);
         return client.getIntegerReply();
     }
 
     // override
-    long zadd(const(ubyte)[] key, double score, const(ubyte)[] member, ZAddParams params) {
+    Long zadd(const(ubyte)[] key, double score, const(ubyte)[] member, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, score, member, params);
         return client.getIntegerReply();
     }
 
     // override
-    long zadd(const(ubyte)[] key, Map!(const(ubyte)[], double) scoreMembers) {
+    Long zadd(const(ubyte)[] key, Map!(const(ubyte)[], double) scoreMembers) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers);
         return client.getIntegerReply();
     }
 
     // override
-    long zadd(const(ubyte)[] key, Map!(const(ubyte)[], double) scoreMembers, ZAddParams params) {
+    Long zadd(const(ubyte)[] key, Map!(const(ubyte)[], double) scoreMembers, ZAddParams params) {
         checkIsInMultiOrPipeline();
         client.zadd(key, scoreMembers, params);
         return client.getIntegerReply();
@@ -1762,7 +1762,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         not a member of the set
      */
     // override
-    long zrem(const(ubyte)[] key, const(ubyte)[][] members...) {
+    Long zrem(const(ubyte)[] key, const(ubyte)[][] members...) {
         checkIsInMultiOrPipeline();
         client.zrem(key, members);
         return client.getIntegerReply();
@@ -1819,7 +1819,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
     // override
-    long zrank(const(ubyte)[] key, const(ubyte)[] member) {
+    Long zrank(const(ubyte)[] key, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.zrank(key, member);
         return client.getIntegerReply();
@@ -1842,17 +1842,20 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         reply if the element exists. A nil bulk reply if there is no such element.
      */
     // override
-    long zrevrank(const(ubyte)[] key, const(ubyte)[] member) {
+    Long zrevrank(const(ubyte)[] key, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.zrevrank(key, member);
         return client.getIntegerReply();
     }
 
     // override
-    Set!(const(ubyte)[]) zrevrange(const(ubyte)[] key, long start, long stop) {
+    const(ubyte)[][] zrevrange(const(ubyte)[] key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zrevrange(key, start, stop);
-        return new SetFromList!(const(ubyte)[])(client.getBinaryMultiBulkReply());
+        // return new SetFromList!(const(ubyte)[])(client.getBinaryMultiBulkReply());
+        auto r = client.getBinaryMultiBulkReply();
+        return r.toArray();
+
     }
 
     // override
@@ -1878,7 +1881,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return the cardinality (number of elements) of the set as an integer.
      */
     // override
-    long zcard(const(ubyte)[] key) {
+    Long zcard(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.zcard(key);
         return client.getIntegerReply();
@@ -2150,7 +2153,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return The number of elements of the list at dstkey.
      */
     // override
-    long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey) {
+    Long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, sortingParameters, dstkey);
         return client.getIntegerReply();
@@ -2170,7 +2173,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return The number of elements of the list at dstkey.
      */
     // override
-    long sort(const(ubyte)[] key, const(ubyte)[] dstkey) {
+    Long sort(const(ubyte)[] key, const(ubyte)[] dstkey) {
         checkIsInMultiOrPipeline();
         client.sort(key, dstkey);
         return client.getIntegerReply();
@@ -2293,14 +2296,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long zcount(const(ubyte)[] key, double min, double max) {
+    Long zcount(const(ubyte)[] key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
     }
 
     // override
-    long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+    Long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
         checkIsInMultiOrPipeline();
         client.zcount(key, min, max);
         return client.getIntegerReply();
@@ -2649,7 +2652,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return
      */
     // override
-    long zremrangeByRank(const(ubyte)[] key, long start, long stop) {
+    Long zremrangeByRank(const(ubyte)[] key, long start, long stop) {
         checkIsInMultiOrPipeline();
         client.zremrangeByRank(key, start, stop);
         return client.getIntegerReply();
@@ -2669,14 +2672,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the number of elements removed.
      */
     // override
-    long zremrangeByScore(const(ubyte)[] key, double min, double max) {
+    Long zremrangeByScore(const(ubyte)[] key, double min, double max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
     }
 
     // override
-    long zremrangeByScore(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+    Long zremrangeByScore(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByScore(key, min, max);
         return client.getIntegerReply();
@@ -2712,7 +2715,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
     // override
-    long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
+    Long zunionstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2749,7 +2752,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
     // override
-    long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
+    Long zunionstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
         checkIsInMultiOrPipeline();
         client.zunionstore(dstkey, params, sets);
         return client.getIntegerReply();
@@ -2785,7 +2788,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
     // override
-    long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
+    Long zinterstore(const(ubyte)[] dstkey, const(ubyte)[][] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, sets);
         return client.getIntegerReply();
@@ -2822,14 +2825,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically the number of elements in the sorted set at dstkey
      */
     // override
-    long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
+    Long zinterstore(const(ubyte)[] dstkey, ZParams params, const(ubyte)[][] sets...) {
         checkIsInMultiOrPipeline();
         client.zinterstore(dstkey, params, sets);
         return client.getIntegerReply();
     }
 
     // override
-    long zlexcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+    Long zlexcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
         checkIsInMultiOrPipeline();
         client.zlexcount(key, min, max);
         return client.getIntegerReply();
@@ -2865,7 +2868,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long zremrangeByLex(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+    Long zremrangeByLex(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
         checkIsInMultiOrPipeline();
         client.zremrangeByLex(key, min, max);
         return client.getIntegerReply();
@@ -2933,7 +2936,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * @return Integer reply, specifically an UNIX time stamp.
      */
     // override
-    long lastsave() {
+    Long lastsave() {
         client.lastsave();
         return client.getIntegerReply();
     }
@@ -3175,7 +3178,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long strlen(const(ubyte)[] key) {
+    Long strlen(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.strlen(key);
         return client.getIntegerReply();
@@ -3186,7 +3189,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long lpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
+    Long lpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
         checkIsInMultiOrPipeline();
         client.lpushx(key, string);
         return client.getIntegerReply();
@@ -3201,13 +3204,13 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         happens when key not set).
      */
     // override
-    long persist(const(ubyte)[] key) {
+    Long persist(const(ubyte)[] key) {
         client.persist(key);
         return client.getIntegerReply();
     }
 
     // override
-    long rpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
+    Long rpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
         checkIsInMultiOrPipeline();
         client.rpushx(key, string);
         return client.getIntegerReply();
@@ -3221,7 +3224,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long linsert(const(ubyte)[] key, ListPosition where, const(ubyte)[] pivot,
+    Long linsert(const(ubyte)[] key, ListPosition where, const(ubyte)[] pivot,
             const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.linsert(key, where, pivot, value);
@@ -3290,18 +3293,18 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
         return client.getIntegerReply() == 1;
     }
 
-    long bitpos(const(ubyte)[] key, bool value) {
+    Long bitpos(const(ubyte)[] key, bool value) {
         return bitpos(key, value, new BitPosParams());
     }
 
-    long bitpos(const(ubyte)[] key, bool value, BitPosParams params) {
+    Long bitpos(const(ubyte)[] key, bool value, BitPosParams params) {
         checkIsInMultiOrPipeline();
         client.bitpos(key, value, params);
         return client.getIntegerReply();
     }
 
     // override
-    long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value) {
+    Long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value) {
         checkIsInMultiOrPipeline();
         client.setrange(key, offset, value);
         return client.getIntegerReply();
@@ -3315,7 +3318,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long publish(const(ubyte)[] channel, const(ubyte)[] message) {
+    Long publish(const(ubyte)[] channel, const(ubyte)[] message) {
         checkIsInMultiOrPipeline();
         client.publish(channel, message);
         return client.getIntegerReply();
@@ -3452,7 +3455,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long slowlogLen() {
+    Long slowlogLen() {
         client.slowlogLen();
         return client.getIntegerReply();
     }
@@ -3470,7 +3473,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long objectRefcount(const(ubyte)[] key) {
+    Long objectRefcount(const(ubyte)[] key) {
         client.objectRefcount(key);
         return client.getIntegerReply();
     }
@@ -3482,27 +3485,27 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long objectIdletime(const(ubyte)[] key) {
+    Long objectIdletime(const(ubyte)[] key) {
         client.objectIdletime(key);
         return client.getIntegerReply();
     }
 
     // override
-    long bitcount(const(ubyte)[] key) {
+    Long bitcount(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.bitcount(key);
         return client.getIntegerReply();
     }
 
     // override
-    long bitcount(const(ubyte)[] key, long start, long end) {
+    Long bitcount(const(ubyte)[] key, long start, long end) {
         checkIsInMultiOrPipeline();
         client.bitcount(key, start, end);
         return client.getIntegerReply();
     }
 
     // override
-    long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...) {
+    Long bitop(BitOP op, const(ubyte)[] destKey, const(ubyte)[][] srcKeys...) {
         checkIsInMultiOrPipeline();
         client.bitop(op, destKey, srcKeys);
         return client.getIntegerReply();
@@ -3551,21 +3554,21 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      *         2.1.3, Redis >= 2.1.3 will happily update the timeout), or the key does not exist.
      */
     // override
-    long pexpire(const(ubyte)[] key, long milliseconds) {
+    Long pexpire(const(ubyte)[] key, long milliseconds) {
         checkIsInMultiOrPipeline();
         client.pexpire(key, milliseconds);
         return client.getIntegerReply();
     }
 
     // override
-    long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp) {
+    Long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp) {
         checkIsInMultiOrPipeline();
         client.pexpireAt(key, millisecondsTimestamp);
         return client.getIntegerReply();
     }
 
     // override
-    long pttl(const(ubyte)[] key) {
+    Long pttl(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.pttl(key);
         return client.getIntegerReply();
@@ -3608,7 +3611,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long clientKill(ClientKillParams params) {
+    Long clientKill(ClientKillParams params) {
         checkIsInMultiOrPipeline();
         this.client.clientKill(params);
         return this.client.getIntegerReply();
@@ -3669,21 +3672,21 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
      * the method. Sorry :S
      */
     // override
-    long waitReplicas(int replicas, long timeout) {
+    Long waitReplicas(int replicas, long timeout) {
         checkIsInMultiOrPipeline();
         client.waitReplicas(replicas, timeout);
         return client.getIntegerReply();
     }
 
     // override
-    long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...) {
+    Long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...) {
         checkIsInMultiOrPipeline();
         client.pfadd(key, elements);
         return client.getIntegerReply();
     }
 
     // override
-    long pfcount(const(ubyte)[] key) {
+    Long pfcount(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.pfcount(key);
         return client.getIntegerReply();
@@ -3697,7 +3700,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long pfcount(const(ubyte)[][] keys...) {
+    Long pfcount(const(ubyte)[][] keys...) {
         checkIsInMultiOrPipeline();
         client.pfcount(keys);
         return client.getIntegerReply();
@@ -3784,14 +3787,14 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long geoadd(const(ubyte)[] key, double longitude, double latitude, const(ubyte)[] member) {
+    Long geoadd(const(ubyte)[] key, double longitude, double latitude, const(ubyte)[] member) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, longitude, latitude, member);
         return client.getIntegerReply();
     }
 
     // override
-    long geoadd(const(ubyte)[] key, Map!(const(ubyte)[], GeoCoordinate) memberCoordinateMap) {
+    Long geoadd(const(ubyte)[] key, Map!(const(ubyte)[], GeoCoordinate) memberCoordinateMap) {
         checkIsInMultiOrPipeline();
         client.geoadd(key, memberCoordinateMap);
         return client.getIntegerReply();
@@ -3900,7 +3903,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long hstrlen(const(ubyte)[] key, const(ubyte)[] field) {
+    Long hstrlen(const(ubyte)[] key, const(ubyte)[] field) {
         checkIsInMultiOrPipeline();
         client.hstrlen(key, field);
         return client.getIntegerReply();
@@ -3929,7 +3932,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long xlen(const(ubyte)[] key) {
+    Long xlen(const(ubyte)[] key) {
         checkIsInMultiOrPipeline();
         client.xlen(key);
         return client.getIntegerReply();  
@@ -3950,7 +3953,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long xack(const(ubyte)[] key, const(ubyte)[] group, const(ubyte)[][] ids...) {
+    Long xack(const(ubyte)[] key, const(ubyte)[] group, const(ubyte)[][] ids...) {
         checkIsInMultiOrPipeline();
         client.xack(key, group, ids);
         return client.getIntegerReply();
@@ -3971,7 +3974,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long xgroupDestroy(const(ubyte)[] key, const(ubyte)[] consumer) {
+    Long xgroupDestroy(const(ubyte)[] key, const(ubyte)[] consumer) {
         checkIsInMultiOrPipeline();
         client.xgroupDestroy(key, consumer);
         return client.getIntegerReply();
@@ -3985,21 +3988,22 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
     }
 
     // override
-    long xdel(const(ubyte)[] key, const(ubyte)[][] ids...) {
+    Long xdel(const(ubyte)[] key, const(ubyte)[][] ids...) {
         checkIsInMultiOrPipeline();
         client.xdel(key, ids);
         return client.getIntegerReply();
     }
 
     // override
-    long xtrim(const(ubyte)[] key, long maxLen, bool approximateLength) {
+    Long xtrim(const(ubyte)[] key, long maxLen, bool approximateLength) {
         checkIsInMultiOrPipeline();
         client.xtrim(key, maxLen, approximateLength);
         return client.getIntegerReply();
     }
 
     // override
-    List!(const(ubyte)[]) xpending(const(ubyte)[] key, const(ubyte)[] groupname, const(ubyte)[] start, const(ubyte)[] end, int count, const(ubyte)[] consumername) {
+    List!(const(ubyte)[]) xpending(const(ubyte)[] key, const(ubyte)[] groupname, const(ubyte)[] start, 
+            const(ubyte)[] end, int count, const(ubyte)[] consumername) {
         checkIsInMultiOrPipeline();
         client.xpending(key, groupname, start, end, count, consumername);
         return client.getBinaryMultiBulkReply();  }

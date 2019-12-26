@@ -57,7 +57,7 @@ import hunt.collection.Set;
 
 import hunt.Boolean;
 import hunt.Double;
-// import hunt.long;
+import hunt.Long;
 
 import std.regex;
 alias Pattern = Regex!char;
@@ -137,37 +137,37 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     }
 
     override
-    long expire(string key, int seconds) {
+    Long expire(string key, int seconds) {
         Redis j = getShard(key);
         return j.expire(key, seconds);
     }
 
     override
-    long pexpire(string key, long milliseconds) {
+    Long pexpire(string key, long milliseconds) {
         Redis j = getShard(key);
         return j.pexpire(key, milliseconds);
     }
 
     override
-    long expireAt(string key, long unixTime) {
+    Long expireAt(string key, long unixTime) {
         Redis j = getShard(key);
         return j.expireAt(key, unixTime);
     }
 
     override
-    long pexpireAt(string key, long millisecondsTimestamp) {
+    Long pexpireAt(string key, long millisecondsTimestamp) {
         Redis j = getShard(key);
         return j.pexpireAt(key, millisecondsTimestamp);
     }
 
     override
-    long ttl(string key) {
+    Long ttl(string key) {
         Redis j = getShard(key);
         return j.ttl(key);
     }
 
     override
-    long pttl(string key) {
+    Long pttl(string key) {
         Redis j = getShard(key);
         return j.pttl(key);
     }
@@ -345,13 +345,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     override
-    long del(string key) {
+    Long del(string key) {
         Redis j = getShard(key);
         return j.del(key);
     }
 
     override
-    long unlink(string key) {
+    Long unlink(string key) {
         Redis j = getShard(key);
         return j.unlink(key);
     }
@@ -405,13 +405,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     override
-    long strlen(string key) {
+    Long strlen(string key) {
         Redis j = getShard(key);
         return j.strlen(key);
     }
 
     override
-    long move(string key, int dbIndex) {
+    Long move(string key, int dbIndex) {
         Redis j = getShard(key);
         return j.move(key, dbIndex);
     }
@@ -423,7 +423,7 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     override
-    long persist(string key) {
+    Long persist(string key) {
         Redis j = getShard(key);
         return j.persist(key);
     }
@@ -800,13 +800,13 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     // }
 
     override
-    long bitcount(string key) {
+    Long bitcount(string key) {
         Redis j = getShard(key);
         return j.bitcount(key);
     }
 
     override
-    long bitcount(string key, long start, long end) {
+    Long bitcount(string key, long start, long end) {
         Redis j = getShard(key);
         return j.bitcount(key, start, end);
     }
@@ -894,19 +894,19 @@ class ShardedRedis : BinaryShardedRedis, RedisCommands, Closeable {
     }
 
     override
-    long pfadd(string key, string[] elements...) {
+    Long pfadd(string key, string[] elements...) {
         Redis j = getShard(key);
         return j.pfadd(key, elements);
     }
 
     override
-    long pfcount(string key) {
+    Long pfcount(string key) {
         Redis j = getShard(key);
         return j.pfcount(key);
     }
 
     override
-    long touch(string key) {
+    Long touch(string key) {
         Redis j = getShard(key);
         return j.touch(key);
     }

@@ -8,27 +8,27 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.redis.commands.SentinelCommands;
 
 import hunt.collection.List;
 import hunt.collection.Map;
-
+import hunt.Long;
 
 interface SentinelCommands {
-  List!(Map!(string, string)) sentinelMasters();
+    List!(Map!(string, string)) sentinelMasters();
 
-  List!(string) sentinelGetMasterAddrByName(string masterName);
+    List!(string) sentinelGetMasterAddrByName(string masterName);
 
-  long sentinelReset(string pattern);
+    Long sentinelReset(string pattern);
 
-  List!(Map!(string, string)) sentinelSlaves(string masterName);
+    List!(Map!(string, string)) sentinelSlaves(string masterName);
 
-  string sentinelFailover(string masterName);
+    string sentinelFailover(string masterName);
 
-  string sentinelMonitor(string masterName, string ip, int port, int quorum);
+    string sentinelMonitor(string masterName, string ip, int port, int quorum);
 
-  string sentinelRemove(string masterName);
+    string sentinelRemove(string masterName);
 
-  string sentinelSet(string masterName, Map!(string, string) parameterMap);
+    string sentinelSet(string masterName, Map!(string, string) parameterMap);
 }

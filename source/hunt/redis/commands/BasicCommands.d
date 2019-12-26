@@ -12,7 +12,7 @@
 module hunt.redis.commands.BasicCommands;
 
 import hunt.redis.DebugParams;
-
+import hunt.Long;
 
 interface BasicCommands {
 
@@ -40,7 +40,7 @@ interface BasicCommands {
      * Return the number of keys in the currently-selected database.
      * @return the number of key in the currently-selected database.
      */
-    long dbSize();
+    Long dbSize();
 
     /**
      * Select the DB with having the specified zero-based numeric index.
@@ -111,7 +111,7 @@ interface BasicCommands {
      * Return the UNIX TIME of the last DB save executed with success.
      * @return the unix latest save
      */
-    long lastsave();
+    Long lastsave();
 
     /**
      * Stop all the client. Perform a SAVE (if one save point is configured).
@@ -171,5 +171,5 @@ interface BasicCommands {
      * @param timeout the time to block in milliseconds, a timeout of 0 means to block forever
      * @return the number of replicas reached by all the writes performed in the context of the current connection
      */
-    long waitReplicas(int replicas, long timeout);
+    Long waitReplicas(int replicas, long timeout);
 }

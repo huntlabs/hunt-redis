@@ -17,6 +17,8 @@ import hunt.redis.params.MigrateParams;
 import hunt.redis.params.ClientKillParams;
 import hunt.redis.util.Slowlog;
 
+import hunt.Long;
+
 interface AdvancedRedisCommands {
     List!(string) configGet(string pattern);
 
@@ -24,17 +26,17 @@ interface AdvancedRedisCommands {
 
     string slowlogReset();
 
-    long slowlogLen();
+    Long slowlogLen();
 
     List!(Slowlog) slowlogGet();
 
     List!(Slowlog) slowlogGet(long entries);
 
-    long objectRefcount(string key);
+    Long objectRefcount(string key);
 
     string objectEncoding(string key);
 
-    long objectIdletime(string key);
+    Long objectIdletime(string key);
 
     string migrate(string host, int port, string key, int destinationDB, int timeout);
 
@@ -45,7 +47,7 @@ interface AdvancedRedisCommands {
 
     string clientKill(string ip, int port);
 
-    long clientKill(ClientKillParams params);
+    Long clientKill(ClientKillParams params);
 
     string clientGetname();
 

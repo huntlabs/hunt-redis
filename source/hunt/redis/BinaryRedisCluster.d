@@ -36,6 +36,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
+import hunt.Long;
 
 private template ClusterBinaryCommandTemplate(string name, R, string[] args) {
     import std.format;
@@ -157,8 +158,8 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     }
 
     override
-    long exists(const(ubyte)[][] keys...) {
-        mixin(ClusterBinaryCommandTemplate!("exists", long, [keys.stringof]));
+    Long exists(const(ubyte)[][] keys...) {
+        mixin(ClusterBinaryCommandTemplate!("exists", Long, [keys.stringof]));
     }
 
     override
@@ -167,8 +168,8 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     }
 
     override
-    long persist(const(ubyte)[] key) {
-        mixin(ClusterBinaryCommandTemplate!("persist", long, [key.stringof]));
+    Long persist(const(ubyte)[] key) {
+        mixin(ClusterBinaryCommandTemplate!("persist", Long, [key.stringof]));
     }
 
     override
@@ -202,14 +203,14 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     //     //     return connection.expire(key, seconds);
     //     // }
     //     // }.runBinary(key);
-    //     mixin(ClusterBinaryCommandTemplate!("expire", long, [key.stringof]));
+    //     mixin(ClusterBinaryCommandTemplate!("expire", Long, [key.stringof]));
     // }
 
     // override
     // long pexpire(const(ubyte)[] key, long milliseconds) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pexpire(key, milliseconds);
     //     }
     //     }.runBinary(key);
@@ -220,7 +221,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long expireAt(const(ubyte)[] key, long unixTime) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.expireAt(key, unixTime);
     //     }
     //     }.runBinary(key);
@@ -231,7 +232,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pexpireAt(key, millisecondsTimestamp);
     //     }
     //     }.runBinary(key);
@@ -242,7 +243,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long ttl(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.ttl(key);
     //     }
     //     }.runBinary(key);
@@ -253,7 +254,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long pttl(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pttl(key);
     //     }
     //     }.runBinary(key);
@@ -264,7 +265,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long touch(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.touch(key);
     //     }
     //     }.runBinary(key);
@@ -275,7 +276,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long touch(const(ubyte)[][] keys...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.touch(keys);
     //     }
     //     }.runBinary(keys.length, keys);
@@ -319,7 +320,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.setrange(key, offset, value);
     //     }
     //     }.runBinary(key);
@@ -352,7 +353,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long setnx(const(ubyte)[] key, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.setnx(key, value);
     //     }
     //     }.runBinary(key);
@@ -385,7 +386,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long decrBy(const(ubyte)[] key, long decrement) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.decrBy(key, decrement);
     //     }
     //     }.runBinary(key);
@@ -396,7 +397,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long decr(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.decr(key);
     //     }
     //     }.runBinary(key);
@@ -407,7 +408,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long incrBy(const(ubyte)[] key, long increment) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.incrBy(key, increment);
     //     }
     //     }.runBinary(key);
@@ -429,7 +430,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long incr(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.incr(key);
     //     }
     //     }.runBinary(key);
@@ -440,7 +441,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long append(const(ubyte)[] key, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.append(key, value);
     //     }
     //     }.runBinary(key);
@@ -462,7 +463,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hset(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hset(key, field, value);
     //     }
     //     }.runBinary(key);
@@ -473,7 +474,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hset(const(ubyte)[] key, Map!(const(ubyte)[], const(ubyte)[]) hash) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hset(key, hash);
     //     }
     //     }.runBinary(key);
@@ -495,7 +496,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hsetnx(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hsetnx(key, field, value);
     //     }
     //     }.runBinary(key);
@@ -528,7 +529,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hincrBy(const(ubyte)[] key, const(ubyte)[] field, long value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hincrBy(key, field, value);
     //     }
     //     }.runBinary(key);
@@ -561,7 +562,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hdel(const(ubyte)[] key, const(ubyte)[][] field...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hdel(key, field);
     //     }
     //     }.runBinary(key);
@@ -572,7 +573,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hlen(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hlen(key);
     //     }
     //     }.runBinary(key);
@@ -616,7 +617,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long rpush(const(ubyte)[] key, const(ubyte)[][] args...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.rpush(key, args);
     //     }
     //     }.runBinary(key);
@@ -627,7 +628,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long lpush(const(ubyte)[] key, const(ubyte)[][] args...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.lpush(key, args);
     //     }
     //     }.runBinary(key);
@@ -638,7 +639,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long llen(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.llen(key);
     //     }
     //     }.runBinary(key);
@@ -693,7 +694,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long lrem(const(ubyte)[] key, long count, const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.lrem(key, count, value);
     //     }
     //     }.runBinary(key);
@@ -726,7 +727,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long sadd(const(ubyte)[] key, const(ubyte)[][] member...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sadd(key, member);
     //     }
     //     }.runBinary(key);
@@ -748,7 +749,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long srem(const(ubyte)[] key, const(ubyte)[][] member...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.srem(key, member);
     //     }
     //     }.runBinary(key);
@@ -781,7 +782,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long scard(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.scard(key);
     //     }
     //     }.runBinary(key);
@@ -814,7 +815,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long strlen(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.strlen(key);
     //     }
     //     }.runBinary(key);
@@ -825,7 +826,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zadd(const(ubyte)[] key, double score, const(ubyte)[] member) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zadd(key, score, member);
     //     }
     //     }.runBinary(key);
@@ -837,7 +838,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     //     ZAddParams params) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zadd(key, score, member, params);
     //     }
     //     }.runBinary(key);
@@ -848,7 +849,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zadd(key, scoreMembers);
     //     }
     //     }.runBinary(key);
@@ -859,7 +860,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers, ZAddParams params) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zadd(key, scoreMembers, params);
     //     }
     //     }.runBinary(key);
@@ -881,7 +882,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zrem(const(ubyte)[] key, const(ubyte)[][] members...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zrem(key, members);
     //     }
     //     }.runBinary(key);
@@ -915,7 +916,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zrank(const(ubyte)[] key, const(ubyte)[] member) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zrank(key, member);
     //     }
     //     }.runBinary(key);
@@ -926,7 +927,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zrevrank(const(ubyte)[] key, const(ubyte)[] member) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zrevrank(key, member);
     //     }
     //     }.runBinary(key);
@@ -970,7 +971,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zcard(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zcard(key);
     //     }
     //     }.runBinary(key);
@@ -1014,7 +1015,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zcount(const(ubyte)[] key, double min, double max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zcount(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1025,7 +1026,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zcount(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1218,7 +1219,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zremrangeByRank(const(ubyte)[] key, long start, long stop) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zremrangeByRank(key, start, stop);
     //     }
     //     }.runBinary(key);
@@ -1228,7 +1229,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zremrangeByScore(const(ubyte)[] key, double min, double max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zremrangeByScore(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1238,7 +1239,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zremrangeByScore(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zremrangeByScore(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1249,7 +1250,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     //     const(ubyte)[] value) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.linsert(key, where, pivot, value);
     //     }
     //     }.runBinary(key);
@@ -1259,7 +1260,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long lpushx(const(ubyte)[] key, const(ubyte)[][] arg...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.lpushx(key, arg);
     //     }
     //     }.runBinary(key);
@@ -1269,20 +1270,20 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long rpushx(const(ubyte)[] key, const(ubyte)[][] arg...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.rpushx(key, arg);
     //     }
     //     }.runBinary(key);
     // }
 
     override
-    long del(const(ubyte)[] key) {
-        mixin(ClusterBinaryCommandTemplate!("del", long, [key.stringof]));
+    Long del(const(ubyte)[] key) {
+        mixin(ClusterBinaryCommandTemplate!("del", Long, [key.stringof]));
     }
 
     override
-    long del(const(ubyte)[][] keys...) {
-        mixin(ClusterBinaryCommandTemplate!("del", long, [keys.stringof]));
+    Long del(const(ubyte)[][] keys...) {
+        mixin(ClusterBinaryCommandTemplate!("del", Long, [keys.stringof]));
         // return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
         // override
         // long execute(Redis connection) {
@@ -1292,13 +1293,13 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     }
 
     override
-    long unlink(const(ubyte)[] key) {
-        mixin(ClusterBinaryCommandTemplate!("unlink", long, [key.stringof]));
+    Long unlink(const(ubyte)[] key) {
+        mixin(ClusterBinaryCommandTemplate!("unlink", Long, [key.stringof]));
     }
 
     override
-    long unlink(const(ubyte)[][] keys...) {
-        mixin(ClusterBinaryCommandTemplate!("unlink", long, [keys.stringof]));
+    Long unlink(const(ubyte)[][] keys...) {
+        mixin(ClusterBinaryCommandTemplate!("unlink", Long, [keys.stringof]));
     }
 
     // override
@@ -1316,7 +1317,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long bitcount(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.bitcount(key);
     //     }
     //     }.runBinary(key);
@@ -1326,7 +1327,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long bitcount(const(ubyte)[] key, long start, long end) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.bitcount(key, start, end);
     //     }
     //     }.runBinary(key);
@@ -1336,7 +1337,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pfadd(key, elements);
     //     }
     //     }.runBinary(key);
@@ -1346,7 +1347,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long pfcount(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pfcount(key);
     //     }
     //     }.runBinary(key);
@@ -1366,7 +1367,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zlexcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zlexcount(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1418,7 +1419,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long zremrangeByLex(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zremrangeByLex(key, min, max);
     //     }
     //     }.runBinary(key);
@@ -1590,7 +1591,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.msetnx(keysvalues);
     //     }
     //     }.runBinary(keys.length, keys);
@@ -1610,7 +1611,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long renamenx(const(ubyte)[] oldkey, const(ubyte)[] newkey) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.renamenx(oldkey, newkey);
     //     }
     //     }.runBinary(2, oldkey, newkey);
@@ -1642,7 +1643,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sdiffstore(dstkey, keys);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1664,7 +1665,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sinterstore(dstkey, keys);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1674,7 +1675,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long smove(const(ubyte)[] srckey, const(ubyte)[] dstkey, const(ubyte)[] member) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.smove(srckey, dstkey, member);
     //     }
     //     }.runBinary(2, srckey, dstkey);
@@ -1684,7 +1685,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long sort(const(ubyte)[] key, SortingParams sortingParameters, const(ubyte)[] dstkey) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sort(key, sortingParameters, dstkey);
     //     }
     //     }.runBinary(2, key, dstkey);
@@ -1694,7 +1695,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long sort(const(ubyte)[] key, const(ubyte)[] dstkey) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sort(key, dstkey);
     //     }
     //     }.runBinary(2, key, dstkey);
@@ -1716,7 +1717,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.sunionstore(dstkey, keys);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1728,7 +1729,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zinterstore(dstkey, sets);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1740,7 +1741,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zinterstore(dstkey, params, sets);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1752,7 +1753,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zunionstore(dstkey, sets);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1764,7 +1765,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.zunionstore(dstkey, params, sets);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1784,7 +1785,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long publish(const(ubyte)[] channel, const(ubyte)[] message) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.publish(channel, message);
     //     }
     //     }.runWithAnyNode();
@@ -1818,7 +1819,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.bitop(op, destKey, srcKeys);
     //     }
     //     }.runBinary(wholeKeys.length, wholeKeys);
@@ -1840,7 +1841,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long pfcount(const(ubyte)[][] keys...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.pfcount(keys);
     //     }
     //     }.runBinary(keys.length, keys);
@@ -1851,7 +1852,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     //     const(ubyte)[] member) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.geoadd(key, longitude, latitude, member);
     //     }
     //     }.runBinary(key);
@@ -1861,7 +1862,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long geoadd(const(ubyte)[] key, Map!(const(ubyte)[], GeoCoordinate) memberCoordinateMap) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.geoadd(key, memberCoordinateMap);
     //     }
     //     }.runBinary(key);
@@ -2114,7 +2115,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long hstrlen(const(ubyte)[] key, const(ubyte)[] field) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.hstrlen(key, field);
     //     }
     //     }.runBinary(key);
@@ -2134,7 +2135,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long xlen(const(ubyte)[] key) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.xlen(key);
     //     }
     //     }.runBinary(key);
@@ -2176,7 +2177,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long xack(const(ubyte)[] key, const(ubyte)[] group, const(ubyte)[][] ids...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.xack(key, group, ids);
     //     }
     //     }.runBinary(key);   
@@ -2206,7 +2207,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long xgroupDestroy(const(ubyte)[] key, const(ubyte)[] consumer) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.xgroupDestroy(key, consumer);
     //     }
     //     }.runBinary(key);
@@ -2240,7 +2241,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long xdel(const(ubyte)[] key, const(ubyte)[][] ids...) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.xdel(key, ids);
     //     }
     //     }.runBinary(key);
@@ -2250,7 +2251,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long xtrim(const(ubyte)[] key, long maxLen, bool approximateLength) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.xtrim(key, maxLen, approximateLength);
     //     }
     //     }.runBinary(key);
@@ -2269,7 +2270,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     // override
     // List!(const(ubyte)[]) xclaim(const(ubyte)[] key, const(ubyte)[] groupname, const(ubyte)[] consumername, 
-    //     long minIdleTime, long newIdleTime, int retries, bool force, const(ubyte)[][] ids) {
+    //     Long minIdleTime, long newIdleTime, int retries, bool force, const(ubyte)[][] ids) {
     //     return new RedisClusterCommand!(List!(const(ubyte)[]))(connectionHandler, maxAttempts) {
     //     override
     //     List!(const(ubyte)[]) execute(Redis connection) {
@@ -2282,7 +2283,7 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
     // long waitReplicas(const(ubyte)[] key, int replicas, long timeout) {
     //     return new RedisClusterCommand!(long)(connectionHandler, maxAttempts) {
     //     override
-    //     long execute(Redis connection) {
+    //     Long execute(Redis connection) {
     //         return connection.waitReplicas(replicas, timeout);
     //     }
     //     }.runBinary(key);

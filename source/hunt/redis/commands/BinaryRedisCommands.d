@@ -37,6 +37,7 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 
 import hunt.Double;
+import hunt.Long;
 
 /**
  * Common interface for sharded and non-sharded BinaryRedis
@@ -50,7 +51,7 @@ interface BinaryRedisCommands {
 
     bool exists(const(ubyte)[] key);
 
-    long persist(const(ubyte)[] key);
+    Long persist(const(ubyte)[] key);
 
     string type(const(ubyte)[] key);
 
@@ -60,19 +61,19 @@ interface BinaryRedisCommands {
 
     string restoreReplace(const(ubyte)[] key, int ttl, const(ubyte)[] serializedValue);
 
-    long expire(const(ubyte)[] key, int seconds);
+    Long expire(const(ubyte)[] key, int seconds);
 
-    long pexpire(const(ubyte)[] key, long milliseconds);
+    Long pexpire(const(ubyte)[] key, long milliseconds);
 
-    long expireAt(const(ubyte)[] key, long unixTime);
+    Long expireAt(const(ubyte)[] key, long unixTime);
 
-    long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp);
+    Long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp);
 
-    long ttl(const(ubyte)[] key);
+    Long ttl(const(ubyte)[] key);
 
-    long pttl(const(ubyte)[] key);
+    Long pttl(const(ubyte)[] key);
 
-    long touch(const(ubyte)[] key);
+    Long touch(const(ubyte)[] key);
 
     bool setbit(const(ubyte)[] key, long offset, bool value);
 
@@ -80,23 +81,23 @@ interface BinaryRedisCommands {
 
     bool getbit(const(ubyte)[] key, long offset);
 
-    long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value);
+    Long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value);
 
     const(ubyte)[] getrange(const(ubyte)[] key, long startOffset, long endOffset);
 
     const(ubyte)[] getSet(const(ubyte)[] key, const(ubyte)[] value);
 
-    long setnx(const(ubyte)[] key, const(ubyte)[] value);
+    Long setnx(const(ubyte)[] key, const(ubyte)[] value);
 
     string setex(const(ubyte)[] key, int seconds, const(ubyte)[] value);
 
     string psetex(const(ubyte)[] key, long milliseconds, const(ubyte)[] value);
 
-    long decrBy(const(ubyte)[] key, long decrement);
+    Long decrBy(const(ubyte)[] key, long decrement);
 
-    long decr(const(ubyte)[] key);
+    Long decr(const(ubyte)[] key);
 
-    long incrBy(const(ubyte)[] key, long increment);
+    Long incrBy(const(ubyte)[] key, long increment);
 
     Double incrByFloat(const(ubyte)[] key, double increment);
 
@@ -172,7 +173,7 @@ interface BinaryRedisCommands {
 
     // List!(const(ubyte)[]) srandmember(const(ubyte)[] key, int count);
 
-    long strlen(const(ubyte)[] key);
+    Long strlen(const(ubyte)[] key);
 
     // long zadd(const(ubyte)[] key, double score, const(ubyte)[] member);
 
@@ -270,21 +271,21 @@ interface BinaryRedisCommands {
 
     // long rpushx(const(ubyte)[] key, const(ubyte)[][] arg...);
 
-    long del(const(ubyte)[] key);
+    Long del(const(ubyte)[] key);
 
-    long unlink(const(ubyte)[] key);
+    Long unlink(const(ubyte)[] key);
 
     const(ubyte)[] echo(const(ubyte)[] arg);
 
-    long move(const(ubyte)[] key, int dbIndex);
+    Long move(const(ubyte)[] key, int dbIndex);
 
-    long bitcount(const(ubyte)[] key);
+    Long bitcount(const(ubyte)[] key);
 
-    long bitcount(const(ubyte)[] key, long start, long end);
+    Long bitcount(const(ubyte)[] key, long start, long end);
 
-    long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
+    Long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...);
 
-    long pfcount(const(ubyte)[] key);
+    Long pfcount(const(ubyte)[] key);
 
     // // Geo Commands
 

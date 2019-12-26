@@ -14,7 +14,11 @@ module hunt.redis.commands.ClusterCommands;
 import hunt.collection.List;
 
 import hunt.redis.ClusterReset;
+import hunt.Long;
 
+/**
+ * 
+ */
 interface ClusterCommands {
     string clusterNodes();
 
@@ -40,9 +44,9 @@ interface ClusterCommands {
 
     string clusterFlushSlots();
 
-    long clusterKeySlot(string key);
+    Long clusterKeySlot(string key);
 
-    long clusterCountKeysInSlot(int slot);
+    Long clusterCountKeysInSlot(int slot);
 
     string clusterSaveConfig();
 

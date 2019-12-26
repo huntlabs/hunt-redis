@@ -32,6 +32,8 @@ import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
 
+import hunt.Long;
+
 
 /**
  * 
@@ -45,7 +47,7 @@ interface RedisClusterCommands {
 
     bool exists(string key);
 
-    long persist(string key);
+    Long persist(string key);
 
     string type(string key);
 
@@ -263,9 +265,9 @@ interface RedisClusterCommands {
 
     // List!(string) brpop(int timeout, string key);
 
-    long del(string key);
+    Long del(string key);
 
-    long unlink(string key);
+    Long unlink(string key);
 
     // string echo(string string);
 
@@ -358,7 +360,7 @@ interface RedisClusterCommands {
     //  * @return
     //  */
     // StreamEntryID xadd(string key, StreamEntryID id, Map!(string, string) hash,
-    //         long maxLen, bool approximateLength);
+    //         Long maxLen, bool approximateLength);
 
     // /**
     //  * XLEN key
@@ -499,7 +501,7 @@ interface RedisClusterCommands {
     //  *        [FORCE] [JUSTID]
     //  */
     // List!(StreamEntry) xclaim(string key, string group, string consumername,
-    //         long minIdleTime, long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
+    //         Long minIdleTime, long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
 
     // long waitReplicas(string key, int replicas, long timeout);
 

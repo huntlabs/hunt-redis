@@ -35,6 +35,7 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 
 import hunt.Double;
+import hunt.Long;
 
 /**
  * Common interface for sharded and non-sharded Redis
@@ -48,7 +49,7 @@ interface RedisCommands {
 
     bool exists(string key);
 
-    long persist(string key);
+    Long persist(string key);
 
     string type(string key);
 
@@ -58,19 +59,19 @@ interface RedisCommands {
 
     string restoreReplace(string key, int ttl, const(ubyte)[] serializedValue);
 
-    long expire(string key, int seconds);
+    Long expire(string key, int seconds);
 
-    long pexpire(string key, long milliseconds);
+    Long pexpire(string key, long milliseconds);
 
-    long expireAt(string key, long unixTime);
+    Long expireAt(string key, long unixTime);
 
-    long pexpireAt(string key, long millisecondsTimestamp);
+    Long pexpireAt(string key, long millisecondsTimestamp);
 
-    long ttl(string key);
+    Long ttl(string key);
 
-    long pttl(string key);
+    Long pttl(string key);
 
-    long touch(string key);
+    Long touch(string key);
 
     bool setbit(string key, long offset, bool value);
 
@@ -170,7 +171,7 @@ interface RedisCommands {
 
     // List!(string) srandmember(string key, int count);
 
-    long strlen(string key);
+    Long strlen(string key);
 
     // long zadd(string key, double score, string member);
 
@@ -272,17 +273,17 @@ interface RedisCommands {
 
     // List!(string) brpop(int timeout, string key);
 
-    long del(string key);
+    Long del(string key);
 
-    long unlink(string key);
+    Long unlink(string key);
 
     string echo(string string);
 
-    long move(string key, int dbIndex);
+    Long move(string key, int dbIndex);
 
-    long bitcount(string key);
+    Long bitcount(string key);
 
-    long bitcount(string key, long start, long end);
+    Long bitcount(string key, long start, long end);
 
     // long bitpos(string key, bool value);
 
@@ -301,9 +302,9 @@ interface RedisCommands {
 
     // ScanResult!(string) sscan(string key, string cursor, ScanParams params);
 
-    long pfadd(string key, string[] elements...);
+    Long pfadd(string key, string[] elements...);
 
-    long pfcount(string key);
+    Long pfcount(string key);
 
     // // Geo Commands
 
@@ -494,7 +495,7 @@ interface RedisCommands {
     //  *        [FORCE] [JUSTID]
     //  */        
     // List!(StreamEntry) xclaim( string key, string group, string consumername, long minIdleTime, 
-    //     long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
+    //     Long newIdleTime, int retries, bool force, StreamEntryID[] ids...);
 
 
     // Object sendCommand(ProtocolCommand cmd, string[] args...);

@@ -41,7 +41,7 @@ import hunt.redis.util.Hashing;
 import hunt.redis.util.Sharded;
 
 import hunt.Double;
-// import hunt.long;
+import hunt.Long;
 
 import std.conv;
 import std.regex;
@@ -137,43 +137,43 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
     override
-    long expire(const(ubyte)[] key, int seconds) {
+    Long expire(const(ubyte)[] key, int seconds) {
         Redis j = getShard(key);
         return j.expire(key, seconds);
     }
 
     override
-    long pexpire(const(ubyte)[] key, long milliseconds) {
+    Long pexpire(const(ubyte)[] key, long milliseconds) {
         Redis j = getShard(key);
         return j.pexpire(key, milliseconds);
     }
 
     override
-    long expireAt(const(ubyte)[] key, long unixTime) {
+    Long expireAt(const(ubyte)[] key, long unixTime) {
         Redis j = getShard(key);
         return j.expireAt(key, unixTime);
     }
 
     override
-    long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp) {
+    Long pexpireAt(const(ubyte)[] key, long millisecondsTimestamp) {
         Redis j = getShard(key);
         return j.pexpireAt(key, millisecondsTimestamp);
     }
 
     override
-    long ttl(const(ubyte)[] key) {
+    Long ttl(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.ttl(key);
     }
 
     override
-    long pttl(const(ubyte)[] key) {
+    Long pttl(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.pttl(key);
     }
 
     override
-    long touch(const(ubyte)[] key) {
+    Long touch(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.touch(key);
     }
@@ -185,7 +185,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
     override
-    long setnx(const(ubyte)[] key, const(ubyte)[] value) {
+    Long setnx(const(ubyte)[] key, const(ubyte)[] value) {
         Redis j = getShard(key);
         return j.setnx(key, value);
     }
@@ -203,31 +203,31 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
     override
-    long decrBy(const(ubyte)[] key, long decrement) {
+    Long decrBy(const(ubyte)[] key, long decrement) {
         Redis j = getShard(key);
         return j.decrBy(key, decrement);
     }
 
     override
-    long decr(const(ubyte)[] key) {
+    Long decr(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.decr(key);
     }
 
     override
-    long del(const(ubyte)[] key) {
+    Long del(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.del(key);
     }
 
     override
-    long unlink(const(ubyte)[] key) {
+    Long unlink(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.unlink(key);
     }
 
     override
-    long incrBy(const(ubyte)[] key, long increment) {
+    Long incrBy(const(ubyte)[] key, long increment) {
         Redis j = getShard(key);
         return j.incrBy(key, increment);
     }
@@ -239,13 +239,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
 //     override
-//     long incr(const(ubyte)[] key) {
+//     Long incr(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.incr(key);
 //     }
 
 //     override
-//     long append(const(ubyte)[] key, const(ubyte)[] value) {
+//     Long append(const(ubyte)[] key, const(ubyte)[] value) {
 //         Redis j = getShard(key);
 //         return j.append(key, value);
 //     }
@@ -257,13 +257,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long hset(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
+//     Long hset(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
 //         Redis j = getShard(key);
 //         return j.hset(key, field, value);
 //     }
 
 //     override
-//     long hset(const(ubyte)[] key, Map!(const(ubyte)[], const(ubyte)[]) hash) {
+//     Long hset(const(ubyte)[] key, Map!(const(ubyte)[], const(ubyte)[]) hash) {
 //         Redis j = getShard(key);
 //         return j.hset(key, hash);
 //     }
@@ -275,7 +275,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long hsetnx(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
+//     Long hsetnx(const(ubyte)[] key, const(ubyte)[] field, const(ubyte)[] value) {
 //         Redis j = getShard(key);
 //         return j.hsetnx(key, field, value);
 //     }
@@ -293,7 +293,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long hincrBy(const(ubyte)[] key, const(ubyte)[] field, long value) {
+//     Long hincrBy(const(ubyte)[] key, const(ubyte)[] field, long value) {
 //         Redis j = getShard(key);
 //         return j.hincrBy(key, field, value);
 //     }
@@ -311,13 +311,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long hdel(const(ubyte)[] key, const(ubyte)[][] fields...) {
+//     Long hdel(const(ubyte)[] key, const(ubyte)[][] fields...) {
 //         Redis j = getShard(key);
 //         return j.hdel(key, fields);
 //     }
 
 //     override
-//     long hlen(const(ubyte)[] key) {
+//     Long hlen(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.hlen(key);
 //     }
@@ -341,43 +341,43 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long rpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
+//     Long rpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
 //         Redis j = getShard(key);
 //         return j.rpush(key, strings);
 //     }
 
 //     override
-//     long lpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
+//     Long lpush(const(ubyte)[] key, const(ubyte)[][] strings...) {
 //         Redis j = getShard(key);
 //         return j.lpush(key, strings);
 //     }
 
     override
-    long strlen(const(ubyte)[] key) {
+    Long strlen(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.strlen(key);
     }
 
 //     override
-//     long lpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
+//     Long lpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
 //         Redis j = getShard(key);
 //         return j.lpushx(key, string);
 //     }
 
     override
-    long persist(const(ubyte)[] key) {
+    Long persist(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.persist(key);
     }
 
 //     override
-//     long rpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
+//     Long rpushx(const(ubyte)[] key, const(ubyte)[][] string...) {
 //         Redis j = getShard(key);
 //         return j.rpushx(key, string);
 //     }
 
 //     override
-//     long llen(const(ubyte)[] key) {
+//     Long llen(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.llen(key);
 //     }
@@ -407,7 +407,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long lrem(const(ubyte)[] key, long count, const(ubyte)[] value) {
+//     Long lrem(const(ubyte)[] key, long count, const(ubyte)[] value) {
 //         Redis j = getShard(key);
 //         return j.lrem(key, count, value);
 //     }
@@ -425,7 +425,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long sadd(const(ubyte)[] key, const(ubyte)[][] members...) {
+//     Long sadd(const(ubyte)[] key, const(ubyte)[][] members...) {
 //         Redis j = getShard(key);
 //         return j.sadd(key, members);
 //     }
@@ -437,7 +437,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long srem(const(ubyte)[] key, const(ubyte)[][] members...) {
+//     Long srem(const(ubyte)[] key, const(ubyte)[][] members...) {
 //         Redis j = getShard(key);
 //         return j.srem(key, members);
 //     }
@@ -455,7 +455,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long scard(const(ubyte)[] key) {
+//     Long scard(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.scard(key);
 //     }
@@ -479,25 +479,25 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zadd(const(ubyte)[] key, double score, const(ubyte)[] member) {
+//     Long zadd(const(ubyte)[] key, double score, const(ubyte)[] member) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, score, member);
 //     }
 
 //     override
-//     long zadd(const(ubyte)[] key, double score, const(ubyte)[] member, ZAddParams params) {
+//     Long zadd(const(ubyte)[] key, double score, const(ubyte)[] member, ZAddParams params) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, score, member, params);
 //     }
 
 //     override
-//     long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers) {
+//     Long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers);
 //     }
 
 //     override
-//     long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers, ZAddParams params) {
+//     Long zadd(const(ubyte)[] key, Map!(const(ubyte)[], Double) scoreMembers, ZAddParams params) {
 //         Redis j = getShard(key);
 //         return j.zadd(key, scoreMembers, params);
 //     }
@@ -509,7 +509,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zrem(const(ubyte)[] key, const(ubyte)[][] members...) {
+//     Long zrem(const(ubyte)[] key, const(ubyte)[][] members...) {
 //         Redis j = getShard(key);
 //         return j.zrem(key, members);
 //     }
@@ -527,13 +527,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zrank(const(ubyte)[] key, const(ubyte)[] member) {
+//     Long zrank(const(ubyte)[] key, const(ubyte)[] member) {
 //         Redis j = getShard(key);
 //         return j.zrank(key, member);
 //     }
 
 //     override
-//     long zrevrank(const(ubyte)[] key, const(ubyte)[] member) {
+//     Long zrevrank(const(ubyte)[] key, const(ubyte)[] member) {
 //         Redis j = getShard(key);
 //         return j.zrevrank(key, member);
 //     }
@@ -557,7 +557,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zcard(const(ubyte)[] key) {
+//     Long zcard(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.zcard(key);
 //     }
@@ -581,13 +581,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zcount(const(ubyte)[] key, double min, double max) {
+//     Long zcount(const(ubyte)[] key, double min, double max) {
 //         Redis j = getShard(key);
 //         return j.zcount(key, min, max);
 //     }
 
 //     override
-//     long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+//     Long zcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
 //         Redis j = getShard(key);
 //         return j.zcount(key, min, max);
 //     }
@@ -693,25 +693,25 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zremrangeByRank(const(ubyte)[] key, long start, long stop) {
+//     Long zremrangeByRank(const(ubyte)[] key, long start, long stop) {
 //         Redis j = getShard(key);
 //         return j.zremrangeByRank(key, start, stop);
 //     }
 
 //     override
-//     long zremrangeByScore(const(ubyte)[] key, double min, double max) {
+//     Long zremrangeByScore(const(ubyte)[] key, double min, double max) {
 //         Redis j = getShard(key);
 //         return j.zremrangeByScore(key, min, max);
 //     }
 
 //     override
-//     long zremrangeByScore(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+//     Long zremrangeByScore(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
 //         Redis j = getShard(key);
 //         return j.zremrangeByScore(key, min, max);
 //     }
 
 //     override
-//     long zlexcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+//     Long zlexcount(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
 //         Redis j = getShard(key);
 //         return j.zlexcount(key, min, max);
 //     }
@@ -742,13 +742,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long zremrangeByLex(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
+//     Long zremrangeByLex(const(ubyte)[] key, const(ubyte)[] min, const(ubyte)[] max) {
 //         Redis j = getShard(key);
 //         return j.zremrangeByLex(key, min, max);
 //     }
 
 //     override
-//     long linsert(const(ubyte)[] key, ListPosition where, const(ubyte)[] pivot, const(ubyte)[] value) {
+//     Long linsert(const(ubyte)[] key, ListPosition where, const(ubyte)[] pivot, const(ubyte)[] value) {
 //         Redis j = getShard(key);
 //         return j.linsert(key, where, pivot, value);
 //     }
@@ -759,7 +759,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //         return pipeline;
 //     }
 
-//     long objectRefcount(const(ubyte)[] key) {
+//     Long objectRefcount(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.objectRefcount(key);
 //     }
@@ -769,7 +769,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //         return j.objectEncoding(key);
 //     }
 
-//     long objectIdletime(const(ubyte)[] key) {
+//     Long objectIdletime(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.objectIdletime(key);
 //     }
@@ -793,7 +793,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
     override
-    long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value) {
+    Long setrange(const(ubyte)[] key, long offset, const(ubyte)[] value) {
         Redis j = getShard(key);
         return j.setrange(key, offset, value);
     }
@@ -805,7 +805,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
     }
 
     override
-    long move(const(ubyte)[] key, int dbIndex) {
+    Long move(const(ubyte)[] key, int dbIndex) {
         Redis j = getShard(key);
         return j.move(key, dbIndex);
     }
@@ -827,37 +827,37 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
     override
-    long bitcount(const(ubyte)[] key) {
+    Long bitcount(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.bitcount(key);
     }
 
     override
-    long bitcount(const(ubyte)[] key, long start, long end) {
+    Long bitcount(const(ubyte)[] key, long start, long end) {
         Redis j = getShard(key);
         return j.bitcount(key, start, end);
     }
 
     override
-    long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...) {
+    Long pfadd(const(ubyte)[] key, const(ubyte)[][] elements...) {
         Redis j = getShard(key);
         return j.pfadd(key, elements);
     }
 
     override
-    long pfcount(const(ubyte)[] key) {
+    Long pfcount(const(ubyte)[] key) {
         Redis j = getShard(key);
         return j.pfcount(key);
     }
 
 //     override
-//     long geoadd(const(ubyte)[] key, double longitude, double latitude, const(ubyte)[] member) {
+//     Long geoadd(const(ubyte)[] key, double longitude, double latitude, const(ubyte)[] member) {
 //         Redis j = getShard(key);
 //         return j.geoadd(key, longitude, latitude, member);
 //     }
 
 //     override
-//     long geoadd(const(ubyte)[] key, Map!(const(ubyte)[], GeoCoordinate) memberCoordinateMap) {
+//     Long geoadd(const(ubyte)[] key, Map!(const(ubyte)[], GeoCoordinate) memberCoordinateMap) {
 //         Redis j = getShard(key);
 //         return j.geoadd(key, memberCoordinateMap);
 //     }
@@ -985,7 +985,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //  }
 
 //     override
-//     long hstrlen(const(ubyte)[] key, const(ubyte)[] field) {
+//     Long hstrlen(const(ubyte)[] key, const(ubyte)[] field) {
 //         Redis j = getShard(key);
 //         return j.hstrlen(key, field);
 //     }
@@ -997,7 +997,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long xlen(const(ubyte)[] key) {
+//     Long xlen(const(ubyte)[] key) {
 //         Redis j = getShard(key);
 //         return j.xlen(key);
 //     }
@@ -1015,7 +1015,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long xack(const(ubyte)[] key, const(ubyte)[] group, const(ubyte)[][] ids...) {
+//     Long xack(const(ubyte)[] key, const(ubyte)[] group, const(ubyte)[][] ids...) {
 //         Redis j = getShard(key);
 //         return j.xack(key, group, ids);
 //     }
@@ -1033,7 +1033,7 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long xgroupDestroy(const(ubyte)[] key, const(ubyte)[] consumer) {
+//     Long xgroupDestroy(const(ubyte)[] key, const(ubyte)[] consumer) {
 //         Redis j = getShard(key);
 //         return j.xgroupDestroy(key, consumer);
 //     }
@@ -1045,13 +1045,13 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
 //     }
 
 //     override
-//     long xdel(const(ubyte)[] key, const(ubyte)[][] ids...) {
+//     Long xdel(const(ubyte)[] key, const(ubyte)[][] ids...) {
 //         Redis j = getShard(key);
 //         return j.xdel(key, ids);
 //     }
 
 //     override
-//     long xtrim(const(ubyte)[] key, long maxLen, bool approximateLength) {
+//     Long xtrim(const(ubyte)[] key, long maxLen, bool approximateLength) {
 //         Redis j = getShard(key);
 //         return j.xtrim(key, maxLen, approximateLength);
 //     }

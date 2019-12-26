@@ -367,9 +367,27 @@ class AbstractClient : Closeable {
         return cast(const(ubyte)[])bytesObj.value();
     }
 
-    long getIntegerReply() {
+    Long getIntegerReply() {
         flush();
-        return (cast(Long) readProtocolWithCheckingBroken()).value();
+        Object obj = readProtocolWithCheckingBroken();
+        if(obj is null) {
+            warning("No value");
+            return null;
+        } else {
+            import hunt.Number;
+            Long v = cast(Long)obj;
+            if(v is null) {
+                Number number = cast(Number)obj;
+                if(number is null) {
+                    warningf("Not a number: %s", typeid(obj));
+                    return null;
+                }
+
+                v = new Long(number.longValue());
+            }
+            
+            return v;
+        }
     }
 
     List!(string) getMultiBulkReply() {

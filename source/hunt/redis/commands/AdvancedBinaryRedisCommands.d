@@ -8,50 +8,51 @@
  * Licensed under the Apache-2.0 License.
  *
  */
- 
+
 module hunt.redis.commands.AdvancedBinaryRedisCommands;
 
 import hunt.collection.List;
 
 import hunt.redis.params.MigrateParams;
 import hunt.redis.params.ClientKillParams;
-
+import hunt.Long;
 
 interface AdvancedBinaryRedisCommands {
 
-  List!(const(ubyte)[]) configGet(const(ubyte)[] pattern);
+    List!(const(ubyte)[]) configGet(const(ubyte)[] pattern);
 
-  const(ubyte)[] configSet(const(ubyte)[] parameter, const(ubyte)[] value);
+    const(ubyte)[] configSet(const(ubyte)[] parameter, const(ubyte)[] value);
 
-  string slowlogReset();
+    string slowlogReset();
 
-  long slowlogLen();
+    Long slowlogLen();
 
-  List!(const(ubyte)[]) slowlogGetBinary();
+    List!(const(ubyte)[]) slowlogGetBinary();
 
-  List!(const(ubyte)[]) slowlogGetBinary(long entries);
+    List!(const(ubyte)[]) slowlogGetBinary(long entries);
 
-  long objectRefcount(const(ubyte)[] key);
+    Long objectRefcount(const(ubyte)[] key);
 
-  const(ubyte)[] objectEncoding(const(ubyte)[] key);
+    const(ubyte)[] objectEncoding(const(ubyte)[] key);
 
-  long objectIdletime(const(ubyte)[] key);
+    Long objectIdletime(const(ubyte)[] key);
 
-  string migrate(string host, int port, const(ubyte)[] key, int destinationDB, int timeout);
+    string migrate(string host, int port, const(ubyte)[] key, int destinationDB, int timeout);
 
-  string migrate(string host, int port, int destinationDB, int timeout, MigrateParams params, const(ubyte)[][] keys...);
+    string migrate(string host, int port, int destinationDB, int timeout,
+            MigrateParams params, const(ubyte)[][] keys...);
 
-  string clientKill(const(ubyte)[] ipPort);
+    string clientKill(const(ubyte)[] ipPort);
 
-  string clientKill(string ip, int port);
+    string clientKill(string ip, int port);
 
-  long clientKill(ClientKillParams params);
+    Long clientKill(ClientKillParams params);
 
-  const(ubyte)[] clientGetnameBinary();
+    const(ubyte)[] clientGetnameBinary();
 
-  const(ubyte)[] clientListBinary();
+    const(ubyte)[] clientListBinary();
 
-  string clientSetname(const(ubyte)[] name);
+    string clientSetname(const(ubyte)[] name);
 
-  const(ubyte)[] memoryDoctorBinary();
+    const(ubyte)[] memoryDoctorBinary();
 }

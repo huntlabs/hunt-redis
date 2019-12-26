@@ -34,6 +34,8 @@ import hunt.collection.Map;
 import hunt.collection.Set;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
+import hunt.Long;
+
 
 private template ClusterStringCommandTemplate(string name, R, string[] args) {
     import std.format;
@@ -193,14 +195,14 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
     }
 
     override
-    long exists(string[] keys...) {
-        mixin(ClusterStringCommandTemplate!("exists", long, [keys.stringof]));
+    Long exists(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("exists", Long, [keys.stringof]));
     }
     alias exists = BinaryRedisCluster.exists;
 
     override
-    long persist(string key) {
-        mixin(ClusterStringCommandTemplate!("persist", long, [key.stringof]));
+    Long persist(string key) {
+        mixin(ClusterStringCommandTemplate!("persist", Long, [key.stringof]));
     }
 
     override
@@ -1282,24 +1284,24 @@ class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
     // }
 
     override
-    long del(string key) {
-        mixin(ClusterStringCommandTemplate!("del", long, [key.stringof]));
+    Long del(string key) {
+        mixin(ClusterStringCommandTemplate!("del", Long, [key.stringof]));
     }
 
     override
-    long del(string[] keys...) {
-        mixin(ClusterStringCommandTemplate!("del", long, [keys.stringof]));
+    Long del(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("del", Long, [keys.stringof]));
     }
     alias del = BinaryRedisCluster.del;
 
     override
-    long unlink(string key) {
-        mixin(ClusterStringCommandTemplate!("unlink", long, [key.stringof]));
+    Long unlink(string key) {
+        mixin(ClusterStringCommandTemplate!("unlink", Long, [key.stringof]));
     }
 
     override
-    long unlink(string[] keys...) {
-        mixin(ClusterStringCommandTemplate!("unlink", long, [keys.stringof]));
+    Long unlink(string[] keys...) {
+        mixin(ClusterStringCommandTemplate!("unlink", Long, [keys.stringof]));
     }
     alias unlink = BinaryRedisCluster.unlink;
 

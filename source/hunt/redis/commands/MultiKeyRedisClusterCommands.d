@@ -21,12 +21,14 @@ import hunt.redis.ZParams;
 import hunt.collection.List;
 import hunt.collection.Set;
 
+import hunt.Long;
+
 interface MultiKeyRedisClusterCommands {
-    long del(string[] keys...);
+    Long del(string[] keys...);
 
-    long unlink(string[] keys...);
+    Long unlink(string[] keys...);
 
-    long exists(string[] keys...);
+    Long exists(string[] keys...);
 
     // List!(string) blpop(int timeout, string[] keys...);
 
