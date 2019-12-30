@@ -84,44 +84,44 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
         this(nodes, DEFAULT_TIMEOUT);
     }
 
-    this(Set!(HostAndPort) jedisClusterNode, int timeout, int maxAttempts,
+    this(Set!(HostAndPort) redisClusterNode, int timeout, int maxAttempts,
         GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(jedisClusterNode, poolConfig,
+        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
             timeout);
         this.maxAttempts = maxAttempts;
     }
 
-    this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout,
+    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout,
                                 int soTimeout, int maxAttempts, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(jedisClusterNode, poolConfig,
+        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
             connectionTimeout, soTimeout);
         this.maxAttempts = maxAttempts;
     }
 
-    this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
+    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
             string password, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(jedisClusterNode, poolConfig,
+        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
                 connectionTimeout, soTimeout, password);
         this.maxAttempts = maxAttempts;
     }
 
-    this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
+    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
             string password, string clientName, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(jedisClusterNode, poolConfig,
+        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
                 connectionTimeout, soTimeout, password, clientName);
         this.maxAttempts = maxAttempts;
     }
 
-    // this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
+    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
     //         string password, string clientName, GenericObjectPoolConfig poolConfig, bool ssl) {
-    //     this(jedisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl, null, null, null, null);
+    //     this(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl, null, null, null, null);
     // }
 
-    // this(Set!(HostAndPort) jedisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
+    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
     //         string password, string clientName, GenericObjectPoolConfig poolConfig,
     //         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
     //         HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
-    //     this.connectionHandler = new RedisSlotBasedConnectionHandler(jedisClusterNode, poolConfig,
+    //     this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
     //         connectionTimeout, soTimeout, password, clientName, ssl, sslSocketFactory, 
     //         sslParameters, hostnameVerifier, hostAndPortMap);
     //     this.maxAttempts = maxAttempts;
