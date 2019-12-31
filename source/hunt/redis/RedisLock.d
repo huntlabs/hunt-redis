@@ -91,7 +91,7 @@ class RedisLock {
 
                 auto t2 = MonoTime.currTime.ticks();
                 auto clockdrat = cast(size_t)(_clockFactor * ttl) + 2;
-                size_t validtime = ttl - ticksToNSecs(t2 - t1) / 1000 - clockdrat;
+                auto validtime = ttl - ticksToNSecs(t2 - t1) / 1000 - clockdrat;
 
                 version(HUNT_REDIS_DEBUG) {
                     tracef("validtime=%d, n=%d, _quornum=%d", validtime, n, _quornum);
@@ -99,7 +99,7 @@ class RedisLock {
 
 
                 if (validtime > 0 && n >= _quornum) {
-                    lock.validTime = validtime;
+                    lock.validTime = cast(size_t)validtime;
                     return true;
                 } else {
                     unlock(lock);
