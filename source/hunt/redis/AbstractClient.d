@@ -56,7 +56,8 @@ alias ConstUBytes = const(ubyte)[];
 
 
 /**
-*/
+ * 
+ */
 class AbstractClient : Closeable {
     private NetClient _client;
     private Mutex _doneLocker;
@@ -162,7 +163,6 @@ class AbstractClient : Closeable {
 
         _client = NetUtil.createNetClient(options);
 
-
         _client.setHandler(new class NetConnectionHandler {
 
             override void connectionOpened(Connection connection) {
@@ -170,6 +170,10 @@ class AbstractClient : Closeable {
                 
                 outputStream = new RedisOutputStream(new TcpOutputStream(connection.getStream()));
                 inputStream = new RedisInputStream(new TcpInputStream(connection.getStream()));  
+
+                _doneLocker.lock();
+                scope (exit)
+                    _doneLocker.unlock();
 
                 _doneCondition.notifyAll();
             }
@@ -203,24 +207,16 @@ class AbstractClient : Closeable {
                 version (HUNT_DEBUG) warning(t);
             }
         }).connect(host, port);        
-
-        // _client.connectHandler((NetSocket socket) {
-        //     version (HUNT_DEBUG) infof("A connection created with %s:%d", host, port);
-        //     // tcpSession.handler(&onDataReceived); 
-
-        //     outputStream = new RedisOutputStream(new TcpOutputStream(socket.getTcpStream()));
-        //     inputStream = new RedisInputStream(new TcpInputStream(socket.getTcpStream()));  
-
-        //     _doneCondition.notifyAll();
-        // });
-        // _client.connect(port, host);
+        
+        if(connectionTimeout <= 0) {
+            connectionTimeout = 2000;
+        }
         
         version (HUNT_DEBUG) {
             infof("Waiting for a connection in %s...", seconds(connectionTimeout / 1000));
         }
 
         _doneCondition.wait(connectionTimeout.msecs);
-
         if(!isConnected()) {
             throw new RedisConnectionException("Unable to connect to the server.");
         }

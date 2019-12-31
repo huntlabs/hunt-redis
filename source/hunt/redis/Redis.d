@@ -2793,10 +2793,10 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         }
     }
 
-    void subscribe(RedisPubSub jedisPubSub, string[] channels...) {
+    void subscribe(RedisPubSub redisPubSub, string[] channels...) {
         client.setTimeoutInfinite();
         try {
-            jedisPubSub.proceed(client, channels);
+            redisPubSub.proceed(client, channels);
         } finally {
             client.rollbackTimeout();
         }
@@ -2809,11 +2809,11 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         return client.getIntegerReply();
     }
 
-    void psubscribe(RedisPubSub jedisPubSub, string[] patterns...) {
+    void psubscribe(RedisPubSub redisPubSub, string[] patterns...) {
         checkIsInMultiOrPipeline();
         client.setTimeoutInfinite();
         try {
-            jedisPubSub.proceedWithPatterns(client, patterns);
+            redisPubSub.proceedWithPatterns(client, patterns);
         } finally {
             client.rollbackTimeout();
         }
@@ -3471,8 +3471,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         }
     }
 
-    void setDataSource(RedisPoolAbstract jedisPool) {
-        this.dataSource = jedisPool;
+    void setDataSource(RedisPoolAbstract redisPool) {
+        this.dataSource = redisPool;
     }
 
     Long pfadd(string key, string[] elements...) {

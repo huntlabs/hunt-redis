@@ -14,6 +14,12 @@ module hunt.redis.RedisPoolConfig;
 import hunt.redis.Protocol;
 import hunt.pool.impl.GenericObjectPoolConfig;
 
+struct ClusterOption {
+    bool enabled = false;
+    string[] nodes;
+}
+
+
 /**
  * 
  */
