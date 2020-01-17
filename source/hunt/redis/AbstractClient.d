@@ -156,10 +156,15 @@ class AbstractClient : Closeable {
         _doneLocker.lock();
         scope (exit)
             _doneLocker.unlock();
-            
+
+        if(soTimeout <= 0) {
+            soTimeout = Protocol.DEFAULT_TIMEOUT;
+        }
+        
+        Duration idleTimeout = soTimeout.msecs;
         NetClientOptions options = new NetClientOptions();
         options.setConnectTimeout(connectionTimeout.msecs);
-        options.setIdleTimeout(soTimeout.msecs);
+        options.setIdleTimeout(idleTimeout);
 
         _client = NetUtil.createNetClient(options);
 
@@ -169,7 +174,7 @@ class AbstractClient : Closeable {
                 version (HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
                 
                 outputStream = new RedisOutputStream(new TcpOutputStream(connection.getStream()));
-                inputStream = new RedisInputStream(new TcpInputStream(connection.getStream()));  
+                inputStream = new RedisInputStream(new TcpInputStream(connection.getStream(), idleTimeout));  
 
                 _doneLocker.lock();
                 scope (exit)
@@ -213,7 +218,7 @@ class AbstractClient : Closeable {
         }
         
         version (HUNT_DEBUG) {
-            infof("Waiting for a connection in %s...", seconds(connectionTimeout / 1000));
+            infof("Waiting for a connection in %s...", msecs(connectionTimeout));
         }
 
         _doneCondition.wait(connectionTimeout.msecs);
