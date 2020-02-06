@@ -24,6 +24,7 @@ import hunt.redis.Exceptions;
 import hunt.redis.util.RedisURIHelper;
 import hunt.net.util.HttpURI;
 
+import hunt.logging.ConsoleLogger;
 
 /**
  * 
@@ -32,6 +33,11 @@ class RedisPool : RedisPoolAbstract {
 
     this() {
         this(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
+    }
+
+    this(RedisPoolConfig config) {
+        this(config, config.host, config.port, config.connectionTimeout,
+            config.soTimeout, config.password, config.database, config.clientName);
     }
 
     this(GenericObjectPoolConfig poolConfig, string host) {
@@ -245,6 +251,14 @@ class RedisPool : RedisPoolAbstract {
     //   super(poolConfig, new RedisFactory(uri, connectionTimeout, soTimeout, null, sslSocketFactory,
     //       sslParameters, hostnameVerifier));
     // }
+
+    void initPool(RedisPoolConfig config) {
+        RedisFactory redisFactory = new RedisFactory(config.host, config.port, config.connectionTimeout,
+            config.soTimeout, config.password, config.database, config.clientName);
+        initPool(config, redisFactory);
+    }
+
+    alias initPool = RedisPoolAbstract.initPool;
 
     override
     Redis getResource() {

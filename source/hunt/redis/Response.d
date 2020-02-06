@@ -36,7 +36,9 @@ abstract class AbstractResponse {
 
 }
 
-class Response(T) : AbstractResponse {
+alias Response = RedisResponse;
+
+class RedisResponse(T) : AbstractResponse {
     protected T response = null;
 
     private Builder!(T) builder;
