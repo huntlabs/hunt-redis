@@ -141,7 +141,7 @@ class BuilderFactory {
 
             override
             string toString() {
-                    return "string";
+                return "string";
             }
         });
     }

@@ -36,9 +36,9 @@ class GeoRadiusResponse {
         return member;
     }
 
-    // string getMemberByString() {
-    //     return SafeEncoder.encode(member);
-    // }
+    string getMemberByString() {
+        return cast(string)SafeEncoder.encode(member);
+    }
 
     double getDistance() {
         return distance;

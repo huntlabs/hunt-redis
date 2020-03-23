@@ -1,5 +1,8 @@
 module test.commands.RedisCommandTestBase;
 
+import test.HostAndPortUtil;
+import test.commands.RedisCommandTestBase;
+
 import hunt.Assert;
 import hunt.collection;
 import hunt.Exceptions;
@@ -9,8 +12,6 @@ import hunt.util.UnitTest;
 
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
-
-import test.HostAndPortUtil;
 
 
 abstract class RedisCommandTestBase {

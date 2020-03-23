@@ -1181,7 +1181,7 @@ class BinaryClient : AbstractClient {
     }
 
     void geodist(const(ubyte)[] key, const(ubyte)[] member1, const(ubyte)[] member2, GeoUnit unit) {
-        sendCommand(Command.GEODIST, key, member1, member2, cast(const(ubyte)[])to!string(unit));
+        sendCommand(Command.GEODIST, key, member1, member2, cast(const(ubyte)[])(unit.toString()));
     }
 
     void geohash(const(ubyte)[] key, const(ubyte)[][] members...) {
@@ -1194,42 +1194,42 @@ class BinaryClient : AbstractClient {
 
     void georadius(const(ubyte)[] key, double longitude, double latitude, double radius, GeoUnit unit) {
         sendCommand(Command.GEORADIUS, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-            cast(const(ubyte)[])to!string(unit));
+            cast(const(ubyte)[])(unit.toString()));
     }
 
     void georadiusReadonly(const(ubyte)[] key, double longitude, double latitude, double radius, GeoUnit unit) {
         sendCommand(Command.GEORADIUS_RO, key, toByteArray(longitude), toByteArray(latitude), toByteArray(radius),
-            cast(const(ubyte)[])to!string(unit));
+            cast(const(ubyte)[])(unit.toString()));
     }
 
     void georadius(const(ubyte)[] key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
         sendCommand(Command.GEORADIUS, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-            toByteArray(radius), cast(const(ubyte)[])to!string(unit)));
+            toByteArray(radius), cast(const(ubyte)[])(unit.toString())));
     }
 
     void georadiusReadonly(const(ubyte)[] key, double longitude, double latitude, double radius, GeoUnit unit,
             GeoRadiusParam param) {
         sendCommand(Command.GEORADIUS_RO, param.getByteParams(key, toByteArray(longitude), toByteArray(latitude),
-            toByteArray(radius), cast(const(ubyte)[])to!string(unit)));
+            toByteArray(radius), cast(const(ubyte)[])(unit.toString())));
     }
 
     void georadiusByMember(const(ubyte)[] key, const(ubyte)[] member, double radius, GeoUnit unit) {
-        sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), cast(const(ubyte)[])to!string(unit));
+        sendCommand(Command.GEORADIUSBYMEMBER, key, member, toByteArray(radius), cast(const(ubyte)[])(unit.toString()));
     }
 
     void georadiusByMemberReadonly(const(ubyte)[] key, const(ubyte)[] member, double radius, GeoUnit unit) {
-        sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), cast(const(ubyte)[])to!string(unit));
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, key, member, toByteArray(radius), cast(const(ubyte)[])(unit.toString()));
     }
 
     void georadiusByMember(const(ubyte)[] key, const(ubyte)[] member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), cast(const(ubyte)[])to!string(unit)));
+        sendCommand(Command.GEORADIUSBYMEMBER, param.getByteParams(key, member, toByteArray(radius), cast(const(ubyte)[])(unit.toString())));
     }
 
     void georadiusByMemberReadonly(const(ubyte)[] key, const(ubyte)[] member, double radius, GeoUnit unit,
             GeoRadiusParam param) {
-        sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), cast(const(ubyte)[])to!string(unit)));
+        sendCommand(Command.GEORADIUSBYMEMBER_RO, param.getByteParams(key, member, toByteArray(radius), cast(const(ubyte)[])(unit.toString())));
     }
 
     void moduleLoad(const(ubyte)[] path) {

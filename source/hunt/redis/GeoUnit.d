@@ -14,5 +14,22 @@ module hunt.redis.GeoUnit;
 import hunt.redis.util.SafeEncoder;
 
 enum GeoUnit {
-  M, KM, MI, FT
+	M, KM, MI, FT
+}
+
+
+string toString(GeoUnit value) {
+	final switch(value) {
+		case GeoUnit.M:
+			return "m";
+
+		case GeoUnit.KM:
+			return "km";
+
+		case GeoUnit.MI:
+			return "mi";
+
+		case GeoUnit.FT:
+			return "ft";
+	}
 }

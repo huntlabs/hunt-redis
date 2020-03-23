@@ -1,5 +1,8 @@
 module test.commands.SortedSetCommandsTest;
 
+import test.HostAndPortUtil;
+import test.commands.RedisCommandTestBase;
+
 import hunt.Assert;
 import hunt.collection;
 import hunt.Exceptions;
@@ -8,15 +11,6 @@ import hunt.util.Common;
 import hunt.util.UnitTest;
 import hunt.Double;
 import hunt.Long;
-
-
-// import static org.junit.Assert.assertArrayEquals;
-// import static org.junit.Assert.assertEquals;
-// import static org.junit.Assert.assertFalse;
-// import static org.junit.Assert.assertNull;
-// import static hunt.redis.ScanParams.SCAN_POINTER_START;
-// import static hunt.redis.ScanParams.SCAN_POINTER_START_BINARY;
-// import static hunt.redis.tests.utils.AssertUtil.assertByteArraySetEquals;
 
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
@@ -28,8 +22,6 @@ import hunt.redis.params.ZAddParams;
 import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 
-import test.HostAndPortUtil;
-import test.commands.RedisCommandTestBase;
 
 class SortedSetCommandsTest : RedisCommandTestBase {
   enum const(ubyte)[] bfoo = [ 0x01, 0x02, 0x03, 0x04 ];

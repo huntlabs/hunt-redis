@@ -8,6 +8,8 @@ import test.RedisTest;
 import test.RedisClusterTest;
 import test.RedisPoolTest;
 import test.utils.RedisURIHelperTest;
+
+import test.commands.GeoCommandsTest;
 import test.commands.SortedSetCommandsTest;
 
 void main() {
@@ -18,5 +20,7 @@ void main() {
     // testUnits!(RedisPoolTest);
 
     // testUnits!(RedisURIHelperTest);
-    testUnits!(SortedSetCommandsTest);
+
+    testUnits!(GeoCommandsTest);
+    // testUnits!(SortedSetCommandsTest);
 }
