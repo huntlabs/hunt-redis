@@ -211,10 +211,10 @@ class AbstractClient : Closeable {
             override void failedAcceptingConnection(int sessionId, Throwable t) {
                 version (HUNT_DEBUG) warning(t);
             }
-        }).connect(host, port);        
-        
+        }).connect(host, port);      
+
         if(connectionTimeout <= 0) {
-            connectionTimeout = 2000;
+            connectionTimeout = Protocol.DEFAULT_TIMEOUT;
         }
         
         version (HUNT_DEBUG) {

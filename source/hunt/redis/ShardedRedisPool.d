@@ -98,8 +98,8 @@ private class ShardedRedisFactory : PooledObjectFactory!(ShardedRedis) {
     }
 
     override
-    void destroyObject(IPooledObject pooledShardedRedis) {
-        ShardedRedis shardedRedis = cast(ShardedRedis) pooledShardedRedis.getObject();
+    void destroyObject(IPooledObject pooledRedis) {
+        ShardedRedis shardedRedis = (cast(PooledObject!ShardedRedis)pooledRedis).getObject();
         assert(shardedRedis !is null);
         foreach(Redis jedis ; shardedRedis.getAllShards()) {
             if (jedis.isConnected()) {
@@ -118,9 +118,9 @@ private class ShardedRedisFactory : PooledObjectFactory!(ShardedRedis) {
     }
 
     override
-    bool validateObject(IPooledObject pooledShardedRedis) {
+    bool validateObject(IPooledObject pooledRedis) {
         try {
-            ShardedRedis jedis = cast(ShardedRedis)pooledShardedRedis.getObject();
+            ShardedRedis jedis = (cast(PooledObject!ShardedRedis)pooledRedis).getObject();
             assert(jedis !is null);
             
             foreach(Redis shard ; jedis.getAllShards()) {
