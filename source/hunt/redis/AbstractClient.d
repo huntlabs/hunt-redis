@@ -223,15 +223,16 @@ class AbstractClient : Closeable {
 
         _doneCondition.wait(connectionTimeout.msecs);
         if(!isConnected()) {
-            throw new RedisConnectionException("Unable to connect to the server.");
+            string msg = format("Unable to connect to the server in %s.", 
+                connectionTimeout.msecs);
+            debug warning(msg);
+            throw new RedisConnectionException(msg);
         }
     }
 
     override
     void close() {
-        if (isConnected()) {
-            _client.close();
-        }
+        if (isConnected()) _client.close();
     }
 
     void disconnect() {
@@ -242,17 +243,14 @@ class AbstractClient : Closeable {
         return _client !is null && _client.isConnected();
     }
 
-
     void setTimeoutInfinite() {
-        try {
-            if (!isConnected()) {
+        if (!isConnected()) {
+            try {
                 connect();
+            } catch (SocketException ex) {
+                broken = true;
+                throw new RedisConnectionException(ex);
             }
-            // socket.setSoTimeout(0);
-            // implementationMissing(false);
-        } catch (SocketException ex) {
-            broken = true;
-            throw new RedisConnectionException(ex);
         }
     }
 

@@ -155,6 +155,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
             }
         } catch (RedisException je) {
             debug warning(je.msg);
+            // version(HUNT_DEBUG) warning(je);
             redis.close();
             throw je;
         }
