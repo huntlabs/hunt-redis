@@ -36,10 +36,10 @@ import hunt.util.Common;
 
 import hunt.net;
 
-import hunt.io.Common;
 import hunt.io.TcpStream;
-import hunt.io.TcpInputStream;
-import hunt.io.TcpOutputStream;
+import hunt.stream.Common;
+import hunt.stream.TcpInputStream;
+import hunt.stream.TcpOutputStream;
 
 import core.sync.condition;
 import core.sync.mutex;

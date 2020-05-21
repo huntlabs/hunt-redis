@@ -17,7 +17,7 @@ import hunt.redis.util.SafeEncoder;
 import test.commands.RedisCommandTestBase;
 
 // enum RedisHost = "localhost";
-enum RedisHost = "10.1.222.120";
+enum RedisHost = "10.1.222.110";
 
 class RedisTest : RedisCommandTestBase {
     // @Test void useWithoutConnecting() {
@@ -26,20 +26,26 @@ class RedisTest : RedisCommandTestBase {
     //     redis.dbSize();
     // }
 
-    // @Test void checkBinaryData() {
-    //     ubyte[] bigdata = new ubyte[1777];
-    //     // ubyte[] bigdata = new ubyte[7];
-    //     for (int b = 0; b < bigdata.length; b++) {
-    //         bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
-    //     }
-    //     Map!(string, string) hash = new HashMap!(string, string)();
-    //     hash.put("data", SafeEncoder.encode(bigdata));
+    @Test void checkBinaryData() {
+        // ubyte[] bigdata = new ubyte[1777];
+        // // ubyte[] bigdata = new ubyte[7];
+        // for (int b = 0; b < bigdata.length; b++) {
+        //     bigdata[b] = cast(ubyte)(cast(ubyte) b % 255);
+        // }
+        // Map!(string, string) hash = new HashMap!(string, string)();
+        // hash.put("data", SafeEncoder.encode(bigdata));
 
-    //     string status = redis.hmset("foo", hash);
-    //     assertEquals("OK", status);
-    //     Map!(string, string) hash2 = redis.hgetAll("foo");
-    //     assertEquals(hash, redis.hgetAll("foo"));
-    // }
+        // string status = redis.hmset("foo", hash);
+        // assertEquals("OK", status);
+        // Map!(string, string) hash2 = redis.hgetAll("foo");
+        // assertEquals(hash, redis.hgetAll("foo"));
+
+
+        Map!(string, string) hash = new HashMap!(string, string)();
+        hash.put("data", "123");
+        string status = redis.hmset("foo", hash);
+        warning(status);
+    }
 
     // @Test void checkBinaryData2() {
     //     ubyte[] bigdata = new ubyte[1777];

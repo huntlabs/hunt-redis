@@ -14,7 +14,7 @@ module hunt.redis.params.SetParams;
 import hunt.redis.params.Params;
 
 import hunt.collection.ArrayList;
-import hunt.collection.BufferUtils;
+import hunt.io.BufferUtils;
 
 import hunt.redis.util.SafeEncoder;
 

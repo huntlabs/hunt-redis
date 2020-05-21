@@ -8,6 +8,6 @@
         "hunt-redis" :{"path": "../../"}
     },
     "versions": [
-        "HUNT_DEBUG", "HUNT_REDIS_DEBUG", "HUNT_IO_DEBUG_MORE1", "HUNT_CONCURRENCY_DEBUG"
+        "HUNT_DEBUG", "HUNT_REDIS_DEBUG"
     ]
 }

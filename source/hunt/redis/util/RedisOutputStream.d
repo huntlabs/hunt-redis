@@ -13,9 +13,9 @@ module hunt.redis.util.RedisOutputStream;
 
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
-import hunt.io.Common;
-import hunt.io.FilterInputStream;
-import hunt.io.FilterOutputStream;
+import hunt.stream.Common;
+import hunt.stream.FilterInputStream;
+import hunt.stream.FilterOutputStream;
 
 
 /**

@@ -16,10 +16,11 @@ import hunt.redis.util.SafeEncoder;
 import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.Long;
-import hunt.text.StringBuilder;
+import hunt.util.StringBuilder;
 
 /**
-*/
+ * 
+ */
 class Slowlog {
     private long id;
     private long timeStamp;

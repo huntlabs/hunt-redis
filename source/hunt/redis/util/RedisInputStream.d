@@ -15,11 +15,11 @@ import hunt.redis.Exceptions;
 
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
-import hunt.io.Common;
-import hunt.io.ByteArrayOutputStream;
-import hunt.io.FilterInputStream;
-import hunt.io.FilterOutputStream;
-import hunt.text.StringBuilder;
+import hunt.stream.Common;
+import hunt.stream.ByteArrayOutputStream;
+import hunt.stream.FilterInputStream;
+import hunt.stream.FilterOutputStream;
+import hunt.util.StringBuilder;
 
 import std.algorithm;
 
