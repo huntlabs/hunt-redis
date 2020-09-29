@@ -3467,7 +3467,8 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
                 pool.returnResource(this);
             }
         } else {
-            super.close();
+            warning("The connnection has already closed!");
+            // super.close();
         }
     }
 

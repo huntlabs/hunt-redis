@@ -377,12 +377,17 @@ class AbstractClient : Closeable {
             Long v = cast(Long)obj;
             if(v is null) {
                 Number number = cast(Number)obj;
-                if(number is null) {
-                    warningf("Not a number: %s", typeid(obj));
-                    return null;
+                Bytes bytes = cast(Bytes)obj;
+                if(number !is null) {
+                    v = new Long(number.longValue());
+                    return v;
+                } else if(bytes !is null) {
+                    warning("%(%02X %)", bytes.value());
+                    // v = new Long(number.longValue());
                 }
 
-                v = new Long(number.longValue());
+                warningf("Not a number: %s", typeid(obj));
+                return null;
             }
             
             return v;
