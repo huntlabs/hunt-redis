@@ -382,7 +382,7 @@ class AbstractClient : Closeable {
                     v = new Long(number.longValue());
                     return v;
                 } else if(bytes !is null) {
-                    warning("%(%02X %)", bytes.value());
+                    warningf("%(%02X %)", bytes.value());
                     // v = new Long(number.longValue());
                 }
 

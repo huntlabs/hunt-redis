@@ -17,10 +17,10 @@ void main() {
     // testUnits!(HostAndPortTest);
     // testUnits!(RedisTest);
     // testUnits!(RedisClusterTest);
-    // testUnits!(RedisPoolTest);
+    testUnits!(RedisPoolTest);
 
     // testUnits!(RedisURIHelperTest);
 
-    testUnits!(GeoCommandsTest);
+    // testUnits!(GeoCommandsTest);
     // testUnits!(SortedSetCommandsTest);
 }

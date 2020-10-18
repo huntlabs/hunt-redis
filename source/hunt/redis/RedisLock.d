@@ -39,47 +39,31 @@ struct LockedObject {
 */
 class RedisLock {
 
-    this(string redis_servers, string password="", bool initConnected = true) {
+    private Redis[] _redisClients;
+    private LockedObject _lock;
+    private string _lockKey;
 
-        auto hostports = redis_servers.split(";");
-        foreach (hp; hostports) {
-            if (hp == string.init)
-                continue;
 
-            string[] hpc = hp.split(":");
+    this(Redis client, string lockKey, int delaytime = 10, float clockFactor = 0.01f) {
+        this([client], lockKey, delaytime, clockFactor);
+    }
 
-            try {
-                Redis client = new Redis(hpc[0], to!ushort(hpc[1]));
-                if(!password.empty)
-                    client.auth(password);
-                    
-                _redisClients ~= client;
-            } catch (Throwable e) {
-                if (initConnected)
-                    throw e;
-                else
-                    _hostports[hp] = true;
-            }
-        }
+    this(Redis[] client, string lockKey, int delaytime = 10, float clockFactor = 0.01f) {
+        _redisClients = client;
+        _lockKey = lockKey;
 
         _quornum = _redisClients.length / 2 + 1;
-
-        _delaytime = 10;
-        _clockFactor = 0.01;
+        _delaytime = delaytime;
+        _clockFactor = clockFactor;        
     }
 
-    void close() {
-        foreach(Redis client; _redisClients) {
-            client.close();
-        }
-    }
-
-    bool lock(string key, ref LockedObject lock, uint timeout = uint.max, uint ttl = 60000) {
+    bool lock(uint timeout = uint.max, uint ttl = 60000) {
+        string key = _lockKey;
         string val = to!string(randomUUID());
         auto end_tick = nsecsToTicks(cast(long) timeout * 1000 * 1000) + MonoTime.currTime.ticks();
         synchronized (this) {
-            lock.key = key;
-            lock.uniqueId = val;
+            _lock.key = key;
+            _lock.uniqueId = val;
 
             do {
                 size_t n = 0;
@@ -99,10 +83,10 @@ class RedisLock {
 
 
                 if (validtime > 0 && n >= _quornum) {
-                    lock.validTime = cast(size_t)validtime;
+                    _lock.validTime = cast(size_t)validtime;
                     return true;
                 } else {
-                    unlock(lock);
+                    unlock();
                 }
                 size_t delay = rand() % _delaytime + _delaytime / 2;
                 Thread.sleep(dur!"msecs"(delay));
@@ -113,25 +97,12 @@ class RedisLock {
 
     }
 
-    void unlock(const ref LockedObject lock) {
+    void unlock() {
         synchronized (this) {
             foreach (c; _redisClients) {
-                unlockInstance(c, lock.key, lock.uniqueId);
-            }
-
-            if (_hostports !is null) {
-                foreach (k; _hostports.keys) {
-                    auto hpc = k.split(":");
-                    try {
-                        _redisClients ~= new Redis(hpc[0], to!ushort(hpc[1]));
-                        _hostports.remove(k);
-                    } catch (Throwable e) {
-                        warning(e);
-                    }
-                }
+                unlockInstance(c, _lock.key, _lock.uniqueId);
             }
         }
-
     }
 
     private static bool lockInstance(Redis redis, string key, string value, long ttl) {
@@ -159,9 +130,6 @@ class RedisLock {
 
     }
 
-    Redis[] _redisClients;
-
-    bool[string] _hostports;
 
     immutable size_t _quornum;
     immutable size_t _delaytime = 10;

@@ -6,7 +6,7 @@ import hunt.util.DateTime;
 import hunt.redis;
 import std.conv;
 
-enum string RedisServerHost = "10.1.222.120";
+enum string RedisServerHost = "10.1.223.222";
 enum int RedisServerPort = 6380;
 enum string RedisPassword = "foobared";
 enum int DEFAULT_TIMEOUT = 2000;

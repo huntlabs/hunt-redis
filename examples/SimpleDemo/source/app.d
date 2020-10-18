@@ -8,7 +8,7 @@ import RedisLockDemo;
 void main()
 {
     // RedisBenchmark.run();
-    RedisClusterBenchmark.run();
-    // RedisLockDemo.run();
+    // RedisClusterBenchmark.run();
+    RedisLockDemo.run();
     
 }

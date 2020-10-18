@@ -9,7 +9,7 @@ import std.stdio;
 import std.conv;
 
 // string RedisHosts = "10.1.11.115:6379;10.1.11.115:6380;10.1.11.115:6381;10.1.11.115:7000;10.1.11.115:7001;10.1.11.115:7002";
-string RedisHosts = "10.1.222.120:6379";
+// string RedisHosts = "10.1.223.222:6379";
 
 void run()
 {
@@ -42,13 +42,16 @@ class TestThread : Thread
     int _second;
     bool _flag;
     RedisLock _lock;
+    Redis _redis;
 
     this(string name, int second)
     {
         super(&run);
         _name = name;
         _second = second;
-        _lock = new RedisLock(RedisHosts, "foobared");
+        _redis = new Redis("10.1.223.222", 6379);
+        _redis.auth("foobared");
+        _lock = new RedisLock(_redis, "test1");
         _flag = true;
     }
 
@@ -56,7 +59,7 @@ class TestThread : Thread
     {
         if(_flag) {
             _flag = false;
-            _lock.close();
+            _redis.close();
         }
     }
 
@@ -64,8 +67,7 @@ class TestThread : Thread
     {
         while (_flag)
         {
-            LockedObject obj;
-            if (!_lock.lock("test1", obj, 1000))
+            if (!_lock.lock(1000))
             {
                 warningf(" timeout: %s ", _name);
                 continue;
@@ -74,7 +76,7 @@ class TestThread : Thread
             info(_name, " locked");
             Thread.sleep(dur!"msecs"(500));
             info(_name, " unlocked");
-            _lock.unlock(obj);
+            _lock.unlock();
             Thread.sleep(dur!"seconds"(1));
         }
 

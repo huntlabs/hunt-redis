@@ -15,7 +15,7 @@ class RedisBenchmark {
         // Redis redis = new Redis(hnp);
         // Redis redis = new Redis("10.1.11.115", 6379);
         // Redis redis = new Redis("10.1.223.62", 6379);
-        Redis redis = new Redis("10.1.222.120", 6379);
+        Redis redis = new Redis("10.1.223.222", 6379);
         redis.connect();
         redis.auth("foobared");
         redis.flushAll();

@@ -30,6 +30,7 @@ docs/
 
 # Examples
 examples/UnitTest/unittest
+examples/UnitTest/reset-cluster
 examples/SimpleDemo/simple-demo
 
 # Others
