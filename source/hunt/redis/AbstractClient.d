@@ -187,7 +187,7 @@ class AbstractClient : Closeable {
                 version (HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
             }
 
-            override void messageReceived(Connection connection, Object message) {
+            override DataHandleStatus messageReceived(Connection connection, Object message) {
                 version(HUNT_REDIS_DEBUG) {
                     tracef("message type: %s", typeid(message).name);
                     string str = format("data received: %s", message.toString());
@@ -197,6 +197,8 @@ class AbstractClient : Closeable {
                 //     connection.encode(new String(str));
                 // }
                 // count++;
+
+                return DataHandleStatus.Done;
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {

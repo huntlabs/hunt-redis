@@ -1,12 +1,12 @@
 {
     "name": "hunt-redis",
     "targetType": "library",
-    "copyright": "Copyright © 2019-2020, HuntLabs",
+    "copyright": "Copyright © 2019-2021, HuntLabs",
     "description": "A redis client library for D.",
     "homepage": "https://www.huntLabs.net",
     "license": "Apache-2.0",
     "dependencies": {
-        "hunt-net": "~>0.5.0",
-        "hunt-pool": "~>1.1.0"
+        "hunt-net": "~>0.6.0",
+        "hunt-pool": "~>1.2.0"
     }
 }
