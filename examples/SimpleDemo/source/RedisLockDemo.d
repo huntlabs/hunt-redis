@@ -9,7 +9,7 @@ import std.stdio;
 import std.conv;
 
 // string RedisHosts = "10.1.11.115:6379;10.1.11.115:6380;10.1.11.115:6381;10.1.11.115:7000;10.1.11.115:7001;10.1.11.115:7002";
-// string RedisHosts = "10.1.223.222:6379";
+// string RedisHosts = "10.1.23.222:6379";
 
 void run()
 {
@@ -49,7 +49,7 @@ class TestThread : Thread
         super(&run);
         _name = name;
         _second = second;
-        _redis = new Redis("10.1.223.222", 6379);
+        _redis = new Redis("10.1.23.222", 6379);
         _redis.auth("foobared");
         _lock = new RedisLock(_redis, "test1");
         _flag = true;
