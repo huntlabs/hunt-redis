@@ -17,7 +17,7 @@ import hunt.redis.util.SafeEncoder;
 import test.commands.RedisCommandTestBase;
 
 // enum RedisHost = "localhost";
-enum RedisHost = "10.1.222.110";
+enum RedisHost = "10.1.11.114";
 
 class RedisTest : RedisCommandTestBase {
     // @Test void useWithoutConnecting() {

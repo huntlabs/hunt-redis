@@ -26,7 +26,7 @@ abstract class RedisCommandTestBase {
         trace(hnp.toString());
         redis = new Redis(hnp.getHost(), hnp.getPort(), 500);
         redis.connect();
-        redis.auth("foobared");
+        // redis.auth("foobared");
         redis.flushAll();
     }
 

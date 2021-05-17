@@ -46,7 +46,7 @@ class RedisClusterTest {
     private static Redis node3;
     private static Redis node4;
     private static Redis nodeSlave2;
-    private enum string RedisServerHost = "10.1.223.222"; // "127.0.0.1";
+    private enum string RedisServerHost = "10.1.23.222"; // "127.0.0.1";
     private enum RedisServerPort = 6380; // 6379;
     private string RedisPassword = "foobared";
 

@@ -58,6 +58,7 @@ import hunt.redis.params.ZIncrByParams;
 import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Slowlog;
 
+import hunt.Byte;
 import hunt.collection;
 import hunt.Double;
 import hunt.Long;
@@ -3791,12 +3792,32 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
             new ArrayList!(MapEntry!(string, List!(StreamEntry)))(streamsEntries.size());
 
         // foreach(Object streamObj ; streamsEntries) {
-        //   List!(Object) stream = (List!(Object))streamObj;
-        //   string streamId = SafeEncoder.encode((const(ubyte)[])stream.get(0));
-        //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
-        //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+        //   List!(Object) stream = cast(List!(Object))streamObj;
+          
+        // //   string streamId = SafeEncoder.encode((const(ubyte)[])stream.get(0));
+        // //   List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+        // //   result.add(new AbstractMap.SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
         // }
-        implementationMissing(false);
+
+        foreach(Object streamObj ; streamsEntries) {
+            List!(Object) stream = cast(List!(Object))streamObj;
+            Object obj = stream.get(0);
+            
+            Bytes bytesData = cast(Bytes)obj;
+            if(bytesData is null) {
+                warningf("Object: %s", typeid(obj));
+                return result;
+            }
+
+            const(ubyte)[] streamData = cast(const(ubyte)[]) bytesData.value;
+            string streamId = SafeEncoder.encode(streamData);
+
+            //
+            obj = stream.get(1);
+            List!(StreamEntry) streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(obj);
+
+            result.add(new SimpleEntry!(string, List!(StreamEntry))(streamId, streamEntries));
+        }        
         return result;
     }
 
