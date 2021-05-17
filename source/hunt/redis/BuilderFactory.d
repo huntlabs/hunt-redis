@@ -709,32 +709,65 @@ class BuilderFactory {
         __gshared Builder!(List!(StreamEntry)) inst;
         
         return initOnce!inst(new class Builder!(List!(StreamEntry)) {
-            override List!(StreamEntry) build(Object data) {
-                if (data is null) {
-                    return null;
-                }
 
-                List!(ArrayList!(Object)) objectList = cast(List!(ArrayList!(Object))) data;
+            override List!(StreamEntry) build(Object data) {
+
+                List!(Object) objectList = cast(ArrayList!(Object)) data;
+                if(objectList is null) {
+                    warningf("mismatched type: %s", typeid(data));
+                    return new ArrayList!(StreamEntry)();
+                }
 
                 List!(StreamEntry) responses = new ArrayList!(StreamEntry)(objectList.size()/2);
                 if (objectList.isEmpty()) {
                     return responses;
                 }
 
-                foreach(ArrayList!(Object) res; objectList) {
+                foreach(Object obj0; objectList) {
+                    ArrayList!(Object) res = cast(ArrayList!(Object))obj0;
 
-                    warning(typeid(res.get(0)));
+                    assert(res !is null);
+                    version(HUNT_REDIS_DEBUG_MORE) {
+                        warning(typeid(res.get(0)));
+                    }
 
-                    // string entryIdString = SafeEncoder.encode((const(ubyte)[])res.get(0));
-                    // StreamEntryID entryID = new StreamEntryID(entryIdString);
-                    // List!(const(ubyte)[]) hash = (List!(const(ubyte)[]))res.get(1);
-                    
-                    // Iterator!(const(ubyte)[]) hashIterator = hash.iterator();
-                    // Map!(string, string) map = new HashMap<>(hash.size()/2);
-                    // while(hashIterator.hasNext()) {
-                    //     map.put(SafeEncoder.encode((const(ubyte)[])hashIterator.next()), SafeEncoder.encode((const(ubyte)[])hashIterator.next()));
-                    // }
-                    // responses.add(new StreamEntry(entryID, map));
+                    Object obj = res.get(0);
+                    Bytes bytes = cast(Bytes)obj;
+                    if(bytes is null) {
+                        warningf("wrong type: %s", typeid(obj));
+                        continue;
+                    }
+
+                    string entryIdString = SafeEncoder.encode(cast(ubyte[])bytes.value());
+                    StreamEntryID entryID = new StreamEntryID(entryIdString);
+
+                    obj = res.get(1);
+                    version(HUNT_REDIS_DEBUG_MORE) {
+                        warningf("%s", typeid(obj));
+                    }
+
+                    List!(Object) hash = cast(List!(Object))obj;
+                    if(hash is null) {
+                        warningf("wrong type: %s", typeid(obj));
+                        continue;
+                    }
+
+                    Map!(string, string) map = new HashMap!(string, string)(hash.size()/2);
+
+                    for(int i=0; i<hash.size(); i=i+2) {
+                        bytes = cast(Bytes)hash[i];
+                        string first = SafeEncoder.encode(cast(ubyte[])bytes.value());
+
+                        bytes = cast(Bytes)hash[i+1];
+                        string second = SafeEncoder.encode(cast(ubyte[])bytes.value());
+
+                        version(HUNT_REDIS_DEBUG_MORE) {
+                            warningf("first: %s, second: %s", first, second);
+                        }
+                        map.put(first, second);
+                    }
+ 
+                    responses.add(new StreamEntry(entryID, map));
                 }
 
                 return responses;
@@ -752,21 +785,41 @@ class BuilderFactory {
 
         return initOnce!inst(new class Builder!(List!(StreamPendingEntry)) {
             override List!(StreamPendingEntry) build(Object data) {
-                if (data is null) {
-                    return null;
-                }
 
                 List!(Object) streamsEntries = cast(List!(Object))data;
+                if(streamsEntries is null) {
+                    warningf("mismatched type: %s", typeid(data));
+                    return new ArrayList!(StreamPendingEntry)();
+                }
+
                 List!(StreamPendingEntry) result = new ArrayList!(StreamPendingEntry)(streamsEntries.size());
                 
                 foreach(Object streamObj ; streamsEntries) {
                     List!(Object) stream = cast(List!(Object))streamObj;
-                    warning(typeid(stream.get(0)));
-                    // string id = SafeEncoder.encode((const(ubyte)[])stream.get(0));
-                    // string consumerName = SafeEncoder.encode((const(ubyte)[])stream.get(1));
-                    // long idleTime = BuilderFactory.LONG.build(stream.get(2));      
-                    // long deliveredTimes = BuilderFactory.LONG.build(stream.get(3));
-                    // result.add(new StreamPendingEntry(new StreamEntryID(id), consumerName, idleTime, deliveredTimes));
+
+                    //
+                    Object obj = stream.get(0);
+                    Bytes bytes = cast(Bytes)obj;
+                    if(bytes is null) {
+                        warningf("wrong type: %s", typeid(obj));
+                        continue;
+                    }
+                    string id = SafeEncoder.encode(cast(ubyte[])bytes.value());
+
+                    //
+                    obj = stream.get(1);
+                    bytes = cast(Bytes)obj;
+                    if(bytes is null) {
+                        warningf("wrong type: %s", typeid(obj));
+                        continue;
+                    }
+                    string consumerName = SafeEncoder.encode(cast(ubyte[])bytes.value());
+
+
+                    long idleTime = BuilderFactory.LONG.build(stream.get(2)).value();
+                    long deliveredTimes = BuilderFactory.LONG.build(stream.get(3)).value();
+
+                    result.add(new StreamPendingEntry(new StreamEntryID(id), consumerName, idleTime, deliveredTimes));
                 }
 
                 return result;

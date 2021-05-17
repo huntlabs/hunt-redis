@@ -1,5 +1,6 @@
 import std.stdio;
 import hunt.net.NetUtil;
+import hunt.net.EventLoopPool;
 
 import RedisDemo;
 import RedisClusterDemo;
@@ -22,5 +23,6 @@ void main()
 
     // RedisClusterBenchmark.run();
     // RedisLockDemo.run();
-    
+    getchar();
+    shutdownEventLoopPool();
 }

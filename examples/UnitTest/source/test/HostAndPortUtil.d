@@ -48,10 +48,10 @@ final class HostAndPortUtil {
         // string envSentinelHosts = System.getProperty("sentinel-hosts");
         // string envClusterHosts; // = System.getProperty("cluster-hosts");
 
-        string envRedisHosts = "10.1.222.110:6379, 10.1.11.115:6379";
+        string envRedisHosts = "10.1.11.114:6379, 10.1.11.115:6379";
         string envSentinelHosts = "";
         // string envClusterHosts = "127.0.0.1:6380,127.0.0.1:6381,127.0.0.1:6382,127.0.0.1:7380,127.0.0.1:7381,127.0.0.1:7382";
-        string envClusterHosts = "10.1.222.110:6380,10.1.222.110:6381,10.1.222.110:6382,10.1.222.110:7380,10.1.222.110:7381,10.1.222.110:7382";
+        string envClusterHosts = "10.1.11.114:6380,10.1.11.114:6381,10.1.11.114:6382,10.1.11.114:7380,10.1.11.114:7381,10.1.11.114:7382";
 
         redisHostAndPortList = parseHosts(envRedisHosts, redisHostAndPortList);
         sentinelHostAndPortList = parseHosts(envSentinelHosts, sentinelHostAndPortList);
