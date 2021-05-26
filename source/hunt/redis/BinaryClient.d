@@ -591,6 +591,8 @@ class BinaryClient : AbstractClient {
     }
 
     void auth(string password) {
+        import std.range;
+        if(password.empty) return;
         setPassword(password);
         sendCommand(Command.AUTH, password);
     }

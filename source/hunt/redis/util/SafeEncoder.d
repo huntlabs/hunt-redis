@@ -52,7 +52,7 @@ class SafeEncoder {
     static const(ubyte)[] encode(string str) {
         try {
             if (str.empty) {
-                throw new RedisDataException("value sent to redis cannot be null");
+                throw new RedisDataException("The value sent to redis cannot be null");
             }
             return cast(const(ubyte)[])(StringUtils.getBytes(str, Protocol.CHARSET));
         } catch (UnsupportedEncodingException e) {

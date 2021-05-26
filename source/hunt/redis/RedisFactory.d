@@ -25,6 +25,7 @@ import hunt.logging.ConsoleLogger;
 import hunt.net.util.HttpURI;
 
 import std.format;
+import std.range;
 
 /**
  * PoolableObjectFactory custom impl.
@@ -43,8 +44,6 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     this(string host, int port, int connectionTimeout, int soTimeout,
             string password, int database, string clientName) {
-        // this(host, port, connectionTimeout, soTimeout, password, database, clientName,
-        //     false, null, null, null);
         this.hostAndPort = new HostAndPort(host, port);
         this.connectionTimeout = connectionTimeout;
         this.soTimeout = soTimeout;
@@ -54,24 +53,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
         this.ssl = false;
     }
 
-    // this(string host, int port, int connectionTimeout,
-    //     int soTimeout, string password, int database, string clientName,
-    //     bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-    //     HostnameVerifier hostnameVerifier) {
-    //   this.hostAndPort.set(new HostAndPort(host, port));
-    //   this.connectionTimeout = connectionTimeout;
-    //   this.soTimeout = soTimeout;
-    //   this.password = password;
-    //   this.database = database;
-    //   this.clientName = clientName;
-    //   this.ssl = ssl;
-    //   this.sslSocketFactory = sslSocketFactory;
-    //   this.sslParameters = sslParameters;
-    //   this.hostnameVerifier = hostnameVerifier;
-    // }
-
     this(HttpURI uri, int connectionTimeout, int soTimeout, string clientName) {
-        // this(uri, connectionTimeout, soTimeout, clientName, null, null, null);
         if (!RedisURIHelper.isValid(uri)) {
             throw new InvalidURIException(format(
                     "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
@@ -85,26 +67,6 @@ class RedisFactory : PooledObjectFactory!(Redis) {
         this.clientName = clientName;
         this.ssl = false; //RedisURIHelper.isRedisSSLScheme(uri);
     }
-
-    // this(HttpURI uri, int connectionTimeout, int soTimeout,
-    //     string clientName, SSLSocketFactory sslSocketFactory,
-    //     SSLParameters sslParameters, HostnameVerifier hostnameVerifier) {
-    //   if (!RedisURIHelper.isValid(uri)) {
-    //     throw new InvalidURIException(format(
-    //       "Cannot open Redis connection due invalid HttpURI. %s", uri.toString()));
-    //   }
-
-    //   this.hostAndPort.set(new HostAndPort(uri.getHost(), uri.getPort()));
-    //   this.connectionTimeout = connectionTimeout;
-    //   this.soTimeout = soTimeout;
-    //   this.password = RedisURIHelper.getPassword(uri);
-    //   this.database = RedisURIHelper.getDBIndex(uri);
-    //   this.clientName = clientName;
-    //   this.ssl = RedisURIHelper.isRedisSSLScheme(uri);
-    //   this.sslSocketFactory = sslSocketFactory;
-    //   this.sslParameters = sslParameters;
-    //   this.hostnameVerifier = hostnameVerifier;
-    // }
 
     void setHostAndPort(HostAndPort hostAndPort) {
         this.hostAndPort = hostAndPort;
@@ -135,18 +97,18 @@ class RedisFactory : PooledObjectFactory!(Redis) {
 
     IPooledObject makeObject() {
         HostAndPort hostAndPort = this.hostAndPort;
-        // Redis redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
-        //         connectionTimeout, soTimeout, ssl, sslSocketFactory,
-        //         sslParameters, hostnameVerifier);
+        
         version(HUNT_REDIS_DEBUG) infof("%s", hostAndPort.toString());
         Redis redis = new Redis(hostAndPort.getHost(), hostAndPort.getPort(),
                 connectionTimeout, soTimeout, ssl);
 
         try {
             redis.connect();
-            if (password !is null) {
+
+            if (!password.empty) {
                 redis.auth(password);
             }
+
             if (database != 0) {
                 redis.select(database);
             }
@@ -155,7 +117,7 @@ class RedisFactory : PooledObjectFactory!(Redis) {
             }
         } catch (RedisException je) {
             debug warning(je.msg);
-            // version(HUNT_DEBUG) warning(je);
+            version(HUNT_DEBUG) warning(je);
             redis.close();
             throw je;
         }

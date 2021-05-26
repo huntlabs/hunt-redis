@@ -153,9 +153,6 @@ class AbstractClient : Closeable {
         if(isConnected())
             return;
         
-        _doneLocker.lock();
-        scope (exit)
-            _doneLocker.unlock();
 
         if(soTimeout <= 0) {
             soTimeout = Protocol.DEFAULT_TIMEOUT;
@@ -172,13 +169,12 @@ class AbstractClient : Closeable {
 
             override void connectionOpened(Connection connection) {
                 version (HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
-                
-                outputStream = new RedisOutputStream(new TcpOutputStream(connection.getStream()));
-                inputStream = new RedisInputStream(new TcpInputStream(connection.getStream(), idleTimeout));  
-
                 _doneLocker.lock();
                 scope (exit)
                     _doneLocker.unlock();
+                
+                outputStream = new RedisOutputStream(new TcpOutputStream(connection.getStream()));
+                inputStream = new RedisInputStream(new TcpInputStream(connection.getStream(), idleTimeout));  
 
                 _doneCondition.notifyAll();
             }
@@ -219,11 +215,16 @@ class AbstractClient : Closeable {
             connectionTimeout = Protocol.DEFAULT_TIMEOUT;
         }
         
-        version (HUNT_DEBUG) {
-            infof("Waiting for a connection in %s...", msecs(connectionTimeout));
+        _doneLocker.lock();
+        scope (exit)
+            _doneLocker.unlock();
+        if(outputStream is null) {
+            version (HUNT_DEBUG) {
+                infof("Waiting for a connection in %s...", msecs(connectionTimeout));
+            }
+            _doneCondition.wait(connectionTimeout.msecs);
         }
 
-        _doneCondition.wait(connectionTimeout.msecs);
         if(!isConnected()) {
             string msg = format("Unable to connect to the server in %s.", 
                 connectionTimeout.msecs);

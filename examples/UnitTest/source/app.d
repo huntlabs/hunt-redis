@@ -19,14 +19,14 @@ void main() {
 
     // testUnits!(HostAndPortTest);
     // testUnits!(RedisTest);
-    // testUnits!(RedisClusterTest);
+    testUnits!(RedisClusterTest);
     // testUnits!(RedisPoolTest);
 
     // testUnits!(RedisURIHelperTest);
 
     // testUnits!(GeoCommandsTest);
     // testUnits!(SortedSetCommandsTest);
-    testUnits!(StreamsCommandsTest);
+    // testUnits!(StreamsCommandsTest);
 
     getchar();
     shutdownEventLoopPool();

@@ -48,7 +48,8 @@ class RedisClusterTest {
     private static Redis nodeSlave2;
     private enum string RedisServerHost = "10.1.23.222"; // "127.0.0.1";
     private enum RedisServerPort = 6380; // 6379;
-    private string RedisPassword = "foobared";
+    // private string RedisPassword = "foobared";
+    private string RedisPassword = "";
 
     private enum int DEFAULT_TIMEOUT = 2000;
     private enum int DEFAULT_REDIRECTIONS = 5;
@@ -73,22 +74,27 @@ class RedisClusterTest {
     @Before
     void setUp() {
         node1 = new Redis(nodeInfo1);
+        node1.connect();
         node1.auth(RedisPassword);
         node1.flushAll();
 
         node2 = new Redis(nodeInfo2);
+        node2.connect();
         node2.auth(RedisPassword);
         node2.flushAll();
 
         node3 = new Redis(nodeInfo3);
+        node3.connect();
         node3.auth(RedisPassword);
         node3.flushAll();
 
         node4 = new Redis(nodeInfo4);
+        node4.connect();
         node4.auth(RedisPassword);
         // node4.flushAll();
 
         nodeSlave2 = new Redis(nodeInfoSlave2);
+        nodeSlave2.connect();
         nodeSlave2.auth(RedisPassword);
         // nodeSlave2.flushAll();
 
@@ -144,19 +150,19 @@ class RedisClusterTest {
     //     info("running here");
     // }
 
-    // @Test
-    // void testMovedExceptionParameters() {
-    //     try {
-    //         node1.set("foo", "bar");
-    //     } catch (RedisMovedDataException jme) {
-    //         infof("slot: %d", jme.getSlot());
-    //         assertEquals(12182, jme.getSlot());
-    //         warning(jme.getTargetNode().toString());
-    //         // assertEquals(new HostAndPort(RedisServerHost, 7381), jme.getTargetNode());
-    //         return;
-    //     }
-    //     fail();
-    // }
+    @Test
+    void testMovedExceptionParameters() {
+        try {
+            node1.set("foo", "bar");
+        } catch (RedisMovedDataException jme) {
+            infof("slot: %d", jme.getSlot());
+            assertEquals(12182, jme.getSlot());
+            warning(jme.getTargetNode().toString());
+            // assertEquals(new HostAndPort(RedisServerHost, 7381), jme.getTargetNode());
+            return;
+        }
+        fail();
+    }
 
     // @TestWith!(RedisAskDataException)
     // void testThrowAskException() {

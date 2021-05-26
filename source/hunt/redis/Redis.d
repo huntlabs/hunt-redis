@@ -3849,7 +3849,13 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
     alias sendCommand = BinaryRedis.sendCommand;
 
     override Long slowlogLen() { return super.slowlogLen(); }
-    override string auth(string password) { return super.auth(password); }
+    override string auth(string password) { 
+        import std.range;
+        if(password.empty) {
+            return "empty password";
+        }
+        return super.auth(password); 
+    }
     override string ping() { return super.ping(); }
     override string quit() { return super.quit(); }
     override string shutdown() { return super.shutdown(); }
