@@ -133,7 +133,7 @@ class RedisClusterInfoCache {
             }
         } catch(Throwable ex) {
             debug warning(ex.msg);
-            version(HUNT_REDIS_DEBUG) warning(ex);
+            version(HUNT_DEBUG) warning(ex);
         }
     }
 

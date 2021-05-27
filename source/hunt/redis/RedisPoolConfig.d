@@ -16,6 +16,7 @@ import hunt.pool.impl.GenericObjectPoolConfig;
 
 struct RedisClusterConfig {
     string[] nodes;
+    uint redirections = 5;
 }
 
 

@@ -46,8 +46,8 @@ class RedisClusterTest {
     private static Redis node3;
     private static Redis node4;
     private static Redis nodeSlave2;
-    private enum string RedisServerHost = "10.1.23.222"; // "127.0.0.1";
-    private enum RedisServerPort = 6380; // 6379;
+    private enum string RedisServerHost = "10.1.11.15"; // "127.0.0.1";
+    private enum RedisServerPort = 6379;
     // private string RedisPassword = "foobared";
     private string RedisPassword = "";
 
@@ -93,9 +93,9 @@ class RedisClusterTest {
         node4.auth(RedisPassword);
         // node4.flushAll();
 
-        nodeSlave2 = new Redis(nodeInfoSlave2);
-        nodeSlave2.connect();
-        nodeSlave2.auth(RedisPassword);
+        // nodeSlave2 = new Redis(nodeInfoSlave2);
+        // nodeSlave2.connect();
+        // nodeSlave2.auth(RedisPassword);
         // nodeSlave2.flushAll();
 
         // // ---- configure cluster
@@ -143,6 +143,35 @@ class RedisClusterTest {
         cleanUp();
     }
 
+    @Test
+    void simpleTest() {
+        Set!(HostAndPort) jedisClusterNode = new HashSet!(HostAndPort)();
+        jedisClusterNode.add(new HostAndPort(RedisServerHost, RedisServerPort));
+        // jedisClusterNode.add(new HostAndPort(RedisServerHost, 6479));
+        // jedisClusterNode.add(new HostAndPort(RedisServerHost, 6579));
+
+        RedisCluster jc = new RedisCluster(jedisClusterNode, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT,
+                DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+        warning("running here");
+        jc.set("foo", "bar");
+        jc.set("test", "test");
+
+        warning("foo: ", jc.get("foo"));
+
+        assertEquals("bar", node3.get("foo"));
+        assertEquals("test", node2.get("test"));
+
+        warning("running here");
+        RedisCluster jc2 = new RedisCluster(new HostAndPort(RedisServerHost, RedisServerPort), DEFAULT_TIMEOUT,
+                DEFAULT_TIMEOUT, DEFAULT_REDIRECTIONS, RedisPassword, DEFAULT_CONFIG);
+        jc2.set("foo", "bar");
+        jc2.set("test", "test");
+        assertEquals("bar", node3.get("foo"));
+        assertEquals("test", node2.get("test"));
+
+        warning("done");
+    }
+
     // @TestWith!(RedisMovedDataException)
     // void testThrowMovedException() {
     //     warning("running here");
@@ -150,19 +179,19 @@ class RedisClusterTest {
     //     info("running here");
     // }
 
-    @Test
-    void testMovedExceptionParameters() {
-        try {
-            node1.set("foo", "bar");
-        } catch (RedisMovedDataException jme) {
-            infof("slot: %d", jme.getSlot());
-            assertEquals(12182, jme.getSlot());
-            warning(jme.getTargetNode().toString());
-            // assertEquals(new HostAndPort(RedisServerHost, 7381), jme.getTargetNode());
-            return;
-        }
-        fail();
-    }
+    // @Test
+    // void testMovedExceptionParameters() {
+    //     try {
+    //         node1.set("foo", "bar");
+    //     } catch (RedisMovedDataException jme) {
+    //         infof("slot: %d", jme.getSlot());
+    //         assertEquals(12182, jme.getSlot());
+    //         warning(jme.getTargetNode().toString());
+    //         // assertEquals(new HostAndPort(RedisServerHost, 7381), jme.getTargetNode());
+    //         return;
+    //     }
+    //     fail();
+    // }
 
     // @TestWith!(RedisAskDataException)
     // void testThrowAskException() {
