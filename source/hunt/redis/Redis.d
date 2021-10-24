@@ -27,7 +27,6 @@ import hunt.redis.Module;
 import hunt.redis.Pipeline;
 import hunt.redis.Protocol;
 import hunt.redis.RedisMonitor;
-import hunt.redis.RedisPoolAbstract;
 import hunt.redis.RedisPubSub;
 import hunt.redis.RedisShardInfo;
 import hunt.redis.ScanParams;

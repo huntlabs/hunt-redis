@@ -47,27 +47,15 @@ class RedisClusterInfoCache {
     private Map!(int, RedisPool) slots;
 
     private Mutex mutex;
-    // private Object.Monitor r;
-    // private Object.Monitor w;
     private bool rediscovering;
     private RedisPoolOptions poolConfig;
 
-    // private int connectionTimeout;
-    // private int soTimeout;
-    // private string password;
-    // private string clientName;
-
-    // private bool ssl;
 //   private SSLSocketFactory sslSocketFactory;
 //   private SSLParameters sslParameters;
 //   private HostnameVerifier hostnameVerifier;
     private RedisClusterHostAndPortMap hostAndPortMap;
 
     private enum int MASTER_NODE_INDEX = 2;
-
-    // this(PoolOptions poolConfig, int timeout) {
-    //     this(poolConfig, timeout, timeout, null, null);
-    // }
 
     this(RedisPoolOptions poolConfig) {
 
@@ -76,14 +64,6 @@ class RedisClusterInfoCache {
         mutex = new Mutex();
 
         this.poolConfig = poolConfig;
-        // this.connectionTimeout = poolConfig.connectionTimeout;
-        // this.soTimeout = poolConfig.soTimeout;
-        // this.password = poolConfig.password;
-        // this.clientName = poolConfig.name;
-        // this.ssl = poolConfig.ssl;
-        // this.sslSocketFactory = sslSocketFactory;
-        // this.sslParameters = sslParameters;
-        // this.hostnameVerifier = hostnameVerifier;
         this.hostAndPortMap = null;    
     }
 

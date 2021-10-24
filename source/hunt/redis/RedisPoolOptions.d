@@ -47,16 +47,4 @@ class RedisPoolOptions : PoolOptions  {
         maxAttempts = other.maxAttempts;
         ssl = other.ssl;
     }
-
-    // int maxSize = 8;
-
-    // int maxWaitQueueSize = -1;
-    
-    // this() {
-    //     // defaults to make your life with connection pool easier :)
-    //     // setTestWhileIdle(true);
-    //     // setMinEvictableIdleTimeMillis(60000);
-    //     // setTimeBetweenEvictionRunsMillis(30000);
-    //     // setNumTestsPerEvictionRun(-1);
-    // }
 }

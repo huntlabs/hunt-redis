@@ -67,113 +67,13 @@ private template ClusterStringCommandTemplate(string name, R, string[] args) {
 class RedisCluster : BinaryRedisCluster, RedisClusterCommands,
          MultiKeyRedisClusterCommands, RedisClusterScriptingCommands {
 
-    // this(HostAndPort node) {
-    //     this(Collections.singleton(node));
-    // }
-
-    // this(HostAndPort node, int timeout) {
-    //     this(Collections.singleton(node), timeout);
-    // }
-
-    // this(HostAndPort node, int timeout, int maxAttempts) {
-    //     this(Collections.singleton(node), timeout, maxAttempts);
-    // }
-
     this(HostAndPort node, RedisPoolOptions poolConfig) {
         this([node], poolConfig);
     }
 
-    // this(HostAndPort node, int timeout, PoolOptions poolConfig) {
-    //     this(Collections.singleton(node), timeout, poolConfig);
-    // }
-
-    // this(HostAndPort node, int timeout, int maxAttempts,
-    //         PoolOptions poolConfig) {
-    //     this([node], timeout, maxAttempts, poolConfig);
-    // }
-
-    // this(HostAndPort node, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, PoolOptions poolConfig) {
-    //     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, poolConfig);
-    // }
-
-    // this(HostAndPort node, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, PoolOptions poolConfig) {
-    //     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
-    // }
-
-    // this(HostAndPort node, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, string clientName, PoolOptions poolConfig) {
-    //     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
-    // }
-
-    // this(HostAndPort node, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, string clientName, PoolOptions poolConfig,
-    //         bool ssl) {
-    //     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
-    // }
-
-    // this(HostAndPort node, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, string clientName, PoolOptions poolConfig,
-    //         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-    //         HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
-    //     this(Collections.singleton(node), connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
-    //             ssl, sslSocketFactory, sslParameters, hostnameVerifier, hostAndPortMap);
-    // }
-
-    // this(Set!(HostAndPort) nodes) {
-    //     this(nodes, DEFAULT_TIMEOUT);
-    // }
-
-    // this(Set!(HostAndPort) nodes, int timeout) {
-    //     this(nodes, timeout, DEFAULT_MAX_ATTEMPTS);
-    // }
-
-    // this(Set!(HostAndPort) nodes, int timeout, int maxAttempts) {
-    //     this(nodes, timeout, maxAttempts, new PoolOptions());
-    // }
-
     this(HostAndPort[] nodes, RedisPoolOptions poolConfig) {
         super(nodes, poolConfig);
     }
-
-    // this(Set!(HostAndPort) nodes, int timeout, PoolOptions poolConfig) {
-    //     this(nodes, timeout, DEFAULT_MAX_ATTEMPTS, poolConfig);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int timeout, int maxAttempts,
-    //         PoolOptions poolConfig) {
-    //     super(redisClusterNode, timeout, maxAttempts, poolConfig);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, PoolOptions poolConfig) {
-    //     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, poolConfig);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
-    //                                         int maxAttempts, string password, PoolOptions poolConfig) {
-    //     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, poolConfig);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
-    //                 int maxAttempts, string password, string clientName, PoolOptions poolConfig) {
-    //     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, string clientName, PoolOptions poolConfig,
-    //         bool ssl) {
-    //     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl);
-    // }
-
-    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout,
-    //         int maxAttempts, string password, string clientName, PoolOptions poolConfig,
-    //         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
-    //         HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
-    //     super(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig,
-    //             ssl, sslSocketFactory, sslParameters, hostnameVerifier, hostAndPortMap);
-    // }
 
     override
     string set(string key, string value) {

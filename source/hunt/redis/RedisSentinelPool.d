@@ -15,8 +15,6 @@ import hunt.redis.Exceptions;
 import hunt.redis.HostAndPort;
 import hunt.redis.Protocol;
 import hunt.redis.Redis;
-import hunt.redis.RedisFactory;
-import hunt.redis.RedisPoolAbstract;
 import hunt.redis.RedisPubSub;
 
 import hunt.Exceptions;
