@@ -25,7 +25,7 @@ import hunt.collection.List;
 import hunt.collection.Set;
 import hunt.concurrency.thread;
 import hunt.logging.ConsoleLogger;
-import hunt.pool.impl.GenericObjectPoolConfig;
+import hunt.util.pool;
 import hunt.util.ArrayHelper;
 
 import core.atomic;

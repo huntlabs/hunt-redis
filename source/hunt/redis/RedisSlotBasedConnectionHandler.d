@@ -17,44 +17,21 @@ import hunt.redis.Exceptions;
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
+import hunt.redis.RedisPoolOptions;
 
 import hunt.text.Common;
 
 import hunt.collection.List;
 import hunt.collection.Set;
-import hunt.pool.impl.GenericObjectPoolConfig;
+import hunt.util.pool;
 
 
 class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
 
-  this(Set!(HostAndPort) nodes,
-      GenericObjectPoolConfig poolConfig, int timeout) {
-    this(nodes, poolConfig, timeout, timeout);
+  this(HostAndPort[] nodes, RedisPoolOptions poolConfig) {
+    super(nodes, poolConfig);
   }
 
-  this(Set!(HostAndPort) nodes,
-      GenericObjectPoolConfig poolConfig, int connectionTimeout, int soTimeout) {
-    super(nodes, poolConfig, connectionTimeout, soTimeout, null);
-  }
-
-  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, 
-      int connectionTimeout, int soTimeout, string password) {
-    super(nodes, poolConfig, connectionTimeout, soTimeout, password);
-  }
-
-  this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, 
-      int connectionTimeout, int soTimeout, string password, string clientName) {
-    super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName);
-  }
-
-  // this(Set!(HostAndPort) nodes, GenericObjectPoolConfig poolConfig, int connectionTimeout, 
-  //       int soTimeout, string password, string clientName, 
-  //       bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
-  //       HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap portMap) {
-          
-  //   super(nodes, poolConfig, connectionTimeout, soTimeout, password, clientName, ssl, 
-  //       sslSocketFactory, sslParameters, hostnameVerifier, portMap);
-  // }
 
   override
   Redis getConnection() {
@@ -68,7 +45,7 @@ class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
     foreach(RedisPool pool ; pools) {
       Redis redis = null;
       try {
-        redis = pool.getResource();
+        redis = pool.borrow();
 
         if (redis is null) {
           continue;
@@ -95,12 +72,12 @@ class RedisSlotBasedConnectionHandler : RedisClusterConnectionHandler {
     if (connectionPool !is null) {
       // It can't guaranteed to get valid connection because of node
       // assignment
-      return connectionPool.getResource();
+      return connectionPool.borrow();
     } else {
       renewSlotCache(); //It's abnormal situation for cluster mode, that we have just nothing for slot, try to rediscover state
       connectionPool = cache.getSlotPool(slot);
       if (connectionPool !is null) {
-        return connectionPool.getResource();
+        return connectionPool.borrow();
       } else {
         //no choice, fallback to new connection to random node
         return getConnection();

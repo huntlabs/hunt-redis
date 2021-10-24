@@ -908,11 +908,11 @@ class BinaryClient : AbstractClient {
         return db;
     }
 
-    override
-    void disconnect() {
-        db = 0;
-        super.disconnect();
-    }
+    // override
+    // void disconnect() {
+    //     db = 0;
+    //     super.disconnect();
+    // }
 
     override
     void close() {

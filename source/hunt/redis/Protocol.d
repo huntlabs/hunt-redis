@@ -45,6 +45,7 @@ final class Protocol {
     enum int DEFAULT_PORT = 6379;
     enum int DEFAULT_SENTINEL_PORT = 26379;
     enum int DEFAULT_TIMEOUT = 2000;
+    enum int DEFAULT_MAX_ATTEMPTS = 5;
     enum int DEFAULT_DATABASE = 0;
 
     enum string CHARSET = "UTF-8";

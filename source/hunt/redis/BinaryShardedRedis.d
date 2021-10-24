@@ -73,13 +73,15 @@ class BinaryShardedRedis : Sharded!(Redis, RedisShardInfo), BinaryRedisCommands 
                 try {
                     jedis.quit();
                 } catch (RedisConnectionException e) {
+                    import hunt.logging.ConsoleLogger;
+                    warning(e);
                     // ignore the exception node, so that all other normal nodes can release all connections.
                 }
-                try {
-                    jedis.disconnect();
-                } catch (RedisConnectionException e) {
-                    // ignore the exception node, so that all other normal nodes can release all connections.
-                }
+                // try {
+                //     jedis.disconnect();
+                // } catch (RedisConnectionException e) {
+                //     // ignore the exception node, so that all other normal nodes can release all connections.
+                // }
             }
         }
     }

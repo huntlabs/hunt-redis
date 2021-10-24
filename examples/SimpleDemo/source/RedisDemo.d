@@ -32,7 +32,7 @@ class RedisBenchmark {
 
         long elapsed = DateTime.currentTimeMillis() - begin;
 
-        redis.disconnect();
+        redis.close();
 
         if(elapsed > 0)
         trace(((1000 * 2 * TOTAL_OPERATIONS) / elapsed).to!string() ~ " ops");

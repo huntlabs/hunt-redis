@@ -304,7 +304,7 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
         checkIsInMultiOrPipeline();
         client.quit();
         string quitReturn = client.getStatusCodeReply();
-        client.disconnect();
+        client.close();
         return quitReturn;
     }
 
@@ -1926,9 +1926,9 @@ class BinaryRedis : BasicCommands, BinaryRedisCommands,
         client.connect();
     }
 
-    void disconnect() {
-        client.disconnect();
-    }
+    // void disconnect() {
+    //     client.disconnect();
+    // }
 
     void resetState() {
         if (client.isConnected()) {

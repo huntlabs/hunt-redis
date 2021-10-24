@@ -238,9 +238,9 @@ class AbstractClient : Closeable {
         if (isConnected()) _client.close();
     }
 
-    void disconnect() {
-        close();
-    }
+    // void disconnect() {
+    //     close();
+    // }
 
     bool isConnected() {
         return _client !is null && _client.isConnected();

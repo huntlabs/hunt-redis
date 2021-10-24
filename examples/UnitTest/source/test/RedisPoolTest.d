@@ -6,8 +6,7 @@ import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
 import hunt.util.Common;
 import hunt.util.UnitTest;
-
-import hunt.pool;
+import hunt.util.pool;
 
 // import org.apache.commons.pool2.PooledObject;
 // import org.apache.commons.pool2.PooledObjectFactory;
@@ -18,7 +17,7 @@ import hunt.pool;
 import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.RedisPool;
-import hunt.redis.RedisPoolConfig;
+import hunt.redis.RedisPoolOptions;
 import hunt.redis.Transaction;
 import hunt.redis.Exceptions;
 
@@ -33,7 +32,7 @@ class RedisPoolTest {
     shared static this() {
         hnp = HostAndPortUtil.getRedisServers().get(0);
         
-        RedisPoolConfig config = new RedisPoolConfig();
+        RedisPoolOptions config = new RedisPoolOptions();
         config.host = hnp.getHost();
         config.port = hnp.getPort();
         config.soTimeout = 2000;
@@ -44,13 +43,13 @@ class RedisPoolTest {
     void checkConnections() {
         // RedisPool pool = new RedisPool(new RedisPoolConfig(), hnp.getHost(), hnp.getPort(), 2000);
         RedisPool pool = defaultRedisPool();
-        Redis redis = pool.getResource();
+        Redis redis = pool.borrow();
         redis.auth("foobared");
         redis.set("foo", "bar");
         assertEquals("bar", redis.get("foo"));
         redis.close();
         pool.destroy();
-        assertTrue(pool.isClosed());
+        assertTrue(pool.state != ObjectPoolState.Open);
 
         warning("done");
     }

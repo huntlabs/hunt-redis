@@ -76,7 +76,7 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         AdvancedRedisCommands, ScriptingCommands, BasicCommands, 
         ClusterCommands, SentinelCommands, ModuleCommands {
 
-    protected RedisPoolAbstract dataSource = null;
+    // protected RedisPoolAbstract dataSource = null;
 
     this() {
         super();
@@ -3458,24 +3458,28 @@ class Redis : BinaryRedis, RedisCommands, MultiKeyCommands,
         return BuilderFactory.PUBSUB_NUMSUB_MAP.build(cast(Object)client.getBinaryMultiBulkReply());
     }
 
-    override void close() {
-        if (dataSource !is null) {
-            RedisPoolAbstract pool = this.dataSource;
-            this.dataSource = null;
-            if (client.isBroken()) {
-                pool.returnBrokenResource(this);
-            } else {
-                pool.returnResource(this);
-            }
-        } else {
-            warning("The connnection has already closed!");
-            // super.close();
-        }
-    }
+    // override void close() {
+    //     // if (dataSource !is null) {
+    //     //     RedisPoolAbstract pool = this.dataSource;
+    //     //     this.dataSource = null;
+    //     //     if (client.isBroken()) {
+    //     //         pool.returnBrokenResource(this);
+    //     //     } else {
+    //     //         pool.returnResource(this);
+    //     //     }
+    //     // } else {
+    //     //     warning("The connnection has already closed!");
+    //     //     // super.close();
+    //     // }
 
-    void setDataSource(RedisPoolAbstract redisPool) {
-        this.dataSource = redisPool;
-    }
+    //     warning("The connnection has already closed!");
+
+    //     super.close();
+    // }
+
+    // void setDataSource(RedisPoolAbstract redisPool) {
+    //     this.dataSource = redisPool;
+    // }
 
     Long pfadd(string key, string[] elements...) {
         checkIsInMultiOrPipeline();

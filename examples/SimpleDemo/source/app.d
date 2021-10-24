@@ -15,13 +15,13 @@ import RedisLockDemo;
 void main()
 {
     import hunt.logging.ConsoleLogger;
-    for(int i=0; i< 5; i++) {
-        RedisBenchmark.run();
-    }
+    // for(int i=0; i< 1; i++) {
+    //     RedisBenchmark.run();
+    // }
 
     warning("done");
 
-    // RedisClusterBenchmark.run();
+    RedisClusterBenchmark.run();
     // RedisLockDemo.run();
     getchar();
     shutdownEventLoopPool();

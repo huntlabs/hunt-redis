@@ -31,7 +31,8 @@ abstract class RedisCommandTestBase {
     }
 
     @After void tearDown() {
-        redis.disconnect();
+        // redis.disconnect();
+        redis.close();
     }
 
     protected Redis createRedis() {

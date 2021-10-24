@@ -19,6 +19,7 @@ import hunt.redis.HostAndPort;
 import hunt.redis.Redis;
 import hunt.redis.RedisClusterCommand;
 import hunt.redis.RedisPool;
+import hunt.redis.RedisPoolOptions;
 import hunt.redis.Protocol;
 import hunt.redis.RedisClusterConnectionHandler;
 import hunt.redis.params.GeoRadiusParam;
@@ -34,7 +35,7 @@ import hunt.collection.Collection;
 import hunt.collection.List;
 import hunt.collection.Map;
 import hunt.collection.Set;
-import hunt.pool.impl.GenericObjectPoolConfig;
+import hunt.util.pool;
 
 import hunt.Long;
 
@@ -76,49 +77,47 @@ class BinaryRedisCluster : BinaryRedisClusterCommands, MultiKeyBinaryRedisCluste
 
     protected RedisClusterConnectionHandler connectionHandler;
 
-    this(Set!(HostAndPort) nodes, int timeout) {
-        this(nodes, timeout, DEFAULT_MAX_ATTEMPTS, new GenericObjectPoolConfig());
-    }
+    // this(Set!(HostAndPort) nodes, int timeout) {
+    //     this(nodes, timeout, DEFAULT_MAX_ATTEMPTS, new PoolOptions());
+    // }
 
-    this(Set!(HostAndPort) nodes) {
-        this(nodes, DEFAULT_TIMEOUT);
-    }
+    // this(Set!(HostAndPort) nodes) {
+    //     this(nodes, DEFAULT_TIMEOUT);
+    // }
 
-    this(Set!(HostAndPort) redisClusterNode, int timeout, int maxAttempts,
-        GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
-            timeout);
-        this.maxAttempts = maxAttempts;
-    }
+    // this(Set!(HostAndPort) redisClusterNode, int timeout, int maxAttempts,
+    //     PoolOptions poolConfig) {
+    //     this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
+    //         timeout);
+    //     this.maxAttempts = maxAttempts;
+    // }
 
-    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout,
-                                int soTimeout, int maxAttempts, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
-            connectionTimeout, soTimeout);
-        this.maxAttempts = maxAttempts;
-    }
+    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout,
+    //                             int soTimeout, int maxAttempts, PoolOptions poolConfig) {
+    //     this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
+    //         connectionTimeout, soTimeout);
+    //     this.maxAttempts = maxAttempts;
+    // }
 
-    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
-            string password, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
-                connectionTimeout, soTimeout, password);
-        this.maxAttempts = maxAttempts;
-    }
+    // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
+    //         string password, PoolOptions poolConfig) {
+    //     this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
+    //             connectionTimeout, soTimeout, password);
+    //     this.maxAttempts = maxAttempts;
+    // }
 
-    this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
-            string password, string clientName, GenericObjectPoolConfig poolConfig) {
-        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
-                connectionTimeout, soTimeout, password, clientName);
-        this.maxAttempts = maxAttempts;
+    this(HostAndPort[] redisClusterNode, RedisPoolOptions poolConfig) {
+        this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig);
+        this.maxAttempts = poolConfig.maxAttempts;
     }
 
     // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
-    //         string password, string clientName, GenericObjectPoolConfig poolConfig, bool ssl) {
+    //         string password, string clientName, PoolOptions poolConfig, bool ssl) {
     //     this(redisClusterNode, connectionTimeout, soTimeout, maxAttempts, password, clientName, poolConfig, ssl, null, null, null, null);
     // }
 
     // this(Set!(HostAndPort) redisClusterNode, int connectionTimeout, int soTimeout, int maxAttempts, 
-    //         string password, string clientName, GenericObjectPoolConfig poolConfig,
+    //         string password, string clientName, PoolOptions poolConfig,
     //         bool ssl, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters, 
     //         HostnameVerifier hostnameVerifier, RedisClusterHostAndPortMap hostAndPortMap) {
     //     this.connectionHandler = new RedisSlotBasedConnectionHandler(redisClusterNode, poolConfig,
