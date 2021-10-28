@@ -3,6 +3,11 @@ module hunt.redis.RedisPoolOptions;
 import hunt.redis.Protocol;
 import hunt.util.pool.ObjectPool;
 
+import std.format;
+
+/** 
+ * 
+ */
 struct RedisClusterConfig {
     string[] nodes;
     uint redirections = 5;
@@ -46,5 +51,9 @@ class RedisPoolOptions : PoolOptions  {
         clientName = other.clientName;
         maxAttempts = other.maxAttempts;
         ssl = other.ssl;
+    }
+
+    override string toString() {
+        return format("Host: %s:%d Timeout: %s", host, port, connectionTimeout);
     }
 }

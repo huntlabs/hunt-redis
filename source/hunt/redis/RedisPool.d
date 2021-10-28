@@ -143,7 +143,7 @@ class RedisFactory : ObjectFactory!(Redis) {
 
         override void close() {
             ObjectPoolState state = _pool.state();
-            version(HUNT_DEBUG) {
+            version(HUNT_POOL_DEBUG) {
                 tracef("Closing Redis, Pool state: %s", state);
             }
 
