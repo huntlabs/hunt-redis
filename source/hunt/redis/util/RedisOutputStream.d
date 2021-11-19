@@ -103,6 +103,10 @@ class RedisOutputStream : FilterOutputStream {
     }
 
     override void write(byte[] b, int off, int len) {
+        version(HUNT_REDIS_DEBUG_MORE) { 
+            infof("%d bytes: %(%02X %)", len, b[off ..  off+len]);
+        }
+
         if (len >= buf.length) {
             flushBuffer();
             outputStream.write(b, off, len);

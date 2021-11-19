@@ -255,10 +255,31 @@ final class Protocol {
         } else if (value == -double.infinity) {
             return NEGATIVE_INFINITY_BYTES;
         } else {
-            return cast(const(ubyte)[])to!string(value);
+            string v = format("%f", value);
+
+            return cast(const(ubyte)[])trimZero(v);
+        }
+    } 
+    
+    private static string trimZero(string value) {
+        int pointPos = -1;
+        bool canTrim = true;
+
+        for(size_t i=0; i< value.length; i++) {
+            if(value[i] == '.') {
+                pointPos = cast(int)i;
+            } else if(pointPos >=0 && value[i] != '0') {
+                canTrim = false;
+                break;
+            }
+        }
+
+        if(canTrim && pointPos>0) {
+            return value[0..pointPos];
+        } else {
+            return value;
         }
     }    
-
 // dfmt off
     static enum Command {
         PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,
