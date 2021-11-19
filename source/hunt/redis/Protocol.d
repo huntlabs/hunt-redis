@@ -45,6 +45,7 @@ final class Protocol {
     enum int DEFAULT_PORT = 6379;
     enum int DEFAULT_SENTINEL_PORT = 26379;
     enum int DEFAULT_TIMEOUT = 2000;
+    enum int DEFAULT_MAX_ATTEMPTS = 5;
     enum int DEFAULT_DATABASE = 0;
 
     enum string CHARSET = "UTF-8";
@@ -254,10 +255,31 @@ final class Protocol {
         } else if (value == -double.infinity) {
             return NEGATIVE_INFINITY_BYTES;
         } else {
-            return cast(const(ubyte)[])to!string(value);
+            string v = format("%f", value);
+
+            return cast(const(ubyte)[])trimZero(v);
+        }
+    } 
+    
+    private static string trimZero(string value) {
+        int pointPos = -1;
+        bool canTrim = true;
+
+        for(size_t i=0; i< value.length; i++) {
+            if(value[i] == '.') {
+                pointPos = cast(int)i;
+            } else if(pointPos >=0 && value[i] != '0') {
+                canTrim = false;
+                break;
+            }
+        }
+
+        if(canTrim && pointPos>0) {
+            return value[0..pointPos];
+        } else {
+            return value;
         }
     }    
-
 // dfmt off
     static enum Command {
         PING, SET, GET, QUIT, EXISTS, DEL, UNLINK, TYPE, FLUSHDB, KEYS, RANDOMKEY, RENAME, RENAMENX,
