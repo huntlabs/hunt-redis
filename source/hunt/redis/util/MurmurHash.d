@@ -15,9 +15,8 @@ import hunt.redis.util.SafeEncoder;
 import hunt.redis.util.Hashing;
 
 import hunt.Byte;
-import hunt.io.ByteBuffer;
-import hunt.io.BufferUtils;
-import hunt.util.ByteOrder;
+import hunt.collection.ByteBuffer;
+import hunt.collection.BufferUtils;
 
 /**
  * This is a very fast, non-cryptographic hash suitable for general hash-based lookup. See

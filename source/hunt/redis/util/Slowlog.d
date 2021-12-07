@@ -16,7 +16,7 @@ import hunt.redis.util.SafeEncoder;
 import hunt.collection.ArrayList;
 import hunt.collection.List;
 import hunt.Long;
-import hunt.util.StringBuilder;
+import hunt.text.StringBuilder;
 
 /**
  * 

@@ -37,9 +37,9 @@ import hunt.util.Common;
 import hunt.net;
 
 import hunt.io.TcpStream;
-import hunt.stream.Common;
-import hunt.stream.TcpInputStream;
-import hunt.stream.TcpOutputStream;
+import hunt.io.Common;
+import hunt.io.TcpInputStream;
+import hunt.io.TcpOutputStream;
 
 import core.sync.condition;
 import core.sync.mutex;
@@ -183,7 +183,7 @@ class AbstractClient : Closeable {
                 version (HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
             }
 
-            override DataHandleStatus messageReceived(Connection connection, Object message) {
+            override void messageReceived(Connection connection, Object message) {
                 version(HUNT_REDIS_DEBUG) {
                     tracef("message type: %s", typeid(message).name);
                     string str = format("data received: %s", message.toString());
@@ -194,7 +194,7 @@ class AbstractClient : Closeable {
                 // }
                 // count++;
 
-                return DataHandleStatus.Done;
+                //return DataHandleStatus.Done;
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {
